@@ -19,6 +19,8 @@ namespace KN_Core {
     public const float OffsetSmall = 5.0f;
     public const float OffsetScrollArea = 8.0f;
 
+    public int SelectedTab { get; set; }
+
     private float scrollX_;
     private float scrollY_;
     private float scrollVisibleHeight_;
@@ -31,8 +33,6 @@ namespace KN_Core {
 
     public float TabsMaxWidth { get; private set; }
     public float TabsMaxHeight { get; private set; }
-
-    private int selectedTab_;
 
     public void Box(float x, float y, float width, float height, string text, GUISkin skin) {
       EnsureTabsSize(x, y, width, height);
@@ -71,10 +71,10 @@ namespace KN_Core {
       int i;
       GUI.color = Skin.ElementAlpha;
       for (i = 0; i < tabs.Length; i++) {
-        GUI.skin = selectedTab_ == i ? Skin.ButtonActiveTab : Skin.ButtonTab;
+        GUI.skin = SelectedTab == i ? Skin.ButtonActiveTab : Skin.ButtonTab;
         if (GUI.Button(new Rect(tx, y, TabButtonWidth, TabButtonHeight), tabs[i])) {
           selected = i;
-          selectedTab_ = i;
+          SelectedTab = i;
         }
         tx += TabButtonWidth + OffsetSmall;
       }
@@ -289,7 +289,7 @@ namespace KN_Core {
       return SliderH(ref x, ref y, Width, ref value, low, high, text, Skin.Slider);
     }
 
-    public bool SliderH(ref float x, ref float y,float width, ref float value, float low, float high, string text) {
+    public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text) {
       return SliderH(ref x, ref y, width, ref value, low, high, text, Skin.Slider);
     }
 

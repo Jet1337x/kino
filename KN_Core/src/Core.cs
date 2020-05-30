@@ -212,12 +212,16 @@ namespace KN_Core {
       float x = GuiYTop;
       float y = GuiXLeft;
 
-      if (gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "SHOW CARS", Skin.ButtonTab)) {
-        ShowCars = !ShowCars;
-      }
+      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "KINO", Skin.ButtonDummy);
 
       selectedTabPrev_ = selectedTab_;
       gui_.Tabs(ref x, ref y, tabs_.ToArray(), ref selectedTab_);
+
+      if (forceSwitchTab) {
+        gui_.SelectedTab = tabs_.Count - 1;
+        selectedTab_ = tabs_.Count - 1;
+        selectedTabPrev_ = 0;
+      }
 
       HandleTabSelection();
 
