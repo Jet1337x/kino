@@ -1,4 +1,4 @@
-![LOGO](IMAGES/LOGO.PNG)
+![LOGO](Images/logo.PNG)
 # KINO
 [![Releases](https://img.shields.io/github/v/release/trbflxr/kino?include_prereleases&label=DOWNLOAD&style=for-the-badge)](https://github.com/trbflxr/kino/releases) [![KiNO Discord](https://img.shields.io/discord/716264804498538516?label=DISCORD&style=for-the-badge)](https://discord.gg/8z6HAA3)
 ### Required: [BepInEx mod loader](https://github.com/BepInEx/BepInEx/releases)
@@ -20,25 +20,22 @@ Press F4 to bring up the menu
 - Cinematic  
 Consists of 3 tabs:  
 ### First tab allows for creating custom cameras, hooking them to a chosen car and setting a target for following.   
-![Camera](images/camera.png)  
+![Camera](Images/camera.png)  
 ### Second tab has all the keyframes you added via timeline where you can edit, duplicate or delete them.  
-![Keyframes](images/keyframes.png)  
+![Keyframes](Images/keyframes.png)  
 ### Third tab is where you can pick the players whose cars you wish to record and load your saved replays.  
-![Replay](images/replay.png)  
+![Replay](Images/replay.png)  
 ### Timeline appears at the bottom of the screen when you enable cinematic mode.
 There you can set the starting and the ending points of your replay.  
-![Timeline](images/timeline.png)  
+![Timeline](Images/timeline.png)  
 
 - Livery Share  
-![LiveryShare](images/livery_share.png)  
+![LiveryShare](Images/livery_share.png)  
 
 - Livery camera  
-![LiveryCam](images/livery_camera.png)
+![LiveryCam](Images/livery_camera.png)
 ## Instalation
 1. Install BepInEx mod loader if you haven't already  
 Extract files from BepInEx zip into your CarX Drift Racing Online folder
 2. Put the .dll files inside the kino.zip inside:   
 CarX Drift Racing Online\BepInEx\plugins  
-
-Readme by yours trully,
-Fuck you, turbo
