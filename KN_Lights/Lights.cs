@@ -9,7 +9,7 @@ namespace KN_Lights {
     // private GameObject headLight1_;
     public Renderer renderer_;
 
-    public Lights(Core core) : base(core, "LIGHTS", 5) {
+    public Lights(Core core) : base(core, "LIGHTS", 6) {
       var front = new GameObject("KN_LightsFront");
       renderer_ = front.GetComponent<Renderer>();
     }
