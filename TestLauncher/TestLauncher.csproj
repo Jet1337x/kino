@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{FE444C33-7CF3-4861-B790-A90DF9C11459}</ProjectGuid>
+        <OutputType>Exe</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>TestLauncher</RootNamespace>
+        <AssemblyName>TestLauncher</AssemblyName>
+        <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE;ALLOW_VISUALS</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Production|AnyCPU' ">
+      <DefineConstants>TRACE</DefineConstants>
+      <Optimize>true</Optimize>
+      <Prefer32bit>false</Prefer32bit>
+      <OutputPath>bin\Production\</OutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Program.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\KN_Cinematic\KN_Cinematic.csproj">
+        <Project>{3434b33f-52d6-427f-90c8-4928b57d683f}</Project>
+        <Name>KN_Cinematic</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\KN_Core\KN_Core.csproj">
+        <Project>{3e3223ac-c054-4a3d-9233-da24acad7c16}</Project>
+        <Name>KN_Core</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\KN_Lights\KN_Lights.csproj">
+        <Project>{a684b9d2-6b5f-4c40-a127-234c8eb22850}</Project>
+        <Name>KN_Lights</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\KN_Livery\KN_Livery.csproj">
+        <Project>{9b162eb7-9f2d-4a90-af27-9fd12633d602}</Project>
+        <Name>KN_Livery</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\KN_Visuals\KN_Visuals.csproj">
+        <Project>{5a2e3d60-d1d4-4cce-ab00-ce9c33a83551}</Project>
+        <Name>KN_Visuals</Name>
+      </ProjectReference>
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+
+</Project>

@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{3E3223AC-C054-4A3D-9233-DA24ACAD7C16}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>KN_Core</RootNamespace>
+        <AssemblyName>KN_Core</AssemblyName>
+        <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE;ALLOW_VISUALS</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Production|AnyCPU' ">
+      <DefineConstants>TRACE</DefineConstants>
+      <Optimize>true</Optimize>
+      <OutputPath>bin\Production\</OutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="0Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\BepInEx\0Harmony.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp, Version=13.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\CarX\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\CarX\Assembly-CSharp-firstpass.dll</HintPath>
+        </Reference>
+        <Reference Include="BepInEx, Version=5.0.1.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\BepInEx\BepInEx.dll</HintPath>
+        </Reference>
+        <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\BepInEx\BepInEx.Harmony.dll</HintPath>
+        </Reference>
+        <Reference Include="BepInEx.Preloader, Version=5.0.1.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\BepInEx\BepInEx.Preloader.dll</HintPath>
+        </Reference>
+        <Reference Include="CarX.Plugins.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\CarX\CarX.Plugins.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.Cecil.Mdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.Mdb.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.Cecil.Pdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.Pdb.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.Cecil.Rocks, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.Rocks.dll</HintPath>
+        </Reference>
+        <Reference Include="MonoMod.RuntimeDetour, Version=19.11.5.1, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\BepInEx\MonoMod.RuntimeDetour.dll</HintPath>
+        </Reference>
+        <Reference Include="MonoMod.Utils, Version=19.11.5.1, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\BepInEx\MonoMod.Utils.dll</HintPath>
+        </Reference>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Xml" />
+        <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.ImageConversionModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.IMGUIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.TextRenderingModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.UIModule.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="src\About.cs" />
+        <Compile Include="src\BaseMod.cs" />
+        <Compile Include="src\Config.cs" />
+        <Compile Include="src\Controls.cs" />
+        <Compile Include="src\Core.cs" />
+        <Compile Include="src\FilePicker.cs" />
+        <Compile Include="src\Gui.cs" />
+        <Compile Include="src\Log.cs" />
+        <Compile Include="src\Movement.cs" />
+        <Compile Include="src\Patcher.cs" />
+        <Compile Include="src\Replay.cs" />
+        <Compile Include="src\Skin.cs" />
+        <Compile Include="src\TFCar.cs" />
+        <Compile Include="src\Timeline.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\CameraActive.png" />
+        <EmbeddedResource Include="Resources\CameraHover.png" />
+        <EmbeddedResource Include="Resources\CameraNormal.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\AnimationActive.png" />
+        <EmbeddedResource Include="Resources\AnimationHover.png" />
+        <EmbeddedResource Include="Resources\AnimationNormal.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\ReplayActive.png" />
+        <EmbeddedResource Include="Resources\ReplayHover.png" />
+        <EmbeddedResource Include="Resources\ReplayNormal.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\ButtonDisabled.png" />
+        <EmbeddedResource Include="Resources\ButtonActiveDark.png" />
+        <EmbeddedResource Include="Resources\ButtonActive.png" />
+        <EmbeddedResource Include="Resources\ButtonHover.png" />
+        <EmbeddedResource Include="Resources\ButtonNormal.png" />
+        <EmbeddedResource Include="Resources\RedButtonActive.png" />
+        <EmbeddedResource Include="Resources\RedButtonHover.png" />
+        <EmbeddedResource Include="Resources\RedButtonNormal.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\SliderBG.png" />
+        <EmbeddedResource Include="Resources\SliderThumbHover.png" />
+        <EmbeddedResource Include="Resources\SliderThumbNormal.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\Main.png" />
+        <EmbeddedResource Include="Resources\MainDark.png" />
+        <EmbeddedResource Include="Resources\OutlineDark.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\PlayPauseNormal.png" />
+        <EmbeddedResource Include="Resources\PlayPauseHover.png" />
+        <EmbeddedResource Include="Resources\PlayPauseActive.png" />
+        <EmbeddedResource Include="Resources\StopNormal.png" />
+        <EmbeddedResource Include="Resources\StopHover.png" />
+        <EmbeddedResource Include="Resources\StopActive.png" />
+        <EmbeddedResource Include="Resources\SpeedLeftNormal.png" />
+        <EmbeddedResource Include="Resources\SpeedLeftHover.png" />
+        <EmbeddedResource Include="Resources\SpeedLeftActive.png" />
+        <EmbeddedResource Include="Resources\SpeedRightNormal.png" />
+        <EmbeddedResource Include="Resources\SpeedRightHover.png" />
+        <EmbeddedResource Include="Resources\SpeedRightActive.png" />
+        <EmbeddedResource Include="Resources\KeyframeNormal.png" />
+        <EmbeddedResource Include="Resources\KeyframeHover.png" />
+        <EmbeddedResource Include="Resources\KeyframeActive.png" />
+        <EmbeddedResource Include="Resources\GearNormal.png" />
+        <EmbeddedResource Include="Resources\GearHover.png" />
+        <EmbeddedResource Include="Resources\GearActive.png" />
+        <EmbeddedResource Include="Resources\LoopNormal.png" />
+        <EmbeddedResource Include="Resources\LoopHover.png" />
+        <EmbeddedResource Include="Resources\LoopActive.png" />
+        <EmbeddedResource Include="Resources\MinusNormal.png" />
+        <EmbeddedResource Include="Resources\MinusHover.png" />
+        <EmbeddedResource Include="Resources\MinusActive.png" />
+        <EmbeddedResource Include="Resources\PlusNormal.png" />
+        <EmbeddedResource Include="Resources\PlusHover.png" />
+        <EmbeddedResource Include="Resources\PlusActive.png" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
