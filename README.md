@@ -1,6 +1,7 @@
 ![LOGO](Images/logo.png)
 # KINO
-[![Releases](https://img.shields.io/github/v/release/trbflxr/kino?include_prereleases&label=DOWNLOAD&style=for-the-badge)](https://github.com/trbflxr/kino/releases) [![KiNO Discord](https://img.shields.io/discord/716264804498538516?label=DISCORD&style=for-the-badge)](https://discord.gg/8z6HAA3)
+[![Releases](https://img.shields.io/github/v/release/trbflxr/kino?include_prereleases&label=DOWNLOAD&style=for-the-badge)](https://github.com/trbflxr/kino/releases) 
+[![KiNO Discord](https://img.shields.io/discord/716264804498538516?label=DISCORD&style=for-the-badge)](https://discord.gg/8z6HAA3)
 ### Required: [BepInEx mod loader](https://github.com/BepInEx/BepInEx/releases)
 ## About
 This mod consists of multiple modules with the main focus on it's replay feature allowing you to record as many cars as you want in multiplayer and then playing them back whenever you want. The mod also gives you the ability to create custom cameras along with animating them.
@@ -49,9 +50,4 @@ Forward all the bugs to the issues tab or in a specified channel in Discord
 Suggestions can also be left in the dedicated channel in Discord
 
 ## If you feel like supporting mod's development you can 
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-<input type="hidden" name="cmd" value="_s-xclick" />
-<input type="hidden" name="hosted_button_id" value="KKFVJJWC7VKUG" />
-<input type="image" src="https://raw.githubusercontent.com/trbflxr/kino/master/Images/donate.png" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-<img alt="" border="0" src="https://www.paypal.com/en_UA/i/scr/pixel.gif" width="1" height="1" />
-</form>
+[![paypal](https://raw.githubusercontent.com/trbflxr/kino/master/Images/donate.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KKFVJJWC7VKUG)
