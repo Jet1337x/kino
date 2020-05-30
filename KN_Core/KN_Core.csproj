@@ -185,6 +185,7 @@
         <EmbeddedResource Include="Resources\PlusNormal.png" />
         <EmbeddedResource Include="Resources\PlusHover.png" />
         <EmbeddedResource Include="Resources\PlusActive.png" />
+        <EmbeddedResource Include="Resources\HeadLightMask.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

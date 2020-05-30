@@ -127,6 +127,8 @@ namespace KN_Core {
 
     private static bool initialized_;
 
+    public static Texture2D SpotMask;
+
     public static void LoadAll() {
       if (initialized_) {
         return;
@@ -166,6 +168,8 @@ namespace KN_Core {
       MakeSliderStyle(assembly);
       MakeScrollViewStyle();
       MakeTextFieldStyle();
+
+      SpotMask = LoadTexture(assembly, "HeadLightMask.png");
     }
 
     private static void LoadButtonTex(out Texture2D normal, out Texture2D hover, out Texture2D active,
