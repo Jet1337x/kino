@@ -34,8 +34,24 @@ There you can set the starting and the ending points of your replay.
 
 - Livery camera  
 ![LiveryCam](Images/livery_camera.png)
-## Instalation
+## Installation
 1. Install BepInEx mod loader if you haven't already  
 Extract files from BepInEx zip into your CarX Drift Racing Online folder
 2. Put the .dll files inside the kino.zip inside:   
 CarX Drift Racing Online\BepInEx\plugins  
+
+## Roadmap
+- Adding extendended lights system
+- Improving UI along with adding Dark Mode
+
+## Feedback
+Forward all the bugs to the issues tab or in a specified channel in Discord
+Suggestions can also be left in the dedicated channel in Discord
+
+## If you feel like supporting mod's development you can 
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick" />
+<input type="hidden" name="hosted_button_id" value="KKFVJJWC7VKUG" />
+<input type="image" src="https://raw.githubusercontent.com/trbflxr/kino/master/Images/donate.png" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+<img alt="" border="0" src="https://www.paypal.com/en_UA/i/scr/pixel.gif" width="1" height="1" />
+</form>
