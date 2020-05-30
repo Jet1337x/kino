@@ -94,7 +94,7 @@ namespace KN_Cinematic {
       pickTarget_ = false;
       pickParent_ = false;
 
-      if (HookTo) {
+      if (HookTo && CameraSwitch.instance != null) {
         CameraSwitch.instance.AttachCam();
       }
     }
