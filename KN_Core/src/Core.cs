@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using BepInEx;
 using GameInput;
@@ -26,8 +28,6 @@ namespace KN_Core {
     public float GuiContentBeginY { get; private set; }
     public float GuiTabsHeight { get; private set; }
     public float GuiTabsWidth { get; private set; }
-
-    public string InputHook = string.Empty;
 
     private float carsListHeight_;
     private bool showCars_;
@@ -74,10 +74,14 @@ namespace KN_Core {
 
     private CameraRotation cameraRotation_;
 
+    private static Assembly assembly_;
+
     public Core() {
       CoreInstance = this;
 
       Patcher.Hook();
+
+      assembly_ = Assembly.GetExecutingAssembly();
 
       ModConfig = new Config();
 
@@ -377,6 +381,27 @@ namespace KN_Core {
           canvas.enabled = active;
         }
       }
+    }
+
+    //load texture from KN_Core.dll
+    public static Texture2D LoadCoreTexture(string name) {
+      return LoadTexture(assembly_, name);
+    }
+
+    public static Texture2D LoadTexture(Assembly assembly, string name) {
+      var tex = new Texture2D(4, 4);
+      using (var stream = assembly.GetManifestResourceStream("KN_Core.Resources." + name)) {
+        using (var memoryStream = new MemoryStream()) {
+          if (stream != null) {
+            stream.CopyTo(memoryStream);
+            tex.LoadImage(memoryStream.ToArray());
+          }
+          else {
+            tex = Texture2D.grayTexture;
+          }
+        }
+      }
+      return tex;
     }
 
     public static object Call(object o, string methodName, params object[] args) {

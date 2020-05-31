@@ -127,8 +127,6 @@ namespace KN_Core {
 
     private static bool initialized_;
 
-    public static Texture2D SpotMask;
-
     public static void LoadAll() {
       if (initialized_) {
         return;
@@ -144,39 +142,34 @@ namespace KN_Core {
       ElementAlpha = new Color(1.0f, 1.0f, 1.0f, 0.95f);
       TextAlpha = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-      var assembly = Assembly.GetExecutingAssembly();
-
       FontTabs = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
       FontLight = Font.CreateDynamicFontFromOSFont("Consolas", 12);
 
-      LoadButtonTex(out texCamN_, out texCamH_, out texCamA_, out IconCam, out IconCamActive, "Camera", assembly);
-      LoadButtonTex(out texAnimN_, out texAnimH_, out texAnimA_, out IconAnim, out IconAnimActive, "Animation", assembly);
-      LoadButtonTex(out texReplayN_, out texReplayH_, out texReplayA_, out IconReplay, out IconReplayActive, "Replay", assembly);
+      LoadButtonTex(out texCamN_, out texCamH_, out texCamA_, out IconCam, out IconCamActive, "Camera");
+      LoadButtonTex(out texAnimN_, out texAnimH_, out texAnimA_, out IconAnim, out IconAnimActive, "Animation");
+      LoadButtonTex(out texReplayN_, out texReplayH_, out texReplayA_, out IconReplay, out IconReplayActive, "Replay");
 
-      LoadButtonTex(out texPPN_, out texPPH_, out texPPA_, out IconPlayPause, out IconPlayPauseActive, "PlayPause", assembly);
-      LoadButtonTex(out texStopN_, out texStopH_, out texStopA_, out IconStop, out IconStopActive, "Stop", assembly);
-      LoadButtonTex(out texSpdLN_, out texSpdLH_, out texSpdLA_, out IconSpeedLeft, out IconSpeedLeftActive, "SpeedLeft", assembly);
-      LoadButtonTex(out texSpdRN_, out texSpdRH_, out texSpdRA_, out IconSpeedRight, out IconSpeedRightActive, "SpeedRight", assembly);
-      LoadButtonTex(out texKeyframeN_, out texKeyframeH_, out texKeyframeA_, out IconKeyframe, out IconKeyframeActive, "Keyframe", assembly);
-      LoadButtonTex(out texGearN_, out texGearH_, out texGearA_, out IconGear, out IconGearActive, "Gear", assembly);
-      LoadButtonTex(out texLoopN_, out texLoopH_, out texLoopA_, out IconLoop, out IconLoopActive, "Loop", assembly);
-      LoadButtonTex(out texMinusN_, out texMinusH_, out texMinusA_, out IconMinus, out IconMinusActive, "Minus", assembly);
-      LoadButtonTex(out texPlusN_, out texPlusH_, out texPlusA_, out IconPlus, out IconPlusActive, "Plus", assembly);
+      LoadButtonTex(out texPPN_, out texPPH_, out texPPA_, out IconPlayPause, out IconPlayPauseActive, "PlayPause");
+      LoadButtonTex(out texStopN_, out texStopH_, out texStopA_, out IconStop, out IconStopActive, "Stop");
+      LoadButtonTex(out texSpdLN_, out texSpdLH_, out texSpdLA_, out IconSpeedLeft, out IconSpeedLeftActive, "SpeedLeft");
+      LoadButtonTex(out texSpdRN_, out texSpdRH_, out texSpdRA_, out IconSpeedRight, out IconSpeedRightActive, "SpeedRight");
+      LoadButtonTex(out texKeyframeN_, out texKeyframeH_, out texKeyframeA_, out IconKeyframe, out IconKeyframeActive, "Keyframe");
+      LoadButtonTex(out texGearN_, out texGearH_, out texGearA_, out IconGear, out IconGearActive, "Gear");
+      LoadButtonTex(out texLoopN_, out texLoopH_, out texLoopA_, out IconLoop, out IconLoopActive, "Loop");
+      LoadButtonTex(out texMinusN_, out texMinusH_, out texMinusA_, out IconMinus, out IconMinusActive, "Minus");
+      LoadButtonTex(out texPlusN_, out texPlusH_, out texPlusA_, out IconPlus, out IconPlusActive, "Plus");
 
-      MakeMainContainerStyle(assembly);
-      MakeButtonsStyle(assembly);
-      MakeSliderStyle(assembly);
+      MakeMainContainerStyle();
+      MakeButtonsStyle();
+      MakeSliderStyle();
       MakeScrollViewStyle();
       MakeTextFieldStyle();
-
-      SpotMask = LoadTexture(assembly, "HeadLightMask.png");
     }
 
-    private static void LoadButtonTex(out Texture2D normal, out Texture2D hover, out Texture2D active,
-      out GUISkin skin, out GUISkin skinActive, string name, Assembly assembly) {
-      normal = LoadTexture(assembly, name + "Normal.png");
-      hover = LoadTexture(assembly, name + "Hover.png");
-      active = LoadTexture(assembly, name + "Active.png");
+    private static void LoadButtonTex(out Texture2D normal, out Texture2D hover, out Texture2D active, out GUISkin skin, out GUISkin skinActive, string name) {
+      normal = Core.LoadCoreTexture(name + "Normal.png");
+      hover = Core.LoadCoreTexture(name + "Hover.png");
+      active = Core.LoadCoreTexture(name + "Active.png");
 
       skin = ScriptableObject.CreateInstance<GUISkin>();
       skin.button.normal.background = normal;
@@ -189,19 +182,19 @@ namespace KN_Core {
       skinActive.button.active.background = active;
     }
 
-    private static void MakeButtonsStyle(Assembly assembly) {
+    private static void MakeButtonsStyle() {
       var color = new Color32(0x30, 0x30, 0x30, 0xff);
       var colorActive = new Color32(0xee, 0xee, 0xee, 0xff);
 
-      texButtonN_ = LoadTexture(assembly, "ButtonNormal.png");
-      texButtonH_ = LoadTexture(assembly, "ButtonHover.png");
-      texButtonA_ = LoadTexture(assembly, "ButtonActive.png");
-      texButtonAT_ = LoadTexture(assembly, "Main.png");
-      texButtonAD_ = LoadTexture(assembly, "ButtonActiveDark.png");
-      texButtonD_ = LoadTexture(assembly, "ButtonDisabled.png");
-      texRedButtonN_ = LoadTexture(assembly, "RedButtonNormal.png");
-      texRedButtonH_ = LoadTexture(assembly, "RedButtonHover.png");
-      texRedButtonA_ = LoadTexture(assembly, "RedButtonActive.png");
+      texButtonN_ = Core.LoadCoreTexture("ButtonNormal.png");
+      texButtonH_ = Core.LoadCoreTexture("ButtonHover.png");
+      texButtonA_ = Core.LoadCoreTexture("ButtonActive.png");
+      texButtonAT_ = Core.LoadCoreTexture("Main.png");
+      texButtonAD_ = Core.LoadCoreTexture("ButtonActiveDark.png");
+      texButtonD_ = Core.LoadCoreTexture("ButtonDisabled.png");
+      texRedButtonN_ = Core.LoadCoreTexture("RedButtonNormal.png");
+      texRedButtonH_ = Core.LoadCoreTexture("RedButtonHover.png");
+      texRedButtonA_ = Core.LoadCoreTexture("RedButtonActive.png");
 
       Button = ScriptableObject.CreateInstance<GUISkin>();
       Button.button.normal.textColor = color;
@@ -290,10 +283,10 @@ namespace KN_Core {
       RedSkin.label.font = FontLight;
     }
 
-    private static void MakeSliderStyle(Assembly assembly) {
-      texSliderN_ = LoadTexture(assembly, "SliderThumbNormal.png");
-      texSliderH_ = LoadTexture(assembly, "SliderThumbHover.png");
-      texSliderBG_ = LoadTexture(assembly, "SliderBG.png");
+    private static void MakeSliderStyle() {
+      texSliderN_ = Core.LoadCoreTexture("SliderThumbNormal.png");
+      texSliderH_ = Core.LoadCoreTexture("SliderThumbHover.png");
+      texSliderBG_ = Core.LoadCoreTexture("SliderBG.png");
 
       Slider = ScriptableObject.CreateInstance<GUISkin>();
       Slider.horizontalSlider.normal.background = texSliderBG_;
@@ -331,8 +324,8 @@ namespace KN_Core {
       ScrollView.box.font = FontLight;
     }
 
-    private static void MakeMainContainerStyle(Assembly assembly) {
-      texMain_ = LoadTexture(assembly, "Main.png");
+    private static void MakeMainContainerStyle() {
+      texMain_ = Core.LoadCoreTexture("Main.png");
       MainContainer = ScriptableObject.CreateInstance<GUISkin>();
       MainContainer.box.normal.background = texMain_;
       MainContainer.box.normal.textColor = TextColor;
@@ -346,14 +339,14 @@ namespace KN_Core {
       MainContainerLeft.box.font = FontLight;
       MainContainerLeft.box.padding = new RectOffset(5, 5, 0, 0);
 
-      texMainDark_ = LoadTexture(assembly, "MainDark.png");
+      texMainDark_ = Core.LoadCoreTexture("MainDark.png");
       MainContainerDark = ScriptableObject.CreateInstance<GUISkin>();
       MainContainerDark.box.normal.background = texMainDark_;
       MainContainerDark.box.normal.textColor = TextColor;
       MainContainerDark.box.alignment = TextAnchor.MiddleCenter;
       MainContainerDark.box.font = FontLight;
 
-      texOutlineDark_ = LoadTexture(assembly, "OutlineDark.png");
+      texOutlineDark_ = Core.LoadCoreTexture("OutlineDark.png");
       texOutlineDark_.filterMode = FilterMode.Point;
       OutlineDark = ScriptableObject.CreateInstance<GUISkin>();
       OutlineDark.box.normal.background = texOutlineDark_;
@@ -383,24 +376,6 @@ namespace KN_Core {
       Label.label.normal.textColor = TextColor;
       Label.label.alignment = TextAnchor.MiddleCenter;
       Label.label.font = FontLight;
-    }
-
-    private static Texture2D LoadTexture(Assembly assembly, string name) {
-      var tex = new Texture2D(4, 4);
-
-      using (var stream = assembly.GetManifestResourceStream("KN_Core.Resources." + name)) {
-        using (var memoryStream = new MemoryStream()) {
-          if (stream != null) {
-            stream.CopyTo(memoryStream);
-            tex.LoadImage(memoryStream.ToArray());
-          }
-          else {
-            tex = Texture2D.grayTexture;
-          }
-        }
-      }
-
-      return tex;
     }
   }
 }
