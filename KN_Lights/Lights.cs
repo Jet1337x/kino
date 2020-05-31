@@ -29,7 +29,7 @@ namespace KN_Lights {
     private float clListScrollH_;
     private Vector2 clListScroll_;
 
-    public Lights(Core core) : base(core, "LIGHTS", 6) {
+    public Lights(Core core) : base(core, "LIGHTS", 4) {
       var front = new GameObject("KN_LightsFront");
       renderer_ = front.GetComponent<Renderer>();
 

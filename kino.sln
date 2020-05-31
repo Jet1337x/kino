@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KN_Core", "KN_Core\KN_Core.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KN_Lights", "KN_Lights\KN_Lights.csproj", "{A684B9D2-6B5F-4C40-A127-234C8EB22850}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KN_Livery", "KN_Livery\KN_Livery.csproj", "{9B162EB7-9F2D-4A90-AF27-9FD12633D602}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KN_Visuals", "KN_Visuals\KN_Visuals.csproj", "{5A2E3D60-D1D4-4CCE-AB00-CE9C33A83551}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLauncher", "TestLauncher\TestLauncher.csproj", "{FE444C33-7CF3-4861-B790-A90DF9C11459}"
@@ -37,12 +35,6 @@ Global
 		{A684B9D2-6B5F-4C40-A127-234C8EB22850}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A684B9D2-6B5F-4C40-A127-234C8EB22850}.Release_DevTools|Any CPU.ActiveCfg = Release_DevTools|Any CPU
 		{A684B9D2-6B5F-4C40-A127-234C8EB22850}.Release_DevTools|Any CPU.Build.0 = Release_DevTools|Any CPU
-		{9B162EB7-9F2D-4A90-AF27-9FD12633D602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B162EB7-9F2D-4A90-AF27-9FD12633D602}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B162EB7-9F2D-4A90-AF27-9FD12633D602}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B162EB7-9F2D-4A90-AF27-9FD12633D602}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B162EB7-9F2D-4A90-AF27-9FD12633D602}.Release_DevTools|Any CPU.ActiveCfg = Release_DevTools|Any CPU
-		{9B162EB7-9F2D-4A90-AF27-9FD12633D602}.Release_DevTools|Any CPU.Build.0 = Release_DevTools|Any CPU
 		{5A2E3D60-D1D4-4CCE-AB00-CE9C33A83551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5A2E3D60-D1D4-4CCE-AB00-CE9C33A83551}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A2E3D60-D1D4-4CCE-AB00-CE9C33A83551}.Release|Any CPU.ActiveCfg = Release|Any CPU

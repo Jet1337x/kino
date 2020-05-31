@@ -18,14 +18,33 @@ namespace KN_Visuals {
 
     private bool pickingFile_;
 
-    public Visuals(Core core) : base(core, "VISUALS", 4) { }
+    private Camera mainCamera_;
+
+    private bool liveryCamEnabled_;
+
+    private float zoom_;
+    private float shiftZ_;
+    private float shiftY_;
+
+    public Visuals(Core core) : base(core, "VISUALS", 3) { }
 
     public override void ResetState() {
       pickingFile_ = false;
+      liveryCamEnabled_ = false;
+    }
+
+    public override bool LockCameraRotation() {
+      return liveryCamEnabled_;
     }
 
     public override bool WantsCaptureInput() {
-      return true;
+      return liveryCamEnabled_;
+    }
+
+    public override void OnStart() {
+      zoom_ = Core.ModConfig.Get<float>("vinylcam_zoom");
+      shiftY_ = Core.ModConfig.Get<float>("vinylcam_shift_y");
+      shiftZ_ = Core.ModConfig.Get<float>("vinylcam_shift_z");
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
@@ -36,14 +55,44 @@ namespace KN_Visuals {
       const float width = 90.0f * 3.0f + Gui.OffsetSmall * 4.0f;
       const float height = Gui.Height;
 
-      float xBegin = x;
       x += Gui.OffsetSmall;
 
-      if (gui.Button(ref x, ref y, width, height, "SAVE CURRENT VISUALS", Skin.Button)) {
+      GuiLivery(gui,ref x, ref y, width, height);
+
+      gui.Line(x, y, Core.GuiTabsWidth - Gui.OffsetSmall * 2.0f, 1.0f, Skin.SeparatorColor);
+      y += Gui.OffsetY;
+
+      GuiVisuals(gui,ref x, ref y, width, height);
+    }
+
+    private void GuiLivery(Gui gui, ref float x, ref float y, float width, float height) {
+      string text = liveryCamEnabled_ ? "DISABLE" : "ENABLE";
+      if (gui.Button(ref x, ref y, width, height, text, liveryCamEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+        liveryCamEnabled_ = !liveryCamEnabled_;
+        if (!Core.IsInGarage) {
+          liveryCamEnabled_ = false;
+        }
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref zoom_, 0.0f, 20.0f, $"ZOOM: {zoom_:F1}")) {
+        Core.ModConfig.Set("vinylcam_zoom", zoom_);
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref shiftY_, -5.0f, 5.0f, $"SHIFT Y: {shiftY_:F1}")) {
+        Core.ModConfig.Set("vinylcam_shift_y", shiftY_);
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref shiftZ_, -20.0f, 20.0f, $"SHIFT Z: {shiftZ_:F1}")) {
+        Core.ModConfig.Set("vinylcam_shift_z", shiftZ_);
+      }
+    }
+
+    private void GuiVisuals(Gui gui, ref float x, ref float y, float width, float height) {
+      if (gui.Button(ref x, ref y, width, height, "SAVE CURRENT DESIGN", Skin.Button)) {
         SaveCurrentVisuals();
       }
 
-      if (gui.Button(ref x, ref y, width, height, "LOAD VISUALS", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, "LOAD DESIGN", Skin.Button)) {
         pickingFile_ = !pickingFile_;
         if (pickingFile_) {
           Core.FilePicker.PickIn(Config.VisualsDir);
@@ -53,14 +102,14 @@ namespace KN_Visuals {
       bool enabled = GUI.enabled;
       GUI.enabled = carId_ != -1 && carVisuals_ != null;
 
-      if (gui.Button(ref x, ref y, width, height, $"APPLY FULL VISUALS ON {carName_}", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, $"APPLY DESIGN TO {carName_}", Skin.Button)) {
         selectedCarId_ = carId_;
         ApplyVisuals(selectedCarId_, true);
 
         RefreshCar();
       }
 
-      if (gui.Button(ref x, ref y, width, height, $"ADD STICKERS ONLY ON {carName_}", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, $"ADD LIVERY TO {carName_}", Skin.Button)) {
         selectedCarId_ = carId_;
         ApplyVisuals(selectedCarId_, false);
 
@@ -77,7 +126,7 @@ namespace KN_Visuals {
 
       GUI.enabled = selectedCarId_ != -1 && backupVisuals_ != null;
 
-      if (gui.Button(ref x, ref y, width, height, "RESTORE VISUALS", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, "RESTORE DESIGN", Skin.Button)) {
         if (prefs_ == null || backupVisuals_ == null || selectedCarId_ == -1) {
           return;
         }
@@ -88,9 +137,6 @@ namespace KN_Visuals {
       }
 
       GUI.enabled = enabled;
-
-      y += Gui.OffsetSmall;
-      x = xBegin;
     }
 
     public override void Update(int id) {
@@ -119,6 +165,29 @@ namespace KN_Visuals {
           LoadVisuals(file);
         }
       }
+    }
+
+    public override void LateUpdate(int id) {
+      if (mainCamera_ == null) {
+        if (liveryCamEnabled_) {
+          liveryCamEnabled_ = false;
+        }
+        mainCamera_ = Camera.main;
+      }
+
+      if (!liveryCamEnabled_ || mainCamera_ == null) {
+        return;
+      }
+
+      var transform = mainCamera_.transform;
+      var position = transform.position;
+
+      //garage camera offset crutch
+      position += transform.forward * zoom_ * Time.deltaTime;
+      position.y += shiftY_ * Time.deltaTime;
+      position.z += shiftZ_ * Time.deltaTime;
+
+      transform.position = position;
     }
 
     private void ApplyVisuals(int id, bool full) {
