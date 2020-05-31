@@ -104,6 +104,9 @@
         <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.SharedInternalsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.SharedInternalsModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.TextRenderingModule.dll</HintPath>
         </Reference>
@@ -112,6 +115,8 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="CarLights.cs" />
+        <Compile Include="LightsConfig.cs" />
         <Compile Include="Loader.cs" />
         <Compile Include="Lights.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

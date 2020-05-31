@@ -20,5 +20,7 @@ KN_Lights/bin
 KN_Lights/obj
 
 kn_config.xml
+kn_lights.xml
+kn_nwlights.xml
 
 kino.sln.DotSettings
