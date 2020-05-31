@@ -1,4 +1,6 @@
 using System.Reflection;
+using CarModelSystem;
+using CarX;
 using KN_Core;
 using UnityEngine;
 
@@ -15,6 +17,7 @@ namespace KN_Lights {
     public static Texture2D LightMask;
 
     private CarLights activeLights_;
+    private bool brakeLightsEnabled_;
 
     public Lights(Core core) : base(core, "LIGHTS", 6) {
       var front = new GameObject("KN_LightsFront");
@@ -82,6 +85,8 @@ namespace KN_Lights {
           l.Attach(Core.PlayerCar, "own_car");
           Log.Write($"[KN_Lights]: Car lights for '{l.CarId}' attached");
         }
+        brakeLightsEnabled_ = true;
+        Core.PlayerCar.CarX.OnUpdateWheelsEvent += CarUpdate;
 
         activeLights_ = l;
       }
@@ -110,6 +115,10 @@ namespace KN_Lights {
       }
 
       activeLights_?.LateUpdate();
+    }
+
+    private void CarUpdate(Car car) {
+      Core.PlayerCar.Base.carModel.SetLightsState(brakeLightsEnabled_, CarLightGroup.Brake);
     }
 
     private void GuiHeadLights(Gui gui, ref float x, ref float y, float width, float height) {
