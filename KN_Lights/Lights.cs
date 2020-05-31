@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using KN_Core;
 using UnityEngine;
@@ -8,13 +9,13 @@ namespace KN_Lights {
     public static Texture2D LightMask;
 
     public const string LightsConfigFile = "kn_lights.knl";
-    // public const string NwLightsConfigFile = "kn_nwlights.knl";
+    public const string NwLightsConfigFile = "kn_nwlights.knl";
 #if KN_DEV_TOOLS
     public const string LightsDevConfigFile = "kn_lights_dev.knl";
 #endif
 
     private LightsConfig lightsConfig_;
-    // private NwLightsConfig nwLightsConfig_;
+    private NwLightsConfig nwLightsConfig_;
 #if KN_DEV_TOOLS
     private LightsConfig carLightsDev_;
 #endif
@@ -37,14 +38,6 @@ namespace KN_Lights {
       carLightsToRemove_ = new List<CarLights>();
     }
 
-    // public override bool WantsCaptureInput() {
-    //   return true;
-    // }
-    //
-    // public override bool LockCameraRotation() {
-    //   return true;
-    // }
-
     public override void OnStart() {
       var assembly = Assembly.GetExecutingAssembly();
 
@@ -55,22 +48,17 @@ namespace KN_Lights {
       }
       else {
         lightsConfig_ = new LightsConfig();
-        //todo: load default
+        //todo(trbflxr): load default
       }
+      nwLightsConfig_ = LightsConfigSerializer.Deserialize(NwLightsConfigFile, out var nwLights) ? new NwLightsConfig(nwLights) : new NwLightsConfig();
 #if KN_DEV_TOOLS
-      if (LightsConfigSerializer.Deserialize(LightsDevConfigFile, out var devLights)) {
-        carLightsDev_ = new LightsConfig(devLights);
-      }
-      else {
-        carLightsDev_ = new LightsConfig();
-      }
+      carLightsDev_ = LightsConfigSerializer.Deserialize(LightsDevConfigFile, out var devLights) ? new LightsConfig(devLights) : new LightsConfig();
 #endif
-
     }
 
     public override void OnStop() {
       if (!LightsConfigSerializer.Serialize(lightsConfig_, LightsConfigFile)) { }
-      // if (!LcBase.Serialize(nwLightsConfig_, NwLightsConfigFile)) { }
+      if (!LightsConfigSerializer.Serialize(nwLightsConfig_, NwLightsConfigFile)) { }
 
 #if KN_DEV_TOOLS
       LightsConfigSerializer.Serialize(carLightsDev_, LightsDevConfigFile);
@@ -84,19 +72,7 @@ namespace KN_Lights {
 
       if (Core.PickedCar != null && allowPick_) {
         if (Core.PickedCar != Core.PlayerCar) {
-          bool found = false;
-          foreach (var cl in carLights_) {
-            if (cl.Car == Core.PickedCar) {
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            //todo(trbflxr): search in nw lights
-            var l = CreateLights(Core.PickedCar);
-            carLights_.Add(l);
-            activeLights_ = l;
-          }
+          EnableLightsOn(Core.PickedCar);
         }
         Core.PickedCar = null;
         allowPick_ = false;
@@ -145,23 +121,7 @@ namespace KN_Lights {
 #endif
 
       if (gui.Button(ref x, ref y, width, height, "ENABLE LIGHTS", Skin.Button)) {
-        var l = lightsConfig_.GetLights(Core.PlayerCar.Id);
-        if (l == null) {
-          l = CreateLights(Core.PlayerCar);
-        }
-        else {
-          l.Attach(Core.PlayerCar, "own_car");
-          Log.Write($"[KN_Lights]: Car lights for '{l.CarId}' attached");
-        }
-
-        int index = carLights_.FindIndex(cl => cl.Car == Core.PlayerCar);
-        if (index != -1) {
-          carLights_[index] = l;
-        }
-        else {
-          carLights_.Add(l);
-        }
-        activeLights_ = l;
+        EnableLightsOnOnwCar();
       }
 
       GuiHeadLights(gui, ref x, ref y, width, height);
@@ -235,7 +195,7 @@ namespace KN_Lights {
       }
 
       float angle = activeLights_?.TailLightAngle ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 160.0f, $"TAILLIGHTS ANGLE: {angle:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 170.0f, $"TAILLIGHTS ANGLE: {angle:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightAngle = angle;
         }
@@ -294,7 +254,47 @@ namespace KN_Lights {
       y += Gui.OffsetSmall;
     }
 
-    private CarLights CreateLights(TFCar car) {
+    private void EnableLightsOnOnwCar() {
+      var l = lightsConfig_.GetLights(Core.PlayerCar.Id);
+      if (l == null) {
+        l = CreateLights(Core.PlayerCar, lightsConfig_);
+      }
+      else {
+        l.Attach(Core.PlayerCar, "OWN_CAR");
+        Log.Write($"[KN_Lights]: Car lights for own car '{l.CarId}' attached");
+      }
+
+      int index = carLights_.FindIndex(cl => cl.Car == Core.PlayerCar);
+      if (index != -1) {
+        carLights_[index] = l;
+      }
+      else {
+        carLights_.Add(l);
+      }
+      activeLights_ = l;
+    }
+
+    private void EnableLightsOn(TFCar car) {
+      var lights = nwLightsConfig_.GetLights(car.Id, car.Name);
+      if (lights == null) {
+        lights = CreateLights(car, nwLightsConfig_);
+      }
+      else {
+        lights.Attach(car, car.Name);
+        Log.Write($"[KN_Lights]: Car lights for '{lights.CarId}' attached");
+      }
+
+      int index = carLights_.FindIndex(cl => cl.Car == car);
+      if (index != -1) {
+        carLights_[index] = lights;
+      }
+      else {
+        carLights_.Add(lights);
+      }
+      activeLights_ = lights;
+    }
+
+    private static CarLights CreateLights(TFCar car, LightsConfigBase config) {
       var light = new CarLights {
         Pitch = 0.0f,
         PitchTail = 0.0f,
@@ -311,7 +311,7 @@ namespace KN_Lights {
       };
 
       light.Attach(car, car.Name);
-      lightsConfig_.AddLights(light);
+      config.AddLights(light);
       Log.Write($"[KN_Lights]: New car lights created for '{light.CarId}'");
 
       return light;
