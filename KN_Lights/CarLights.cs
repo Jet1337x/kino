@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace KN_Lights {
   public class CarLights {
+    public const float BrakePower = 2.0f;
+
     public GameObject HeadLightLeft { get; private set; }
     public GameObject HeadLightRight { get; private set; }
 
@@ -166,6 +168,8 @@ namespace KN_Lights {
       }
     }
 
+    private CARXCar cxCar_;
+
     public CarLights() {
       Initialize();
     }
@@ -205,6 +209,18 @@ namespace KN_Lights {
       TailLightRight.transform.localPosition += tlOffsetR_;
 
       MakeLights();
+
+      cxCar_ = car.Base.GetComponent<CARXCar>();
+    }
+
+    public void LateUpdate() {
+      if (Car != null && Car.Base != null && cxCar_ != null) {
+        float bb = cxCar_.brake > 0.0f ? tlBrightness_ * BrakePower : tlBrightness_;
+        if (GetTailLights(out var l, out var r)) {
+          l.intensity = bb;
+          r.intensity = bb;
+        }
+      }
     }
 
     private void Initialize() {

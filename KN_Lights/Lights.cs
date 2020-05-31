@@ -108,6 +108,8 @@ namespace KN_Lights {
       if (id != Id) {
         return;
       }
+
+      activeLights_?.LateUpdate();
     }
 
     private void GuiHeadLights(Gui gui, ref float x, ref float y, float width, float height) {
@@ -161,7 +163,7 @@ namespace KN_Lights {
       }
 
       float brightness = activeLights_?.TailLightBrightness ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref brightness, 100.0f, 1000.0f, $"TAILLIGHTS BRIGHTNESS: {brightness:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref brightness, 50.0f, 500.0f, $"TAILLIGHTS BRIGHTNESS: {brightness:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightBrightness = brightness;
         }
