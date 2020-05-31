@@ -13,6 +13,8 @@ namespace KN_Lights {
 
     public static Texture2D LightMask;
 
+    private CarLights activeLights_;
+
     public Lights(Core core) : base(core, "LIGHTS", 6) {
       var front = new GameObject("KN_LightsFront");
       renderer_ = front.GetComponent<Renderer>();
@@ -75,18 +77,17 @@ namespace KN_Lights {
           l.Attach(Core.PlayerCar, "own_car");
           Log.Write($"[KN_Lights]: Car lights for '{l.CarId}' attached");
         }
+
+        activeLights_ = l;
       }
 
-      if (gui.Button(ref x, ref y, width, height, "SAVE", Skin.Button)) {
-        OnStop();
+      float hlPitch = activeLights_?.Pitch ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"HEADLIGHTS PITCH: {hlPitch:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.Pitch = hlPitch;
+        }
       }
 
-
-      // if (gui.Button(ref x, ref y, width, height, "SPAWN LIGHTS", Skin.Button)) {
-      //   headLightLeft_ = MakeLight(Core.PlayerCar, new Vector3(offsetX_, offsetY_, offsetZ_), offsetHeading_, "TN_HeadLightLeft");
-      //   headLightRight_ = MakeLight(Core.PlayerCar, new Vector3(-offsetX_, offsetY_, offsetZ_), offsetHeading_, "TN_HeadLightRight");
-      // }
-      //
       // if (gui.SliderH(ref x, ref y, width, ref offsetX_, -3.0f, 3.0f, $"X: {offsetX_:F1}")) {
       //   var posLeft = headLightLeft_.transform.localPosition;
       //   var posRight = headLightRight_.transform.localPosition;
@@ -148,6 +149,9 @@ namespace KN_Lights {
         return;
       }
 
+      if (Core.PlayerCar == null || Core.PlayerCar.Base == null) {
+        activeLights_ = null;
+      }
     }
 
     public override void LateUpdate(int id) {

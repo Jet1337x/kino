@@ -16,26 +16,169 @@ namespace KN_Lights {
     public bool IsNetworkCar { get; private set; }
     public string UserName { get; private set; }
 
-    public float Pitch { get; set; }
-    public float PitchTail { get; set; }
+    private float pitch_;
+    public float Pitch {
+      get => pitch_;
+      set {
+        pitch_ = value;
+        if (Car == null || Car.Base == null) {
+          return;
+        }
+        var rot = Car.Transform.rotation;
+        HeadLightLeft.transform.rotation = rot * Quaternion.AngleAxis(pitch_, Vector3.right);
+        HeadLightRight.transform.rotation = rot * Quaternion.AngleAxis(pitch_, Vector3.right);
+      }
+    }
 
-    public float HeadLightBrightness { get; set; }
-    public float HeadLightAngle { get; set; }
+    private float pitchTail_;
+    public float PitchTail {
+      get => pitchTail_;
+      set {
+        pitchTail_ = value;
+        if (Car == null || Car.Base == null) {
+          return;
+        }
+        var rot = Car.Transform.rotation;
+        HeadLightLeft.transform.rotation = rot * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(pitchTail_, -Vector3.right);
+        HeadLightRight.transform.rotation = rot * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(pitchTail_, -Vector3.right);
+      }
+    }
 
-    public float TailLightBrightness { get; set; }
-    public float TailLightAngle { get; set; }
+    private float hlBrightness_;
+    public float HeadLightBrightness {
+      get => hlBrightness_;
+      set {
+        hlBrightness_ = value;
+        if (GetHeadLights(out var l, out var r)) {
+          l.intensity = hlBrightness_;
+          r.intensity = hlBrightness_;
+        }
+      }
+    }
 
-    public bool IsHeadLightLeftEnabled { get; set; }
-    public Vector3 HeadlightOffsetLeft { get; set; }
+    private float hlAngle_;
+    public float HeadLightAngle {
+      get => hlAngle_;
+      set {
+        hlAngle_ = value;
+        if (GetHeadLights(out var l, out var r)) {
+          l.spotAngle = hlAngle_;
+          r.spotAngle = hlAngle_;
+        }
+      }
+    }
 
-    public bool IsHeadLightRightEnabled { get; set; }
-    public Vector3 HeadlightOffsetRight { get; set; }
+    private float tlBrightness_;
+    public float TailLightBrightness {
+      get => tlBrightness_;
+      set {
+        tlBrightness_ = value;
+        if (GetTailLights(out var l, out var r)) {
+          l.intensity = tlBrightness_;
+          r.intensity = tlBrightness_;
+        }
+      }
+    }
 
-    public bool IsTailLightLeftEnabled { get; set; }
-    public Vector3 TaillightOffsetLeft { get; set; }
+    private float tlAngle_;
+    public float TailLightAngle {
+      get => tlAngle_;
+      set {
+        tlAngle_ = value;
+        if (GetTailLights(out var l, out var r)) {
+          l.spotAngle = tlAngle_;
+          r.spotAngle = tlAngle_;
+        }
+      }
+    }
 
-    public bool IsTailLightRightEnabled { get; set; }
-    public Vector3 TaillightOffsetRight { get; set; }
+    private bool hlLEnabled_;
+    public bool IsHeadLightLeftEnabled {
+      get => hlLEnabled_;
+      set {
+        hlLEnabled_ = value;
+        if (HeadLightLeft != null) {
+          HeadLightLeft.SetActive(hlLEnabled_);
+        }
+      }
+    }
+
+    private Vector3 hlLOffset_;
+    public Vector3 HeadlightOffsetLeft {
+      get => hlLOffset_;
+      set {
+        hlLOffset_ = value;
+        if (HeadLightLeft != null) {
+          HeadLightLeft.transform.localPosition = hlLOffset_;
+        }
+      }
+    }
+
+    private bool hlREnabled_;
+    public bool IsHeadLightRightEnabled {
+      get => hlREnabled_;
+      set {
+        hlREnabled_ = value;
+        if (HeadLightRight != null) {
+          HeadLightRight.SetActive(hlREnabled_);
+        }
+      }
+    }
+
+    private Vector3 hlROffset_;
+    public Vector3 HeadlightOffsetRight {
+      get => hlROffset_;
+      set {
+        hlROffset_ = value;
+        if (HeadLightRight != null) {
+          HeadLightRight.transform.localPosition = hlROffset_;
+        }
+      }
+    }
+
+    private bool tlLEnabled_;
+    public bool IsTailLightLeftEnabled {
+      get => tlLEnabled_;
+      set {
+        tlLEnabled_ = value;
+        if (TailLightLeft != null) {
+          TailLightLeft.SetActive(tlLEnabled_);
+        }
+      }
+    }
+
+    private Vector3 tlLOffset_;
+    public Vector3 TaillightOffsetLeft {
+      get => tlLOffset_;
+      set {
+        tlLOffset_ = value;
+        if (TailLightLeft != null) {
+          TailLightLeft.transform.localPosition = tlLOffset_;
+        }
+      }
+    }
+
+    private bool tlREnabled_;
+    public bool IsTailLightRightEnabled {
+      get => tlREnabled_;
+      set {
+        tlREnabled_ = value;
+        if (TailLightRight != null) {
+          TailLightRight.SetActive(tlREnabled_);
+        }
+      }
+    }
+
+    private Vector3 tlROffset_;
+    public Vector3 TaillightOffsetRight {
+      get => tlROffset_;
+      set {
+        tlROffset_ = value;
+        if (TailLightRight != null) {
+          TailLightRight.transform.localPosition = tlROffset_;
+        }
+      }
+    }
 
     public CarLights() {
       Initialize();
@@ -84,24 +227,28 @@ namespace KN_Lights {
       }
       HeadLightLeft = new GameObject();
       HeadLightLeft.AddComponent<Light>();
+      HeadLightLeft.SetActive(IsHeadLightLeftEnabled);
 
       if (HeadLightRight != null) {
-        Object.Destroy(HeadLightLeft);
+        Object.Destroy(HeadLightRight);
       }
       HeadLightRight = new GameObject();
       HeadLightRight.AddComponent<Light>();
+      HeadLightRight.SetActive(IsHeadLightRightEnabled);
 
       if (TailLightLeft != null) {
-        Object.Destroy(HeadLightLeft);
+        Object.Destroy(TailLightLeft);
       }
       TailLightLeft = new GameObject();
       TailLightLeft.AddComponent<Light>();
+      TailLightLeft.SetActive(IsTailLightLeftEnabled);
 
       if (TailLightRight != null) {
-        Object.Destroy(HeadLightLeft);
+        Object.Destroy(TailLightRight);
       }
       TailLightRight = new GameObject();
       TailLightRight.AddComponent<Light>();
+      TailLightRight.SetActive(IsTailLightRightEnabled);
     }
 
     private void MakeLights() {
@@ -136,52 +283,64 @@ namespace KN_Lights {
       light.cookie = Lights.LightMask;
     }
 
+    private bool GetHeadLights(out Light left, out Light right) {
+      left = HeadLightLeft.GetComponent<Light>();
+      right = HeadLightRight.GetComponent<Light>();
+      return left != null && right != null;
+    }
+
+    private bool GetTailLights(out Light left, out Light right) {
+      left = TailLightLeft.GetComponent<Light>();
+      right = TailLightRight.GetComponent<Light>();
+      return left != null && right != null;
+    }
+
     public void Serialize(BinaryWriter writer) {
       writer.Write(CarId);
       writer.Write(IsNetworkCar);
       writer.Write(UserName);
-      writer.Write(Pitch);
-      writer.Write(PitchTail);
-      writer.Write(HeadLightBrightness);
-      writer.Write(HeadLightAngle);
-      writer.Write(TailLightBrightness);
-      writer.Write(TailLightAngle);
+      writer.Write(pitch_);
+      writer.Write(pitchTail_);
+      writer.Write(hlBrightness_);
+      writer.Write(hlAngle_);
+      writer.Write(tlBrightness_);
+      writer.Write(tlAngle_);
 
-      writer.Write(IsHeadLightLeftEnabled);
-      WriteVec3(writer, HeadlightOffsetLeft);
+      writer.Write(hlLEnabled_);
+      WriteVec3(writer, hlLOffset_);
 
-      writer.Write(IsHeadLightRightEnabled);
-      WriteVec3(writer, HeadlightOffsetRight);
+      writer.Write(hlREnabled_);
+      WriteVec3(writer, hlROffset_);
 
-      writer.Write(IsTailLightLeftEnabled);
-      WriteVec3(writer, TaillightOffsetLeft);
+      writer.Write(tlLEnabled_);
+      WriteVec3(writer, tlLOffset_);
 
-      writer.Write(IsTailLightRightEnabled);
-      WriteVec3(writer, TaillightOffsetRight);
+      writer.Write(tlREnabled_);
+      WriteVec3(writer, tlROffset_);
     }
 
     public void Deserialize(BinaryReader reader) {
       CarId = reader.ReadInt32();
       IsNetworkCar = reader.ReadBoolean();
       UserName = reader.ReadString();
-      Pitch = reader.ReadSingle();
-      PitchTail = reader.ReadSingle();
-      HeadLightBrightness = reader.ReadSingle();
-      HeadLightAngle = reader.ReadSingle();
-      TailLightBrightness = reader.ReadSingle();
-      TailLightAngle = reader.ReadSingle();
+      pitch_ = reader.ReadSingle();
+      pitchTail_ = reader.ReadSingle();
+      hlBrightness_ = reader.ReadSingle();
+      hlAngle_ = reader.ReadSingle();
+      tlBrightness_ = reader.ReadSingle();
+      tlAngle_ = reader.ReadSingle();
 
-      IsHeadLightLeftEnabled = reader.ReadBoolean();
-      HeadlightOffsetLeft = ReadVec3(reader);
+      hlLEnabled_ = reader.ReadBoolean();
+      hlLOffset_ = ReadVec3(reader);
 
-      IsHeadLightRightEnabled = reader.ReadBoolean();
-      HeadlightOffsetRight = ReadVec3(reader);
+      hlREnabled_ = reader.ReadBoolean();
+      hlROffset_ = ReadVec3(reader);
 
-      IsTailLightLeftEnabled = reader.ReadBoolean();
-      TaillightOffsetLeft = ReadVec3(reader);
+      tlLEnabled_ = reader.ReadBoolean();
+      tlLOffset_ = ReadVec3(reader);
 
-      IsTailLightRightEnabled = reader.ReadBoolean();
-      TaillightOffsetRight = ReadVec3(reader);
+      tlREnabled_ = reader.ReadBoolean();
+      tlROffset_ = ReadVec3(reader);
     }
 
     private static void WriteVec3(BinaryWriter writer, Vector3 vec) {
