@@ -1,19 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml.Serialization;
+using System.Linq;
 using KN_Core;
 
 namespace KN_Lights {
-  public class LcBase {
-    public static bool Serialize(object config, string file) {
+  public static class LightsConfigSerializer {
+    public static bool Serialize(LightsConfigBase config, string file) {
       try {
-        var xns = new XmlSerializerNamespaces();
-        xns.Add(string.Empty, string.Empty);
-        var serializer = new XmlSerializer(config.GetType());
-
-        using (var writer = new StreamWriter(Config.BaseDir + file)) {
-          serializer.Serialize(writer.BaseStream, config, xns);
+        using (var memoryStream = new MemoryStream()) {
+          using (var writer = new BinaryWriter(memoryStream)) {
+            writer.Write(config.Lights.Count);
+            foreach (var l in config.Lights) {
+              l.Serialize(writer);
+            }
+            using (var fileStream = File.Open(Config.BaseDir + file, FileMode.Create)) {
+              memoryStream.WriteTo(fileStream);
+            }
+          }
         }
       }
       catch (Exception e) {
@@ -23,36 +27,59 @@ namespace KN_Lights {
       return true;
     }
 
-    public static T Deserialize<T>(string file) {
+    public static bool Deserialize(string file, out List<CarLights> lights) {
       try {
-        var serializer = new XmlSerializer(typeof(T));
-        using (var reader = new StreamReader(Config.BaseDir + file)) {
-          var deserialized = (T) serializer.Deserialize(reader.BaseStream);
-          return deserialized;
+        lights = new List<CarLights>();
+        using (var memoryStream = new MemoryStream(File.ReadAllBytes(Config.BaseDir + file))) {
+          using (var reader = new BinaryReader(memoryStream)) {
+            int size = reader.ReadInt32();
+            for (int i = 0; i < size; i++) {
+              var cl = new CarLights();
+              cl.Deserialize(reader);
+              lights.Add(cl);
+            }
+          }
         }
       }
       catch (Exception e) {
         Log.Write($"[KN_Lights]: Unable to read file '{file}', {e.Message}");
-        return default;
+        lights = default;
+        return false;
       }
+      return true;
     }
   }
 
-  [Serializable]
-  public class LightsConfig : LcBase {
-    public List<CarLights> CarLights { get; private set; }
+  public class LightsConfigBase {
+    public List<CarLights> Lights { get; protected set; }
+    protected LightsConfigBase() {
+      Lights = new List<CarLights>();
+    }
 
-    public LightsConfig() {
-      CarLights = new List<CarLights>();
+    public void AddLights(CarLights lights) {
+      Lights.Add(lights);
     }
   }
 
-  [Serializable]
-  public class NwLightsConfig : LcBase {
-    public List<CarLights> CarLights { get; private set; }
+  public class LightsConfig : LightsConfigBase {
+    public LightsConfig() { }
 
-    public NwLightsConfig() {
-      CarLights = new List<CarLights>();
+    public LightsConfig(List<CarLights> lights) {
+      Lights = lights;
+    }
+
+    public CarLights GetLights(int carId) {
+      return Lights.FirstOrDefault(cl => cl.CarId == carId);
+    }
+  }
+
+  public class NwLightsConfig : LightsConfigBase {
+    public NwLightsConfig() { }
+    public NwLightsConfig(List<CarLights> lights) {
+      Lights = lights;
+    }
+    public CarLights GetLights(int carId, string user) {
+      return Lights.FirstOrDefault(cl => cl.CarId == carId && cl.UserName == user);
     }
   }
 }

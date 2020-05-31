@@ -1,25 +1,17 @@
 using KN_Core;
 using UnityEngine;
-using UnityEngine.Rendering;
-using Flare = UnityEngine.Flare;
 
 namespace KN_Lights {
   public class Lights : BaseMod {
+    public const string LightsConfigFile = "kn_lights.knl";
+    public const string NwLightsConfigFile = "kn_nwlights.knl";
 
-    private GameObject headLightLeft_;
-    private GameObject headLightRight_;
+    private LightsConfig lightsConfig_;
+    private NwLightsConfig nwLightsConfig_;
+
     private Renderer renderer_;
 
-    private float offsetX_ = 0.6f;
-    private float offsetY_ = 0.6f;
-    private float offsetZ_ = 1.9f;
-
-    private float offsetHeading_;
-
-    private float brightness_ = 3000.0f;
-    private float range_ = 150.0f;
-    private float spotAngle_ = 120.0f;
-    private float innerAngle_ = 50.0f;
+    public static Texture2D LightMask;
 
     public Lights(Core core) : base(core, "LIGHTS", 6) {
       var front = new GameObject("KN_LightsFront");
@@ -28,6 +20,24 @@ namespace KN_Lights {
 
     public override bool WantsCaptureInput() {
       return true;
+    }
+
+    public override void OnStart() {
+      LightMask = Core.LoadCoreTexture("HeadLightMask.png");
+
+      if (LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights)) {
+        lightsConfig_ = new LightsConfig(lights);
+      }
+      else {
+        lightsConfig_ = new LightsConfig();
+        //todo: load default
+      }
+
+    }
+
+    public override void OnStop() {
+      if (!LightsConfigSerializer.Serialize(lightsConfig_, LightsConfigFile)) { }
+      // if (!LcBase.Serialize(nwLightsConfig_, NwLightsConfigFile)) { }
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
@@ -39,80 +49,98 @@ namespace KN_Lights {
       const float height = Gui.Height;
 
       if (gui.Button(ref x, ref y, width, height, "SPAWN LIGHTS", Skin.Button)) {
-        headLightLeft_ = MakeLight(Core.PlayerCar, new Vector3(offsetX_, offsetY_, offsetZ_), offsetHeading_, "TN_HeadLightLeft");
-        headLightRight_ = MakeLight(Core.PlayerCar, new Vector3(-offsetX_, offsetY_, offsetZ_), offsetHeading_, "TN_HeadLightRight");
+        var l = lightsConfig_.GetLights(Core.PlayerCar.Id);
+        if (l == null) {
+          l = new CarLights {
+            Pitch = 0.0f,
+            PitchTail = 0.0f,
+            HeadLightBrightness = 3000.0f,
+            HeadLightAngle = 100.0f,
+            TailLightBrightness = 500.0f,
+            TailLightAngle = 170.0f,
+            IsHeadLightLeftEnabled = true,
+            HeadlightOffsetLeft = new Vector3(0.6f, 0.6f, 1.9f),
+            IsHeadLightRightEnabled = true,
+            HeadlightOffsetRight = new Vector3(-0.6f, 0.6f, 1.9f),
+            IsTailLightLeftEnabled = true,
+            TaillightOffsetLeft = new Vector3(0.6f, 0.6f, -1.6f),
+            IsTailLightRightEnabled = true,
+            TaillightOffsetRight = new Vector3(-0.6f, 0.6f, -1.6f)
+          };
+          l.Attach(Core.PlayerCar, "own_car");
+          lightsConfig_.AddLights(l);
+          Log.Write($"[KN_Lights]: New car lights created for '{l.CarId}'");
+        }
+        else {
+          l.Attach(Core.PlayerCar, "own_car");
+          Log.Write($"[KN_Lights]: Car lights for '{l.CarId}' attached");
+        }
       }
 
-      if (gui.SliderH(ref x, ref y, width, ref offsetX_, -3.0f, 3.0f, $"X: {offsetX_:F1}")) {
-        var posLeft = headLightLeft_.transform.localPosition;
-        var posRight = headLightRight_.transform.localPosition;
-
-        posLeft.x = offsetX_;
-        posRight.x = -offsetX_;
-
-        headLightLeft_.transform.localPosition = posLeft;
-        headLightRight_.transform.localPosition = posRight;
+      if (gui.Button(ref x, ref y, width, height, "SAVE", Skin.Button)) {
+        OnStop();
       }
 
-      if (gui.SliderH(ref x, ref y, width, ref offsetY_, -3.0f, 3.0f, $"Y: {offsetY_:F1}")) {
-        var posLeft = headLightLeft_.transform.localPosition;
-        var posRight = headLightRight_.transform.localPosition;
 
-        posLeft.y = offsetY_;
-        posRight.y = offsetY_;
-
-        headLightLeft_.transform.localPosition = posLeft;
-        headLightRight_.transform.localPosition = posRight;
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offsetZ_, -3.0f, 3.0f, $"Z: {offsetZ_:F1}")) {
-        var posLeft = headLightLeft_.transform.localPosition;
-        var posRight = headLightRight_.transform.localPosition;
-
-        posLeft.z = offsetZ_;
-        posRight.z = offsetZ_;
-
-        headLightLeft_.transform.localPosition = posLeft;
-        headLightRight_.transform.localPosition = posRight;
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offsetHeading_, -20.0f, 20.0f, $"HEADING: {offsetHeading_:F1}")) {
-        var rotation = Core.PlayerCar.Transform.rotation;
-        headLightLeft_.transform.rotation = rotation * Quaternion.AngleAxis(offsetHeading_, Vector3.right);
-        headLightRight_.transform.rotation = rotation * Quaternion.AngleAxis(offsetHeading_, Vector3.right);
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref brightness_, 1000.0f, 20000.0f, $"BRIGHTNESS: {brightness_:F1}")) {
-        var lightLeft = headLightLeft_.GetComponent<Light>();
-        var lightRight = headLightRight_.GetComponent<Light>();
-
-        lightLeft.intensity = brightness_;
-        lightRight.intensity = brightness_;
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref range_, 100.0f, 1000.0f, $"RANGE: {range_:F1}")) {
-        var lightLeft = headLightLeft_.GetComponent<Light>();
-        var lightRight = headLightRight_.GetComponent<Light>();
-
-        lightLeft.range = range_;
-        lightRight.range = range_;
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref spotAngle_, 50.0f, 180.0f, $"SPOT: {spotAngle_:F1}")) {
-        var lightLeft = headLightLeft_.GetComponent<Light>();
-        var lightRight = headLightRight_.GetComponent<Light>();
-
-        lightLeft.spotAngle = spotAngle_;
-        lightRight.spotAngle = spotAngle_;
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref innerAngle_, 10.0f, 180.0f, $"INNER: {innerAngle_:F1}")) {
-        var lightLeft = headLightLeft_.GetComponent<Light>();
-        var lightRight = headLightRight_.GetComponent<Light>();
-
-        lightLeft.innerSpotAngle = innerAngle_;
-        lightRight.innerSpotAngle = innerAngle_;
-      }
+      // if (gui.Button(ref x, ref y, width, height, "SPAWN LIGHTS", Skin.Button)) {
+      //   headLightLeft_ = MakeLight(Core.PlayerCar, new Vector3(offsetX_, offsetY_, offsetZ_), offsetHeading_, "TN_HeadLightLeft");
+      //   headLightRight_ = MakeLight(Core.PlayerCar, new Vector3(-offsetX_, offsetY_, offsetZ_), offsetHeading_, "TN_HeadLightRight");
+      // }
+      //
+      // if (gui.SliderH(ref x, ref y, width, ref offsetX_, -3.0f, 3.0f, $"X: {offsetX_:F1}")) {
+      //   var posLeft = headLightLeft_.transform.localPosition;
+      //   var posRight = headLightRight_.transform.localPosition;
+      //
+      //   posLeft.x = offsetX_;
+      //   posRight.x = -offsetX_;
+      //
+      //   headLightLeft_.transform.localPosition = posLeft;
+      //   headLightRight_.transform.localPosition = posRight;
+      // }
+      //
+      // if (gui.SliderH(ref x, ref y, width, ref offsetY_, -3.0f, 3.0f, $"Y: {offsetY_:F1}")) {
+      //   var posLeft = headLightLeft_.transform.localPosition;
+      //   var posRight = headLightRight_.transform.localPosition;
+      //
+      //   posLeft.y = offsetY_;
+      //   posRight.y = offsetY_;
+      //
+      //   headLightLeft_.transform.localPosition = posLeft;
+      //   headLightRight_.transform.localPosition = posRight;
+      // }
+      //
+      // if (gui.SliderH(ref x, ref y, width, ref offsetZ_, -3.0f, 3.0f, $"Z: {offsetZ_:F1}")) {
+      //   var posLeft = headLightLeft_.transform.localPosition;
+      //   var posRight = headLightRight_.transform.localPosition;
+      //
+      //   posLeft.z = offsetZ_;
+      //   posRight.z = offsetZ_;
+      //
+      //   headLightLeft_.transform.localPosition = posLeft;
+      //   headLightRight_.transform.localPosition = posRight;
+      // }
+      //
+      // if (gui.SliderH(ref x, ref y, width, ref offsetHeading_, -20.0f, 20.0f, $"HEADING: {offsetHeading_:F1}")) {
+      //   var rotation = Core.PlayerCar.Transform.rotation;
+      //   headLightLeft_.transform.rotation = rotation * Quaternion.AngleAxis(offsetHeading_, Vector3.right);
+      //   headLightRight_.transform.rotation = rotation * Quaternion.AngleAxis(offsetHeading_, Vector3.right);
+      // }
+      //
+      // if (gui.SliderH(ref x, ref y, width, ref brightness_, 1000.0f, 20000.0f, $"BRIGHTNESS: {brightness_:F1}")) {
+      //   var lightLeft = headLightLeft_.GetComponent<Light>();
+      //   var lightRight = headLightRight_.GetComponent<Light>();
+      //
+      //   lightLeft.intensity = brightness_;
+      //   lightRight.intensity = brightness_;
+      // }
+      //
+      // if (gui.SliderH(ref x, ref y, width, ref spotAngle_, 80.0f, 150.0f, $"ANGLE: {spotAngle_:F1}")) {
+      //   var lightLeft = headLightLeft_.GetComponent<Light>();
+      //   var lightRight = headLightRight_.GetComponent<Light>();
+      //
+      //   lightLeft.spotAngle = spotAngle_;
+      //   lightRight.spotAngle = spotAngle_;
+      // }
     }
 
     public override void Update(int id) {
@@ -126,26 +154,6 @@ namespace KN_Lights {
       if (id != Id) {
         return;
       }
-    }
-
-    private GameObject MakeLight(TFCar car, Vector3 offset, float headingOffset, string id) {
-      var go = new GameObject(id);
-
-      var light = go.AddComponent<Light>();
-      light.type = LightType.Spot;
-      light.color = Color.white;
-      light.range = range_;
-      light.intensity = brightness_;
-      light.spotAngle = spotAngle_;
-      light.innerSpotAngle = innerAngle_;
-      light.cookie = Skin.SpotMask;
-
-      go.transform.parent = car.Transform;
-      go.transform.position = car.Transform.position;
-      go.transform.rotation = car.Transform.rotation * Quaternion.AngleAxis(headingOffset, Vector3.right);
-      go.transform.localPosition += offset;
-
-      return go;
     }
   }
 }
