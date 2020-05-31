@@ -31,13 +31,13 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Production|AnyCPU' ">
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_DevTools|AnyCPU' ">
       <DebugType>pdbonly</DebugType>
       <Optimize>true</Optimize>
-      <DefineConstants>TRACE</DefineConstants>
+      <DefineConstants>TRACE;KN_DEV_TOOLS</DefineConstants>
       <ErrorReport>prompt</ErrorReport>
       <WarningLevel>4</WarningLevel>
-      <OutputPath>bin\Production\</OutputPath>
+      <OutputPath>bin\Release_DevTools\</OutputPath>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="0Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
