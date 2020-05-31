@@ -1,10 +1,12 @@
 using System.IO;
+using CarModelSystem;
+using CarX;
 using KN_Core;
 using UnityEngine;
 
 namespace KN_Lights {
   public class CarLights {
-    public const float BrakePower = 4.0f;
+    public const float BrakePower = 3.0f;
 
     public GameObject HeadLightLeft { get; private set; }
     public GameObject HeadLightRight { get; private set; }
@@ -174,6 +176,13 @@ namespace KN_Lights {
       Initialize();
     }
 
+    public void Dispose() {
+      Object.Destroy(HeadLightLeft);
+      Object.Destroy(HeadLightRight);
+      Object.Destroy(TailLightLeft);
+      Object.Destroy(TailLightRight);
+    }
+
     public void Attach(TFCar car, string userName) {
       Car = car;
       CarId = car.Id;
@@ -210,7 +219,8 @@ namespace KN_Lights {
 
       MakeLights();
 
-      cxCar_ = car.Base.GetComponent<CARXCar>();
+      cxCar_ = Car.Base.GetComponent<CARXCar>();
+      Car.CarX.OnUpdateWheelsEvent += CarUpdate;
     }
 
     public void LateUpdate() {
@@ -295,6 +305,13 @@ namespace KN_Lights {
       left = TailLightLeft.GetComponent<Light>();
       right = TailLightRight.GetComponent<Light>();
       return left != null && right != null;
+    }
+
+    private void CarUpdate(Car car) {
+      if (Car != null && Car.Base != null) {
+        //todo(trbflxr): maybe it should be optional?
+        Car.Base.carModel.SetLightsState(true, CarLightGroup.Brake);
+      }
     }
 
     public void Serialize(BinaryWriter writer) {
