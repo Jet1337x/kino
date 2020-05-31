@@ -156,16 +156,16 @@ namespace KN_Lights {
     }
 
     private Vector3 tlOffset_;
-    private Vector3 tlOffsetR_;
+    private Vector3 tlOffsetL_;
     public Vector3 TailLightOffset {
       get => tlOffset_;
       set {
         tlOffset_ = value;
-        tlOffsetR_ = value;
-        tlOffsetR_.x = -tlOffsetR_.x;
+        tlOffsetL_ = value;
+        tlOffsetL_.x = -tlOffsetL_.x;
         if (TailLightLeft != null) {
-          TailLightLeft.transform.localPosition = tlOffset_;
-          TailLightRight.transform.localPosition = tlOffsetR_;
+          TailLightLeft.transform.localPosition = tlOffsetL_;
+          TailLightRight.transform.localPosition = tlOffset_;
         }
       }
     }
@@ -214,12 +214,12 @@ namespace KN_Lights {
       TailLightLeft.transform.parent = car.Transform;
       TailLightLeft.transform.position = position;
       TailLightLeft.transform.rotation = tailRotation;
-      TailLightLeft.transform.localPosition += tlOffset_;
+      TailLightLeft.transform.localPosition += tlOffsetL_;
 
       TailLightRight.transform.parent = car.Transform;
       TailLightRight.transform.position = position;
       TailLightRight.transform.rotation = tailRotation;
-      TailLightRight.transform.localPosition += tlOffsetR_;
+      TailLightRight.transform.localPosition += tlOffset_;
 
       MakeLights();
 

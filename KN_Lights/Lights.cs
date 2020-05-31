@@ -108,6 +108,8 @@ namespace KN_Lights {
         return;
       }
 
+      x += Gui.OffsetSmall;
+
       float yBegin = y;
 
       const float width = Gui.Width * 2.0f;
@@ -126,18 +128,42 @@ namespace KN_Lights {
 
       GuiHeadLights(gui, ref x, ref y, width, height);
 
-      gui.Line(x, y, Core.GuiTabsWidth - Gui.OffsetSmall * 2.0f, 1.0f, Skin.SeparatorColor);
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.OffsetY;
 
       GuiTailLights(gui, ref x, ref y, width, height);
 
       y = yBegin;
-      x += width + Gui.OffsetGuiX;
+      x += width;
+
+      x += Gui.OffsetGuiX;
+      gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
+      x += Gui.OffsetGuiX;
 
       GuiLightsList(gui, ref x, ref y);
     }
 
     private void GuiHeadLights(Gui gui, ref float x, ref float y, float width, float height) {
+      float xBegin = x;
+      float widthLight = width / 2.0f - Gui.OffsetSmall;
+
+      bool lh = activeLights_?.IsHeadLightLeftEnabled ?? false;
+      if (gui.Button(ref x, ref y, widthLight, height, "LEFT HEADLIGHT", lh ? Skin.ButtonActive : Skin.Button)) {
+        if (activeLights_ != null) {
+          activeLights_.IsHeadLightLeftEnabled = !activeLights_.IsHeadLightLeftEnabled;
+        }
+      }
+      y -= Gui.OffsetY + height;
+      x += widthLight + Gui.OffsetSmall * 2.0f;
+
+      bool rh = activeLights_?.IsHeadLightRightEnabled ?? false;
+      if (gui.Button(ref x, ref y, widthLight, height, "RIGHT HEADLIGHT", rh ? Skin.ButtonActive : Skin.Button)) {
+        if (activeLights_ != null) {
+          activeLights_.IsHeadLightRightEnabled = !activeLights_.IsHeadLightRightEnabled;
+        }
+      }
+      x = xBegin;
+
       float hlPitch = activeLights_?.Pitch ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"HEADLIGHTS PITCH: {hlPitch:F}")) {
         if (activeLights_ != null) {
@@ -180,6 +206,26 @@ namespace KN_Lights {
     }
 
     private void GuiTailLights(Gui gui, ref float x, ref float y, float width, float height) {
+      float xBegin = x;
+      float widthLight = width / 2.0f - Gui.OffsetSmall;
+
+      bool lt = activeLights_?.IsTailLightLeftEnabled ?? false;
+      if (gui.Button(ref x, ref y, widthLight, height, "LEFT TAILLIGHT", lt ? Skin.ButtonActive : Skin.Button)) {
+        if (activeLights_ != null) {
+          activeLights_.IsTailLightLeftEnabled = !activeLights_.IsTailLightLeftEnabled;
+        }
+      }
+      y -= Gui.OffsetY + height;
+      x += widthLight + Gui.OffsetSmall * 2.0f;
+
+      bool rt = activeLights_?.IsTailLightRightEnabled ?? false;
+      if (gui.Button(ref x, ref y, widthLight, height, "RIGHT TAILLIGHT", rt ? Skin.ButtonActive : Skin.Button)) {
+        if (activeLights_ != null) {
+          activeLights_.IsTailLightRightEnabled = !activeLights_.IsTailLightRightEnabled;
+        }
+      }
+      x = xBegin;
+
       float tlPitch = activeLights_?.PitchTail ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"TAILLIGHTS PITCH: {tlPitch:F1}")) {
         if (activeLights_ != null) {
