@@ -25,6 +25,10 @@ namespace KN_Lights {
       return true;
     }
 
+    public override bool LockCameraRotation() {
+      return true;
+    }
+
     public override void OnStart() {
       var assembly = Assembly.GetExecutingAssembly();
 
@@ -64,13 +68,11 @@ namespace KN_Lights {
             TailLightBrightness = 500.0f,
             TailLightAngle = 170.0f,
             IsHeadLightLeftEnabled = true,
-            HeadlightOffsetLeft = new Vector3(0.6f, 0.6f, 1.9f),
             IsHeadLightRightEnabled = true,
-            HeadlightOffsetRight = new Vector3(-0.6f, 0.6f, 1.9f),
+            HeadlightOffset = new Vector3(0.6f, 0.6f, 1.9f),
             IsTailLightLeftEnabled = true,
-            TaillightOffsetLeft = new Vector3(0.6f, 0.6f, -1.6f),
             IsTailLightRightEnabled = true,
-            TaillightOffsetRight = new Vector3(-0.6f, 0.6f, -1.6f)
+            TailLightOffset = new Vector3(0.6f, 0.6f, -1.6f)
           };
           l.Attach(Core.PlayerCar, "own_car");
           lightsConfig_.AddLights(l);
@@ -84,67 +86,12 @@ namespace KN_Lights {
         activeLights_ = l;
       }
 
-      float hlPitch = activeLights_?.Pitch ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"HEADLIGHTS PITCH: {hlPitch:F1}")) {
-        if (activeLights_ != null) {
-          activeLights_.Pitch = hlPitch;
-        }
-      }
+      GuiHeadLights(gui, ref x, ref y, width, height);
 
-      // if (gui.SliderH(ref x, ref y, width, ref offsetX_, -3.0f, 3.0f, $"X: {offsetX_:F1}")) {
-      //   var posLeft = headLightLeft_.transform.localPosition;
-      //   var posRight = headLightRight_.transform.localPosition;
-      //
-      //   posLeft.x = offsetX_;
-      //   posRight.x = -offsetX_;
-      //
-      //   headLightLeft_.transform.localPosition = posLeft;
-      //   headLightRight_.transform.localPosition = posRight;
-      // }
-      //
-      // if (gui.SliderH(ref x, ref y, width, ref offsetY_, -3.0f, 3.0f, $"Y: {offsetY_:F1}")) {
-      //   var posLeft = headLightLeft_.transform.localPosition;
-      //   var posRight = headLightRight_.transform.localPosition;
-      //
-      //   posLeft.y = offsetY_;
-      //   posRight.y = offsetY_;
-      //
-      //   headLightLeft_.transform.localPosition = posLeft;
-      //   headLightRight_.transform.localPosition = posRight;
-      // }
-      //
-      // if (gui.SliderH(ref x, ref y, width, ref offsetZ_, -3.0f, 3.0f, $"Z: {offsetZ_:F1}")) {
-      //   var posLeft = headLightLeft_.transform.localPosition;
-      //   var posRight = headLightRight_.transform.localPosition;
-      //
-      //   posLeft.z = offsetZ_;
-      //   posRight.z = offsetZ_;
-      //
-      //   headLightLeft_.transform.localPosition = posLeft;
-      //   headLightRight_.transform.localPosition = posRight;
-      // }
-      //
-      // if (gui.SliderH(ref x, ref y, width, ref offsetHeading_, -20.0f, 20.0f, $"HEADING: {offsetHeading_:F1}")) {
-      //   var rotation = Core.PlayerCar.Transform.rotation;
-      //   headLightLeft_.transform.rotation = rotation * Quaternion.AngleAxis(offsetHeading_, Vector3.right);
-      //   headLightRight_.transform.rotation = rotation * Quaternion.AngleAxis(offsetHeading_, Vector3.right);
-      // }
-      //
-      // if (gui.SliderH(ref x, ref y, width, ref brightness_, 1000.0f, 20000.0f, $"BRIGHTNESS: {brightness_:F1}")) {
-      //   var lightLeft = headLightLeft_.GetComponent<Light>();
-      //   var lightRight = headLightRight_.GetComponent<Light>();
-      //
-      //   lightLeft.intensity = brightness_;
-      //   lightRight.intensity = brightness_;
-      // }
-      //
-      // if (gui.SliderH(ref x, ref y, width, ref spotAngle_, 80.0f, 150.0f, $"ANGLE: {spotAngle_:F1}")) {
-      //   var lightLeft = headLightLeft_.GetComponent<Light>();
-      //   var lightRight = headLightRight_.GetComponent<Light>();
-      //
-      //   lightLeft.spotAngle = spotAngle_;
-      //   lightRight.spotAngle = spotAngle_;
-      // }
+      gui.Line(x, y, Core.GuiTabsWidth - Gui.OffsetSmall * 2.0f, 1.0f, Skin.SeparatorColor);
+      y += Gui.OffsetY;
+
+      GuiTailLights(gui, ref x, ref y, width, height);
     }
 
     public override void Update(int id) {
@@ -160,6 +107,90 @@ namespace KN_Lights {
     public override void LateUpdate(int id) {
       if (id != Id) {
         return;
+      }
+    }
+
+    private void GuiHeadLights(Gui gui, ref float x, ref float y, float width, float height) {
+      float hlPitch = activeLights_?.Pitch ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"HEADLIGHTS PITCH: {hlPitch:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.Pitch = hlPitch;
+        }
+      }
+
+      float brightness = activeLights_?.HeadLightBrightness ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref brightness, 100.0f, 20000.0f, $"HEADLIGHTS BRIGHTNESS: {brightness:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadLightBrightness = brightness;
+        }
+      }
+
+      float angle = activeLights_?.HeadLightAngle ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 160.0f, $"HEADLIGHTS ANGLE: {angle:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadLightAngle = angle;
+        }
+      }
+
+      var offset = activeLights_?.HeadlightOffset ?? Vector3.zero;
+      if (gui.SliderH(ref x, ref y, width, ref offset.x, 0.0f, 3.0f, $"X: {offset.x:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadlightOffset = offset;
+        }
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref offset.y, 0.0f, 3.0f, $"Y: {offset.y:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadlightOffset = offset;
+        }
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref offset.z, 0.0f, 3.0f, $"Z: {offset.z:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadlightOffset = offset;
+        }
+      }
+    }
+
+    private void GuiTailLights(Gui gui, ref float x, ref float y, float width, float height) {
+      float tlPitch = activeLights_?.PitchTail ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"TAILLIGHTS PITCH: {tlPitch:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.PitchTail = tlPitch;
+        }
+      }
+
+      float brightness = activeLights_?.TailLightBrightness ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref brightness, 100.0f, 1000.0f, $"TAILLIGHTS BRIGHTNESS: {brightness:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.TailLightBrightness = brightness;
+        }
+      }
+
+      float angle = activeLights_?.TailLightAngle ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 160.0f, $"TAILLIGHTS ANGLE: {angle:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.TailLightAngle = angle;
+        }
+      }
+
+      var offset = activeLights_?.TailLightOffset ?? Vector3.zero;
+      if (gui.SliderH(ref x, ref y, width, ref offset.x, 0.0f, 3.0f, $"X: {offset.x:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.TailLightOffset = offset;
+        }
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref offset.y, 0.0f, 3.0f, $"Y: {offset.y:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.TailLightOffset = offset;
+        }
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref offset.z, 0.0f, -3.0f, $"Z: {offset.z:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.TailLightOffset = offset;
+        }
       }
     }
   }

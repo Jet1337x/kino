@@ -39,8 +39,8 @@ namespace KN_Lights {
           return;
         }
         var rot = Car.Transform.rotation;
-        HeadLightLeft.transform.rotation = rot * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(pitchTail_, -Vector3.right);
-        HeadLightRight.transform.rotation = rot * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(pitchTail_, -Vector3.right);
+        TailLightLeft.transform.rotation = rot * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(pitchTail_, -Vector3.right);
+        TailLightRight.transform.rotation = rot * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(pitchTail_, -Vector3.right);
       }
     }
 
@@ -103,17 +103,6 @@ namespace KN_Lights {
       }
     }
 
-    private Vector3 hlLOffset_;
-    public Vector3 HeadlightOffsetLeft {
-      get => hlLOffset_;
-      set {
-        hlLOffset_ = value;
-        if (HeadLightLeft != null) {
-          HeadLightLeft.transform.localPosition = hlLOffset_;
-        }
-      }
-    }
-
     private bool hlREnabled_;
     public bool IsHeadLightRightEnabled {
       get => hlREnabled_;
@@ -125,13 +114,17 @@ namespace KN_Lights {
       }
     }
 
-    private Vector3 hlROffset_;
-    public Vector3 HeadlightOffsetRight {
-      get => hlROffset_;
+    private Vector3 hlOffset_;
+    private Vector3 hlOffsetR_;
+    public Vector3 HeadlightOffset {
+      get => hlOffset_;
       set {
-        hlROffset_ = value;
-        if (HeadLightRight != null) {
-          HeadLightRight.transform.localPosition = hlROffset_;
+        hlOffset_ = value;
+        hlOffsetR_ = value;
+        hlOffsetR_.x = -hlOffsetR_.x;
+        if (HeadLightLeft != null) {
+          HeadLightLeft.transform.localPosition = hlOffset_;
+          HeadLightRight.transform.localPosition = hlOffsetR_;
         }
       }
     }
@@ -147,17 +140,6 @@ namespace KN_Lights {
       }
     }
 
-    private Vector3 tlLOffset_;
-    public Vector3 TaillightOffsetLeft {
-      get => tlLOffset_;
-      set {
-        tlLOffset_ = value;
-        if (TailLightLeft != null) {
-          TailLightLeft.transform.localPosition = tlLOffset_;
-        }
-      }
-    }
-
     private bool tlREnabled_;
     public bool IsTailLightRightEnabled {
       get => tlREnabled_;
@@ -169,13 +151,17 @@ namespace KN_Lights {
       }
     }
 
-    private Vector3 tlROffset_;
-    public Vector3 TaillightOffsetRight {
-      get => tlROffset_;
+    private Vector3 tlOffset_;
+    private Vector3 tlOffsetR_;
+    public Vector3 TailLightOffset {
+      get => tlOffset_;
       set {
-        tlROffset_ = value;
-        if (TailLightRight != null) {
-          TailLightRight.transform.localPosition = tlROffset_;
+        tlOffset_ = value;
+        tlOffsetR_ = value;
+        tlOffsetR_.x = -tlOffsetR_.x;
+        if (TailLightLeft != null) {
+          TailLightLeft.transform.localPosition = tlOffset_;
+          TailLightRight.transform.localPosition = tlOffsetR_;
         }
       }
     }
@@ -201,22 +187,22 @@ namespace KN_Lights {
       HeadLightLeft.transform.parent = car.Transform;
       HeadLightLeft.transform.position = position;
       HeadLightLeft.transform.rotation = headRotation;
-      HeadLightLeft.transform.localPosition += HeadlightOffsetLeft;
+      HeadLightLeft.transform.localPosition += hlOffset_;
 
       HeadLightRight.transform.parent = car.Transform;
       HeadLightRight.transform.position = position;
       HeadLightRight.transform.rotation = headRotation;
-      HeadLightRight.transform.localPosition += HeadlightOffsetRight;
+      HeadLightRight.transform.localPosition += hlOffsetR_;
 
       TailLightLeft.transform.parent = car.Transform;
       TailLightLeft.transform.position = position;
       TailLightLeft.transform.rotation = tailRotation;
-      TailLightLeft.transform.localPosition += TaillightOffsetLeft;
+      TailLightLeft.transform.localPosition += tlOffset_;
 
       TailLightRight.transform.parent = car.Transform;
       TailLightRight.transform.position = position;
       TailLightRight.transform.rotation = tailRotation;
-      TailLightRight.transform.localPosition += TaillightOffsetRight;
+      TailLightRight.transform.localPosition += tlOffsetR_;
 
       MakeLights();
     }
@@ -276,10 +262,10 @@ namespace KN_Lights {
     private void MakeTailLight(ref Light light) {
       light.type = LightType.Spot;
       light.color = Color.red;
-      light.range = 150.0f;
+      light.range = 6.0f;
       light.intensity = TailLightBrightness;
       light.spotAngle = TailLightAngle;
-      light.innerSpotAngle = 50.0f;
+      light.innerSpotAngle = 10.0f;
       light.cookie = Lights.LightMask;
     }
 
@@ -307,16 +293,12 @@ namespace KN_Lights {
       writer.Write(tlAngle_);
 
       writer.Write(hlLEnabled_);
-      WriteVec3(writer, hlLOffset_);
-
       writer.Write(hlREnabled_);
-      WriteVec3(writer, hlROffset_);
+      WriteVec3(writer, HeadlightOffset);
 
       writer.Write(tlLEnabled_);
-      WriteVec3(writer, tlLOffset_);
-
       writer.Write(tlREnabled_);
-      WriteVec3(writer, tlROffset_);
+      WriteVec3(writer, TailLightOffset);
     }
 
     public void Deserialize(BinaryReader reader) {
@@ -331,16 +313,12 @@ namespace KN_Lights {
       tlAngle_ = reader.ReadSingle();
 
       hlLEnabled_ = reader.ReadBoolean();
-      hlLOffset_ = ReadVec3(reader);
-
       hlREnabled_ = reader.ReadBoolean();
-      hlROffset_ = ReadVec3(reader);
+      HeadlightOffset = ReadVec3(reader);
 
       tlLEnabled_ = reader.ReadBoolean();
-      tlLOffset_ = ReadVec3(reader);
-
       tlREnabled_ = reader.ReadBoolean();
-      tlROffset_ = ReadVec3(reader);
+      TailLightOffset = ReadVec3(reader);
     }
 
     private static void WriteVec3(BinaryWriter writer, Vector3 vec) {
