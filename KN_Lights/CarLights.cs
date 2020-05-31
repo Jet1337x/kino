@@ -181,6 +181,10 @@ namespace KN_Lights {
       Object.Destroy(HeadLightRight);
       Object.Destroy(TailLightLeft);
       Object.Destroy(TailLightRight);
+
+      if (Car != null && Car.Base != null) {
+        Car.CarX.OnUpdateWheelsEvent -= CarUpdate;
+      }
     }
 
     public void Attach(TFCar car, string userName) {
@@ -225,7 +229,7 @@ namespace KN_Lights {
 
     public void LateUpdate() {
       if (Car != null && Car.Base != null && cxCar_ != null) {
-        float bb = cxCar_.brake > 0.0f ? tlBrightness_ * BrakePower : tlBrightness_;
+        float bb = cxCar_.brake > 0.2f ? tlBrightness_ * BrakePower : tlBrightness_;
         if (GetTailLights(out var l, out var r)) {
           l.intensity = bb;
           r.intensity = bb;

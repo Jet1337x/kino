@@ -57,6 +57,11 @@ namespace KN_Lights {
     }
 
     public void AddLights(CarLights lights) {
+      int id = Lights.FindIndex(cl => cl.Car == lights.Car);
+      if (id != -1) {
+        Lights[id] = lights;
+        return;
+      }
       Lights.Add(lights);
     }
   }

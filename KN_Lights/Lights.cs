@@ -9,9 +9,15 @@ namespace KN_Lights {
 
     public const string LightsConfigFile = "kn_lights.knl";
     // public const string NwLightsConfigFile = "kn_nwlights.knl";
+#if KN_DEV_TOOLS
+    public const string LightsDevConfigFile = "kn_lights_dev.knl";
+#endif
 
     private LightsConfig lightsConfig_;
     // private NwLightsConfig nwLightsConfig_;
+#if KN_DEV_TOOLS
+    private LightsConfig carLightsDev_;
+#endif
 
     private Renderer renderer_;
 
@@ -51,12 +57,24 @@ namespace KN_Lights {
         lightsConfig_ = new LightsConfig();
         //todo: load default
       }
+#if KN_DEV_TOOLS
+      if (LightsConfigSerializer.Deserialize(LightsDevConfigFile, out var devLights)) {
+        carLightsDev_ = new LightsConfig(devLights);
+      }
+      else {
+        carLightsDev_ = new LightsConfig();
+      }
+#endif
 
     }
 
     public override void OnStop() {
       if (!LightsConfigSerializer.Serialize(lightsConfig_, LightsConfigFile)) { }
       // if (!LcBase.Serialize(nwLightsConfig_, NwLightsConfigFile)) { }
+
+#if KN_DEV_TOOLS
+      LightsConfigSerializer.Serialize(carLightsDev_, LightsDevConfigFile);
+#endif
     }
 
     public override void Update(int id) {
@@ -119,6 +137,13 @@ namespace KN_Lights {
       const float width = Gui.Width * 2.0f;
       const float height = Gui.Height;
 
+#if KN_DEV_TOOLS
+      if (gui.Button(ref x, ref y, width, height, "DEV SAVE", Skin.Button)) {
+        carLightsDev_.AddLights(activeLights_);
+        Log.Write($"[KN_Lights]: Dev save / saved for '{activeLights_.CarId}'");
+      }
+#endif
+
       if (gui.Button(ref x, ref y, width, height, "ENABLE LIGHTS", Skin.Button)) {
         var l = lightsConfig_.GetLights(Core.PlayerCar.Id);
         if (l == null) {
@@ -129,7 +154,13 @@ namespace KN_Lights {
           Log.Write($"[KN_Lights]: Car lights for '{l.CarId}' attached");
         }
 
-        carLights_.Add(l);
+        int index = carLights_.FindIndex(cl => cl.Car == Core.PlayerCar);
+        if (index != -1) {
+          carLights_[index] = l;
+        }
+        else {
+          carLights_.Add(l);
+        }
         activeLights_ = l;
       }
 
@@ -231,7 +262,7 @@ namespace KN_Lights {
     }
 
     private void GuiLightsList(Gui gui, ref float x, ref float y) {
-      const float listHeight = 320.0f;
+      const float listHeight = 340.0f;
 
       if (gui.Button(ref x, ref y, "ADD LIGHTS TO", Skin.Button)) {
         allowPick_ = !allowPick_;
