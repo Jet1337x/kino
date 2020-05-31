@@ -12,6 +12,8 @@ namespace KN_Core {
     public Transform CxTransform => Base.getTransform;
     public Transform Transform => Base.transform;
 
+    public int Id => Base.metaInfo.id;
+
     public TFCar(RaceCar car) {
       if (car == null) {
         Base = null;

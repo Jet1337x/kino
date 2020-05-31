@@ -151,7 +151,7 @@ namespace KN_Visuals {
         return;
       }
 
-      int id = Core.PlayerCar.Base.metaInfo.id;
+      int id = Core.PlayerCar.Id;
       var visuals = prefs_.carSettings.GetVisualForCar(id).Copy();
       string name = Core.PlayerCar.Base.metaInfo.identifier;
 

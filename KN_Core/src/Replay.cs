@@ -135,7 +135,7 @@ namespace KN_Core {
             Log.Write($"[KN_Replay]: Null car");
             continue;
           }
-          int id = car.Base.metaInfo.id;
+          int id = car.Id;
           var vis = car != core_.PlayerCar &&
                     car.Base != null &&
                     car.Base.networkPlayer != null
