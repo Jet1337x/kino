@@ -1,3 +1,4 @@
+using System.Reflection;
 using KN_Core;
 using UnityEngine;
 
@@ -25,7 +26,9 @@ namespace KN_Lights {
     }
 
     public override void OnStart() {
-      LightMask = Core.LoadCoreTexture("HeadLightMask.png");
+      var assembly = Assembly.GetExecutingAssembly();
+
+      LightMask = Core.LoadTexture(assembly, "KN_Lights", "HeadLightMask.png");
 
       if (LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights)) {
         lightsConfig_ = new LightsConfig(lights);

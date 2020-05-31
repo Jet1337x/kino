@@ -385,12 +385,12 @@ namespace KN_Core {
 
     //load texture from KN_Core.dll
     public static Texture2D LoadCoreTexture(string name) {
-      return LoadTexture(assembly_, name);
+      return LoadTexture(assembly_, "KN_Core", name);
     }
 
-    public static Texture2D LoadTexture(Assembly assembly, string name) {
+    public static Texture2D LoadTexture(Assembly assembly, string ns, string name) {
       var tex = new Texture2D(4, 4);
-      using (var stream = assembly.GetManifestResourceStream("KN_Core.Resources." + name)) {
+      using (var stream = assembly.GetManifestResourceStream(ns + ".Resources." + name)) {
         using (var memoryStream = new MemoryStream()) {
           if (stream != null) {
             stream.CopyTo(memoryStream);
