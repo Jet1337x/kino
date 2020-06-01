@@ -110,10 +110,6 @@ namespace KN_Lights {
     }
 
     public override void LateUpdate(int id) {
-      if (id != Id) {
-        return;
-      }
-
       foreach (var cl in carLights_) {
         if (cl.Car == null || cl.Car.Base == null) {
           carLightsToRemove_.Add(cl);
@@ -160,12 +156,14 @@ namespace KN_Lights {
         hlTabActive_ = true;
         slTabActive_ = false;
         Core.ShowCars = false;
+        Core.ColorPicker.Reset();
       }
 
       if (gui.ImageButton(ref x, ref y, slTabActive_ ? Skin.IconSunActive : Skin.IconSun)) {
         hlTabActive_ = false;
         slTabActive_ = true;
         Core.ShowCars = false;
+        Core.ColorPicker.Reset();
       }
 
       x += Gui.IconSize;
