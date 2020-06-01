@@ -57,21 +57,23 @@ namespace KN_Visuals {
 
       x += Gui.OffsetSmall;
 
-      GuiLivery(gui,ref x, ref y, width, height);
+      bool guiEnabled = GUI.enabled;
+      GUI.enabled = Core.IsInGarage;
+
+      GuiLivery(gui, ref x, ref y, width, height);
 
       gui.Line(x, y, Core.GuiTabsWidth - Gui.OffsetSmall * 2.0f, 1.0f, Skin.SeparatorColor);
       y += Gui.OffsetY;
 
-      GuiVisuals(gui,ref x, ref y, width, height);
+      GuiVisuals(gui, ref x, ref y, width, height);
+
+      GUI.enabled = guiEnabled;
     }
 
     private void GuiLivery(Gui gui, ref float x, ref float y, float width, float height) {
       string text = liveryCamEnabled_ ? "DISABLE" : "ENABLE";
       if (gui.Button(ref x, ref y, width, height, text, liveryCamEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         liveryCamEnabled_ = !liveryCamEnabled_;
-        if (!Core.IsInGarage) {
-          liveryCamEnabled_ = false;
-        }
       }
 
       if (gui.SliderH(ref x, ref y, width, ref zoom_, 0.0f, 20.0f, $"ZOOM: {zoom_:F1}")) {
@@ -97,10 +99,13 @@ namespace KN_Visuals {
         if (pickingFile_) {
           Core.FilePicker.PickIn(Config.VisualsDir);
         }
+        else {
+          Core.FilePicker.Reset();
+        }
       }
 
       bool enabled = GUI.enabled;
-      GUI.enabled = carId_ != -1 && carVisuals_ != null;
+      GUI.enabled = carId_ != -1 && carVisuals_ != null && Core.IsInGarage;
 
       if (gui.Button(ref x, ref y, width, height, $"APPLY DESIGN TO {carName_}", Skin.Button)) {
         selectedCarId_ = carId_;
@@ -124,7 +129,7 @@ namespace KN_Visuals {
       }
 #endif
 
-      GUI.enabled = selectedCarId_ != -1 && backupVisuals_ != null;
+      GUI.enabled = selectedCarId_ != -1 && backupVisuals_ != null && Core.IsInGarage;
 
       if (gui.Button(ref x, ref y, width, height, "RESTORE DESIGN", Skin.Button)) {
         if (prefs_ == null || backupVisuals_ == null || selectedCarId_ == -1) {
