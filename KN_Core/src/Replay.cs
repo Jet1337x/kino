@@ -86,6 +86,10 @@ namespace KN_Core {
     }
 
     public void PlayPause(bool play) {
+      if (Player.players.Count == 0) {
+        return;
+      }
+
       IsPlaying = play;
       if (IsPlaying) {
         Player.Play();

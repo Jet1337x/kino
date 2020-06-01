@@ -34,7 +34,6 @@ namespace KN_Cinematic {
     private Vector2 kfListScroll_;
 
     private string animationScaleString_ = "0.0";
-    private string animationBeginString_ = "0.0";
 
     public Cinematic(Core core) : base(core, "CINEMATIC", 1) {
       ctCameras_ = new List<CTCamera>();
@@ -304,25 +303,18 @@ namespace KN_Cinematic {
         }
       }
 
-      float currentLength = ActiveCamera?.Animation.ActualLength ?? 0.0f;
+      GUI.enabled = cameraOk && !Core.Replay.IsPlaying;
+
+      float currentLength = ActiveCamera?.Animation.Length ?? 0.0f;
       animationScaleString_ = $"{currentLength:F}";
       if (gui.TextField(ref x, ref y, ref animationScaleString_, "LENGTH", 6, Config.FloatRegex)) {
         float.TryParse(animationScaleString_, out float scaledLength);
         if (cameraOk && scaledLength > 0.01f) {
-          ActiveCamera.Animation.Scale(scaledLength);
+          ActiveCamera.Animation.Length = scaledLength;
           Log.Write($"[KN_Cinematic]: Scale animation for camera '{ActiveCamera.Tag}' ({currentLength:F} -> {scaledLength:F})");
         }
       }
-
-      float beginTime = ActiveCamera?.Animation.BeginTime ?? 0.0f;
-      animationBeginString_ = $"{beginTime:F}";
-      if (gui.TextField(ref x, ref y, ref animationBeginString_, "BEGIN TIME", 6, Config.FloatRegex)) {
-        float.TryParse(animationBeginString_, out float begin);
-        if (cameraOk && begin >= 0.0f) {
-          ActiveCamera.Animation.BeginTime = begin;
-          Log.Write($"[KN_Cinematic]: Set animation begin time for camera '{ActiveCamera.Tag}' ({beginTime:F} -> {begin:F})");
-        }
-      }
+      GUI.enabled = cameraOk;
 
       float smooth = ActiveCamera?.Animation.Smooth ?? 1.0f;
       if (gui.SliderH(ref x, ref y, Gui.Width, ref smooth, 1.0f, 20.0f, $"SMOOTHNESS: {smooth:F}", Skin.RedSkin)) {
@@ -587,12 +579,6 @@ namespace KN_Cinematic {
     }
 
     private void OnTimelinePlay(bool play) {
-      // if (activeCamera_ != null && activeCamera_ != freeCamera_) {
-      //   if (activeCamera_.Animation.Keyframes.Count > 0) {
-      //     activeCamera_.Animation.AllowPlay = play;
-      //   }
-      // }
-
       Core.Replay.PlayPause(play);
     }
 
