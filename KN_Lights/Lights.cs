@@ -20,8 +20,6 @@ namespace KN_Lights {
     private LightsConfig carLightsDev_;
 #endif
 
-    private Renderer renderer_;
-
     private CarLights activeLights_;
     private readonly List<CarLights> carLights_;
     private readonly List<CarLights> carLightsToRemove_;
@@ -31,9 +29,6 @@ namespace KN_Lights {
     private Vector2 clListScroll_;
 
     public Lights(Core core) : base(core, "LIGHTS", 4) {
-      var front = new GameObject("KN_LightsFront");
-      renderer_ = front.GetComponent<Renderer>();
-
       carLights_ = new List<CarLights>();
       carLightsToRemove_ = new List<CarLights>();
     }
@@ -115,16 +110,21 @@ namespace KN_Lights {
       const float width = Gui.Width * 2.0f;
       const float height = Gui.Height;
 
+      bool guiEnabled = GUI.enabled;
+      GUI.enabled = Core.PlayerCar != null;
+
+      if (gui.Button(ref x, ref y, width, height, "ADD LIGHTS", Skin.Button)) {
+        EnableLightsOnOnwCar();
+      }
+
+      GUI.enabled = activeLights_ != null;
+
 #if KN_DEV_TOOLS
       if (gui.Button(ref x, ref y, width, height, "DEV SAVE", Skin.Button)) {
         carLightsDev_.AddLights(activeLights_);
-        Log.Write($"[KN_Lights]: Dev save / saved for '{activeLights_.CarId}'");
+        Log.Write($"[KN_Lights]: Dev save / saved for '{activeLights_?.CarId ?? 0}'");
       }
 #endif
-
-      if (gui.Button(ref x, ref y, width, height, "ENABLE LIGHTS", Skin.Button)) {
-        EnableLightsOnOnwCar();
-      }
 
       bool debugObjects = activeLights_?.IsDebugObjectsEnabled ?? false;
       if (gui.Button(ref x, ref y, width, height, "DEBUG OBJECTS", debugObjects ? Skin.ButtonActive : Skin.Button)) {
@@ -146,6 +146,8 @@ namespace KN_Lights {
       x += Gui.OffsetGuiX;
       gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
       x += Gui.OffsetGuiX;
+
+      GUI.enabled = guiEnabled;
 
       GuiLightsList(gui, ref x, ref y);
     }
@@ -275,7 +277,10 @@ namespace KN_Lights {
     }
 
     private void GuiLightsList(Gui gui, ref float x, ref float y) {
-      const float listHeight = 340.0f;
+      const float listHeight = 210.0f;
+
+      bool guiEnabled = GUI.enabled;
+      GUI.enabled = !Core.IsInGarage;
 
       if (gui.Button(ref x, ref y, "ADD LIGHTS TO", Skin.Button)) {
         allowPick_ = !allowPick_;
@@ -294,6 +299,9 @@ namespace KN_Lights {
           bool active = activeLights_ == cl;
           if (gui.ScrollViewButton(ref sx, ref sy, width, Gui.Height, $"{cl.UserName}", out bool delPressed, active ? Skin.ButtonActive : Skin.Button, Skin.RedSkin)) {
             if (delPressed) {
+              if (cl == activeLights_) {
+                activeLights_ = null;
+              }
               cl.Dispose();
               carLights_.Remove(cl);
               break;
@@ -305,6 +313,8 @@ namespace KN_Lights {
 
       clListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
       y += Gui.OffsetSmall;
+
+      GUI.enabled = guiEnabled;
     }
 
     private void EnableLightsOnOnwCar() {
