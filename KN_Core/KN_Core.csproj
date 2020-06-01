@@ -115,6 +115,7 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="src\About.cs" />
         <Compile Include="src\BaseMod.cs" />
+        <Compile Include="src\ColorPicker.cs" />
         <Compile Include="src\Config.cs" />
         <Compile Include="src\Controls.cs" />
         <Compile Include="src\Core.cs" />

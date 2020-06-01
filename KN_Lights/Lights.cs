@@ -31,9 +31,16 @@ namespace KN_Lights {
     private bool hlTabActive_ = true;
     private bool slTabActive_;
 
+    private bool pickingColor_;
+
     public Lights(Core core) : base(core, "LIGHTS", 4) {
       carLights_ = new List<CarLights>();
       carLightsToRemove_ = new List<CarLights>();
+    }
+
+    public override void ResetState() {
+      pickingColor_ = false;
+      Core.ColorPicker.Reset();
     }
 
     public override void OnStart() {
@@ -74,6 +81,16 @@ namespace KN_Lights {
         }
         Core.PickedCar = null;
         allowPick_ = false;
+      }
+
+      if (pickingColor_) {
+        if (Core.ColorPicker.PickedColor != Color.white) {
+          Log.Write(Core.ColorPicker.PickedColor.ToString());
+        }
+        if (Core.ColorPicker.IsForceClosed) {
+          Core.ColorPicker.IsForceClosed = false;
+          pickingColor_ = false;
+        }
       }
     }
 
@@ -212,6 +229,16 @@ namespace KN_Lights {
         }
       }
       x = xBegin;
+
+      if (gui.Button(ref x, ref y, width, height, "COLOR", Skin.Button)) {
+        pickingColor_ = !pickingColor_;
+        if (pickingColor_) {
+          Core.ColorPicker.Pick(Color.white);
+        }
+        else {
+          Core.ColorPicker.Reset();
+        }
+      }
 
       float brightness = activeLights_?.HeadLightBrightness ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref brightness, 100.0f, 20000.0f, $"HEADLIGHTS BRIGHTNESS: {brightness:F1}")) {

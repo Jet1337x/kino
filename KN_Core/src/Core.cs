@@ -21,6 +21,7 @@ namespace KN_Core {
     public Timeline Timeline { get; }
     public Replay Replay { get; }
     public FilePicker FilePicker { get; }
+    public ColorPicker ColorPicker { get; }
 
     public const float GuiXLeft = 25.0f;
     public const float GuiYTop = 25.0f;
@@ -93,6 +94,7 @@ namespace KN_Core {
       Timeline = new Timeline(this);
       Replay = new Replay(this);
       FilePicker = new FilePicker();
+      ColorPicker = new ColorPicker();
 
       mods_ = new Dictionary<string, BaseMod>();
       tabs_ = new List<string>();
@@ -248,6 +250,16 @@ namespace KN_Core {
           tx += Gui.OffsetGuiX;
         }
         FilePicker.OnGui(gui_, ref tx, ref ty);
+      }
+
+      if (ColorPicker.IsPicking) {
+        if (ShowCars) {
+          tx += Gui.OffsetGuiX;
+        }
+        if (FilePicker.IsPicking) {
+          tx += Gui.OffsetGuiX;
+        }
+        ColorPicker.OnGui(gui_, ref tx, ref ty);
       }
 
       if (DrawTimeline) {
