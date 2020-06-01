@@ -418,7 +418,8 @@ namespace KN_Lights {
     private void CarUpdate(Car car) {
       if (Car != null && Car.Base != null) {
         //todo(trbflxr): maybe it should be optional?
-        Car.Base.carModel.SetLightsState(true, CarLightGroup.Brake);
+        bool enabled = IsTailLightLeftEnabled || IsTailLightRightEnabled;
+        Car.Base.carModel.SetLightsState(enabled, CarLightGroup.Brake);
       }
     }
 
