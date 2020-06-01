@@ -7,21 +7,29 @@ namespace KN_Core {
 
     public Color PickedColor { get; private set; }
 
+    private bool alpha_ = true;
+
     public void Reset() {
       PickedColor = Color.white;
       IsPicking = false;
       IsForceClosed = false;
+      alpha_ = true;
     }
 
-    public void Pick(Color initialColor) {
+    public void Pick(Color initialColor, bool pickAlpha = true) {
       PickedColor = initialColor;
       IsPicking = true;
+      alpha_ = pickAlpha;
     }
 
     public void OnGui(Gui gui, ref float x, ref float y) {
       const float width = Gui.Width * 1.5f;
       const float boxWidth = width + Gui.OffsetGuiX * 2.0f;
-      const float boxHeight = Gui.Height * 5.0f + Gui.OffsetY * 6.0f;
+
+      float boxHeight = Gui.Height * 4.0f + Gui.OffsetY * 5.0f;
+      if (alpha_) {
+        boxHeight += Gui.Height + Gui.OffsetY;
+      }
 
       float yBegin = y;
 
@@ -47,14 +55,17 @@ namespace KN_Core {
         PickedColor = new Color(PickedColor.r, PickedColor.g, b, PickedColor.a);
       }
 
-      float a = PickedColor.a;
-      if (gui.SliderH(ref x, ref y, width, ref a, 0.0f, 1.0f, $"ALPHA: {a:F}")) {
-        PickedColor = new Color(PickedColor.r, PickedColor.g, PickedColor.b, a);
+      if (alpha_) {
+        float a = PickedColor.a;
+        if (gui.SliderH(ref x, ref y, width, ref a, 0.0f, 1.0f, $"ALPHA: {a:F}")) {
+          PickedColor = new Color(PickedColor.r, PickedColor.g, PickedColor.b, a);
+        }
       }
 
       if (gui.Button(ref x, ref y, width, Gui.Height, "CLOSE", Skin.Button)) {
         IsPicking = false;
         IsForceClosed = true;
+        alpha_ = true;
       }
 
       x += boxWidth + Gui.OffsetGuiX;

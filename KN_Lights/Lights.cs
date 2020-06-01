@@ -84,8 +84,8 @@ namespace KN_Lights {
       }
 
       if (pickingColor_) {
-        if (Core.ColorPicker.PickedColor != Color.white) {
-          Log.Write(Core.ColorPicker.PickedColor.ToString());
+        if (activeLights_ != null && Core.ColorPicker.PickedColor != activeLights_.HeadLightsColor) {
+          activeLights_.HeadLightsColor = Core.ColorPicker.PickedColor;
         }
         if (Core.ColorPicker.IsForceClosed) {
           Core.ColorPicker.IsForceClosed = false;
@@ -233,7 +233,9 @@ namespace KN_Lights {
       if (gui.Button(ref x, ref y, width, height, "COLOR", Skin.Button)) {
         pickingColor_ = !pickingColor_;
         if (pickingColor_) {
-          Core.ColorPicker.Pick(Color.white);
+          if (activeLights_ != null) {
+            Core.ColorPicker.Pick(activeLights_.HeadLightsColor, false);
+          }
         }
         else {
           Core.ColorPicker.Reset();
@@ -353,6 +355,7 @@ namespace KN_Lights {
         allowPick_ = !allowPick_;
         Core.ShowCars = allowPick_;
       }
+      GUI.enabled = guiEnabled;
 
       gui.BeginScrollV(ref x, ref y, listHeight, clListScrollH_, ref clListScroll_, $"LIGHTS {carLights_.Count}");
 
@@ -380,8 +383,6 @@ namespace KN_Lights {
 
       clListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
       y += Gui.OffsetSmall;
-
-      GUI.enabled = guiEnabled;
     }
 
     private void EnableLightsOnOnwCar() {
@@ -426,6 +427,7 @@ namespace KN_Lights {
 
     private static CarLights CreateLights(TFCar car, LightsConfigBase config) {
       var light = new CarLights {
+        HeadLightsColor = Color.white,
         Pitch = 0.0f,
         PitchTail = 0.0f,
         HeadLightBrightness = 1500.0f,

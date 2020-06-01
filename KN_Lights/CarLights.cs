@@ -44,6 +44,18 @@ namespace KN_Lights {
     public bool IsNetworkCar { get; private set; }
     public string UserName { get; private set; }
 
+    private Color hlColor_;
+    public Color HeadLightsColor {
+      get => hlColor_;
+      set {
+        hlColor_ = value;
+        if (GetHeadLights(out var l, out var r)) {
+          l.color = hlColor_;
+          r.color = hlColor_;
+        }
+      }
+    }
+
     private float pitch_;
     public float Pitch {
       get => pitch_;
@@ -325,7 +337,6 @@ namespace KN_Lights {
     }
 
     private void InitializeDebug() {
-      //todo(trbflxr): headlights color
       var matWhite = new UnityEngine.Material(Shader.Find("HDRP/Lit"));
       matWhite.SetTexture(BaseColorMap, CreateTexture(Color.white));
 
@@ -361,7 +372,7 @@ namespace KN_Lights {
       tlRCapsule_.SetActive(IsDebugObjectsEnabled);
     }
 
-    private Texture2D CreateTexture(Color color) {
+    private static Texture2D CreateTexture(Color color) {
       var texture = new Texture2D(1, 1, TextureFormat.ARGB32, false) {
         wrapMode = TextureWrapMode.Clamp
       };
@@ -385,7 +396,7 @@ namespace KN_Lights {
 
     private void MakeHeadLight(ref Light light) {
       light.type = LightType.Spot;
-      light.color = Color.white;
+      light.color = hlColor_;
       light.range = 150.0f;
       light.intensity = HeadLightBrightness;
       light.spotAngle = HeadLightAngle;
@@ -427,6 +438,7 @@ namespace KN_Lights {
       writer.Write(CarId);
       writer.Write(IsNetworkCar);
       writer.Write(UserName);
+      writer.Write(Core.EncodeColor(hlColor_));
       writer.Write(pitch_);
       writer.Write(pitchTail_);
       writer.Write(hlBrightness_);
@@ -447,6 +459,7 @@ namespace KN_Lights {
       CarId = reader.ReadInt32();
       IsNetworkCar = reader.ReadBoolean();
       UserName = reader.ReadString();
+      hlColor_ = Core.DecodeColor(reader.ReadInt32());
       pitch_ = reader.ReadSingle();
       pitchTail_ = reader.ReadSingle();
       hlBrightness_ = reader.ReadSingle();
