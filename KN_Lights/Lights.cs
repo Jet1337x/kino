@@ -171,13 +171,6 @@ namespace KN_Lights {
       }
       x = xBegin;
 
-      float hlPitch = activeLights_?.Pitch ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"HEADLIGHTS PITCH: {hlPitch:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.Pitch = hlPitch;
-        }
-      }
-
       float brightness = activeLights_?.HeadLightBrightness ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref brightness, 100.0f, 20000.0f, $"HEADLIGHTS BRIGHTNESS: {brightness:F1}")) {
         if (activeLights_ != null) {
@@ -189,6 +182,13 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 160.0f, $"HEADLIGHTS ANGLE: {angle:F1}")) {
         if (activeLights_ != null) {
           activeLights_.HeadLightAngle = angle;
+        }
+      }
+
+      float hlPitch = activeLights_?.Pitch ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"HEADLIGHTS PITCH: {hlPitch:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.Pitch = hlPitch;
         }
       }
 
@@ -233,13 +233,6 @@ namespace KN_Lights {
       }
       x = xBegin;
 
-      float tlPitch = activeLights_?.PitchTail ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"TAILLIGHTS PITCH: {tlPitch:F1}")) {
-        if (activeLights_ != null) {
-          activeLights_.PitchTail = tlPitch;
-        }
-      }
-
       float brightness = activeLights_?.TailLightBrightness ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref brightness, 50.0f, 500.0f, $"TAILLIGHTS BRIGHTNESS: {brightness:F1}")) {
         if (activeLights_ != null) {
@@ -251,6 +244,13 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 170.0f, $"TAILLIGHTS ANGLE: {angle:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightAngle = angle;
+        }
+      }
+
+      float tlPitch = activeLights_?.PitchTail ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"TAILLIGHTS PITCH: {tlPitch:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.PitchTail = tlPitch;
         }
       }
 
