@@ -229,7 +229,7 @@ namespace KN_Core {
     private void GuiCarList(Gui gui, ref float x, ref float y) {
       bool enabled = GUI.enabled;
 
-      GUI.enabled = !IsRecording;
+      GUI.enabled = !IsRecording && !core_.IsInGarage;
       if (gui.Button(ref x, ref y, "PICK CAR", Skin.Button)) {
         allowPick_ = !allowPick_;
         core_.ShowCars = allowPick_;

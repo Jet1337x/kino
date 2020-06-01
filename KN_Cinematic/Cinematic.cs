@@ -515,6 +515,9 @@ namespace KN_Cinematic {
 
     #region replay
     private void GuiReplay(Gui gui, ref float x, ref float y) {
+      bool guiEnabled = GUI.enabled;
+      GUI.enabled = !Core.IsInGarage;
+
       Core.Replay.OnGui(gui, ref x, ref y);
 
       gui.Line(x, y, Gui.Width, 1.0f, Skin.SeparatorColor);
@@ -528,6 +531,8 @@ namespace KN_Cinematic {
           ActiveCamera.GameObject.GetComponent<Camera>().farClipPlane = 1000.0f;
         }
       }
+
+      GUI.enabled = guiEnabled;
     }
     #endregion
 
