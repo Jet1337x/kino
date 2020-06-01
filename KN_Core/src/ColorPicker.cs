@@ -51,7 +51,7 @@ namespace KN_Core {
       }
 
       float b = PickedColor.b;
-      if (gui.SliderH(ref x, ref y, width, ref b, 0.0f, 1.0f, $"GLUE: {b:F}")) {
+      if (gui.SliderH(ref x, ref y, width, ref b, 0.0f, 1.0f, $"BLUE: {b:F}")) {
         PickedColor = new Color(PickedColor.r, PickedColor.g, b, PickedColor.a);
       }
 
