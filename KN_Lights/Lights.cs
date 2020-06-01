@@ -126,6 +126,13 @@ namespace KN_Lights {
         EnableLightsOnOnwCar();
       }
 
+      bool debugObjects = activeLights_?.IsDebugObjectsEnabled ?? false;
+      if (gui.Button(ref x, ref y, width, height, "DEBUG OBJECTS", debugObjects ? Skin.ButtonActive : Skin.Button)) {
+        if (activeLights_ != null) {
+          activeLights_.IsDebugObjectsEnabled = !activeLights_.IsDebugObjectsEnabled;
+        }
+      }
+
       GuiHeadLights(gui, ref x, ref y, width, height);
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);

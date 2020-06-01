@@ -14,6 +14,30 @@ namespace KN_Lights {
     public GameObject TailLightLeft { get; private set; }
     public GameObject TailLightRight { get; private set; }
 
+    private GameObject hlLCapsule_;
+    private GameObject hlRCapsule_;
+    private GameObject tlLCapsule_;
+    private GameObject tlRCapsule_;
+    private bool dbObjects_;
+    public bool IsDebugObjectsEnabled {
+      get => dbObjects_;
+      set {
+        dbObjects_ = value;
+        if (hlLCapsule_ != null) {
+          hlLCapsule_.SetActive(dbObjects_);
+        }
+        if (hlRCapsule_ != null) {
+          hlRCapsule_.SetActive(dbObjects_);
+        }
+        if (tlLCapsule_ != null) {
+          tlLCapsule_.SetActive(dbObjects_);
+        }
+        if (tlRCapsule_ != null) {
+          tlRCapsule_.SetActive(dbObjects_);
+        }
+      }
+    }
+
     public TFCar Car { get; private set; }
 
     public int CarId { get; private set; }
@@ -31,6 +55,11 @@ namespace KN_Lights {
         var rot = Car.Transform.rotation;
         HeadLightLeft.transform.rotation = rot * Quaternion.AngleAxis(pitch_, Vector3.right);
         HeadLightRight.transform.rotation = rot * Quaternion.AngleAxis(pitch_, Vector3.right);
+
+        if (hlLCapsule_ != null && hlRCapsule_ != null) {
+          hlLCapsule_.transform.rotation = rot * Quaternion.AngleAxis(90.0f + pitch_, Vector3.right);
+          hlRCapsule_.transform.rotation = rot * Quaternion.AngleAxis(90.0f + pitch_, Vector3.right);
+        }
       }
     }
 
@@ -45,6 +74,11 @@ namespace KN_Lights {
         var rot = Car.Transform.rotation;
         TailLightLeft.transform.rotation = rot * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(pitchTail_, -Vector3.right);
         TailLightRight.transform.rotation = rot * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(pitchTail_, -Vector3.right);
+
+        if (tlLCapsule_ != null && tlRCapsule_ != null) {
+          tlLCapsule_.transform.rotation = rot * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(90.0f + pitchTail_, -Vector3.right);
+          tlRCapsule_.transform.rotation = rot * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(90.0f + pitchTail_, -Vector3.right);
+        }
       }
     }
 
@@ -198,6 +232,9 @@ namespace KN_Lights {
 
       var headRotation = rotation * Quaternion.AngleAxis(Pitch, Vector3.right);
       var tailRotation = rotation * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(PitchTail, -Vector3.right);
+      var headRotationD = rotation * Quaternion.AngleAxis(90.0f + Pitch, Vector3.right);
+      var tailRotationD = rotation * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(90.0f + PitchTail, -Vector3.right);
+      var capsuleScale = new Vector3(0.1f, 0.15f, 0.1f);
 
       Initialize();
 
@@ -205,21 +242,37 @@ namespace KN_Lights {
       HeadLightLeft.transform.position = position;
       HeadLightLeft.transform.rotation = headRotation;
       HeadLightLeft.transform.localPosition += hlOffset_;
+      hlLCapsule_.transform.parent = HeadLightLeft.transform;
+      hlLCapsule_.transform.position = HeadLightLeft.transform.position;
+      hlLCapsule_.transform.rotation = headRotationD;
+      hlLCapsule_.transform.localScale = capsuleScale;
 
       HeadLightRight.transform.parent = car.Transform;
       HeadLightRight.transform.position = position;
       HeadLightRight.transform.rotation = headRotation;
       HeadLightRight.transform.localPosition += hlOffsetR_;
+      hlRCapsule_.transform.parent = HeadLightRight.transform;
+      hlRCapsule_.transform.position = HeadLightRight.transform.position;
+      hlRCapsule_.transform.rotation = headRotationD;
+      hlRCapsule_.transform.localScale = capsuleScale;
 
       TailLightLeft.transform.parent = car.Transform;
       TailLightLeft.transform.position = position;
       TailLightLeft.transform.rotation = tailRotation;
       TailLightLeft.transform.localPosition += tlOffsetL_;
+      tlLCapsule_.transform.parent = TailLightLeft.transform;
+      tlLCapsule_.transform.position = TailLightLeft.transform.position;
+      tlLCapsule_.transform.rotation = tailRotationD;
+      tlLCapsule_.transform.localScale = capsuleScale;
 
       TailLightRight.transform.parent = car.Transform;
       TailLightRight.transform.position = position;
       TailLightRight.transform.rotation = tailRotation;
       TailLightRight.transform.localPosition += tlOffset_;
+      tlRCapsule_.transform.parent = TailLightRight.transform;
+      tlRCapsule_.transform.position = TailLightRight.transform.position;
+      tlRCapsule_.transform.rotation = tailRotationD;
+      tlRCapsule_.transform.localScale = capsuleScale;
 
       MakeLights();
 
@@ -265,6 +318,47 @@ namespace KN_Lights {
       TailLightRight = new GameObject();
       TailLightRight.AddComponent<Light>();
       TailLightRight.SetActive(IsTailLightRightEnabled);
+
+      InitializeDebug();
+    }
+
+    private void InitializeDebug() {
+      var mat = new UnityEngine.Material(Shader.Find("HDRP/Lit"));
+
+      //todo(trbflxr): headlights color
+      mat.color = Color.white;
+      if (hlLCapsule_ != null) {
+        Object.Destroy(hlLCapsule_);
+      }
+      hlLCapsule_ = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+      hlLCapsule_.AddComponent<MeshRenderer>();
+      hlLCapsule_.GetComponent<MeshRenderer>().material = mat;
+      hlLCapsule_.SetActive(IsDebugObjectsEnabled);
+
+      if (hlRCapsule_ != null) {
+        Object.Destroy(hlRCapsule_);
+      }
+      hlRCapsule_ = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+      hlRCapsule_.AddComponent<MeshRenderer>();
+      hlRCapsule_.GetComponent<MeshRenderer>().material = mat;
+      hlRCapsule_.SetActive(IsDebugObjectsEnabled);
+
+      mat.color = Color.red;
+      if (tlLCapsule_ != null) {
+        Object.Destroy(tlLCapsule_);
+      }
+      tlLCapsule_ = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+      tlLCapsule_.AddComponent<MeshRenderer>();
+      tlLCapsule_.GetComponent<MeshRenderer>().material = mat;
+      tlLCapsule_.SetActive(IsDebugObjectsEnabled);
+
+      if (tlRCapsule_ != null) {
+        Object.Destroy(tlRCapsule_);
+      }
+      tlRCapsule_ = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+      tlRCapsule_.AddComponent<MeshRenderer>();
+      tlRCapsule_.GetComponent<MeshRenderer>().material = mat;
+      tlRCapsule_.SetActive(IsDebugObjectsEnabled);
     }
 
     private void MakeLights() {
