@@ -206,6 +206,8 @@ namespace KN_Lights {
 
     private CARXCar cxCar_;
 
+    private static readonly int BaseColorMap = Shader.PropertyToID("_BaseColorMap");
+
     public CarLights() {
       Initialize();
     }
@@ -323,42 +325,50 @@ namespace KN_Lights {
     }
 
     private void InitializeDebug() {
-      var mat = new UnityEngine.Material(Shader.Find("HDRP/Lit"));
-
       //todo(trbflxr): headlights color
-      mat.color = Color.white;
+      var matWhite = new UnityEngine.Material(Shader.Find("HDRP/Lit"));
+      matWhite.SetTexture(BaseColorMap, CreateTexture(Color.white));
+
+      var matRed = new UnityEngine.Material(Shader.Find("HDRP/Lit"));
+      matRed.SetTexture(BaseColorMap, CreateTexture(Color.red));
+
       if (hlLCapsule_ != null) {
         Object.Destroy(hlLCapsule_);
       }
       hlLCapsule_ = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-      hlLCapsule_.AddComponent<MeshRenderer>();
-      hlLCapsule_.GetComponent<MeshRenderer>().material = mat;
+      hlLCapsule_.GetComponent<MeshRenderer>().material = matWhite;
       hlLCapsule_.SetActive(IsDebugObjectsEnabled);
 
       if (hlRCapsule_ != null) {
         Object.Destroy(hlRCapsule_);
       }
       hlRCapsule_ = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-      hlRCapsule_.AddComponent<MeshRenderer>();
-      hlRCapsule_.GetComponent<MeshRenderer>().material = mat;
+      hlRCapsule_.GetComponent<MeshRenderer>().material = matWhite;
       hlRCapsule_.SetActive(IsDebugObjectsEnabled);
 
-      mat.color = Color.red;
       if (tlLCapsule_ != null) {
         Object.Destroy(tlLCapsule_);
       }
       tlLCapsule_ = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-      tlLCapsule_.AddComponent<MeshRenderer>();
-      tlLCapsule_.GetComponent<MeshRenderer>().material = mat;
+      tlLCapsule_.GetComponent<MeshRenderer>().material = matRed;
       tlLCapsule_.SetActive(IsDebugObjectsEnabled);
 
       if (tlRCapsule_ != null) {
         Object.Destroy(tlRCapsule_);
       }
       tlRCapsule_ = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-      tlRCapsule_.AddComponent<MeshRenderer>();
-      tlRCapsule_.GetComponent<MeshRenderer>().material = mat;
+      tlRCapsule_.GetComponent<MeshRenderer>().material = matRed;
       tlRCapsule_.SetActive(IsDebugObjectsEnabled);
+    }
+
+    private Texture2D CreateTexture(Color color) {
+      var texture = new Texture2D(1, 1, TextureFormat.ARGB32, false) {
+        wrapMode = TextureWrapMode.Clamp
+      };
+      texture.SetPixel(0, 0, color);
+      texture.Apply();
+
+      return texture;
     }
 
     private void MakeLights() {
