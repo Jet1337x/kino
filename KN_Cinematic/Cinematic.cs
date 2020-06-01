@@ -61,10 +61,6 @@ namespace KN_Cinematic {
       ActiveCamera?.ResetState();
     }
 
-    public override bool WantsCaptureInput() {
-      return CinematicEnabled;
-    }
-
     private void ResetAll() {
       ResetState();
 
@@ -127,6 +123,10 @@ namespace KN_Cinematic {
     }
 
     public override void FixedUpdate(int id) {
+      if (id != Id) {
+        return;
+      }
+
       Core.Replay.FixedUpdate();
     }
 

@@ -22,7 +22,7 @@ namespace KN_Core {
     public virtual void ResetState() { }
 
     public virtual bool WantsCaptureInput() {
-      return false;
+      return true;
     }
 
     public virtual bool LockCameraRotation() {

@@ -1,12 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using BepInEx;
 using GameInput;
-using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -430,9 +427,7 @@ namespace KN_Core {
     }
 
     public static object Call(object o, string methodName, params object[] args) {
-      var mi = o.GetType().GetMethod(methodName,
-        System.Reflection.BindingFlags.NonPublic |
-        System.Reflection.BindingFlags.Instance);
+      var mi = o.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
       return mi != null ? mi.Invoke(o, args) : null;
     }
   }

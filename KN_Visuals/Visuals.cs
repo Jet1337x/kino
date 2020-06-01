@@ -37,10 +37,6 @@ namespace KN_Visuals {
       return liveryCamEnabled_;
     }
 
-    public override bool WantsCaptureInput() {
-      return liveryCamEnabled_;
-    }
-
     public override void OnStart() {
       zoom_ = Core.ModConfig.Get<float>("vinylcam_zoom");
       shiftY_ = Core.ModConfig.Get<float>("vinylcam_shift_y");
