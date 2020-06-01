@@ -37,6 +37,7 @@ namespace KN_Core {
 
     public void ResetState() {
       pickingFile_ = false;
+      allowPick_ = false;
     }
 
     public void FixedUpdate() {

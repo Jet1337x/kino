@@ -32,14 +32,24 @@ namespace KN_Lights {
 
     private bool pickingColor_;
 
+    private WorldLights worldLights_;
+
     public Lights(Core core) : base(core, "LIGHTS", 4) {
+      worldLights_ = new WorldLights(core);
+
       carLights_ = new List<CarLights>();
       carLightsToRemove_ = new List<CarLights>();
     }
 
     public override void ResetState() {
-      pickingColor_ = false;
+      ResetPickers();
       Core.ColorPicker.Reset();
+      worldLights_.ResetState();
+    }
+
+    public override void ResetPickers() {
+      pickingColor_ = false;
+      worldLights_.ResetPickers();
     }
 
     public override void OnStart() {
@@ -58,6 +68,8 @@ namespace KN_Lights {
 #if KN_DEV_TOOLS
       carLightsDev_ = LightsConfigSerializer.Deserialize(LightsDevConfigFile, out var devLights) ? new LightsConfig(devLights) : new LightsConfig();
 #endif
+
+      worldLights_.OnStart();
     }
 
     public override void OnStop() {
@@ -67,12 +79,16 @@ namespace KN_Lights {
 #if KN_DEV_TOOLS
       LightsConfigSerializer.Serialize(carLightsDev_, LightsDevConfigFile);
 #endif
+
+      worldLights_.OnStop();
     }
 
     public override void Update(int id) {
       if (id != Id) {
         return;
       }
+
+      worldLights_.Update();
 
       if (Core.PickedCar != null && allowPick_) {
         if (Core.PickedCar != Core.PlayerCar) {
@@ -132,7 +148,7 @@ namespace KN_Lights {
         GuiHeadLightsTab(gui, ref x, ref y);
       }
       else if (slTabActive_) {
-        GuiSunTab(gui, ref x, ref y);
+        worldLights_.OnGUI(gui, ref x, ref y);
       }
     }
 
@@ -202,10 +218,6 @@ namespace KN_Lights {
       GUI.enabled = guiEnabled;
 
       GuiLightsList(gui, ref x, ref y);
-    }
-
-    private void GuiSunTab(Gui gui, ref float x, ref float y) {
-      if (gui.Button(ref x, ref y, "DUMMY", Skin.Button)) { }
     }
 
     private void GuiHeadLights(Gui gui, ref float x, ref float y, float width, float height) {
@@ -376,6 +388,9 @@ namespace KN_Lights {
               break;
             }
             activeLights_ = cl;
+            if (Core.ColorPicker.IsPicking) {
+              Core.ColorPicker.Pick(activeLights_.HeadLightsColor, false);
+            }
           }
         }
       }

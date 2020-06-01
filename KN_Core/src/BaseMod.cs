@@ -20,6 +20,7 @@ namespace KN_Core {
     public virtual void FixedUpdate(int id) { }
 
     public virtual void ResetState() { }
+    public virtual void ResetPickers() { }
 
     public virtual bool WantsCaptureInput() {
       return true;

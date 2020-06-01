@@ -52,12 +52,15 @@ namespace KN_Cinematic {
     }
 
     public override void ResetState() {
+      ResetPickers();
       cameraTabActive_ = true;
       animationTabActive_ = false;
       replayTabActive_ = false;
       Core.DrawTimeline = CinematicEnabled;
       Core.Timeline.IsPlaying = Core.Timeline.IsPlaying && CinematicEnabled;
+    }
 
+    public override void ResetPickers() {
       ActiveCamera?.ResetState();
     }
 

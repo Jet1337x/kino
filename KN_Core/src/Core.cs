@@ -314,6 +314,11 @@ namespace KN_Core {
     private void GuiRenderCheck() {
       if (Controls.KeyDown("gui")) {
         isGuiEnabled_ = !isGuiEnabled_;
+
+        FilePicker.Reset();
+        ColorPicker.Reset();
+        Replay.ResetState();
+        mods_[tabs_[selectedTabPrev_]].ResetPickers();
       }
     }
 

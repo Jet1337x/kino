@@ -29,8 +29,12 @@ namespace KN_Visuals {
     public Visuals(Core core) : base(core, "VISUALS", 3) { }
 
     public override void ResetState() {
-      pickingFile_ = false;
+      ResetPickers();
       liveryCamEnabled_ = false;
+    }
+
+    public override void ResetPickers() {
+      pickingFile_ = false;
     }
 
     public override bool LockCameraRotation() {
