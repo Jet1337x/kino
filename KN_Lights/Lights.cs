@@ -28,6 +28,9 @@ namespace KN_Lights {
     private float clListScrollH_;
     private Vector2 clListScroll_;
 
+    private bool hlTabActive_ = true;
+    private bool slTabActive_;
+
     public Lights(Core core) : base(core, "LIGHTS", 4) {
       carLights_ = new List<CarLights>();
       carLightsToRemove_ = new List<CarLights>();
@@ -103,8 +106,41 @@ namespace KN_Lights {
         return;
       }
 
-      x += Gui.OffsetSmall;
+      GuiSideBar(gui, ref x, ref y);
 
+      x += Gui.OffsetGuiX;
+      gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
+      x += Gui.OffsetGuiX;
+
+      if (hlTabActive_) {
+        GuiHeadLightsTab(gui, ref x, ref y);
+      }
+      else if (slTabActive_) {
+        GuiSunTab(gui, ref x, ref y);
+      }
+    }
+
+    private void GuiSideBar(Gui gui, ref float x, ref float y) {
+      float yBegin = y;
+
+      x += Gui.OffsetSmall;
+      if (gui.ImageButton(ref x, ref y, hlTabActive_ ? Skin.IconHeadlightsActive : Skin.IconHeadlights)) {
+        hlTabActive_ = true;
+        slTabActive_ = false;
+        Core.ShowCars = false;
+      }
+
+      if (gui.ImageButton(ref x, ref y, slTabActive_ ? Skin.IconSunActive : Skin.IconSun)) {
+        hlTabActive_ = false;
+        slTabActive_ = true;
+        Core.ShowCars = false;
+      }
+
+      x += Gui.IconSize;
+      y = yBegin;
+    }
+
+    private void GuiHeadLightsTab(Gui gui, ref float x, ref float y) {
       float yBegin = y;
 
       const float width = Gui.Width * 2.0f;
@@ -150,6 +186,10 @@ namespace KN_Lights {
       GUI.enabled = guiEnabled;
 
       GuiLightsList(gui, ref x, ref y);
+    }
+
+    private void GuiSunTab(Gui gui, ref float x, ref float y) {
+      if (gui.Button(ref x, ref y, "DUMMY", Skin.Button)) { }
     }
 
     private void GuiHeadLights(Gui gui, ref float x, ref float y, float width, float height) {

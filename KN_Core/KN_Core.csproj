@@ -192,5 +192,13 @@
         <EmbeddedResource Include="Resources\PlusHover.png" />
         <EmbeddedResource Include="Resources\PlusActive.png" />
     </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\HeadlightsActive.png" />
+        <EmbeddedResource Include="Resources\HeadlightsHover.png" />
+        <EmbeddedResource Include="Resources\HeadlightsNormal.png" />
+        <EmbeddedResource Include="Resources\SunlightActive.png" />
+        <EmbeddedResource Include="Resources\SunlightHover.png" />
+        <EmbeddedResource Include="Resources\SunlightNormal.png" />
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

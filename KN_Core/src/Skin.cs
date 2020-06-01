@@ -86,6 +86,18 @@ namespace KN_Core {
     private static Texture2D texPlusH_;
     private static Texture2D texPlusA_;
 
+    public static GUISkin IconSun;
+    public static GUISkin IconSunActive;
+    private static Texture2D texSunN_;
+    private static Texture2D texSunH_;
+    private static Texture2D texSunA_;
+
+    public static GUISkin IconHeadlights;
+    public static GUISkin IconHeadlightsActive;
+    private static Texture2D texHeadlightsN_;
+    private static Texture2D texHeadlightsH_;
+    private static Texture2D texHeadlightsA_;
+
     public static GUISkin Button;
     public static GUISkin ButtonActive;
     public static GUISkin ButtonTab;
@@ -158,6 +170,9 @@ namespace KN_Core {
       LoadButtonTex(out texLoopN_, out texLoopH_, out texLoopA_, out IconLoop, out IconLoopActive, "Loop");
       LoadButtonTex(out texMinusN_, out texMinusH_, out texMinusA_, out IconMinus, out IconMinusActive, "Minus");
       LoadButtonTex(out texPlusN_, out texPlusH_, out texPlusA_, out IconPlus, out IconPlusActive, "Plus");
+
+      LoadButtonTex(out texSunN_, out texSunH_, out texSunA_, out IconSun, out IconSunActive, "Sunlight");
+      LoadButtonTex(out texHeadlightsN_, out texHeadlightsH_, out texHeadlightsA_, out IconHeadlights, out IconHeadlightsActive, "Headlights");
 
       MakeMainContainerStyle();
       MakeButtonsStyle();
