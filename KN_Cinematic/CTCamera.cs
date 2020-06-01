@@ -91,12 +91,14 @@ namespace KN_Cinematic {
     }
 
     public void ResetState() {
-      pickTarget_ = false;
-      pickParent_ = false;
-
       if (HookTo && CameraSwitch.instance != null) {
         CameraSwitch.instance.AttachCam();
       }
+    }
+
+    public void ResetPickers() {
+      pickTarget_ = false;
+      pickParent_ = false;
     }
 
     public bool OnGUI(Gui gui, ref float x, ref float y, float width) {

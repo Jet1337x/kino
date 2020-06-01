@@ -53,6 +53,7 @@ namespace KN_Cinematic {
 
     public override void ResetState() {
       ResetPickers();
+      ActiveCamera?.ResetState();
       cameraTabActive_ = true;
       animationTabActive_ = false;
       replayTabActive_ = false;
@@ -61,7 +62,7 @@ namespace KN_Cinematic {
     }
 
     public override void ResetPickers() {
-      ActiveCamera?.ResetState();
+      ActiveCamera?.ResetPickers();
     }
 
     private void ResetAll() {
@@ -126,10 +127,6 @@ namespace KN_Cinematic {
     }
 
     public override void FixedUpdate(int id) {
-      if (id != Id) {
-        return;
-      }
-
       Core.Replay.FixedUpdate();
     }
 
