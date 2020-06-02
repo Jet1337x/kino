@@ -165,16 +165,16 @@ namespace KN_Lights {
     }
 
     private Vector3 hlOffset_;
-    private Vector3 hlOffsetR_;
+    private Vector3 hlOffsetL_;
     public Vector3 HeadlightOffset {
       get => hlOffset_;
       set {
         hlOffset_ = value;
-        hlOffsetR_ = value;
-        hlOffsetR_.x = -hlOffsetR_.x;
+        hlOffsetL_ = value;
+        hlOffsetL_.x = -hlOffsetL_.x;
         if (HeadLightLeft != null) {
-          HeadLightLeft.transform.localPosition = hlOffset_;
-          HeadLightRight.transform.localPosition = hlOffsetR_;
+          HeadLightLeft.transform.localPosition = hlOffsetL_;
+          HeadLightRight.transform.localPosition = hlOffset_;
         }
       }
     }
@@ -255,7 +255,7 @@ namespace KN_Lights {
       HeadLightLeft.transform.parent = car.Transform;
       HeadLightLeft.transform.position = position;
       HeadLightLeft.transform.rotation = headRotation;
-      HeadLightLeft.transform.localPosition += hlOffset_;
+      HeadLightLeft.transform.localPosition += hlOffsetL_;
       hlLCapsule_.transform.parent = HeadLightLeft.transform;
       hlLCapsule_.transform.position = HeadLightLeft.transform.position;
       hlLCapsule_.transform.rotation = headRotationD;
@@ -264,7 +264,7 @@ namespace KN_Lights {
       HeadLightRight.transform.parent = car.Transform;
       HeadLightRight.transform.position = position;
       HeadLightRight.transform.rotation = headRotation;
-      HeadLightRight.transform.localPosition += hlOffsetR_;
+      HeadLightRight.transform.localPosition += hlOffset_;
       hlRCapsule_.transform.parent = HeadLightRight.transform;
       hlRCapsule_.transform.position = HeadLightRight.transform.position;
       hlRCapsule_.transform.rotation = headRotationD;
