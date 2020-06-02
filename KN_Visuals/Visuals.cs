@@ -74,6 +74,9 @@ namespace KN_Visuals {
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
       if (filePicker_.IsPicking) {
+        if (Core.ShowCars) {
+          x += Gui.OffsetGuiX;
+        }
         filePicker_.OnGui(gui, ref x, ref y);
       }
     }

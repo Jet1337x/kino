@@ -147,6 +147,9 @@ namespace KN_Lights {
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
       if (colorPicker_.IsPicking) {
+        if (Core.ShowCars) {
+          x += Gui.OffsetGuiX;
+        }
         colorPicker_.OnGui(gui, ref x, ref y);
       }
     }
