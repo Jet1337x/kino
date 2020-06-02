@@ -6,9 +6,12 @@ namespace KN_Cinematic {
   public class Cinematic : BaseMod {
     private const string FreeCamTag = "kn_freecam";
     private const float EnableButtonOffset = Gui.Height + Gui.OffsetY;
-    private const float ScrollScale = 1.0f;
+
     private const float FovMin = 10.0f;
     private const float FovMax = 120.0f;
+#if KN_DEV_TOOLS
+    private const float ScrollScale = 1.0f;
+#endif
 
     public bool CinematicEnabled { get; private set; }
     public CTKeyframe CurrentKeyframe { get; set; }
@@ -99,6 +102,7 @@ namespace KN_Cinematic {
           ActiveCamera.Rotate(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0.0f);
         }
 
+#if KN_DEV_TOOLS
         ActiveCamera.Fov += Input.mouseScrollDelta.y * ScrollScale;
         if (ActiveCamera.Fov < FovMin) {
           ActiveCamera.Fov = FovMin;
@@ -106,6 +110,7 @@ namespace KN_Cinematic {
         else if (ActiveCamera.Fov > FovMax) {
           ActiveCamera.Fov = FovMax;
         }
+#endif
 
         if (ActiveCamera.Animation.AllowPlay && Core.Timeline.IsPlaying) {
           ActiveCamera.UpdateAnimation(Core.Timeline.CurrentTime);
