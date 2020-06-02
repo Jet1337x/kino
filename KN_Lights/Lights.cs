@@ -272,7 +272,7 @@ namespace KN_Lights {
       }
 
       float brightness = activeLights_?.HeadLightBrightness ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref brightness, 100.0f, 20000.0f, $"HEADLIGHTS BRIGHTNESS: {brightness:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref brightness, 100.0f, 10000.0f, $"HEADLIGHTS BRIGHTNESS: {brightness:F1}")) {
         if (activeLights_ != null) {
           activeLights_.HeadLightBrightness = brightness;
         }
