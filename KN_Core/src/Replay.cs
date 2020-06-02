@@ -21,9 +21,8 @@ namespace KN_Core {
     private readonly List<TFCar> cars_;
     private readonly List<GhostData> ghostData_;
 
-    private bool pickingFile_;
-
     private readonly Core core_;
+    private readonly FilePicker filePicker_;
 
     public Replay(Core container) {
       core_ = container;
@@ -33,10 +32,13 @@ namespace KN_Core {
 
       cars_ = new List<TFCar>();
       ghostData_ = new List<GhostData>();
+
+      filePicker_ = new FilePicker();
     }
 
     public void ResetState() {
-      pickingFile_ = false;
+      filePicker_.Reset();
+      allowPick_ = false;
     }
 
     public void FixedUpdate() {
@@ -58,13 +60,10 @@ namespace KN_Core {
         }
       }
 
-      if (pickingFile_) {
-        if (core_.FilePicker.PickedFile != null) {
-          string file = core_.FilePicker.PickedFile;
-          core_.FilePicker.PickedFile = null;
-          core_.FilePicker.IsPicking = false;
-          pickingFile_ = false;
-
+      if (filePicker_.IsPicking) {
+        string file = filePicker_.PickedFile;
+        if (file != null) {
+          filePicker_.Reset();
           LoadPickedReplay(file);
         }
       }
@@ -85,6 +84,10 @@ namespace KN_Core {
     }
 
     public void PlayPause(bool play) {
+      if (Player.players.Count == 0) {
+        return;
+      }
+
       IsPlaying = play;
       if (IsPlaying) {
         Player.Play();
@@ -135,7 +138,7 @@ namespace KN_Core {
             Log.Write($"[KN_Replay]: Null car");
             continue;
           }
-          int id = car.Base.metaInfo.id;
+          int id = car.Id;
           var vis = car != core_.PlayerCar &&
                     car.Base != null &&
                     car.Base.networkPlayer != null
@@ -205,10 +208,7 @@ namespace KN_Core {
       }
 
       if (gui.Button(ref x, ref y, "LOAD", Skin.Button)) {
-        pickingFile_ = !pickingFile_;
-        if (pickingFile_) {
-          core_.FilePicker.PickIn(Config.ReplaysDir);
-        }
+        filePicker_.Toggle(Config.ReplaysDir);
       }
 
       float yAfterReplay = y;
@@ -226,10 +226,19 @@ namespace KN_Core {
       x = xBegin;
     }
 
+    public void GuiPickers(Gui gui, ref float x, ref float y) {
+      if (filePicker_.IsPicking) {
+        if (core_.ShowCars) {
+          x += Gui.OffsetGuiX;
+        }
+        filePicker_.OnGui(gui, ref x, ref y);
+      }
+    }
+
     private void GuiCarList(Gui gui, ref float x, ref float y) {
       bool enabled = GUI.enabled;
 
-      GUI.enabled = !IsRecording;
+      GUI.enabled = !IsRecording && !core_.IsInGarage;
       if (gui.Button(ref x, ref y, "PICK CAR", Skin.Button)) {
         allowPick_ = !allowPick_;
         core_.ShowCars = allowPick_;

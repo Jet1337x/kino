@@ -18,7 +18,7 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <DefineConstants>DEBUG;TRACE;NO_UNITY_LOG</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
@@ -27,14 +27,17 @@
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
         <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE;ALLOW_VISUALS</DefineConstants>
+        <DefineConstants>TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Production|AnyCPU' ">
-      <DefineConstants>TRACE</DefineConstants>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_DevTools|AnyCPU' ">
+      <DebugType>pdbonly</DebugType>
       <Optimize>true</Optimize>
-      <OutputPath>bin\Production\</OutputPath>
+      <DefineConstants>TRACE;KN_DEV_TOOLS</DefineConstants>
+      <ErrorReport>prompt</ErrorReport>
+      <WarningLevel>4</WarningLevel>
+      <OutputPath>bin\Release_DevTools\</OutputPath>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="0Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -98,6 +101,9 @@
         <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.SharedInternalsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.SharedInternalsModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.TextRenderingModule.dll</HintPath>
         </Reference>
@@ -109,6 +115,7 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="src\About.cs" />
         <Compile Include="src\BaseMod.cs" />
+        <Compile Include="src\ColorPicker.cs" />
         <Compile Include="src\Config.cs" />
         <Compile Include="src\Controls.cs" />
         <Compile Include="src\Core.cs" />
@@ -185,6 +192,14 @@
         <EmbeddedResource Include="Resources\PlusNormal.png" />
         <EmbeddedResource Include="Resources\PlusHover.png" />
         <EmbeddedResource Include="Resources\PlusActive.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\HeadlightsActive.png" />
+        <EmbeddedResource Include="Resources\HeadlightsHover.png" />
+        <EmbeddedResource Include="Resources\HeadlightsNormal.png" />
+        <EmbeddedResource Include="Resources\SunlightActive.png" />
+        <EmbeddedResource Include="Resources\SunlightHover.png" />
+        <EmbeddedResource Include="Resources\SunlightNormal.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

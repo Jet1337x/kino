@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,8 +14,18 @@ namespace KN_Cinematic {
 
     public float Smooth { get; set; }
 
-    public float ActualLength { get; private set; }
-    public float BeginTime { get; set; }
+    private float length_;
+    public float Length {
+      get => length_;
+      set {
+        if (Math.Abs(length_ - value) > 0.001f) {
+          float change = (value - length_) / Mathf.Abs(length_);
+          Keyframes.ForEach(kf => kf.Time = kf.Time * change + kf.Time);
+          MakeAnimation();
+        }
+        length_ = value;
+      }
+    }
 
     //position
     private AnimationCurve curveX_;
@@ -66,8 +77,7 @@ namespace KN_Cinematic {
       Container = container;
       CurrentFrame = null;
       Smooth = 1.0f;
-      ActualLength = 1.0f;
-      BeginTime = 0.0f;
+      length_ = 1.0f;
 
       Keyframes = new List<CTKeyframe>();
 
@@ -108,7 +118,6 @@ namespace KN_Cinematic {
     }
 
     public void Add(CTKeyframe keyframe) {
-      keyframe.Time = keyframe.Time - BeginTime < 0.0f ? 0.0f : keyframe.Time - BeginTime;
       Keyframes.Add(keyframe);
       Keyframes.Sort((kf0, kf1) => kf0.Time.CompareTo(kf1.Time));
 
@@ -195,8 +204,12 @@ namespace KN_Cinematic {
       ClearBuffers();
 
       List<CTKeyframe> values;
-      if (Smooth >= 2.0f) {
-        float smoothCorrected = Smooth * ActualLength;
+      if (Smooth >= 2.0f && Keyframes.Count > 2) {
+        float animBeg = Keyframes.First().Time;
+        float animEnd = Keyframes.Last().Time;
+        float length = animEnd - animBeg;
+
+        float smoothCorrected = Smooth * length;
         values = MakeSmoothCurve(Keyframes, smoothCorrected).Result;
       }
       else {
@@ -332,8 +345,7 @@ namespace KN_Cinematic {
     public void Reset() {
       CurrentFrame = null;
       AllowPlay = false;
-      ActualLength = 0.0f;
-      BeginTime = 0.0f;
+      length_ = 0.0f;
 
       Keyframes.Clear();
 
@@ -395,8 +407,7 @@ namespace KN_Cinematic {
         return;
       }
 
-      time -= BeginTime;
-      if (time >= ActualLength || time < 0.0f) {
+      if (time >= Length || time < 0.0f) {
         return;
       }
 
@@ -449,21 +460,7 @@ namespace KN_Cinematic {
     }
 
     private void UpdateActualLength() {
-      ActualLength = 0.001f;
-      foreach (var kf in Keyframes) {
-        float time = kf.Time - BeginTime;
-        if (time > ActualLength) {
-          ActualLength = time;
-        }
-      }
-    }
-
-    public void Scale(float newLength) {
-      float change = (newLength - ActualLength) / Mathf.Abs(ActualLength);
-      Keyframes.ForEach(kf => kf.Time = kf.Time * change + kf.Time);
-      ActualLength = newLength;
-
-      MakeAnimation();
+      length_ = Keyframes.Max(kf0 => kf0.Time);
     }
 
     public void RemoveKeyframe(CTKeyframe keyframe) {

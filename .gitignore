@@ -10,15 +10,15 @@ KN_Core/obj
 KN_Cinematic/bin
 KN_Cinematic/obj
 
-KN_Livery/bin
-KN_Livery/obj
-
 KN_Visuals/bin
 KN_Visuals/obj
 
 KN_Lights/bin
 KN_Lights/obj
 
-kn_config.xml
+kn_config.knl
+kn_lights.knl
+kn_nwlights.knl
 
 kino.sln.DotSettings
+kino.sln.DotSettings.user

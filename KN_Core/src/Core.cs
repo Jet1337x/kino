@@ -1,10 +1,10 @@
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Reflection;
 using BepInEx;
+using FMODUnity;
 using GameInput;
-using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -18,7 +18,6 @@ namespace KN_Core {
     public bool DrawTimeline { get; set; }
     public Timeline Timeline { get; }
     public Replay Replay { get; }
-    public FilePicker FilePicker { get; }
 
     public const float GuiXLeft = 25.0f;
     public const float GuiYTop = 25.0f;
@@ -26,8 +25,6 @@ namespace KN_Core {
     public float GuiContentBeginY { get; private set; }
     public float GuiTabsHeight { get; private set; }
     public float GuiTabsWidth { get; private set; }
-
-    public string InputHook = string.Empty;
 
     private float carsListHeight_;
     private bool showCars_;
@@ -53,6 +50,9 @@ namespace KN_Core {
     public TFCar PickedCar { get; set; }
     public TFCar PlayerCar { get; private set; }
 
+    public GameObject MainCamera { get; private set; }
+    public GameObject ActiveCamera { get; set; }
+
     public List<TFCar> Cars { get; }
     public List<TFCar> Ghosts { get; }
 
@@ -74,10 +74,14 @@ namespace KN_Core {
 
     private CameraRotation cameraRotation_;
 
+    private static Assembly assembly_;
+
     public Core() {
       CoreInstance = this;
 
       Patcher.Hook();
+
+      assembly_ = Assembly.GetExecutingAssembly();
 
       ModConfig = new Config();
 
@@ -88,7 +92,6 @@ namespace KN_Core {
 
       Timeline = new Timeline(this);
       Replay = new Replay(this);
-      FilePicker = new FilePicker();
 
       mods_ = new Dictionary<string, BaseMod>();
       tabs_ = new List<string>();
@@ -152,6 +155,14 @@ namespace KN_Core {
     }
 
     private void Update() {
+      if (MainCamera == null) {
+        ActiveCamera = null;
+        SetMainCamera(true);
+      }
+      if (ActiveCamera == null && MainCamera != null) {
+        ActiveCamera = MainCamera.gameObject;
+      }
+
       isInGaragePrev_ = IsInGarage;
       IsInGarage = SceneManager.GetActiveScene().name == "SelectCar";
 
@@ -239,12 +250,7 @@ namespace KN_Core {
         CarsGui(ref tx, ref ty);
       }
 
-      if (FilePicker.IsPicking) {
-        if (ShowCars) {
-          tx += Gui.OffsetGuiX;
-        }
-        FilePicker.OnGui(gui_, ref tx, ref ty);
-      }
+      mods_[tabs_[selectedTab_]].GuiPickers(selectedModId_, gui_, ref tx, ref ty);
 
       if (DrawTimeline) {
         Timeline.OnGUI(gui_);
@@ -301,6 +307,9 @@ namespace KN_Core {
     private void GuiRenderCheck() {
       if (Controls.KeyDown("gui")) {
         isGuiEnabled_ = !isGuiEnabled_;
+
+        Replay.ResetState();
+        mods_[tabs_[selectedTabPrev_]].ResetPickers();
       }
     }
 
@@ -308,7 +317,6 @@ namespace KN_Core {
       if (selectedTab_ != selectedTabPrev_) {
         PickedCar = null;
         ShowCars = false;
-        FilePicker.Reset();
         Replay.ResetState();
         mods_[tabs_[selectedTabPrev_]].ResetState();
         selectedModId_ = mods_[tabs_[selectedTab_]].Id;
@@ -338,7 +346,6 @@ namespace KN_Core {
             GUICommonNickNames.SetVisibleNick(c, true);
           }
         }
-
         showNamesToggle_ = false;
       }
     }
@@ -379,10 +386,52 @@ namespace KN_Core {
       }
     }
 
+    //load texture from KN_Core.dll
+    public static Texture2D LoadCoreTexture(string name) {
+      return LoadTexture(assembly_, "KN_Core", name);
+    }
+
+    public static Texture2D LoadTexture(Assembly assembly, string ns, string name) {
+      var tex = new Texture2D(4, 4);
+      using (var stream = assembly.GetManifestResourceStream(ns + ".Resources." + name)) {
+        using (var memoryStream = new MemoryStream()) {
+          if (stream != null) {
+            stream.CopyTo(memoryStream);
+            tex.LoadImage(memoryStream.ToArray());
+          }
+          else {
+            tex = Texture2D.grayTexture;
+          }
+        }
+      }
+      return tex;
+    }
+
+    public bool SetMainCamera(bool camEnabled) {
+      MainCamera = GameObject.FindGameObjectWithTag(KN_Core.Config.CxMainCameraTag);
+      if (MainCamera != null) {
+        MainCamera.GetComponent<Camera>().enabled = camEnabled;
+        MainCamera.GetComponent<StudioListener>().enabled = camEnabled;
+        return true;
+      }
+      return false;
+    }
+
+    public static Color32 DecodeColor(int color) {
+      return new Color32 {
+        a = (byte) ((color >> 24) & 0xff),
+        r = (byte) ((color >> 16) & 0xff),
+        g = (byte) ((color >> 8) & 0xff),
+        b = (byte) (color & 0xff)
+      };
+    }
+
+    public static int EncodeColor(Color32 color) {
+      return (color.a & 0xff) << 24 | (color.r & 0xff) << 16 | (color.g & 0xff) << 8 | (color.b & 0xff);
+    }
+
     public static object Call(object o, string methodName, params object[] args) {
-      var mi = o.GetType().GetMethod(methodName,
-        System.Reflection.BindingFlags.NonPublic |
-        System.Reflection.BindingFlags.Instance);
+      var mi = o.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
       return mi != null ? mi.Invoke(o, args) : null;
     }
   }
