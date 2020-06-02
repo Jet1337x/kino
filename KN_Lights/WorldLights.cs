@@ -24,6 +24,7 @@ namespace KN_Lights {
     private float skyExposureDefault_;
     private GameObject sun_;
     private Light sunLight_;
+    private float sunTemp_;
     private HDAdditionalLightData sunLightHd_;
 
     private float ambientLight_;
@@ -68,24 +69,33 @@ namespace KN_Lights {
 
       bool guiEnabled = GUI.enabled;
 
+      bool fogOk = fog_ != null;
+      bool sunOk = sunLight_ != null;
+      bool skyOk = sky_ != null;
+      bool staticSkyOk = staticSky_ != null;
+      bool hdLightOk = sunLightHd_ != null;
+
       if (gui.Button(ref x, ref y, width, height, "RESET TO DEFAULT", Skin.Button)) {
-        if (fog_ != null) {
+        if (fogOk) {
           fog_.meanFreePath.Override(fogDistanceDefault_);
         }
-        if (sunLight_ != null) {
+        if (sunOk) {
           sunLight_.intensity = sunBrightnessDefault_;
         }
-        if (sky_ != null) {
+        if (skyOk) {
           sky_.exposure.Override(skyExposureDefault_);
         }
-        if (staticSky_ != null) {
+        if (staticSkyOk) {
           staticSky_.exposure.Override(ambientLightDefault_);
+        }
+        if (hdLightOk) {
+          sunLightHd_.EnableColorTemperature(false);
         }
 
         fogEnabled_ = false;
       }
 
-      GUI.enabled = fog_ != null;
+      GUI.enabled = fogOk;
       if (gui.Button(ref x, ref y, width, height, "FOG", fogEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         fogEnabled_ = !fogEnabled_;
         fog_.meanFreePath.Override(fogEnabled_ ? fogDistance_ : fogDistanceDefault_);
@@ -93,37 +103,42 @@ namespace KN_Lights {
 
       GUI.enabled = fogEnabled_;
       if (gui.SliderH(ref x, ref y, width, ref fogDistance_, 5.0f, fogDistanceDefault_, $"FOG DISTANCE: {fogDistance_:F1}")) {
-        if (fog_ != null) {
+        if (fogOk) {
           fog_.meanFreePath.Override(fogDistance_);
         }
       }
       GUI.enabled = guiEnabled;
 
-      bool sunOk = sunLight_ != null;
       GUI.enabled = sunOk;
       sunBrightness_ = sunOk ? sunLight_.intensity : 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref sunBrightness_, 0.1f, 50.0f, $"SUNLIGHT BRIGHTNESS: {sunBrightness_:F1}")) {
-        if (fog_ != null) {
+      if (gui.SliderH(ref x, ref y, width, ref sunBrightness_, 0.0f, 50.0f, $"SUNLIGHT BRIGHTNESS: {sunBrightness_:F1}")) {
+        if (sunOk) {
           sunLight_.intensity = sunBrightness_;
         }
       }
 
-      bool skyOk = sky_ != null;
       GUI.enabled = skyOk;
       skyExposure_ = sunOk ? sky_.exposure.value : 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref skyExposure_, 0.1f, 50.0f, $"SKYBOX EXPOSURE: {skyExposure_:F1}")) {
-        if (sky_ != null) {
+      if (gui.SliderH(ref x, ref y, width, ref skyExposure_, 0.0f, 10.0f, $"SKYBOX EXPOSURE: {skyExposure_:F1}")) {
+        if (skyOk) {
           sky_.exposure.Override(skyExposure_);
         }
       }
 
-      bool staticSkyOk = staticSky_ != null;
       GUI.enabled = staticSkyOk;
       ambientLight_ = staticSkyOk ? staticSky_.exposure.value : 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref ambientLight_, 0.1f, 50.0f, $"AMBIENT LIGHT: {ambientLight_:F1}")) {
-        if (staticSky_ != null) {
+      if (gui.SliderH(ref x, ref y, width, ref ambientLight_, 0.0f, 5.0f, $"AMBIENT LIGHT: {ambientLight_:F1}")) {
+        if (staticSkyOk) {
           staticSky_.exposure.Override(ambientLight_);
           typeof(SkySettings).GetField("m_SkySettings", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(staticSkyBeh_, staticSky_);
+        }
+      }
+
+      GUI.enabled = hdLightOk;
+      if (gui.SliderH(ref x, ref y, width, ref sunTemp_, 100.0f, 20000.0f, $"COLOR TEMPERATURE: {sunTemp_:F1}")) {
+        if (hdLightOk) {
+          sunLightHd_.EnableColorTemperature(true);
+          sunLightHd_.SetColor(Color.white, sunTemp_);
         }
       }
 
