@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using KN_Core;
 using UnityEngine;
@@ -7,14 +8,16 @@ namespace KN_Lights {
   public class Lights : BaseMod {
     public static Texture2D LightMask;
 
-    public const string LightsConfigFile = "kn_lights.knl";
-    public const string NwLightsConfigFile = "kn_nwlights.knl";
+    private const string LightsConfigFile = "kn_lights.knl";
+    private const string NwLightsConfigFile = "kn_nwlights.knl";
+    private const string LightsConfigDefault = "kn_lights_default.knl";
 #if KN_DEV_TOOLS
-    public const string LightsDevConfigFile = "kn_lights_dev.knl";
+    private const string LightsDevConfigFile = "kn_lights_dev.knl";
 #endif
 
     private LightsConfig lightsConfig_;
     private NwLightsConfig nwLightsConfig_;
+    private LightsConfig lightsConfigDefault_;
 #if KN_DEV_TOOLS
     private LightsConfig carLightsDev_;
 #endif
@@ -60,14 +63,10 @@ namespace KN_Lights {
 
       LightMask = Core.LoadTexture(assembly, "KN_Lights", "HeadLightMask.png");
 
-      if (LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights)) {
-        lightsConfig_ = new LightsConfig(lights);
-      }
-      else {
-        lightsConfig_ = new LightsConfig();
-        //todo(trbflxr): load default
-      }
+      lightsConfig_ = LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights) ? new LightsConfig(lights) : new LightsConfig();
       nwLightsConfig_ = LightsConfigSerializer.Deserialize(NwLightsConfigFile, out var nwLights) ? new NwLightsConfig(nwLights) : new NwLightsConfig();
+
+      LoadDefaultLights(assembly);
 #if KN_DEV_TOOLS
       carLightsDev_ = LightsConfigSerializer.Deserialize(LightsDevConfigFile, out var devLights) ? new LightsConfig(devLights) : new LightsConfig();
 #endif
@@ -458,26 +457,30 @@ namespace KN_Lights {
       activeLights_ = lights;
     }
 
-    private static CarLights CreateLights(TFCar car, LightsConfigBase config) {
-      var light = new CarLights {
-        HeadLightsColor = Color.white,
-        Pitch = 0.0f,
-        PitchTail = 0.0f,
-        HeadLightBrightness = 1500.0f,
-        HeadLightAngle = 100.0f,
-        TailLightBrightness = 80.0f,
-        TailLightAngle = 170.0f,
-        IsHeadLightLeftEnabled = true,
-        IsHeadLightRightEnabled = true,
-        HeadlightOffset = new Vector3(0.6f, 0.6f, 1.9f),
-        IsTailLightLeftEnabled = true,
-        IsTailLightRightEnabled = true,
-        TailLightOffset = new Vector3(0.6f, 0.6f, -1.6f)
-      };
+    private CarLights CreateLights(TFCar car, LightsConfigBase config) {
+      var light = lightsConfigDefault_.GetLights(car.Id);
+      if (light == null) {
+        light = new CarLights {
+          HeadLightsColor = Color.white,
+          Pitch = 0.0f,
+          PitchTail = 0.0f,
+          HeadLightBrightness = 1500.0f,
+          HeadLightAngle = 100.0f,
+          TailLightBrightness = 80.0f,
+          TailLightAngle = 170.0f,
+          IsHeadLightLeftEnabled = true,
+          IsHeadLightRightEnabled = true,
+          HeadlightOffset = new Vector3(0.6f, 0.6f, 1.9f),
+          IsTailLightLeftEnabled = true,
+          IsTailLightRightEnabled = true,
+          TailLightOffset = new Vector3(0.6f, 0.6f, -1.6f)
+        };
+        Log.Write($"[KN_Lights]: Lights for car '{car.Id}' not found. Creating default.");
+      }
 
       light.Attach(car, car.Name);
       config.AddLights(light);
-      Log.Write($"[KN_Lights]: New car lights created for '{light.CarId}'");
+      Log.Write($"[KN_Lights]: Car lights attached to '{car.Id}'");
 
       return light;
     }
@@ -498,6 +501,14 @@ namespace KN_Lights {
               }
             }
           }
+        }
+      }
+    }
+
+    private void LoadDefaultLights(Assembly assembly) {
+      using (var stream = assembly.GetManifestResourceStream("KN_Lights.Resources." + LightsConfigDefault)) {
+        if (LightsConfigSerializer.Deserialize(stream, out var lights)) {
+          lightsConfigDefault_ = new LightsConfig(lights);
         }
       }
     }

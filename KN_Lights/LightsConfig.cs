@@ -27,18 +27,31 @@ namespace KN_Lights {
       return true;
     }
 
+    public static bool Deserialize(Stream stream, out List<CarLights> lights) {
+      try {
+        lights = new List<CarLights>();
+        using (var reader = new BinaryReader(stream)) {
+          int size = reader.ReadInt32();
+          for (int i = 0; i < size; i++) {
+            var cl = new CarLights();
+            cl.Deserialize(reader);
+            lights.Add(cl);
+          }
+        }
+      }
+      catch (Exception e) {
+        Log.Write($"[KN_Lights]: Unable to read stream, {e.Message}");
+        lights = default;
+        return false;
+      }
+      return true;
+    }
+
     public static bool Deserialize(string file, out List<CarLights> lights) {
       try {
         lights = new List<CarLights>();
         using (var memoryStream = new MemoryStream(File.ReadAllBytes(Config.BaseDir + file))) {
-          using (var reader = new BinaryReader(memoryStream)) {
-            int size = reader.ReadInt32();
-            for (int i = 0; i < size; i++) {
-              var cl = new CarLights();
-              cl.Deserialize(reader);
-              lights.Add(cl);
-            }
-          }
+          return Deserialize(memoryStream, out lights);
         }
       }
       catch (Exception e) {
@@ -46,7 +59,6 @@ namespace KN_Lights {
         lights = default;
         return false;
       }
-      return true;
     }
   }
 
