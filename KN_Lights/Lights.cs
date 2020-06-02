@@ -30,6 +30,8 @@ namespace KN_Lights {
     private bool hlTabActive_ = true;
     private bool slTabActive_;
 
+    private float carLightsDiscard_;
+
     private readonly WorldLights worldLights_;
 
     private readonly ColorPicker colorPicker_;
@@ -70,6 +72,8 @@ namespace KN_Lights {
       carLightsDev_ = LightsConfigSerializer.Deserialize(LightsDevConfigFile, out var devLights) ? new LightsConfig(devLights) : new LightsConfig();
 #endif
 
+      carLightsDiscard_ = Core.ModConfig.Get<float>("cl_discard_distance");
+
       worldLights_.OnStart();
     }
 
@@ -85,6 +89,8 @@ namespace KN_Lights {
     }
 
     public override void Update(int id) {
+      OptimizeLights();
+
       if (id != Id) {
         return;
       }
@@ -205,6 +211,13 @@ namespace KN_Lights {
           activeLights_.IsDebugObjectsEnabled = !activeLights_.IsDebugObjectsEnabled;
         }
       }
+
+      if (gui.SliderH(ref x, ref y, width, ref carLightsDiscard_, 50.0f, 500.0f, $"HIDE LIGHTS AFTER: {carLightsDiscard_:F1}")) {
+        Core.ModConfig.Set("cl_discard_distance", carLightsDiscard_);
+      }
+
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.OffsetY;
 
       GuiHeadLights(gui, ref x, ref y, width, height);
 
@@ -461,6 +474,26 @@ namespace KN_Lights {
       Log.Write($"[KN_Lights]: New car lights created for '{light.CarId}'");
 
       return light;
+    }
+
+    private void OptimizeLights() {
+      var cam = Core.ActiveCamera;
+      if (cam != null) {
+        foreach (var cl in carLights_) {
+          if (cl.Car != null) {
+            if (Vector3.Distance(cam.transform.position, cl.Car.Transform.position) > carLightsDiscard_) {
+              if (cl.IsLightsEnabled) {
+                cl.IsLightsEnabled = false;
+              }
+            }
+            else {
+              if (!cl.IsLightsEnabled) {
+                cl.IsLightsEnabled = true;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

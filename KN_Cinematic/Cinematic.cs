@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using FMODUnity;
 using KN_Core;
 using UnityEngine;
 
@@ -13,7 +12,6 @@ namespace KN_Cinematic {
 
     public bool CinematicEnabled { get; private set; }
     public CTKeyframe CurrentKeyframe { get; set; }
-    public GameObject MainCamera { get; private set; }
 
     public CTCamera FreeCamera { get; private set; }
     public CTCamera ActiveCamera { get; private set; }
@@ -74,19 +72,20 @@ namespace KN_Cinematic {
       if (ActiveCamera != null) {
         Object.Destroy(ActiveCamera.GameObject);
         ActiveCamera = null;
+        Core.ActiveCamera = null;
       }
 
       ctCameraId_ = 0;
       ctCameras_.Clear();
 
-      SetMainCamera(true);
+      Core.SetMainCamera(true);
       ToggleCinematicCamera();
 
       Core.Timeline.Reset();
     }
 
     public override void Update(int id) {
-      if (MainCamera == null) {
+      if (Core.MainCamera == null) {
         CinematicEnabled = false;
         ResetAll();
       }
@@ -628,6 +627,10 @@ namespace KN_Cinematic {
       ActiveCamera = camera ?? FreeCamera;
       if (ActiveCamera != null) {
         ActiveCamera.Enabled = true;
+        Core.ActiveCamera = ActiveCamera.GameObject;
+      }
+      else {
+        Core.ActiveCamera = null;
       }
 
       if (ActiveCamera != null && ActiveCamera != FreeCamera) {
@@ -646,16 +649,6 @@ namespace KN_Cinematic {
           Core.ToggleCxUi(true);
         }
       }
-    }
-
-    private bool SetMainCamera(bool enabled) {
-      MainCamera = GameObject.FindGameObjectWithTag(Config.CxMainCameraTag);
-      if (MainCamera != null) {
-        MainCamera.GetComponent<Camera>().enabled = enabled;
-        MainCamera.GetComponent<StudioListener>().enabled = enabled;
-        return true;
-      }
-      return false;
     }
 
     public void DisableAllCamerasBut(string tag) {
@@ -680,9 +673,9 @@ namespace KN_Cinematic {
 
     private void ToggleCinematicCamera() {
       if (CinematicEnabled) {
-        if (SetMainCamera(false)) {
+        if (Core.SetMainCamera(false)) {
           if (FreeCamera == null) {
-            FreeCamera = new CTCamera(this, MainCamera, FreeCamTag);
+            FreeCamera = new CTCamera(this, Core.MainCamera, FreeCamTag);
             Log.Write("[KN_Cinematic]: Free camera created");
             SetActiveCamera(FreeCamera);
           }
@@ -704,7 +697,7 @@ namespace KN_Cinematic {
         }
 
         SetActiveCamera(null);
-        SetMainCamera(true);
+        Core.SetMainCamera(true);
         if (FreeCamera != null) {
           FreeCamera.Enabled = false;
         }
@@ -719,6 +712,7 @@ namespace KN_Cinematic {
       if (camera == ActiveCamera) {
         ActiveCamera = FreeCamera;
         ActiveCamera.Enabled = true;
+        Core.ActiveCamera = ActiveCamera.GameObject;
       }
       camera.Enabled = false;
       camera.RemoveAnimation();
@@ -727,11 +721,11 @@ namespace KN_Cinematic {
     }
 
     private void ResetTransform() {
-      if (MainCamera == null || ActiveCamera == null) {
+      if (Core.MainCamera == null || ActiveCamera == null) {
         return;
       }
 
-      var transform = MainCamera.transform;
+      var transform = Core.MainCamera.transform;
       ActiveCamera.GameObject.transform.position = transform.position;
       ActiveCamera.GameObject.transform.rotation = transform.rotation;
     }

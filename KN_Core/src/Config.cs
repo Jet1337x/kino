@@ -185,6 +185,8 @@ namespace KN_Core {
       defaultParams_["r_points"] = false;
       defaultParams_["hide_cx_ui"] = true;
 
+      defaultParams_["cl_discard_distance"] = 170.0f;
+
       Controls.LoadDefault();
 
       initialized_ = true;

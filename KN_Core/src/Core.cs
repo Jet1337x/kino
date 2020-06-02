@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
+using FMODUnity;
 using GameInput;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -48,6 +49,9 @@ namespace KN_Core {
 
     public TFCar PickedCar { get; set; }
     public TFCar PlayerCar { get; private set; }
+
+    public GameObject MainCamera { get; private set; }
+    public GameObject ActiveCamera { get; set; }
 
     public List<TFCar> Cars { get; }
     public List<TFCar> Ghosts { get; }
@@ -151,6 +155,14 @@ namespace KN_Core {
     }
 
     private void Update() {
+      if (MainCamera == null) {
+        ActiveCamera = null;
+        SetMainCamera(true);
+      }
+      if (ActiveCamera == null && MainCamera != null) {
+        ActiveCamera = MainCamera.gameObject;
+      }
+
       isInGaragePrev_ = IsInGarage;
       IsInGarage = SceneManager.GetActiveScene().name == "SelectCar";
 
@@ -393,6 +405,16 @@ namespace KN_Core {
         }
       }
       return tex;
+    }
+
+    public bool SetMainCamera(bool camEnabled) {
+      MainCamera = GameObject.FindGameObjectWithTag(KN_Core.Config.CxMainCameraTag);
+      if (MainCamera != null) {
+        MainCamera.GetComponent<Camera>().enabled = camEnabled;
+        MainCamera.GetComponent<StudioListener>().enabled = camEnabled;
+        return true;
+      }
+      return false;
     }
 
     public static Color32 DecodeColor(int color) {

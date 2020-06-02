@@ -44,6 +44,26 @@ namespace KN_Lights {
     public bool IsNetworkCar { get; private set; }
     public string UserName { get; private set; }
 
+    private bool lightEnabled_ = true;
+    public bool IsLightsEnabled {
+      get => lightEnabled_;
+      set {
+        lightEnabled_ = value;
+        if (lightEnabled_) {
+          HeadLightLeft.SetActive(IsHeadLightLeftEnabled);
+          HeadLightRight.SetActive(IsHeadLightRightEnabled);
+          TailLightLeft.SetActive(IsTailLightLeftEnabled);
+          TailLightRight.SetActive(IsTailLightRightEnabled);
+        }
+        else {
+          HeadLightLeft.SetActive(false);
+          HeadLightRight.SetActive(false);
+          TailLightLeft.SetActive(false);
+          TailLightRight.SetActive(false);
+        }
+      }
+    }
+
     private Color hlColor_;
     public Color HeadLightsColor {
       get => hlColor_;
