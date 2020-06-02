@@ -62,7 +62,7 @@ namespace KN_Core {
     private bool showNamesToggle_ = true;
 
     private readonly Gui gui_;
-    private bool isGuiEnabled_;
+    public bool IsGuiEnabled { get; set; }
 
     private readonly Dictionary<string, BaseMod> mods_;
     private readonly List<string> tabs_;
@@ -177,11 +177,11 @@ namespace KN_Core {
       bool captureInput = mods_[tabs_[selectedTab_]].WantsCaptureInput();
       bool lockCameraRot = IsInGarage && mods_[tabs_[selectedTab_]].LockCameraRotation();
 
-      if (isGuiEnabled_ && IsInGarage && cameraRotation_ != null && lockCameraRot) {
+      if (IsGuiEnabled && IsInGarage && cameraRotation_ != null && lockCameraRot) {
         cameraRotation_.Stop();
       }
 
-      if (isGuiEnabled_ && captureInput) {
+      if (IsGuiEnabled && captureInput) {
         if (InputManager.GetLockedInputObject() != this) {
           InputManager.LockInput(this);
         }
@@ -214,7 +214,7 @@ namespace KN_Core {
     }
 
     public void OnGUI() {
-      if (!isGuiEnabled_) {
+      if (!IsGuiEnabled) {
         ShowCars = false;
         PickedCar = null;
         return;
@@ -306,7 +306,7 @@ namespace KN_Core {
 
     private void GuiRenderCheck() {
       if (Controls.KeyDown("gui")) {
-        isGuiEnabled_ = !isGuiEnabled_;
+        IsGuiEnabled = !IsGuiEnabled;
 
         Replay.ResetState();
         mods_[tabs_[selectedTabPrev_]].ResetPickers();

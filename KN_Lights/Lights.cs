@@ -88,6 +88,10 @@ namespace KN_Lights {
     }
 
     public override void Update(int id) {
+      if (!Core.IsGuiEnabled && activeLights_ != null && activeLights_.IsDebugObjectsEnabled) {
+        activeLights_.IsDebugObjectsEnabled = false;
+      }
+
       OptimizeLights();
 
       if (id != Id) {
