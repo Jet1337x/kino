@@ -101,6 +101,9 @@ namespace KN_Lights {
         if (Core.PickedCar != Core.PlayerCar) {
           EnableLightsOn(Core.PickedCar);
         }
+        else {
+          EnableLightsOnOnwCar();
+        }
         Core.PickedCar = null;
         allowPick_ = false;
       }
@@ -191,10 +194,13 @@ namespace KN_Lights {
       bool guiEnabled = GUI.enabled;
       GUI.enabled = Core.PlayerCar != null;
 
-      if (gui.Button(ref x, ref y, width, height, "ADD LIGHTS", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, "ENABLE OWN LIGHTS", Skin.Button)) {
         colorPicker_.Reset();
         EnableLightsOnOnwCar();
       }
+
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.OffsetY;
 
       GUI.enabled = activeLights_ != null;
 
