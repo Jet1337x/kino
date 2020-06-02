@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using KN_Core;
 using UnityEngine;
@@ -13,44 +14,53 @@ namespace KN_Lights {
     private Volume volume_;
     private HDRISky sky_;
 
+    private bool enabled_;
+
     private bool fogEnabled_;
     private Fog fog_;
-    private float fogDistance_;
-    private float fogDistanceDefault_;
 
-    private float sunBrightness_;
-    private float sunBrightnessDefault_;
-    private float skyExposure_;
-    private float skyExposureDefault_;
     private GameObject sun_;
     private Light sunLight_;
-    private float sunTemp_;
     private HDAdditionalLightData sunLightHd_;
 
-    private float ambientLight_;
-    private float ambientLightDefault_;
     private SkySettings staticSky_;
     private MonoBehaviour staticSkyBeh_;
 
     private bool defaultLoaded_;
+    private float fogDistanceDefault_;
+    private float sunBrightnessDefault_;
+    private float skyExposureDefault_;
+    private float ambientLightDefault_;
+
+    private bool dataLoaded_;
+    private WorldLightsData data_;
+    private readonly WorldLightsData defaultData_;
+    private readonly List<WorldLightsData> allData_;
 
     public WorldLights(Core core) {
       core_ = core;
+      allData_ = new List<WorldLightsData>();
+      data_ = new WorldLightsData();
+      defaultData_ = new WorldLightsData();
     }
 
-    public void ResetState() { }
+    public void OnStart() {
+      if (WorldLightsDataSerializer.Deserialize(WorldLightsData.ConfigFile, out var data)) {
+        Log.Write($"[KN_Lights]: World lights loaded {data.Count} items");
+        allData_.AddRange(data);
+      }
+    }
 
-    public void ResetPickers() { }
-
-    public void OnStop() { }
-
-    public void OnStart() { }
+    public void OnStop() {
+      WorldLightsDataSerializer.Serialize(allData_, WorldLightsData.ConfigFile);
+    }
 
     public void Update() {
       if (!core_.IsInGarage) {
         UpdateMap();
       }
       else {
+        enabled_ = false;
         volume_ = null;
         sky_ = null;
         fog_ = null;
@@ -60,6 +70,7 @@ namespace KN_Lights {
         staticSky_ = null;
         staticSkyBeh_ = null;
         fogEnabled_ = false;
+        data_ = defaultData_;
       }
     }
 
@@ -75,70 +86,51 @@ namespace KN_Lights {
       bool staticSkyOk = staticSky_ != null;
       bool hdLightOk = sunLightHd_ != null;
 
-      if (gui.Button(ref x, ref y, width, height, "RESET TO DEFAULT", Skin.Button)) {
-        if (fogOk) {
-          fog_.meanFreePath.Override(fogDistanceDefault_);
-        }
-        if (sunOk) {
-          sunLight_.intensity = sunBrightnessDefault_;
-        }
-        if (skyOk) {
-          sky_.exposure.Override(skyExposureDefault_);
-        }
-        if (staticSkyOk) {
-          staticSky_.exposure.Override(ambientLightDefault_);
-        }
-        if (hdLightOk) {
-          sunLightHd_.EnableColorTemperature(false);
-        }
-
-        fogEnabled_ = false;
+      string text = enabled_ ? "DISABLE" : "ENABLE";
+      if (gui.Button(ref x, ref y, width, height, text, enabled_ ? Skin.ButtonActive : Skin.Button)) {
+        ToggleLights();
       }
 
-      GUI.enabled = fogOk;
+      GUI.enabled = fogOk && enabled_;
       if (gui.Button(ref x, ref y, width, height, "FOG", fogEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         fogEnabled_ = !fogEnabled_;
-        fog_.meanFreePath.Override(fogEnabled_ ? fogDistance_ : fogDistanceDefault_);
+        fog_.meanFreePath.Override(fogEnabled_ ? data_.FogDistance : fogDistanceDefault_);
       }
 
-      GUI.enabled = fogEnabled_;
-      if (gui.SliderH(ref x, ref y, width, ref fogDistance_, 5.0f, fogDistanceDefault_, $"FOG DISTANCE: {fogDistance_:F1}")) {
+      GUI.enabled = fogEnabled_ && enabled_;
+      if (gui.SliderH(ref x, ref y, width, ref data_.FogDistance, 5.0f, fogDistanceDefault_, $"FOG DISTANCE: {data_.FogDistance:F1}")) {
         if (fogOk) {
-          fog_.meanFreePath.Override(fogDistance_);
+          fog_.meanFreePath.Override(data_.FogDistance);
         }
       }
-      GUI.enabled = guiEnabled;
 
-      GUI.enabled = sunOk;
-      sunBrightness_ = sunOk ? sunLight_.intensity : 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref sunBrightness_, 0.0f, 50.0f, $"SUNLIGHT BRIGHTNESS: {sunBrightness_:F1}")) {
+      GUI.enabled = sunOk && enabled_;
+      if (gui.SliderH(ref x, ref y, width, ref data_.SunBrightness, 0.0f, 50.0f, $"SUNLIGHT BRIGHTNESS: {data_.SunBrightness:F1}")) {
         if (sunOk) {
-          sunLight_.intensity = sunBrightness_;
+          sunLight_.intensity = data_.SunBrightness;
         }
       }
 
-      GUI.enabled = skyOk;
-      skyExposure_ = sunOk ? sky_.exposure.value : 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref skyExposure_, 0.0f, 10.0f, $"SKYBOX EXPOSURE: {skyExposure_:F1}")) {
+      GUI.enabled = skyOk && enabled_;
+      if (gui.SliderH(ref x, ref y, width, ref data_.SkyExposure, 0.0f, 10.0f, $"SKYBOX EXPOSURE: {data_.SkyExposure:F1}")) {
         if (skyOk) {
-          sky_.exposure.Override(skyExposure_);
+          sky_.exposure.Override(data_.SkyExposure);
         }
       }
 
-      GUI.enabled = staticSkyOk;
-      ambientLight_ = staticSkyOk ? staticSky_.exposure.value : 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref ambientLight_, 0.0f, 5.0f, $"AMBIENT LIGHT: {ambientLight_:F1}")) {
+      GUI.enabled = staticSkyOk && enabled_;
+      if (gui.SliderH(ref x, ref y, width, ref data_.AmbientLight, 0.0f, 5.0f, $"AMBIENT LIGHT: {data_.AmbientLight:F1}")) {
         if (staticSkyOk) {
-          staticSky_.exposure.Override(ambientLight_);
+          staticSky_.exposure.Override(data_.AmbientLight);
           typeof(SkySettings).GetField("m_SkySettings", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(staticSkyBeh_, staticSky_);
         }
       }
 
-      GUI.enabled = hdLightOk;
-      if (gui.SliderH(ref x, ref y, width, ref sunTemp_, 100.0f, 20000.0f, $"COLOR TEMPERATURE: {sunTemp_:F1}")) {
+      GUI.enabled = hdLightOk && enabled_;
+      if (gui.SliderH(ref x, ref y, width, ref data_.SunTemp, 1500.0f, 20000.0f, $"COLOR TEMPERATURE: {data_.SunTemp:F1}")) {
         if (hdLightOk) {
           sunLightHd_.EnableColorTemperature(true);
-          sunLightHd_.SetColor(Color.white, sunTemp_);
+          sunLightHd_.SetColor(Color.white, data_.SunTemp);
         }
       }
 
@@ -200,11 +192,12 @@ namespace KN_Lights {
           volume_.profile.TryGet(out sky_);
           volume_.profile.TryGet(out fog_);
           if (fog_ != null) {
-            fogDistance_ = fog_.meanFreePath.value;
+            data_.FogDistance = fog_.meanFreePath.value;
           }
         }
 
         defaultLoaded_ = false;
+        dataLoaded_ = false;
       }
 
       if (sun_ == null) {
@@ -215,6 +208,7 @@ namespace KN_Lights {
         }
 
         defaultLoaded_ = false;
+        dataLoaded_ = false;
       }
 
       if (staticSky_ == null) {
@@ -228,9 +222,57 @@ namespace KN_Lights {
         }
 
         defaultLoaded_ = false;
+        dataLoaded_ = false;
       }
 
+      if (map_ != null) {
+        SelectMap(map_.name);
+      }
       SaveDefault();
+    }
+
+    private void ToggleLights() {
+      enabled_ = !enabled_;
+
+      bool fogOk = fog_ != null;
+      bool sunOk = sunLight_ != null;
+      bool skyOk = sky_ != null;
+      bool staticSkyOk = staticSky_ != null;
+      bool hdLightOk = sunLightHd_ != null;
+
+      if (enabled_) {
+        if (sunOk) {
+          sunLight_.intensity = data_.SunBrightness;
+        }
+        if (skyOk) {
+          sky_.exposure.Override(data_.SkyExposure);
+        }
+        if (staticSkyOk) {
+          staticSky_.exposure.Override(data_.AmbientLight);
+        }
+        if (hdLightOk) {
+          sunLightHd_.EnableColorTemperature(true);
+          sunLightHd_.SetColor(Color.white, data_.SunTemp);
+        }
+      }
+      else {
+        if (fogOk) {
+          fog_.meanFreePath.Override(fogDistanceDefault_);
+        }
+        if (sunOk) {
+          sunLight_.intensity = sunBrightnessDefault_;
+        }
+        if (skyOk) {
+          sky_.exposure.Override(skyExposureDefault_);
+        }
+        if (staticSkyOk) {
+          staticSky_.exposure.Override(ambientLightDefault_);
+        }
+        if (hdLightOk) {
+          sunLightHd_.EnableColorTemperature(false);
+        }
+        fogEnabled_ = false;
+      }
     }
 
     private void SaveDefault() {
@@ -252,6 +294,34 @@ namespace KN_Lights {
       }
 
       defaultLoaded_ = true;
+    }
+
+    private void SelectMap(string map) {
+      if (dataLoaded_) {
+        return;
+      }
+
+      int index = allData_.FindIndex(wd => wd.Map == map);
+      if (index != -1) {
+        data_ = allData_[index];
+        Log.Write($"[KN_Lights]: World lights loaded for map '{map}'");
+      }
+      else {
+        allData_.Add(new WorldLightsData(map));
+        data_ = allData_.Last();
+
+        data_.FogDistance = fog_ != null ? fog_.meanFreePath.value : 0.0f;
+        data_.SunBrightness = sunLight_ != null ? sunLight_.intensity : 0.0f;
+        data_.SkyExposure = sky_ != null ? sky_.exposure.value : 0.0f;
+        data_.AmbientLight = staticSky_ != null ? staticSky_.exposure.value : 0.0f;
+
+        Log.Write($"[KN_Lights]: World lights created for map '{map}'");
+      }
+
+      enabled_ = false;
+      fogEnabled_ = false;
+
+      dataLoaded_ = true;
     }
   }
 }

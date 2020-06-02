@@ -50,12 +50,10 @@ namespace KN_Lights {
 
     public override void ResetState() {
       ResetPickers();
-      worldLights_.ResetState();
     }
 
     public override void ResetPickers() {
       colorPicker_.Reset();
-      worldLights_.ResetPickers();
     }
 
     public override void OnStart() {
@@ -96,11 +94,11 @@ namespace KN_Lights {
 
       ToggleOwnLights();
 
+      worldLights_.Update();
+
       if (id != Id) {
         return;
       }
-
-      worldLights_.Update();
 
       if (Core.PickedCar != null && allowPick_) {
         if (Core.PickedCar != Core.PlayerCar) {
