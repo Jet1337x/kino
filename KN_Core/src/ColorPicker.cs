@@ -3,7 +3,6 @@ using UnityEngine;
 namespace KN_Core {
   public class ColorPicker {
     public bool IsPicking { get; set; }
-    public bool IsForceClosed { get; set; }
 
     public Color PickedColor { get; private set; }
 
@@ -12,8 +11,17 @@ namespace KN_Core {
     public void Reset() {
       PickedColor = Color.white;
       IsPicking = false;
-      IsForceClosed = false;
       alpha_ = true;
+    }
+
+    public void Toggle(Color initialColor, bool pickAlpha = true) {
+      IsPicking = !IsPicking;
+      if (IsPicking) {
+        Pick(initialColor, pickAlpha);
+      }
+      else {
+        Reset();
+      }
     }
 
     public void Pick(Color initialColor, bool pickAlpha = true) {
@@ -64,7 +72,6 @@ namespace KN_Core {
 
       if (gui.Button(ref x, ref y, width, Gui.Height, "CLOSE", Skin.Button)) {
         IsPicking = false;
-        IsForceClosed = true;
         alpha_ = true;
       }
 

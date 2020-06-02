@@ -17,8 +17,6 @@ namespace KN_Core {
     public bool DrawTimeline { get; set; }
     public Timeline Timeline { get; }
     public Replay Replay { get; }
-    public FilePicker FilePicker { get; }
-    public ColorPicker ColorPicker { get; }
 
     public const float GuiXLeft = 25.0f;
     public const float GuiYTop = 25.0f;
@@ -90,8 +88,6 @@ namespace KN_Core {
 
       Timeline = new Timeline(this);
       Replay = new Replay(this);
-      FilePicker = new FilePicker();
-      ColorPicker = new ColorPicker();
 
       mods_ = new Dictionary<string, BaseMod>();
       tabs_ = new List<string>();
@@ -242,22 +238,7 @@ namespace KN_Core {
         CarsGui(ref tx, ref ty);
       }
 
-      if (FilePicker.IsPicking) {
-        if (ShowCars) {
-          tx += Gui.OffsetGuiX;
-        }
-        FilePicker.OnGui(gui_, ref tx, ref ty);
-      }
-
-      if (ColorPicker.IsPicking) {
-        if (ShowCars) {
-          tx += Gui.OffsetGuiX;
-        }
-        if (FilePicker.IsPicking) {
-          tx += Gui.OffsetGuiX;
-        }
-        ColorPicker.OnGui(gui_, ref tx, ref ty);
-      }
+      mods_[tabs_[selectedTab_]].GuiPickers(selectedModId_, gui_, ref tx, ref ty);
 
       if (DrawTimeline) {
         Timeline.OnGUI(gui_);
@@ -315,8 +296,6 @@ namespace KN_Core {
       if (Controls.KeyDown("gui")) {
         isGuiEnabled_ = !isGuiEnabled_;
 
-        FilePicker.Reset();
-        ColorPicker.Reset();
         Replay.ResetState();
         mods_[tabs_[selectedTabPrev_]].ResetPickers();
       }
@@ -326,7 +305,6 @@ namespace KN_Core {
       if (selectedTab_ != selectedTabPrev_) {
         PickedCar = null;
         ShowCars = false;
-        FilePicker.Reset();
         Replay.ResetState();
         mods_[tabs_[selectedTabPrev_]].ResetState();
         selectedModId_ = mods_[tabs_[selectedTab_]].Id;
@@ -356,7 +334,6 @@ namespace KN_Core {
             GUICommonNickNames.SetVisibleNick(c, true);
           }
         }
-
         showNamesToggle_ = false;
       }
     }

@@ -16,8 +16,6 @@ namespace KN_Visuals {
     private CarVisualManager.VisualSettings carVisuals_;
     private CarVisualManager.VisualSettings backupVisuals_;
 
-    private bool pickingFile_;
-
     private Camera mainCamera_;
 
     private bool liveryCamEnabled_;
@@ -26,7 +24,11 @@ namespace KN_Visuals {
     private float shiftZ_;
     private float shiftY_;
 
-    public Visuals(Core core) : base(core, "VISUALS", 3) { }
+    private readonly FilePicker filePicker_;
+
+    public Visuals(Core core) : base(core, "VISUALS", 3) {
+      filePicker_ = new FilePicker();
+    }
 
     public override void ResetState() {
       ResetPickers();
@@ -34,7 +36,7 @@ namespace KN_Visuals {
     }
 
     public override void ResetPickers() {
-      pickingFile_ = false;
+      filePicker_.Reset();
     }
 
     public override bool LockCameraRotation() {
@@ -70,6 +72,12 @@ namespace KN_Visuals {
       GUI.enabled = guiEnabled;
     }
 
+    public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
+      if (filePicker_.IsPicking) {
+        filePicker_.OnGui(gui, ref x, ref y);
+      }
+    }
+
     private void GuiLivery(Gui gui, ref float x, ref float y, float width, float height) {
       string text = liveryCamEnabled_ ? "DISABLE" : "ENABLE";
       if (gui.Button(ref x, ref y, width, height, text, liveryCamEnabled_ ? Skin.ButtonActive : Skin.Button)) {
@@ -95,13 +103,7 @@ namespace KN_Visuals {
       }
 
       if (gui.Button(ref x, ref y, width, height, "LOAD DESIGN", Skin.Button)) {
-        pickingFile_ = !pickingFile_;
-        if (pickingFile_) {
-          Core.FilePicker.PickIn(Config.VisualsDir);
-        }
-        else {
-          Core.FilePicker.Reset();
-        }
+        filePicker_.Toggle(Config.VisualsDir);
       }
 
       bool enabled = GUI.enabled;
@@ -157,12 +159,10 @@ namespace KN_Visuals {
         garage_ = Object.FindObjectOfType<UIGarageContext>();
       }
 
-      if (pickingFile_) {
-        if (Core.FilePicker.PickedFile != null) {
-          string file = Core.FilePicker.PickedFile;
-          Core.FilePicker.PickedFile = null;
-          Core.FilePicker.IsPicking = false;
-          pickingFile_ = false;
+      if (filePicker_.IsPicking) {
+        string file = filePicker_.PickedFile;
+        if (file != null) {
+          filePicker_.Reset();
 
           carId_ = -1;
           carVisuals_ = null;
@@ -258,6 +258,8 @@ namespace KN_Visuals {
     }
 
     private void LoadVisuals(string file) {
+      Log.Write($"[KN_Visuals]: Loading file '{file}'...");
+
       using (var stream = new MemoryStream(File.ReadAllBytes(file))) {
         using (var reader = new BinaryReader(stream)) {
           carName_ = reader.ReadString();

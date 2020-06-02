@@ -21,9 +21,8 @@ namespace KN_Core {
     private readonly List<TFCar> cars_;
     private readonly List<GhostData> ghostData_;
 
-    private bool pickingFile_;
-
     private readonly Core core_;
+    private readonly FilePicker filePicker_;
 
     public Replay(Core container) {
       core_ = container;
@@ -33,10 +32,12 @@ namespace KN_Core {
 
       cars_ = new List<TFCar>();
       ghostData_ = new List<GhostData>();
+
+      filePicker_ = new FilePicker();
     }
 
     public void ResetState() {
-      pickingFile_ = false;
+      filePicker_.Reset();
       allowPick_ = false;
     }
 
@@ -59,13 +60,10 @@ namespace KN_Core {
         }
       }
 
-      if (pickingFile_) {
-        if (core_.FilePicker.PickedFile != null) {
-          string file = core_.FilePicker.PickedFile;
-          core_.FilePicker.PickedFile = null;
-          core_.FilePicker.IsPicking = false;
-          pickingFile_ = false;
-
+      if (filePicker_.IsPicking) {
+        string file = filePicker_.PickedFile;
+        if (file != null) {
+          filePicker_.Reset();
           LoadPickedReplay(file);
         }
       }
@@ -210,10 +208,7 @@ namespace KN_Core {
       }
 
       if (gui.Button(ref x, ref y, "LOAD", Skin.Button)) {
-        pickingFile_ = !pickingFile_;
-        if (pickingFile_) {
-          core_.FilePicker.PickIn(Config.ReplaysDir);
-        }
+        filePicker_.Toggle(Config.ReplaysDir);
       }
 
       float yAfterReplay = y;
@@ -229,6 +224,12 @@ namespace KN_Core {
 
       y = yAfterReplay;
       x = xBegin;
+    }
+
+    public void GuiPickers(Gui gui, ref float x, ref float y) {
+      if (filePicker_.IsPicking) {
+        filePicker_.OnGui(gui, ref x, ref y);
+      }
     }
 
     private void GuiCarList(Gui gui, ref float x, ref float y) {

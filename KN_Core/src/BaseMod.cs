@@ -14,6 +14,7 @@ namespace KN_Core {
     public virtual void OnStop() { }
 
     public virtual void OnGUI(int id, Gui gui, ref float x, ref float y) { }
+    public virtual void GuiPickers(int id, Gui gui, ref float x, ref float y) { }
 
     public virtual void Update(int id) { }
     public virtual void LateUpdate(int id) { }

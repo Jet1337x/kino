@@ -526,6 +526,10 @@ namespace KN_Cinematic {
 
       GUI.enabled = guiEnabled;
     }
+
+    public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
+      Core.Replay.GuiPickers(gui, ref x, ref y);
+    }
     #endregion
 
     private void GuiSideBar(Gui gui, ref float x, ref float y) {
@@ -537,7 +541,7 @@ namespace KN_Cinematic {
         animationTabActive_ = false;
         replayTabActive_ = false;
         Core.ShowCars = false;
-        Core.FilePicker.IsPicking = false;
+        // Core.FilePicker.IsPicking = false;
       }
 
       if (gui.ImageButton(ref x, ref y, animationTabActive_ ? Skin.IconAnimActive : Skin.IconAnim)) {
@@ -545,7 +549,8 @@ namespace KN_Cinematic {
         animationTabActive_ = true;
         replayTabActive_ = false;
         Core.ShowCars = false;
-        Core.FilePicker.IsPicking = false;
+        // Core.FilePicker.IsPicking = false;
+        //todo: cars picker
       }
 
       if (gui.ImageButton(ref x, ref y, replayTabActive_ ? Skin.IconReplayActive : Skin.IconReplay)) {
@@ -553,7 +558,7 @@ namespace KN_Cinematic {
         animationTabActive_ = false;
         replayTabActive_ = true;
         Core.ShowCars = false;
-        Core.FilePicker.IsPicking = false;
+        // Core.FilePicker.IsPicking = false;
       }
 
       x += Gui.IconSize;
