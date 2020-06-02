@@ -93,6 +93,10 @@ namespace KN_Cinematic {
         ResetAll();
       }
 
+      if (!CinematicEnabled && Core.ActiveCamera != Core.MainCamera) {
+        Core.ActiveCamera = Core.MainCamera;
+      }
+
       Core.Replay.Update();
 
       if (ActiveCamera != null) {
