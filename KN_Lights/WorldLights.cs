@@ -112,14 +112,14 @@ namespace KN_Lights {
       }
 
       GUI.enabled = skyOk && enabled_;
-      if (gui.SliderH(ref x, ref y, width, ref data_.SkyExposure, 0.0f, 10.0f, $"SKYBOX EXPOSURE: {data_.SkyExposure:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref data_.SkyExposure, -5.0f, 10.0f, $"SKYBOX EXPOSURE: {data_.SkyExposure:F1}")) {
         if (skyOk) {
           sky_.exposure.Override(data_.SkyExposure);
         }
       }
 
       GUI.enabled = staticSkyOk && enabled_;
-      if (gui.SliderH(ref x, ref y, width, ref data_.AmbientLight, 0.0f, 5.0f, $"AMBIENT LIGHT: {data_.AmbientLight:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref data_.AmbientLight, -1.0f, 5.0f, $"AMBIENT LIGHT: {data_.AmbientLight:F1}")) {
         if (staticSkyOk) {
           staticSky_.exposure.Override(data_.AmbientLight);
           typeof(SkySettings).GetField("m_SkySettings", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(staticSkyBeh_, staticSky_);
