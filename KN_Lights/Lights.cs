@@ -430,16 +430,18 @@ namespace KN_Lights {
     }
 
     private void EnableLightsOnOnwCar() {
+      const string ownCar = "OWN_CAR";
+
       var l = lightsConfig_.GetLights(Core.PlayerCar.Id);
       if (l == null) {
         l = CreateLights(Core.PlayerCar, lightsConfig_);
       }
       else {
-        l.Attach(Core.PlayerCar, "OWN_CAR");
+        l.Attach(Core.PlayerCar, ownCar);
         Log.Write($"[KN_Lights]: Car lights for own car '{l.CarId}' attached");
       }
 
-      int index = carLights_.FindIndex(cl => cl.Car == Core.PlayerCar);
+      int index = carLights_.FindIndex(cl => cl.Car == Core.PlayerCar && cl.UserName == ownCar);
       if (index != -1) {
         carLights_[index] = l;
       }
@@ -460,7 +462,7 @@ namespace KN_Lights {
         Log.Write($"[KN_Lights]: Car lights for '{lights.CarId}' attached");
       }
 
-      int index = carLights_.FindIndex(cl => cl.Car == car);
+      int index = carLights_.FindIndex(cl => cl.Car.Id == car.Id && cl.UserName == car.Name);
       if (index != -1) {
         carLights_[index] = lights;
       }
