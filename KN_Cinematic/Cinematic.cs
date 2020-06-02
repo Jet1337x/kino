@@ -316,7 +316,7 @@ namespace KN_Cinematic {
       GUI.enabled = cameraOk;
 
       float smooth = ActiveCamera?.Animation.Smooth ?? 1.0f;
-      if (gui.SliderH(ref x, ref y, Gui.Width, ref smooth, 1.0f, 20.0f, $"SMOOTHNESS: {smooth:F}", Skin.RedSkin)) {
+      if (gui.SliderH(ref x, ref y, Gui.Width, ref smooth, 1.0f, 10.0f, $"SMOOTHNESS: {smooth:F}", Skin.RedSkin)) {
         if (cameraOk) {
           ActiveCamera.Animation.Smooth = smooth;
           ActiveCamera.Animation.MakeAnimation();

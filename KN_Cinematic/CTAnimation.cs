@@ -17,14 +17,14 @@ namespace KN_Cinematic {
     private float length_;
     public float Length {
       get => length_;
-       set {
-         if (Math.Abs(length_ - value) > 0.001f) {
-           float change = (value - length_) / Mathf.Abs(length_);
-           Keyframes.ForEach(kf => kf.Time = kf.Time * change + kf.Time);
-           MakeAnimation();
-         }
-         length_ = value;
-       }
+      set {
+        if (Math.Abs(length_ - value) > 0.001f) {
+          float change = (value - length_) / Mathf.Abs(length_);
+          Keyframes.ForEach(kf => kf.Time = kf.Time * change + kf.Time);
+          MakeAnimation();
+        }
+        length_ = value;
+      }
     }
 
     //position
@@ -204,8 +204,12 @@ namespace KN_Cinematic {
       ClearBuffers();
 
       List<CTKeyframe> values;
-      if (Smooth >= 2.0f) {
-        float smoothCorrected = Smooth * Length;
+      if (Smooth >= 2.0f && Keyframes.Count > 2) {
+        float animBeg = Keyframes.First().Time;
+        float animEnd = Keyframes.Last().Time;
+        float length = animEnd - animBeg;
+
+        float smoothCorrected = Smooth * length;
         values = MakeSmoothCurve(Keyframes, smoothCorrected).Result;
       }
       else {
