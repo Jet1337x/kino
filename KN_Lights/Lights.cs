@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using KN_Core;
 using UnityEngine;
@@ -23,6 +22,7 @@ namespace KN_Lights {
 #endif
 
     private CarLights activeLights_;
+    private CarLights ownLights_;
     private readonly List<CarLights> carLights_;
     private readonly List<CarLights> carLightsToRemove_;
 
@@ -94,6 +94,8 @@ namespace KN_Lights {
 
       OptimizeLights();
 
+      ToggleOwnLights();
+
       if (id != Id) {
         return;
       }
@@ -131,6 +133,9 @@ namespace KN_Lights {
         foreach (var cl in carLightsToRemove_) {
           if (activeLights_ == cl) {
             activeLights_ = null;
+          }
+          if (ownLights_ == cl) {
+            ownLights_ = null;
           }
           carLights_.Remove(cl);
         }
@@ -405,6 +410,9 @@ namespace KN_Lights {
               if (cl == activeLights_) {
                 activeLights_ = null;
               }
+              if (cl == ownLights_) {
+                ownLights_ = null;
+              }
               cl.Dispose();
               carLights_.Remove(cl);
               break;
@@ -439,6 +447,7 @@ namespace KN_Lights {
         carLights_.Add(l);
       }
       activeLights_ = l;
+      ownLights_ = l;
     }
 
     private void EnableLightsOn(TFCar car) {
@@ -487,6 +496,23 @@ namespace KN_Lights {
       Log.Write($"[KN_Lights]: Car lights attached to '{car.Id}'");
 
       return light;
+    }
+
+    private void ToggleOwnLights() {
+      if (Controls.KeyDown("toggle_lights")) {
+        if (ownLights_ == null) {
+          colorPicker_.Reset();
+          EnableLightsOnOnwCar();
+        }
+        else {
+          if (ownLights_ == activeLights_) {
+            activeLights_ = null;
+          }
+          ownLights_.Dispose();
+          carLights_.Remove(ownLights_);
+          ownLights_ = null;
+        }
+      }
     }
 
     private void OptimizeLights() {

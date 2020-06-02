@@ -119,6 +119,8 @@ namespace KN_Core {
       defaultButtons_["down"] = new object[] {KeyCode.Q};
       defaultButtons_["fast"] = new object[] {KeyCode.LeftShift};
       defaultButtons_["slow"] = new object[] {KeyCode.LeftControl};
+
+      defaultButtons_["toggle_lights"] = new object[] {KeyCode.PageDown};
     }
 
     public static void Validate() {
