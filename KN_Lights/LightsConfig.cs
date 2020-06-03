@@ -10,6 +10,7 @@ namespace KN_Lights {
       try {
         using (var memoryStream = new MemoryStream()) {
           using (var writer = new BinaryWriter(memoryStream)) {
+            writer.Write(Config.Version);
             writer.Write(config.Lights.Count);
             foreach (var l in config.Lights) {
               l.Serialize(writer);
@@ -31,6 +32,7 @@ namespace KN_Lights {
       try {
         lights = new List<CarLights>();
         using (var reader = new BinaryReader(stream)) {
+          reader.ReadInt32(); //unused
           int size = reader.ReadInt32();
           for (int i = 0; i < size; i++) {
             var cl = new CarLights();

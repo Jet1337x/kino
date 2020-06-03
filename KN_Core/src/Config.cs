@@ -13,6 +13,8 @@ namespace KN_Core {
   }
 
   public class Config {
+    public const int Version = 100;
+
     //cx stuff
     public const string CxUiCanvasName = "Root";
     public const string CxMainCameraTag = "MainCamera";

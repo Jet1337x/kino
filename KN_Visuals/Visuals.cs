@@ -247,6 +247,7 @@ namespace KN_Visuals {
 
       using (var stream = new MemoryStream()) {
         using (var writer = new BinaryWriter(stream)) {
+          writer.Write(Config.Version);
           writer.Write(name);
           writer.Write(buffer.Length);
           writer.Write(id);
@@ -267,6 +268,8 @@ namespace KN_Visuals {
 
       using (var stream = new MemoryStream(File.ReadAllBytes(file))) {
         using (var reader = new BinaryReader(stream)) {
+          reader.ReadInt32(); //unused
+
           carName_ = reader.ReadString();
           int size = reader.ReadInt32();
           carId_ = reader.ReadInt32();

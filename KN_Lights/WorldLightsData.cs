@@ -9,6 +9,7 @@ namespace KN_Lights {
       try {
         using (var memoryStream = new MemoryStream()) {
           using (var writer = new BinaryWriter(memoryStream)) {
+            writer.Write(Config.Version);
             writer.Write(data.Count);
             foreach (var d in data) {
               d.Serialize(writer);
@@ -31,6 +32,7 @@ namespace KN_Lights {
         using (var memoryStream = new MemoryStream(File.ReadAllBytes(Config.BaseDir + file))) {
           using (var reader = new BinaryReader(memoryStream)) {
             data = new List<WorldLightsData>();
+            reader.ReadInt32(); //unused
             int size = reader.ReadInt32();
             for (int i = 0; i < size; i++) {
               var d = new WorldLightsData();

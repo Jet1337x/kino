@@ -299,7 +299,7 @@ namespace KN_Core {
       foreach (var gd in ghostData_) {
         Player.AddPlayer(new GhostPlayer.StartArgs {
           data = gd.Data,
-          nickName =  gd.Name,
+          nickName = gd.Name,
           needCollisions = false
         });
       }
@@ -321,6 +321,8 @@ namespace KN_Core {
       try {
         using (var memoryStream = new MemoryStream(File.ReadAllBytes(path))) {
           using (var reader = new BinaryReader(memoryStream)) {
+            reader.ReadInt32(); //unused for now
+
             int size = reader.ReadInt32();
             Log.Write($"[KN_Replay]: Reading '{size}' cars");
             for (int i = 0; i < size; i++) {
@@ -406,6 +408,7 @@ namespace KN_Core {
     private void SaveReplay(string path) {
       using (var memoryStream = new MemoryStream()) {
         using (var writer = new BinaryWriter(memoryStream)) {
+          writer.Write(Config.Version);
           writer.Write(cars_.Count);
           for (int i = 0; i < cars_.Count; i++) {
             Log.Write($"[KN_Replay]: Saving '{cars_[i].Name}'");
