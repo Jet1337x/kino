@@ -5,25 +5,41 @@ namespace KN_Core {
     private const float MaxSpeed = 8.0f;
     private const int MaxSlow = 8;
 
-    private string lowBoundString_;
+    private string lowBoundString_ = "0.0";
     private float lowBound_;
     public float LowBound {
       get => lowBound_;
-      set => lowBound_ = value > 0.0f ? value : 0.0f;
+      set {
+        if (value > HighBound) {
+          lowBound_ = HighBound;
+        }
+        else {
+          lowBound_ = value > 0.0f ? value : 0.0f;
+        }
+        lowBoundString_ = $"{LowBound:F}";
+        highBoundString_ = $"{highBound_:F}";
+      }
     }
 
-    private string highBoundString_;
+    private string highBoundString_ = "1.0";
     private float highBound_;
     public float HighBound {
       get => highBound_;
       set {
-        var ghosts = core_.Replay?.Player.players;
-        if (ghosts != null && ghosts.Count > 0) {
-          highBound_ = value <= MaxTime ? value : MaxTime;
+        if (value < LowBound) {
+          highBound_ = LowBound;
         }
         else {
-          highBound_ = value;
-          MaxTime = value;
+          var ghosts = core_.Replay?.Player.players;
+          if (ghosts != null && ghosts.Count > 0) {
+            highBound_ = value < MaxTime ? value : MaxTime;
+          }
+          else {
+            highBound_ = value;
+            MaxTime = value;
+          }
+          lowBoundString_ = $"{LowBound:F}";
+          highBoundString_ = $"{highBound_:F}";
         }
       }
     }
@@ -91,10 +107,16 @@ namespace KN_Core {
       y += Gui.OffsetY;
       x += Gui.OffsetSmall;
 
-      lowBoundString_ = $"{LowBound:F}";
+
       if (gui.TextField(ref x, ref y, ref lowBoundString_, "LOW BOUND", 6, Config.FloatRegex)) {
         float.TryParse(lowBoundString_, out float value);
         LowBound = value;
+        if (CurrentTime < LowBound) {
+          CurrentTime = LowBound;
+          if (core_.Replay.IsPlaying) {
+            core_.Replay.Player.CurTimeOverride(CurrentTime);
+          }
+        }
       }
       y -= Gui.Height + Gui.OffsetY;
       x += Gui.Width + Gui.OffsetSmall;
@@ -106,10 +128,15 @@ namespace KN_Core {
       y -= Gui.Height + Gui.OffsetY * 2.0f;
       x += tlWidth + Gui.OffsetSmall;
 
-      highBoundString_ = $"{HighBound:F}";
       if (gui.TextField(ref x, ref y, ref highBoundString_, "HIGH BOUND", 6, Config.FloatRegex)) {
         float.TryParse(highBoundString_, out float value);
         HighBound = value;
+        if (CurrentTime > HighBound) {
+          CurrentTime = HighBound - 0.001f;
+          if (core_.Replay.IsPlaying) {
+            core_.Replay.Player.CurTimeOverride(CurrentTime);
+          }
+        }
       }
 
       const float buttonOffset = 20.0f;
@@ -261,12 +288,18 @@ namespace KN_Core {
           if (IsPlaying) {
             CurrentTime = LowBound;
           }
+          else {
+            core_.Replay.Player.Pause();
+          }
         }
         if (CurrentTime < LowBound) {
           CurrentTime = LowBound;
           IsPlaying = Loop;
           if (IsPlaying) {
             CurrentTime = HighBound;
+          }
+          else {
+            core_.Replay.Player.Pause();
           }
         }
       }
