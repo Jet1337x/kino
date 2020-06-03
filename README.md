@@ -30,11 +30,13 @@ Consists of 3 tabs:
 There you can set the starting and the ending points of your replay.  
 ![Timeline](Images/timeline.png)  
 
-- Livery Share  
-![LiveryShare](Images/livery_share.png)  
+## Visuals
+![Visuals](Images/visuals.png)
 
-- Livery camera  
-![LiveryCam](Images/livery_camera.png)
+## Lights
+![Lights](Images/lights.png)  
+
+![World_Lights](Images/lights_world.png)
 ## Installation
 1. Install BepInEx mod loader if you haven't already  
 Extract files from BepInEx zip into your CarX Drift Racing Online folder
