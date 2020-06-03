@@ -16,6 +16,9 @@ KN_Visuals/obj
 KN_Lights/bin
 KN_Lights/obj
 
+Release/
+Utils/__pycache__
+
 kn_config.knl
 kn_lights.knl
 kn_nwlights.knl
