@@ -21,6 +21,7 @@ namespace KN_Core {
     public List<TFCar> Ghosts { get; }
 
     private float carsListHeight_;
+    private float ghostsListHeight_;
 
     private readonly Core core_;
 
@@ -48,47 +49,64 @@ namespace KN_Core {
         return;
       }
 
+      const float boxWidth = Gui.Width + Gui.OffsetGuiX * 2.0f;
+      const float width = Gui.Width;
+      const float height = Gui.Height;
+
       float yBegin = y;
 
-      gui.Box(x, y, Gui.Width + Gui.OffsetGuiX * 2.0f, Gui.Height, "CARS", Skin.MainContainerDark);
+      GuiCars(gui, ref x, ref y, boxWidth, width, height);
+      carsListHeight_ = y - yBegin - Gui.Height;
+
+      if (Ghosts.Count > 0) {
+        y = yBegin;
+        x += boxWidth;
+
+        GuiGhosts(gui, ref x, ref y, boxWidth, width, height);
+        ghostsListHeight_ = y - yBegin - Gui.Height;
+      }
+
+      x += Gui.Width + Gui.OffsetGuiX;
+      y = yBegin;
+    }
+
+    private void GuiCars(Gui gui, ref float x, ref float y, float boxWidth, float width, float height) {
+      gui.Box(x, y, boxWidth, Gui.Height, "CARS", Skin.MainContainerDark);
       y += Gui.Height;
 
-      gui.Box(x, y, Gui.Width + Gui.OffsetGuiX * 2.0f, carsListHeight_, Skin.MainContainer);
+      gui.Box(x, y, boxWidth, carsListHeight_, Skin.MainContainer);
       y += Gui.OffsetY;
       x += Gui.OffsetGuiX;
 
-      if (gui.Button(ref x, ref y, "PLAYER CAR", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, "PLAYER CAR", Skin.Button)) {
         PickedCar = PlayerCar;
       }
 
       if (Cars.Count > 0) {
-        gui.Line(x, y, Gui.Width, 1.0f, Skin.SeparatorColor);
+        gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
         y += Gui.OffsetY;
 
         foreach (var c in Cars) {
-          if (gui.Button(ref x, ref y, c.Name, Skin.Button)) {
+          if (gui.Button(ref x, ref y, width, height, c.Name, Skin.Button)) {
             PickedCar = c;
           }
         }
       }
+    }
 
-      if (Ghosts.Count > 0) {
-        gui.Line(x, y, Gui.Width, 1.0f, Skin.SeparatorColor);
-        y += Gui.OffsetY;
+    private void GuiGhosts(Gui gui, ref float x, ref float y, float boxWidth, float width, float height) {
+      gui.Box(x, y, boxWidth, Gui.Height, "GHOSTS", Skin.MainContainerDark);
+      y += Gui.Height;
 
-        gui.Box(x, y, Gui.Width, Gui.Height, "GHOSTS", Skin.MainContainerDark);
-        y += Gui.Height + Gui.OffsetY;
+      gui.Box(x, y, boxWidth, ghostsListHeight_, Skin.MainContainer);
+      y += Gui.OffsetY;
+      x += Gui.OffsetGuiX;
 
-        foreach (var c in Ghosts) {
-          if (gui.Button(ref x, ref y, c.Name, Skin.Button)) {
-            PickedCar = c;
-          }
+      foreach (var c in Ghosts) {
+        if (gui.Button(ref x, ref y, width, height, c.Name, Skin.Button)) {
+          PickedCar = c;
         }
       }
-
-      carsListHeight_ = y - yBegin - Gui.Height;
-      x += Gui.Width + Gui.OffsetGuiX;
-      y = yBegin;
     }
 
     private void UpdateCars() {
