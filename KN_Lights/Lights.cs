@@ -39,7 +39,7 @@ namespace KN_Lights {
     private readonly ColorPicker colorPicker_;
     private readonly CarPicker carPicker_;
 
-    public Lights(Core core) : base(core, "LIGHTS", 4) {
+    public Lights(Core core) : base(core, "LIGHTS", 2) {
       worldLights_ = new WorldLights(core);
 
       colorPicker_ = new ColorPicker();

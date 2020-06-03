@@ -1,7 +1,7 @@
-namespace KN_Core {
+namespace KN_Core.Submodule {
 
   public class About : BaseMod {
-    public About(Core core) : base(core, "ABOUT", -1) { }
+    public About(Core core) : base(core, "ABOUT", int.MaxValue) { }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
       float width = Core.GuiTabsWidth - Gui.OffsetGuiX * 2.0f ;

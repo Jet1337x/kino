@@ -113,7 +113,6 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="src\About.cs" />
         <Compile Include="src\BaseMod.cs" />
         <Compile Include="src\CarPicker.cs" />
         <Compile Include="src\ColorPicker.cs" />
@@ -127,6 +126,8 @@
         <Compile Include="src\Patcher.cs" />
         <Compile Include="src\Replay.cs" />
         <Compile Include="src\Skin.cs" />
+        <Compile Include="src\Submodule\About.cs" />
+        <Compile Include="src\Submodule\Settings.cs" />
         <Compile Include="src\TFCar.cs" />
         <Compile Include="src\Timeline.cs" />
     </ItemGroup>

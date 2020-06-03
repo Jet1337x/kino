@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using BepInEx;
 using FMODUnity;
 using GameInput;
+using KN_Core.Submodule;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Settings = KN_Core.Submodule.Settings;
 
 namespace KN_Core {
   [BepInPlugin("trbflxr.kn_0core", "KN_Core", "0.1.1")]
@@ -49,7 +50,7 @@ namespace KN_Core {
     private readonly Gui gui_;
     public bool IsGuiEnabled { get; set; }
 
-    private readonly Dictionary<string, BaseMod> mods_;
+    private readonly List<BaseMod> mods_;
     private readonly List<string> tabs_;
     private int selectedTab_;
     private int selectedTabPrev_;
@@ -72,37 +73,27 @@ namespace KN_Core {
       Timeline = new Timeline(this);
       Replay = new Replay(this);
 
-      mods_ = new Dictionary<string, BaseMod>();
+      mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
 
+      AddMod(new Settings(this));
       AddMod(new About(this));
     }
 
     public void AddMod(BaseMod mod) {
-      bool aboutFound = false;
-      var about = new KeyValuePair<string, BaseMod>();
-      if (mods_.Count > 0) {
-        about = mods_.Last();
-        if (about.Key == "ABOUT") {
-          mods_.Remove("ABOUT");
-          tabs_.RemoveAt(tabs_.Count - 1);
-          aboutFound = true;
-        }
-      }
+      mods_.Add(mod);
+      mods_.Sort((m0, m1) => m0.Id.CompareTo(m1.Id));
 
-      mods_.Add(mod.Name, mod);
-      tabs_.Add(mod.Name);
-
-      if (aboutFound) {
-        mods_.Add(about.Key, about.Value);
-        tabs_.Add(about.Key);
+      tabs_.Clear();
+      foreach (var m in mods_) {
+        tabs_.Add(m.Name);
       }
 
       Log.Write($"[KN_Core]: Mod {mod.Name} was added");
 
       mod.OnStart();
 
-      selectedModId_ = mods_[tabs_[selectedTab_]].Id;
+      selectedModId_ = mods_[selectedTab_].Id;
     }
 
     private void Awake() {
@@ -123,13 +114,13 @@ namespace KN_Core {
       ModConfig.Set("hide_cx_ui", hideCxUi_);
 
       foreach (var mod in mods_) {
-        mod.Value.OnStop();
+        mod.OnStop();
       }
     }
 
     public void FixedUpdate() {
       foreach (var mod in mods_) {
-        mod.Value.FixedUpdate(selectedModId_);
+        mod.FixedUpdate(selectedModId_);
       }
     }
 
@@ -157,8 +148,8 @@ namespace KN_Core {
         cameraRotation_ = FindObjectOfType<CameraRotation>();
       }
 
-      bool captureInput = mods_[tabs_[selectedTab_]].WantsCaptureInput();
-      bool lockCameraRot = IsInGarage && mods_[tabs_[selectedTab_]].LockCameraRotation();
+      bool captureInput = mods_[selectedTab_].WantsCaptureInput();
+      bool lockCameraRot = IsInGarage && mods_[selectedTab_].LockCameraRotation();
 
       if (IsGuiEnabled && IsInGarage && cameraRotation_ != null && lockCameraRot) {
         cameraRotation_.Stop();
@@ -180,13 +171,13 @@ namespace KN_Core {
       Timeline.Update();
 
       foreach (var mod in mods_) {
-        mod.Value.Update(selectedModId_);
+        mod.Update(selectedModId_);
       }
     }
 
     public void LateUpdate() {
       foreach (var mod in mods_) {
-        mod.Value.LateUpdate(selectedModId_);
+        mod.LateUpdate(selectedModId_);
       }
 
       HideStuff();
@@ -215,7 +206,7 @@ namespace KN_Core {
 
       GuiContentBeginY = y;
 
-      mods_[tabs_[selectedTab_]].OnGUI(selectedModId_, gui_, ref x, ref y);
+      mods_[selectedTab_].OnGUI(selectedModId_, gui_, ref x, ref y);
 
       gui_.EndTabs(ref x, ref y);
       GuiTabsHeight = gui_.TabsMaxHeight;
@@ -224,7 +215,7 @@ namespace KN_Core {
       float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;
       float ty = GuiContentBeginY - Gui.OffsetY;
 
-      mods_[tabs_[selectedTab_]].GuiPickers(selectedModId_, gui_, ref tx, ref ty);
+      mods_[selectedTab_].GuiPickers(selectedModId_, gui_, ref tx, ref ty);
 
       if (DrawTimeline) {
         Timeline.OnGUI(gui_);
@@ -236,15 +227,15 @@ namespace KN_Core {
         IsGuiEnabled = !IsGuiEnabled;
 
         Replay.ResetPickers();
-        mods_[tabs_[selectedTabPrev_]].ResetPickers();
+        mods_[selectedTabPrev_].ResetPickers();
       }
     }
 
     private void HandleTabSelection() {
       if (selectedTab_ != selectedTabPrev_) {
         Replay.ResetPickers();
-        mods_[tabs_[selectedTabPrev_]].ResetState();
-        selectedModId_ = mods_[tabs_[selectedTab_]].Id;
+        mods_[selectedTabPrev_].ResetState();
+        selectedModId_ = mods_[selectedTab_].Id;
       }
     }
 
