@@ -37,7 +37,7 @@ namespace KN_Core {
       carPicker_ = new CarPicker(core);
     }
 
-    public void ResetState() {
+    public void ResetPickers() {
       filePicker_.Reset();
       carPicker_.Reset();
     }
@@ -51,7 +51,8 @@ namespace KN_Core {
     public void Update() {
       if (carPicker_.IsPicking && carPicker_.PickedCar != null) {
         if (!carPicker_.PickedCar.IsGhost) {
-          if (!cars_.Contains(carPicker_.PickedCar)) {
+          var picked = carPicker_.PickedCar;
+          if (cars_.FindIndex(c => c.Name == picked.Name && c.Id == picked.Id) == -1) {
             cars_.Add(carPicker_.PickedCar);
           }
         }

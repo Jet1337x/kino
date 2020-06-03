@@ -235,14 +235,14 @@ namespace KN_Core {
       if (Controls.KeyDown("gui")) {
         IsGuiEnabled = !IsGuiEnabled;
 
-        Replay.ResetState();
+        Replay.ResetPickers();
         mods_[tabs_[selectedTabPrev_]].ResetPickers();
       }
     }
 
     private void HandleTabSelection() {
       if (selectedTab_ != selectedTabPrev_) {
-        Replay.ResetState();
+        Replay.ResetPickers();
         mods_[tabs_[selectedTabPrev_]].ResetState();
         selectedModId_ = mods_[tabs_[selectedTab_]].Id;
       }
