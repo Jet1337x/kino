@@ -33,15 +33,24 @@ namespace KN_Core.Submodule {
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
+      const float width = Gui.Width * 1.4f;
+      const float height = Gui.Height;
+
       x += Gui.OffsetSmall;
 
-      if (gui.Button(ref x, ref y, "HIDE POINTS", RPoints ? Skin.Button : Skin.ButtonActive)) {
+      if (gui.Button(ref x, ref y, width, height, "HIDE POINTS", RPoints ? Skin.Button : Skin.ButtonActive)) {
         RPoints = !RPoints;
       }
 
-      if (gui.Button(ref x, ref y, "HIDE NAMES", HideNames ? Skin.Button : Skin.ButtonActive)) {
+      if (gui.Button(ref x, ref y, width, height, "HIDE NAMES", HideNames ? Skin.Button : Skin.ButtonActive)) {
         HideNames = !HideNames;
       }
+
+      gui.Box(x, y, width, height, "There will be more buttons...", Skin.MainContainerLeft);
+      y += Gui.Height;
+
+      gui.Box(x, y, width, height, "In the future", Skin.MainContainerLeft);
+      y += Gui.Height;
     }
   }
 }
