@@ -49,10 +49,10 @@ namespace KN_Core {
     }
 
     public void Update() {
-      if (carPicker_.IsPicking && carPicker_.PickedCar != null) {
+      if (carPicker_.IsPicking && !TFCar.IsNull(carPicker_.PickedCar)) {
         if (!carPicker_.PickedCar.IsGhost) {
           var picked = carPicker_.PickedCar;
-          if (cars_.FindIndex(c => c.Name == picked.Name && c.Id == picked.Id) == -1) {
+          if (cars_.FindIndex(c => c == picked) == -1) {
             cars_.Add(carPicker_.PickedCar);
           }
         }
@@ -133,7 +133,7 @@ namespace KN_Core {
         Log.Write($"[KN_Replay]: Cars size: {cars_.Count}");
 
         foreach (var car in cars_) {
-          if (car == null || car.Base == null) {
+          if (TFCar.IsNull(car)) {
             Log.Write($"[KN_Replay]: Null car");
             continue;
           }
@@ -226,9 +226,7 @@ namespace KN_Core {
     }
 
     public void GuiPickers(Gui gui, ref float x, ref float y) {
-      if (carPicker_.IsPicking) {
-        carPicker_.OnGUI(gui, ref x, ref y);
-      }
+      carPicker_.OnGUI(gui, ref x, ref y);
 
       if (filePicker_.IsPicking) {
         if (carPicker_.IsPicking) {
