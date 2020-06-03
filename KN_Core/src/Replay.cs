@@ -48,14 +48,14 @@ namespace KN_Core {
     }
 
     public void Update() {
-      if (core_.PickedCar != null) {
+      if (core_.CarPicker.PickedCar != null) {
         if (allowPick_) {
-          if (!core_.PickedCar.IsGhost) {
-            if (!cars_.Contains(core_.PickedCar)) {
-              cars_.Add(core_.PickedCar);
+          if (!core_.CarPicker.PickedCar.IsGhost) {
+            if (!cars_.Contains(core_.CarPicker.PickedCar)) {
+              cars_.Add(core_.CarPicker.PickedCar);
             }
           }
-          core_.PickedCar = null;
+          core_.CarPicker.Reset();
           allowPick_ = false;
         }
       }
@@ -228,7 +228,7 @@ namespace KN_Core {
 
     public void GuiPickers(Gui gui, ref float x, ref float y) {
       if (filePicker_.IsPicking) {
-        if (core_.ShowCars) {
+        if (core_.CarPicker.IsPicking) {
           x += Gui.OffsetGuiX;
         }
         filePicker_.OnGui(gui, ref x, ref y);
@@ -241,7 +241,7 @@ namespace KN_Core {
       GUI.enabled = !IsRecording && !core_.IsInGarage;
       if (gui.Button(ref x, ref y, "PICK CAR", Skin.Button)) {
         allowPick_ = !allowPick_;
-        core_.ShowCars = allowPick_;
+        core_.CarPicker.IsPicking = allowPick_;
       }
 
       const float listHeight = 300.0f;

@@ -17,7 +17,7 @@ namespace KN_Core {
     public float HighBound {
       get => highBound_;
       set {
-        if (core_.Ghosts.Count > 0) {
+        if (core_.CarPicker.Ghosts.Count > 0) {
           highBound_ = value <= MaxTime ? value : MaxTime;
         }
         else {

@@ -26,18 +26,6 @@ namespace KN_Core {
     public float GuiTabsHeight { get; private set; }
     public float GuiTabsWidth { get; private set; }
 
-    private float carsListHeight_;
-    private bool showCars_;
-    public bool ShowCars {
-      get => showCars_;
-      set {
-        showCars_ = value;
-        if (showCars_) {
-          UpdateCars();
-        }
-      }
-    }
-
     private bool hideCxUi_;
     public bool HideCxUi {
       get => hideCxUi_;
@@ -47,15 +35,15 @@ namespace KN_Core {
       }
     }
 
-    public TFCar PickedCar { get; set; }
-    public TFCar PlayerCar { get; private set; }
-
     public GameObject MainCamera { get; private set; }
     public GameObject ActiveCamera { get; set; }
 
-    public List<TFCar> Cars { get; }
-    public List<TFCar> Ghosts { get; }
+    public CarPicker CarPicker { get; }
 
+    // public TFCar PickedCar => CarPicker.PickedCar;
+    public TFCar PlayerCar => CarPicker.PlayerCar;
+
+    private bool isInGaragePrev_;
     public bool IsInGarage { get; private set; }
 
     private bool showNames_ = true;
@@ -70,10 +58,7 @@ namespace KN_Core {
     private int selectedTabPrev_;
     private int selectedModId_;
 
-    private bool isInGaragePrev_;
-
     private CameraRotation cameraRotation_;
-
     private static Assembly assembly_;
 
     public Core() {
@@ -87,8 +72,7 @@ namespace KN_Core {
 
       gui_ = new Gui();
 
-      Cars = new List<TFCar>(16);
-      Ghosts = new List<TFCar>(16);
+      CarPicker = new CarPicker(this);
 
       Timeline = new Timeline(this);
       Replay = new Replay(this);
@@ -192,9 +176,7 @@ namespace KN_Core {
         }
       }
 
-      if (PlayerCar == null || PlayerCar.Base == null) {
-        UpdateCars();
-      }
+      CarPicker.Update();
 
       GuiRenderCheck();
 
@@ -215,8 +197,7 @@ namespace KN_Core {
 
     public void OnGUI() {
       if (!IsGuiEnabled) {
-        ShowCars = false;
-        PickedCar = null;
+        CarPicker.Reset();
         return;
       }
 
@@ -246,62 +227,14 @@ namespace KN_Core {
 
       float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;
       float ty = GuiContentBeginY - Gui.OffsetY;
-      if (ShowCars) {
-        CarsGui(ref tx, ref ty);
-      }
+
+      CarPicker.OnGUI(gui_, ref x, ref y);
 
       mods_[tabs_[selectedTab_]].GuiPickers(selectedModId_, gui_, ref tx, ref ty);
 
       if (DrawTimeline) {
         Timeline.OnGUI(gui_);
       }
-    }
-
-    private void CarsGui(ref float x, ref float y) {
-      float yBegin = y;
-
-      gui_.Box(x, y, Gui.Width + Gui.OffsetGuiX * 2.0f, Gui.Height, "CARS", Skin.MainContainerDark);
-      y += Gui.Height;
-
-      gui_.Box(x, y, Gui.Width + Gui.OffsetGuiX * 2.0f, carsListHeight_, Skin.MainContainer);
-      y += Gui.OffsetY;
-      x += Gui.OffsetGuiX;
-
-      if (gui_.Button(ref x, ref y, "PLAYER CAR", Skin.Button)) {
-        PickedCar = PlayerCar;
-        ShowCars = false;
-      }
-
-      if (Cars.Count > 0) {
-        gui_.Line(x, y, Gui.Width, 1.0f, Skin.SeparatorColor);
-        y += Gui.OffsetY;
-
-        foreach (var c in Cars) {
-          if (gui_.Button(ref x, ref y, c.Name, Skin.Button)) {
-            PickedCar = c;
-            ShowCars = false;
-          }
-        }
-      }
-
-      if (Ghosts.Count > 0) {
-        gui_.Line(x, y, Gui.Width, 1.0f, Skin.SeparatorColor);
-        y += Gui.OffsetY;
-
-        gui_.Box(x, y, Gui.Width, Gui.Height, "GHOSTS", Skin.MainContainerDark);
-        y += Gui.Height + Gui.OffsetY;
-
-        foreach (var c in Ghosts) {
-          if (gui_.Button(ref x, ref y, c.Name, Skin.Button)) {
-            PickedCar = c;
-            ShowCars = false;
-          }
-        }
-      }
-
-      carsListHeight_ = y - yBegin - Gui.Height;
-      x += Gui.Width + Gui.OffsetGuiX;
-      y = yBegin;
     }
 
     private void GuiRenderCheck() {
@@ -315,8 +248,7 @@ namespace KN_Core {
 
     private void HandleTabSelection() {
       if (selectedTab_ != selectedTabPrev_) {
-        PickedCar = null;
-        ShowCars = false;
+        CarPicker.Reset();
         Replay.ResetState();
         mods_[tabs_[selectedTabPrev_]].ResetState();
         selectedModId_ = mods_[tabs_[selectedTab_]].Id;
@@ -347,34 +279,6 @@ namespace KN_Core {
           }
         }
         showNamesToggle_ = false;
-      }
-    }
-
-    public void UpdateCars() {
-      PlayerCar = null;
-      PickedCar = null;
-
-      Cars.Clear();
-      Ghosts.Clear();
-
-      var cars = FindObjectsOfType<RaceCar>();
-      if (cars != null && cars.Length > 0) {
-        foreach (var c in cars) {
-          if (!c.isNetworkCar) {
-            PlayerCar = new TFCar(c);
-          }
-          else {
-            Cars.Add(new TFCar(c));
-          }
-        }
-      }
-
-      var ghosts = Replay.Player.players;
-      if (ghosts != null && ghosts.Count > 0) {
-        for (int i = 0; i < ghosts.Count; i++) {
-          string ghostName = $"Ghost_{i}";
-          Ghosts.Add(new TFCar(ghostName, ghosts[i].ghostCar));
-        }
       }
     }
 

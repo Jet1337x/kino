@@ -130,7 +130,7 @@ namespace KN_Cinematic {
 
       if (gui.Button(ref x, ref y, $"TARGET{target}", Skin.Button)) {
         pickTarget_ = !pickTarget_;
-        container_.Core.ShowCars = pickTarget_;
+        container_.Core.CarPicker.IsPicking = pickTarget_;
         if (pickTarget_) {
           pickParent_ = false;
         }
@@ -138,7 +138,7 @@ namespace KN_Cinematic {
 
       if (gui.Button(ref x, ref y, $"PARENT{parent}", Skin.Button)) {
         pickParent_ = !pickParent_;
-        container_.Core.ShowCars = pickParent_;
+        container_.Core.CarPicker.IsPicking = pickParent_;
         if (pickParent_) {
           pickTarget_ = false;
         }
@@ -186,22 +186,22 @@ namespace KN_Cinematic {
       CheckTargetParent();
 
       if (pickTarget_) {
-        if (container_.Core.PickedCar != null) {
-          if (Target != container_.Core.PickedCar) {
+        if (container_.Core.CarPicker.PickedCar != null) {
+          if (Target != container_.Core.CarPicker.PickedCar) {
             LookAt = false;
           }
-          Target = container_.Core.PickedCar;
-          container_.Core.PickedCar = null;
+          Target = container_.Core.CarPicker.PickedCar;
+          container_.Core.CarPicker.Reset();
           pickTarget_ = false;
         }
       }
       if (pickParent_) {
-        if (container_.Core.PickedCar != null) {
-          if (Parent != container_.Core.PickedCar) {
+        if (container_.Core.CarPicker.PickedCar != null) {
+          if (Parent != container_.Core.CarPicker.PickedCar) {
             HookTo = false;
           }
-          Parent = container_.Core.PickedCar;
-          container_.Core.PickedCar = null;
+          Parent = container_.Core.CarPicker.PickedCar;
+          container_.Core.CarPicker.Reset();
           pickParent_ = false;
         }
       }

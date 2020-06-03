@@ -100,14 +100,14 @@ namespace KN_Lights {
         return;
       }
 
-      if (Core.PickedCar != null && allowPick_) {
-        if (Core.PickedCar != Core.PlayerCar) {
-          EnableLightsOn(Core.PickedCar);
+      if (Core.CarPicker.PickedCar != null && allowPick_) {
+        if (Core.CarPicker.PickedCar != Core.PlayerCar) {
+          EnableLightsOn(Core.CarPicker.PickedCar);
         }
         else {
           EnableLightsOnOnwCar();
         }
-        Core.PickedCar = null;
+        Core.CarPicker.Reset();
         allowPick_ = false;
       }
 
@@ -162,7 +162,7 @@ namespace KN_Lights {
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
       if (colorPicker_.IsPicking) {
-        if (Core.ShowCars) {
+        if (Core.CarPicker.IsPicking) {
           x += Gui.OffsetGuiX;
         }
         colorPicker_.OnGui(gui, ref x, ref y);
@@ -176,14 +176,14 @@ namespace KN_Lights {
       if (gui.ImageButton(ref x, ref y, hlTabActive_ ? Skin.IconHeadlightsActive : Skin.IconHeadlights)) {
         hlTabActive_ = true;
         slTabActive_ = false;
-        Core.ShowCars = false;
+        Core.CarPicker.Reset();
         colorPicker_.Reset();
       }
 
       if (gui.ImageButton(ref x, ref y, slTabActive_ ? Skin.IconSunActive : Skin.IconSun)) {
         hlTabActive_ = false;
         slTabActive_ = true;
-        Core.ShowCars = false;
+        Core.CarPicker.Reset();
         colorPicker_.Reset();
       }
 
@@ -388,7 +388,7 @@ namespace KN_Lights {
 
       if (gui.Button(ref x, ref y, "ADD LIGHTS TO", Skin.Button)) {
         allowPick_ = !allowPick_;
-        Core.ShowCars = allowPick_;
+        Core.CarPicker.IsPicking = allowPick_;
         colorPicker_.Reset();
       }
       GUI.enabled = guiEnabled;

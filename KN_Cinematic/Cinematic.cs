@@ -548,25 +548,21 @@ namespace KN_Cinematic {
         cameraTabActive_ = true;
         animationTabActive_ = false;
         replayTabActive_ = false;
-        Core.ShowCars = false;
-        // Core.FilePicker.IsPicking = false;
+        Core.CarPicker.Reset();
       }
 
       if (gui.ImageButton(ref x, ref y, animationTabActive_ ? Skin.IconAnimActive : Skin.IconAnim)) {
         cameraTabActive_ = false;
         animationTabActive_ = true;
         replayTabActive_ = false;
-        Core.ShowCars = false;
-        // Core.FilePicker.IsPicking = false;
-        //todo: cars picker
+        Core.CarPicker.Reset();
       }
 
       if (gui.ImageButton(ref x, ref y, replayTabActive_ ? Skin.IconReplayActive : Skin.IconReplay)) {
         cameraTabActive_ = false;
         animationTabActive_ = false;
         replayTabActive_ = true;
-        Core.ShowCars = false;
-        // Core.FilePicker.IsPicking = false;
+        Core.CarPicker.Reset();
       }
 
       x += Gui.IconSize;
