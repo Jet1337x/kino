@@ -14,14 +14,14 @@ namespace KN_Core {
   public class Core : BaseUnityPlugin {
     public static Core CoreInstance { get; private set; }
 
+    public const float GuiXLeft = 25.0f;
+    public const float GuiYTop = 25.0f;
+
     public Config ModConfig { get; }
 
     public bool DrawTimeline { get; set; }
     public Timeline Timeline { get; }
     public Replay Replay { get; }
-
-    public const float GuiXLeft = 25.0f;
-    public const float GuiYTop = 25.0f;
 
     public float GuiContentBeginY { get; private set; }
     public float GuiTabsHeight { get; private set; }
@@ -44,11 +44,10 @@ namespace KN_Core {
     private bool isInGaragePrev_;
     public bool IsInGarage { get; private set; }
 
-    private bool showNames_ = true;
-    private bool showNamesToggle_ = true;
-
     private readonly Gui gui_;
     public bool IsGuiEnabled { get; set; }
+
+    private bool showNamesToggle_ = true;
 
     private readonly List<BaseMod> mods_;
     private readonly List<string> tabs_;
@@ -57,6 +56,8 @@ namespace KN_Core {
     private int selectedModId_;
 
     private CameraRotation cameraRotation_;
+    private readonly Settings settings_;
+
     private static Assembly assembly_;
 
     public Core() {
@@ -76,7 +77,8 @@ namespace KN_Core {
       mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
 
-      AddMod(new Settings(this));
+      settings_ = new Settings(this);
+      AddMod(settings_);
       AddMod(new About(this));
     }
 
@@ -98,21 +100,17 @@ namespace KN_Core {
 
     private void Awake() {
       ModConfig.Read();
-
-      GameConsole.Bool["r_points"] = ModConfig.Get<bool>("r_points");
-      GameConsole.UpdatePoints();
+      Skin.LoadAll();
 
       hideCxUi_ = ModConfig.Get<bool>("hide_cx_ui");
 
-      Skin.LoadAll();
+      settings_.Awake();
     }
 
     private void OnDestroy() {
-      ModConfig.Write();
-
-      ModConfig.Set("r_points", GameConsole.Bool["r_points"]);
       ModConfig.Set("hide_cx_ui", hideCxUi_);
 
+      ModConfig.Write();
       foreach (var mod in mods_) {
         mod.OnStop();
       }
@@ -241,18 +239,17 @@ namespace KN_Core {
 
     private void HideStuff() {
       if (Controls.KeyDown("player_names")) {
-        showNames_ = !showNames_;
+        settings_.HideNames = !settings_.HideNames;
       }
 
       //todo: optimize
-      if (!showNames_) {
+      if (!settings_.HideNames) {
         var allCars = FindObjectsOfType<RaceCar>();
         foreach (var c in allCars) {
           if (c.isNetworkCar) {
             GUICommonNickNames.SetVisibleNick(c, false);
           }
         }
-
         showNamesToggle_ = true;
       }
       else if (showNamesToggle_) {

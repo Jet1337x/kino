@@ -128,7 +128,6 @@ namespace KN_Core {
                   readMode = ReadMode.Controls;
                   break;
               }
-
               Read(reader, readMode);
             }
           }
@@ -184,6 +183,7 @@ namespace KN_Core {
 
       defaultParams_["r_points"] = false;
       defaultParams_["hide_cx_ui"] = true;
+      defaultParams_["hide_names"] = false;
 
       defaultParams_["cl_discard_distance"] = 170.0f;
 
