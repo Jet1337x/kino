@@ -112,9 +112,8 @@ namespace KN_Core {
 
       var ghosts = core_.Replay?.Player.players;
       if (ghosts != null && ghosts.Count > 0) {
-        for (int i = 0; i < ghosts.Count; i++) {
-          string ghostName = $"Ghost_{i}";
-          Ghosts.Add(new TFCar(ghostName, ghosts[i].ghostCar));
+        foreach (var car in ghosts) {
+          Ghosts.Add(new TFCar(car.NickName, car.ghostCar));
         }
       }
     }

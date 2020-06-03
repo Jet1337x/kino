@@ -8,6 +8,15 @@ using Object = UnityEngine.Object;
 
 namespace KN_Core {
   public class Replay {
+    private class ReplayCar {
+      public GhostData Data;
+      public string Name;
+      public ReplayCar(GhostData data, string name) {
+        Data = data;
+        Name = name;
+      }
+    }
+
     public GhostRecorder Recorder { get; }
     public GhostPlayer Player { get; }
 
@@ -18,7 +27,7 @@ namespace KN_Core {
     private float carsListScrollH_;
 
     private readonly List<TFCar> cars_;
-    private readonly List<GhostData> ghostData_;
+    private readonly List<ReplayCar> ghostData_;
 
     private readonly Core core_;
     private readonly FilePicker filePicker_;
@@ -31,7 +40,7 @@ namespace KN_Core {
       Recorder = new GhostRecorder();
 
       cars_ = new List<TFCar>();
-      ghostData_ = new List<GhostData>();
+      ghostData_ = new List<ReplayCar>();
 
       filePicker_ = new FilePicker();
       carPicker_ = new CarPicker(core);
@@ -289,7 +298,8 @@ namespace KN_Core {
       LoadReplay(file);
       foreach (var gd in ghostData_) {
         Player.AddPlayer(new GhostPlayer.StartArgs {
-          data = gd,
+          data = gd.Data,
+          nickName =  gd.Name,
           needCollisions = false
         });
       }
@@ -318,6 +328,7 @@ namespace KN_Core {
 
               gd.carId = reader.ReadInt32();
               gd.profileId = reader.ReadInt32();
+              string name = reader.ReadString();
 
               CarVisualManager.VisualSettings visual = null;
               int visualsSize = reader.ReadInt32();
@@ -340,7 +351,7 @@ namespace KN_Core {
               Log.Write($"[KN_Replay]: Car streams size '{streamsSize}'");
               DeserializeStreams(reader, reader.BaseStream.Position, streamsSize, gd);
 
-              ghostData_.Add(gd);
+              ghostData_.Add(new ReplayCar(gd, name));
             }
           }
         }
@@ -403,6 +414,7 @@ namespace KN_Core {
 
             writer.Write(gd.carId);
             writer.Write(gd.profileId);
+            writer.Write(cars_[i].Name);
             if (gd.visual != null) {
               var buffer = CustomTypes.SerializeCarVS(gd.visual.Copy().MutateToNetworkParts());
               writer.Write(buffer.Length);
