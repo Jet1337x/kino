@@ -240,6 +240,7 @@ namespace KN_Core {
       ButtonTab.button.active.background = texButtonA_;
       ButtonTab.button.alignment = TextAnchor.MiddleCenter;
       ButtonTab.button.font = FontTabs;
+      ButtonTab.button.padding.top = -2;
 
       ButtonActive = ScriptableObject.CreateInstance<GUISkin>();
       ButtonActive.button.normal.background = texButtonAD_;

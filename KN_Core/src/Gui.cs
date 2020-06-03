@@ -11,7 +11,7 @@ namespace KN_Core {
     public const float IconSize = 40.0f;
     public const float ScrollBarWidth = 8.0f;
 
-    public const float TabButtonWidth = 100.0f;
+    public const float TabButtonWidth = 80.0f;
     public const float TabButtonHeight = 23.0f;
 
     public const float OffsetY = 10.0f;
