@@ -28,6 +28,7 @@ namespace KN_Lights {
 
     private bool defaultLoaded_;
     private float fogDistanceDefault_;
+    private float fogDepthDefault_;
     private float sunBrightnessDefault_;
     private float skyExposureDefault_;
     private float ambientLightDefault_;
@@ -95,12 +96,25 @@ namespace KN_Lights {
       if (gui.Button(ref x, ref y, width, height, "FOG", fogEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         fogEnabled_ = !fogEnabled_;
         fog_.meanFreePath.Override(fogEnabled_ ? data_.FogDistance : fogDistanceDefault_);
+        fog_.depthExtent.Override(fogEnabled_ ? data_.FogVolume : fogDepthDefault_);
+        if (fogEnabled_) {
+          fog_.enableVolumetricFog.Override(data_.FogVolume > 2.0f);
+        }
+        else {
+          fog_.enableVolumetricFog.Override(false);
+        }
       }
 
       GUI.enabled = fogEnabled_ && enabled_;
       if (gui.SliderH(ref x, ref y, width, ref data_.FogDistance, 5.0f, fogDistanceDefault_, $"FOG DISTANCE: {data_.FogDistance:F1}")) {
         if (fogOk) {
           fog_.meanFreePath.Override(data_.FogDistance);
+        }
+      }
+      if (gui.SliderH(ref x, ref y, width, ref data_.FogVolume, 1.0f, 100.0f, $"FOG VOLUME: {data_.FogVolume:F1}")) {
+        if (fogOk) {
+          fog_.depthExtent.Override(data_.FogVolume);
+          fog_.enableVolumetricFog.Override(data_.FogVolume > 2.0f);
         }
       }
 
@@ -193,6 +207,7 @@ namespace KN_Lights {
           volume_.profile.TryGet(out fog_);
           if (fog_ != null) {
             data_.FogDistance = fog_.meanFreePath.value;
+            data_.FogVolume = fog_.depthExtent.value;
           }
         }
 
@@ -261,6 +276,7 @@ namespace KN_Lights {
       else {
         if (fogOk) {
           fog_.meanFreePath.Override(fogDistanceDefault_);
+          fog_.depthExtent.Override(fogDepthDefault_);
         }
         if (sunOk) {
           sunLight_.intensity = sunBrightnessDefault_;
@@ -285,6 +301,7 @@ namespace KN_Lights {
 
       if (fog_ != null) {
         fogDistanceDefault_ = fog_.meanFreePath.value;
+        fogDepthDefault_ = fog_.depthExtent.value;
       }
       if (sunLight_ != null) {
         sunBrightnessDefault_ = sunLight_.intensity;
@@ -314,6 +331,7 @@ namespace KN_Lights {
         data_ = allData_.Last();
 
         data_.FogDistance = fog_ != null ? fog_.meanFreePath.value : 0.0f;
+        data_.FogVolume = fog_ != null ? fog_.depthExtent.value : 0.0f;
         data_.SunBrightness = sunLight_ != null ? sunLight_.intensity : 0.0f;
         data_.SkyExposure = sky_ != null ? sky_.exposure.value : 0.0f;
         data_.AmbientLight = staticSky_ != null ? staticSky_.exposure.value : 0.0f;

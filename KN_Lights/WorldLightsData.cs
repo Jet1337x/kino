@@ -53,6 +53,7 @@ namespace KN_Lights {
     public const string ConfigFile = "kn_wldata.knl";
 
     public float FogDistance;
+    public float FogVolume;
     public float SunBrightness;
     public float SkyExposure;
     public float AmbientLight;
@@ -67,6 +68,7 @@ namespace KN_Lights {
 
     public void Serialize(BinaryWriter writer) {
       writer.Write(FogDistance);
+      writer.Write(FogVolume);
       writer.Write(SunBrightness);
       writer.Write(SkyExposure);
       writer.Write(AmbientLight);
@@ -76,6 +78,7 @@ namespace KN_Lights {
 
     public void Deserialize(BinaryReader reader) {
       FogDistance = reader.ReadSingle();
+      FogVolume = reader.ReadSingle();
       SunBrightness = reader.ReadSingle();
       SkyExposure = reader.ReadSingle();
       AmbientLight = reader.ReadSingle();
