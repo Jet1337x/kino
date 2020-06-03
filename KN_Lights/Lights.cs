@@ -102,7 +102,7 @@ namespace KN_Lights {
         return;
       }
 
-      if (carPicker_.IsPicking && carPicker_.PickedCar != null) {
+      if (carPicker_.IsPicking && !TFCar.IsNull(carPicker_.PickedCar)) {
         if (carPicker_.PickedCar != Core.PlayerCar) {
           EnableLightsOn(carPicker_.PickedCar);
         }
@@ -121,7 +121,7 @@ namespace KN_Lights {
 
     public override void LateUpdate(int id) {
       foreach (var cl in carLights_) {
-        if (cl.Car == null || cl.Car.Base == null) {
+        if (TFCar.IsNull(cl.Car)) {
           carLightsToRemove_.Add(cl);
           continue;
         }
@@ -162,9 +162,7 @@ namespace KN_Lights {
     }
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
-      if (carPicker_.IsPicking) {
-        carPicker_.OnGUI(gui, ref x, ref y);
-      }
+      carPicker_.OnGUI(gui, ref x, ref y);
 
       if (colorPicker_.IsPicking) {
         if (carPicker_.IsPicking) {
@@ -203,7 +201,7 @@ namespace KN_Lights {
       const float height = Gui.Height;
 
       bool guiEnabled = GUI.enabled;
-      GUI.enabled = Core.PlayerCar != null;
+      GUI.enabled = !TFCar.IsNull(Core.PlayerCar);
 
       if (gui.Button(ref x, ref y, width, height, "ENABLE OWN LIGHTS", Skin.Button)) {
         colorPicker_.Reset();
@@ -432,18 +430,16 @@ namespace KN_Lights {
     }
 
     private void EnableLightsOnOnwCar() {
-      const string ownCar = "OWN_CAR";
-
       var l = lightsConfig_.GetLights(Core.PlayerCar.Id);
       if (l == null) {
         l = CreateLights(Core.PlayerCar, lightsConfig_);
       }
       else {
-        l.Attach(Core.PlayerCar, ownCar);
+        l.Attach(Core.PlayerCar);
         Log.Write($"[KN_Lights]: Car lights for own car '{l.CarId}' attached");
       }
 
-      int index = carLights_.FindIndex(cl => cl.Car == Core.PlayerCar && cl.UserName == ownCar);
+      int index = carLights_.FindIndex(cl => cl.Car == Core.PlayerCar);
       if (index != -1) {
         carLights_[index] = l;
       }
@@ -460,11 +456,11 @@ namespace KN_Lights {
         lights = CreateLights(car, nwLightsConfig_);
       }
       else {
-        lights.Attach(car, car.Name);
+        lights.Attach(car);
         Log.Write($"[KN_Lights]: Car lights for '{lights.CarId}' attached");
       }
 
-      int index = carLights_.FindIndex(cl => cl.Car.Id == car.Id && cl.UserName == car.Name);
+      int index = carLights_.FindIndex(cl => cl.Car == car);
       if (index != -1) {
         carLights_[index] = lights;
       }
@@ -495,7 +491,7 @@ namespace KN_Lights {
         Log.Write($"[KN_Lights]: Lights for car '{car.Id}' not found. Creating default.");
       }
 
-      light.Attach(car, car.Name);
+      light.Attach(car);
       config.AddLights(light);
       Log.Write($"[KN_Lights]: Car lights attached to '{car.Id}'");
 
@@ -523,7 +519,7 @@ namespace KN_Lights {
       var cam = Core.ActiveCamera;
       if (cam != null) {
         foreach (var cl in carLights_) {
-          if (cl.Car != null) {
+          if (!TFCar.IsNull(cl.Car)) {
             if (Vector3.Distance(cam.transform.position, cl.Car.Transform.position) > carLightsDiscard_) {
               if (cl.IsLightsEnabled) {
                 cl.IsLightsEnabled = false;

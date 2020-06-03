@@ -381,8 +381,8 @@ namespace KN_Cinematic {
       bool cameraOk = ActiveCamera != null && ActiveCamera != FreeCamera;
       bool kfOk = cameraOk && CurrentKeyframe != null;
       bool kfEdit = kfOk && Core.Timeline.IsKeyframeEditing;
-      bool lookAt = cameraOk && ActiveCamera.Target != null && ActiveCamera.LookAt;
-      bool hookTo = cameraOk && ActiveCamera.Parent != null && ActiveCamera.HookTo;
+      bool lookAt = cameraOk && !TFCar.IsNull(ActiveCamera.Target) && ActiveCamera.LookAt;
+      bool hookTo = cameraOk && !TFCar.IsNull(ActiveCamera.Parent) && ActiveCamera.HookTo;
 
       bool old = GUI.enabled;
       GUI.enabled = kfEdit;
@@ -541,10 +541,7 @@ namespace KN_Cinematic {
     }
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
-      if (CarPicker.IsPicking) {
-        CarPicker.OnGUI(gui, ref x, ref y);
-      }
-
+      CarPicker.OnGUI(gui, ref x, ref y);
       Core.Replay.GuiPickers(gui, ref x, ref y);
     }
     #endregion

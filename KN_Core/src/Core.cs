@@ -134,6 +134,10 @@ namespace KN_Core {
     }
 
     private void Update() {
+      if (TFCar.IsNull(PlayerCar)) {
+        FindPlayerCar();
+      }
+
       if (MainCamera == null) {
         ActiveCamera = null;
         SetMainCamera(true);
@@ -169,10 +173,6 @@ namespace KN_Core {
         if (InputManager.GetLockedInputObject() == this) {
           InputManager.LockInput(null);
         }
-      }
-
-      if (PlayerCar == null || PlayerCar.Base == null) {
-        FindPlayerCar();
       }
 
       GuiRenderCheck();

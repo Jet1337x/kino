@@ -120,12 +120,12 @@ namespace KN_Cinematic {
 
     public void GuiTransformMode(Gui gui, ref float x, ref float y) {
       string target = string.Empty;
-      if (Target != null) {
+      if (!TFCar.IsNull(Target)) {
         target = Target == container_.Core.PlayerCar ? ": OWN CAR" : $": {Target.Name}";
       }
 
       string parent = string.Empty;
-      if (Parent != null) {
+      if (!TFCar.IsNull(Parent)) {
         parent = Parent == container_.Core.PlayerCar ? ": OWN CAR" : $": {Parent.Name}";
       }
 
@@ -149,14 +149,14 @@ namespace KN_Cinematic {
       y += Gui.OffsetY;
 
       bool old = GUI.enabled;
-      GUI.enabled = Target != null && old;
+      GUI.enabled = !TFCar.IsNull(Target) && old;
 
       if (gui.Button(ref x, ref y, "LOOK AT", LookAt ? Skin.ButtonActive : Skin.Button)) {
         LookAt = !LookAt;
         ToggleLookAt();
       }
 
-      GUI.enabled = Parent != null && old;
+      GUI.enabled = !TFCar.IsNull(Parent) && old;
 
       if (gui.Button(ref x, ref y, "HOOK TO", HookTo ? Skin.ButtonActive : Skin.Button)) {
         HookTo = !HookTo;
@@ -170,7 +170,7 @@ namespace KN_Cinematic {
       const float offset = 1.0f;
 
       bool old = GUI.enabled;
-      GUI.enabled = old && Target != null && LookAt;
+      GUI.enabled = old && !TFCar.IsNull(Target) && LookAt;
       if (gui.SliderH(ref x, ref y, ref HeadingOffset.x, HeadingOffset.x - offset, HeadingOffset.x + offset, $"HEADING X: {HeadingOffset.x:F}")) {
         heading_.transform.localPosition = HeadingOffset;
       }
@@ -197,7 +197,7 @@ namespace KN_Cinematic {
         }
       }
       if (pickParent_) {
-        if (container_.CarPicker.PickedCar != null) {
+        if (!TFCar.IsNull(container_.CarPicker.PickedCar)) {
           if (Parent != container_.CarPicker.PickedCar) {
             HookTo = false;
           }
@@ -218,7 +218,7 @@ namespace KN_Cinematic {
         GameObject.transform.rotation = dummy_.transform.rotation;
       }
 
-      if (LookAt && Target != null) {
+      if (LookAt && !TFCar.IsNull(Target)) {
         var g = HookTo ? dummy_ : GameObject;
         if (heading_ != null) {
           heading_.transform.localPosition = HeadingOffset;
@@ -258,7 +258,7 @@ namespace KN_Cinematic {
     }
 
     private void ToggleHook() {
-      if (Parent != null) {
+      if (!TFCar.IsNull(Parent)) {
         var transform = Parent.Transform;
         dummy_.transform.parent = HookTo ? transform : null;
         dummy_.transform.position = transform.position + new Vector3(0.0f, 1.5f, 1.0f);
@@ -280,14 +280,14 @@ namespace KN_Cinematic {
     }
 
     private void ToggleLookAt() {
-      if (LookAt && Target != null) {
+      if (LookAt && !TFCar.IsNull(Target)) {
         heading_.transform.parent = Target.Transform;
         HeadingOffset = Vector3.zero;
       }
     }
 
     private void CheckTargetParent() {
-      if (HookTo && (Parent == null || dummy_ == null)) {
+      if (HookTo && (TFCar.IsNull(Parent) || dummy_ == null)) {
         HookTo = false;
         dummy_ = new GameObject();
 
@@ -300,7 +300,7 @@ namespace KN_Cinematic {
 
         CameraSwitch.instance.AttachCam();
       }
-      if (LookAt && (Target == null || heading_ == null)) {
+      if (LookAt && (TFCar.IsNull(Target) || heading_ == null)) {
         LookAt = false;
         heading_ = new GameObject();
       }

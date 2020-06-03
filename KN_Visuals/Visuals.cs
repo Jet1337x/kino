@@ -76,9 +76,7 @@ namespace KN_Visuals {
     }
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
-      if (carPicker_.IsPicking) {
-        carPicker_.OnGUI(gui, ref x, ref y);
-      }
+      carPicker_.OnGUI(gui, ref x, ref y);
 
       if (filePicker_.IsPicking) {
         if (carPicker_.IsPicking) {
@@ -228,10 +226,7 @@ namespace KN_Visuals {
     }
 
     private void SaveCurrentVisuals() {
-      if (prefs_ == null ||
-          Core.PlayerCar == null ||
-          Core.PlayerCar.Base == null ||
-          Core.PlayerCar.Base.metaInfo == null) {
+      if (prefs_ == null || TFCar.IsNull(Core.PlayerCar) || Core.PlayerCar.Base.metaInfo == null) {
         return;
       }
 
