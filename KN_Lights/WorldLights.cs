@@ -28,7 +28,7 @@ namespace KN_Lights {
 
     private bool defaultLoaded_;
     private float fogDistanceDefault_;
-    private float fogDepthDefault_;
+    private float fogVolumeDefault_;
     private float sunBrightnessDefault_;
     private float skyExposureDefault_;
     private float ambientLightDefault_;
@@ -96,7 +96,7 @@ namespace KN_Lights {
       if (gui.Button(ref x, ref y, width, height, "FOG", fogEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         fogEnabled_ = !fogEnabled_;
         fog_.meanFreePath.Override(fogEnabled_ ? data_.FogDistance : fogDistanceDefault_);
-        fog_.depthExtent.Override(fogEnabled_ ? data_.FogVolume : fogDepthDefault_);
+        fog_.depthExtent.Override(fogEnabled_ ? data_.FogVolume : fogVolumeDefault_);
         if (fogEnabled_) {
           fog_.enableVolumetricFog.Override(data_.FogVolume > 2.0f);
         }
@@ -149,6 +149,18 @@ namespace KN_Lights {
       }
 
       GUI.enabled = guiEnabled;
+      if (gui.Button(ref x, ref y, width, height, "RESET ALL", Skin.Button)) {
+        data_.FogDistance = fogDistanceDefault_;
+        data_.FogVolume = fogVolumeDefault_;
+        data_.SunBrightness = sunBrightnessDefault_;
+        data_.SkyExposure = skyExposureDefault_;
+        data_.AmbientLight = ambientLightDefault_;
+        data_.SunTemp = 6300.0f;
+
+        enabled_ = true;
+        ToggleLights();
+        enabled_ = false;
+      }
     }
 
     private void UpdateMap() {
@@ -276,7 +288,8 @@ namespace KN_Lights {
       else {
         if (fogOk) {
           fog_.meanFreePath.Override(fogDistanceDefault_);
-          fog_.depthExtent.Override(fogDepthDefault_);
+          fog_.depthExtent.Override(fogVolumeDefault_);
+          fog_.enableVolumetricFog.Override(false);
         }
         if (sunOk) {
           sunLight_.intensity = sunBrightnessDefault_;
@@ -301,7 +314,7 @@ namespace KN_Lights {
 
       if (fog_ != null) {
         fogDistanceDefault_ = fog_.meanFreePath.value;
-        fogDepthDefault_ = fog_.depthExtent.value;
+        fogVolumeDefault_ = fog_.depthExtent.value;
       }
       if (sunLight_ != null) {
         sunBrightnessDefault_ = sunLight_.intensity;
