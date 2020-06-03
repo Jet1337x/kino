@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace KN_Core {
   public class FilePicker {
-    public string Folder { get; private set; }
     public string PickedFile { get; set; }
     public bool IsPicking { get; set; }
 
@@ -12,21 +11,32 @@ namespace KN_Core {
     private Vector2 filesListScroll_;
 
     private string[] files_;
+    private string folder_;
+
+    public void Toggle(string folder) {
+      IsPicking = !IsPicking;
+      if (IsPicking) {
+        PickIn(folder);
+      }
+      else {
+        Reset();
+      }
+    }
 
     public void PickIn(string folder) {
-      Folder = folder;
+      folder_ = folder;
       IsPicking = true;
       RefreshFiles();
     }
 
     public void Reset() {
-      Folder = null;
+      folder_ = null;
       PickedFile = null;
       IsPicking = false;
     }
 
     public void OnGui(Gui gui, ref float x, ref float y) {
-      if (string.IsNullOrEmpty(Folder)) {
+      if (string.IsNullOrEmpty(folder_)) {
         return;
       }
       const float listHeight = 300.0f;
@@ -56,7 +66,6 @@ namespace KN_Core {
         string file = Path.GetFileName(f);
         sy += Gui.OffsetY;
         if (gui.Button(ref sx, ref sy, width, Gui.Height, $"{file}", Skin.Button)) {
-          IsPicking = false;
           PickedFile = f;
         }
         sy -= Gui.OffsetY;
@@ -70,10 +79,10 @@ namespace KN_Core {
     }
 
     private void RefreshFiles() {
-      if (string.IsNullOrEmpty(Folder)) {
+      if (string.IsNullOrEmpty(folder_)) {
         return;
       }
-      files_ = Directory.GetFiles(Folder);
+      files_ = Directory.GetFiles(folder_);
     }
   }
 }

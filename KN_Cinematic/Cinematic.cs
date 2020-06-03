@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using FMODUnity;
 using KN_Core;
 using UnityEngine;
 
@@ -7,16 +6,20 @@ namespace KN_Cinematic {
   public class Cinematic : BaseMod {
     private const string FreeCamTag = "kn_freecam";
     private const float EnableButtonOffset = Gui.Height + Gui.OffsetY;
-    private const float ScrollScale = 1.0f;
+
     private const float FovMin = 10.0f;
     private const float FovMax = 120.0f;
+#if KN_DEV_TOOLS
+    private const float ScrollScale = 1.0f;
+#endif
 
     public bool CinematicEnabled { get; private set; }
     public CTKeyframe CurrentKeyframe { get; set; }
-    public GameObject MainCamera { get; private set; }
 
     public CTCamera FreeCamera { get; private set; }
     public CTCamera ActiveCamera { get; private set; }
+
+    public CarPicker CarPicker { get; }
 
     private int ctCameraId_;
     private readonly IList<CTCamera> ctCameras_;
@@ -34,10 +37,11 @@ namespace KN_Cinematic {
     private Vector2 kfListScroll_;
 
     private string animationScaleString_ = "0.0";
-    private string animationBeginString_ = "0.0";
 
     public Cinematic(Core core) : base(core, "CINEMATIC", 1) {
       ctCameras_ = new List<CTCamera>();
+
+      CarPicker = new CarPicker(core);
 
       Core.Timeline.OnPlay += OnTimelinePlay;
       Core.Timeline.OnStop += OnTimelineStop;
@@ -52,17 +56,18 @@ namespace KN_Cinematic {
     }
 
     public override void ResetState() {
+      ResetPickers();
+      ActiveCamera?.ResetState();
       cameraTabActive_ = true;
       animationTabActive_ = false;
       replayTabActive_ = false;
       Core.DrawTimeline = CinematicEnabled;
       Core.Timeline.IsPlaying = Core.Timeline.IsPlaying && CinematicEnabled;
-
-      ActiveCamera?.ResetState();
     }
 
-    public override bool WantsCaptureInput() {
-      return CinematicEnabled;
+    public override void ResetPickers() {
+      ActiveCamera?.ResetPickers();
+      CarPicker.Reset();
     }
 
     private void ResetAll() {
@@ -75,21 +80,26 @@ namespace KN_Cinematic {
       if (ActiveCamera != null) {
         Object.Destroy(ActiveCamera.GameObject);
         ActiveCamera = null;
+        Core.ActiveCamera = null;
       }
 
       ctCameraId_ = 0;
       ctCameras_.Clear();
 
-      SetMainCamera(true);
+      Core.SetMainCamera(true);
       ToggleCinematicCamera();
 
       Core.Timeline.Reset();
     }
 
     public override void Update(int id) {
-      if (MainCamera == null) {
+      if (Core.MainCamera == null) {
         CinematicEnabled = false;
         ResetAll();
+      }
+
+      if (!CinematicEnabled && Core.ActiveCamera != Core.MainCamera) {
+        Core.ActiveCamera = Core.MainCamera;
       }
 
       Core.Replay.Update();
@@ -101,6 +111,7 @@ namespace KN_Cinematic {
           ActiveCamera.Rotate(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0.0f);
         }
 
+#if KN_DEV_TOOLS
         ActiveCamera.Fov += Input.mouseScrollDelta.y * ScrollScale;
         if (ActiveCamera.Fov < FovMin) {
           ActiveCamera.Fov = FovMin;
@@ -108,6 +119,7 @@ namespace KN_Cinematic {
         else if (ActiveCamera.Fov > FovMax) {
           ActiveCamera.Fov = FovMax;
         }
+#endif
 
         if (ActiveCamera.Animation.AllowPlay && Core.Timeline.IsPlaying) {
           ActiveCamera.UpdateAnimation(Core.Timeline.CurrentTime);
@@ -304,28 +316,21 @@ namespace KN_Cinematic {
         }
       }
 
-      float currentLength = ActiveCamera?.Animation.ActualLength ?? 0.0f;
+      GUI.enabled = cameraOk && !Core.Replay.IsPlaying;
+
+      float currentLength = ActiveCamera?.Animation.Length ?? 0.0f;
       animationScaleString_ = $"{currentLength:F}";
       if (gui.TextField(ref x, ref y, ref animationScaleString_, "LENGTH", 6, Config.FloatRegex)) {
         float.TryParse(animationScaleString_, out float scaledLength);
         if (cameraOk && scaledLength > 0.01f) {
-          ActiveCamera.Animation.Scale(scaledLength);
+          ActiveCamera.Animation.Length = scaledLength;
           Log.Write($"[KN_Cinematic]: Scale animation for camera '{ActiveCamera.Tag}' ({currentLength:F} -> {scaledLength:F})");
         }
       }
-
-      float beginTime = ActiveCamera?.Animation.BeginTime ?? 0.0f;
-      animationBeginString_ = $"{beginTime:F}";
-      if (gui.TextField(ref x, ref y, ref animationBeginString_, "BEGIN TIME", 6, Config.FloatRegex)) {
-        float.TryParse(animationBeginString_, out float begin);
-        if (cameraOk && begin >= 0.0f) {
-          ActiveCamera.Animation.BeginTime = begin;
-          Log.Write($"[KN_Cinematic]: Set animation begin time for camera '{ActiveCamera.Tag}' ({beginTime:F} -> {begin:F})");
-        }
-      }
+      GUI.enabled = cameraOk;
 
       float smooth = ActiveCamera?.Animation.Smooth ?? 1.0f;
-      if (gui.SliderH(ref x, ref y, Gui.Width, ref smooth, 1.0f, 20.0f, $"SMOOTHNESS: {smooth:F}", Skin.RedSkin)) {
+      if (gui.SliderH(ref x, ref y, Gui.Width, ref smooth, 1.0f, 10.0f, $"SMOOTHNESS: {smooth:F}", Skin.RedSkin)) {
         if (cameraOk) {
           ActiveCamera.Animation.Smooth = smooth;
           ActiveCamera.Animation.MakeAnimation();
@@ -515,6 +520,9 @@ namespace KN_Cinematic {
 
     #region replay
     private void GuiReplay(Gui gui, ref float x, ref float y) {
+      bool guiEnabled = GUI.enabled;
+      GUI.enabled = !Core.IsInGarage;
+
       Core.Replay.OnGui(gui, ref x, ref y);
 
       gui.Line(x, y, Gui.Width, 1.0f, Skin.SeparatorColor);
@@ -528,6 +536,16 @@ namespace KN_Cinematic {
           ActiveCamera.GameObject.GetComponent<Camera>().farClipPlane = 1000.0f;
         }
       }
+
+      GUI.enabled = guiEnabled;
+    }
+
+    public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
+      if (CarPicker.IsPicking) {
+        CarPicker.OnGUI(gui, ref x, ref y);
+      }
+
+      Core.Replay.GuiPickers(gui, ref x, ref y);
     }
     #endregion
 
@@ -539,24 +557,27 @@ namespace KN_Cinematic {
         cameraTabActive_ = true;
         animationTabActive_ = false;
         replayTabActive_ = false;
-        Core.ShowCars = false;
-        Core.FilePicker.IsPicking = false;
+        CarPicker.Reset();
+        Core.Replay.ResetPickers();
+        ActiveCamera?.ResetPickers();
       }
 
       if (gui.ImageButton(ref x, ref y, animationTabActive_ ? Skin.IconAnimActive : Skin.IconAnim)) {
         cameraTabActive_ = false;
         animationTabActive_ = true;
         replayTabActive_ = false;
-        Core.ShowCars = false;
-        Core.FilePicker.IsPicking = false;
+        CarPicker.Reset();
+        Core.Replay.ResetPickers();
+        ActiveCamera?.ResetPickers();
       }
 
       if (gui.ImageButton(ref x, ref y, replayTabActive_ ? Skin.IconReplayActive : Skin.IconReplay)) {
         cameraTabActive_ = false;
         animationTabActive_ = false;
         replayTabActive_ = true;
-        Core.ShowCars = false;
-        Core.FilePicker.IsPicking = false;
+        CarPicker.Reset();
+        Core.Replay.ResetPickers();
+        ActiveCamera?.ResetPickers();
       }
 
       x += Gui.IconSize;
@@ -582,12 +603,6 @@ namespace KN_Cinematic {
     }
 
     private void OnTimelinePlay(bool play) {
-      // if (activeCamera_ != null && activeCamera_ != freeCamera_) {
-      //   if (activeCamera_.Animation.Keyframes.Count > 0) {
-      //     activeCamera_.Animation.AllowPlay = play;
-      //   }
-      // }
-
       Core.Replay.PlayPause(play);
     }
 
@@ -632,6 +647,10 @@ namespace KN_Cinematic {
       ActiveCamera = camera ?? FreeCamera;
       if (ActiveCamera != null) {
         ActiveCamera.Enabled = true;
+        Core.ActiveCamera = ActiveCamera.GameObject;
+      }
+      else {
+        Core.ActiveCamera = null;
       }
 
       if (ActiveCamera != null && ActiveCamera != FreeCamera) {
@@ -650,16 +669,6 @@ namespace KN_Cinematic {
           Core.ToggleCxUi(true);
         }
       }
-    }
-
-    private bool SetMainCamera(bool enabled) {
-      MainCamera = GameObject.FindGameObjectWithTag(Config.CxMainCameraTag);
-      if (MainCamera != null) {
-        MainCamera.GetComponent<Camera>().enabled = enabled;
-        MainCamera.GetComponent<StudioListener>().enabled = enabled;
-        return true;
-      }
-      return false;
     }
 
     public void DisableAllCamerasBut(string tag) {
@@ -684,9 +693,9 @@ namespace KN_Cinematic {
 
     private void ToggleCinematicCamera() {
       if (CinematicEnabled) {
-        if (SetMainCamera(false)) {
+        if (Core.SetMainCamera(false)) {
           if (FreeCamera == null) {
-            FreeCamera = new CTCamera(this, MainCamera, FreeCamTag);
+            FreeCamera = new CTCamera(this, Core.MainCamera, FreeCamTag);
             Log.Write("[KN_Cinematic]: Free camera created");
             SetActiveCamera(FreeCamera);
           }
@@ -708,7 +717,7 @@ namespace KN_Cinematic {
         }
 
         SetActiveCamera(null);
-        SetMainCamera(true);
+        Core.SetMainCamera(true);
         if (FreeCamera != null) {
           FreeCamera.Enabled = false;
         }
@@ -723,6 +732,7 @@ namespace KN_Cinematic {
       if (camera == ActiveCamera) {
         ActiveCamera = FreeCamera;
         ActiveCamera.Enabled = true;
+        Core.ActiveCamera = ActiveCamera.GameObject;
       }
       camera.Enabled = false;
       camera.RemoveAnimation();
@@ -731,11 +741,11 @@ namespace KN_Cinematic {
     }
 
     private void ResetTransform() {
-      if (MainCamera == null || ActiveCamera == null) {
+      if (Core.MainCamera == null || ActiveCamera == null) {
         return;
       }
 
-      var transform = MainCamera.transform;
+      var transform = Core.MainCamera.transform;
       ActiveCamera.GameObject.transform.position = transform.position;
       ActiveCamera.GameObject.transform.rotation = transform.rotation;
     }

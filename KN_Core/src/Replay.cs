@@ -17,26 +17,29 @@ namespace KN_Core {
     private Vector2 carsListScroll_;
     private float carsListScrollH_;
 
-    private bool allowPick_;
     private readonly List<TFCar> cars_;
     private readonly List<GhostData> ghostData_;
 
-    private bool pickingFile_;
-
     private readonly Core core_;
+    private readonly FilePicker filePicker_;
+    private readonly CarPicker carPicker_;
 
-    public Replay(Core container) {
-      core_ = container;
+    public Replay(Core core) {
+      core_ = core;
 
       Player = new GhostPlayer();
       Recorder = new GhostRecorder();
 
       cars_ = new List<TFCar>();
       ghostData_ = new List<GhostData>();
+
+      filePicker_ = new FilePicker();
+      carPicker_ = new CarPicker(core);
     }
 
-    public void ResetState() {
-      pickingFile_ = false;
+    public void ResetPickers() {
+      filePicker_.Reset();
+      carPicker_.Reset();
     }
 
     public void FixedUpdate() {
@@ -46,25 +49,20 @@ namespace KN_Core {
     }
 
     public void Update() {
-      if (core_.PickedCar != null) {
-        if (allowPick_) {
-          if (!core_.PickedCar.IsGhost) {
-            if (!cars_.Contains(core_.PickedCar)) {
-              cars_.Add(core_.PickedCar);
-            }
+      if (carPicker_.IsPicking && carPicker_.PickedCar != null) {
+        if (!carPicker_.PickedCar.IsGhost) {
+          var picked = carPicker_.PickedCar;
+          if (cars_.FindIndex(c => c.Name == picked.Name && c.Id == picked.Id) == -1) {
+            cars_.Add(carPicker_.PickedCar);
           }
-          core_.PickedCar = null;
-          allowPick_ = false;
         }
+        carPicker_.Reset();
       }
 
-      if (pickingFile_) {
-        if (core_.FilePicker.PickedFile != null) {
-          string file = core_.FilePicker.PickedFile;
-          core_.FilePicker.PickedFile = null;
-          core_.FilePicker.IsPicking = false;
-          pickingFile_ = false;
-
+      if (filePicker_.IsPicking) {
+        string file = filePicker_.PickedFile;
+        if (file != null) {
+          filePicker_.Reset();
           LoadPickedReplay(file);
         }
       }
@@ -85,6 +83,10 @@ namespace KN_Core {
     }
 
     public void PlayPause(bool play) {
+      if (Player.players.Count == 0) {
+        return;
+      }
+
       IsPlaying = play;
       if (IsPlaying) {
         Player.Play();
@@ -135,7 +137,7 @@ namespace KN_Core {
             Log.Write($"[KN_Replay]: Null car");
             continue;
           }
-          int id = car.Base.metaInfo.id;
+          int id = car.Id;
           var vis = car != core_.PlayerCar &&
                     car.Base != null &&
                     car.Base.networkPlayer != null
@@ -205,10 +207,7 @@ namespace KN_Core {
       }
 
       if (gui.Button(ref x, ref y, "LOAD", Skin.Button)) {
-        pickingFile_ = !pickingFile_;
-        if (pickingFile_) {
-          core_.FilePicker.PickIn(Config.ReplaysDir);
-        }
+        filePicker_.Toggle(Config.ReplaysDir);
       }
 
       float yAfterReplay = y;
@@ -226,13 +225,25 @@ namespace KN_Core {
       x = xBegin;
     }
 
+    public void GuiPickers(Gui gui, ref float x, ref float y) {
+      if (carPicker_.IsPicking) {
+        carPicker_.OnGUI(gui, ref x, ref y);
+      }
+
+      if (filePicker_.IsPicking) {
+        if (carPicker_.IsPicking) {
+          x += Gui.OffsetGuiX;
+        }
+        filePicker_.OnGui(gui, ref x, ref y);
+      }
+    }
+
     private void GuiCarList(Gui gui, ref float x, ref float y) {
       bool enabled = GUI.enabled;
 
-      GUI.enabled = !IsRecording;
+      GUI.enabled = !IsRecording && !core_.IsInGarage;
       if (gui.Button(ref x, ref y, "PICK CAR", Skin.Button)) {
-        allowPick_ = !allowPick_;
-        core_.ShowCars = allowPick_;
+        carPicker_.Toggle();
       }
 
       const float listHeight = 300.0f;

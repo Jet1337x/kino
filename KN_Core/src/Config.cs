@@ -17,6 +17,8 @@ namespace KN_Core {
     public const string CxUiCanvasName = "Root";
     public const string CxMainCameraTag = "MainCamera";
 
+    public const string ConfigFile = "kn_config.xml";
+
     public const string FloatRegex = @"^[0-9]*(?:\.[0-9]*)?$";
 
     public static string BaseDir { get; private set; }
@@ -84,7 +86,7 @@ namespace KN_Core {
 
       try {
         var settings = new XmlWriterSettings {Indent = true, IndentChars = "  ", Encoding = Encoding.UTF8};
-        using (var writer = XmlWriter.Create(BaseDir + "kn_config.xml", settings)) {
+        using (var writer = XmlWriter.Create(BaseDir + ConfigFile, settings)) {
           writer.WriteStartElement("config");
 
           //config values
@@ -113,9 +115,9 @@ namespace KN_Core {
 
     public void Read() {
       try {
-        ReadMode readMode = ReadMode.None;
+        var readMode = ReadMode.None;
 
-        using (var reader = XmlReader.Create(BaseDir + "kn_config.xml")) {
+        using (var reader = XmlReader.Create(BaseDir + ConfigFile)) {
           while (reader.Read()) {
             if (reader.NodeType == XmlNodeType.Element) {
               switch (reader.Name) {
@@ -154,12 +156,12 @@ namespace KN_Core {
         var type = reader.GetAttribute("type");
         switch (type) {
           case "System.Single": {
-            float.TryParse(value, out var val);
+            float.TryParse(value, out float val);
             params_[key] = val;
             break;
           }
           case "System.Boolean": {
-            bool.TryParse(value, out var val);
+            bool.TryParse(value, out bool val);
             params_[key] = val;
             break;
           }
@@ -182,6 +184,8 @@ namespace KN_Core {
 
       defaultParams_["r_points"] = false;
       defaultParams_["hide_cx_ui"] = true;
+
+      defaultParams_["cl_discard_distance"] = 170.0f;
 
       Controls.LoadDefault();
 

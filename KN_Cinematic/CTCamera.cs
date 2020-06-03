@@ -91,12 +91,15 @@ namespace KN_Cinematic {
     }
 
     public void ResetState() {
-      pickTarget_ = false;
-      pickParent_ = false;
-
       if (HookTo && CameraSwitch.instance != null) {
         CameraSwitch.instance.AttachCam();
       }
+    }
+
+    public void ResetPickers() {
+      pickTarget_ = false;
+      pickParent_ = false;
+      container_.CarPicker.Reset();
     }
 
     public bool OnGUI(Gui gui, ref float x, ref float y, float width) {
@@ -128,7 +131,7 @@ namespace KN_Cinematic {
 
       if (gui.Button(ref x, ref y, $"TARGET{target}", Skin.Button)) {
         pickTarget_ = !pickTarget_;
-        container_.Core.ShowCars = pickTarget_;
+        container_.CarPicker.IsPicking = pickTarget_;
         if (pickTarget_) {
           pickParent_ = false;
         }
@@ -136,7 +139,7 @@ namespace KN_Cinematic {
 
       if (gui.Button(ref x, ref y, $"PARENT{parent}", Skin.Button)) {
         pickParent_ = !pickParent_;
-        container_.Core.ShowCars = pickParent_;
+        container_.CarPicker.IsPicking = pickParent_;
         if (pickParent_) {
           pickTarget_ = false;
         }
@@ -184,22 +187,22 @@ namespace KN_Cinematic {
       CheckTargetParent();
 
       if (pickTarget_) {
-        if (container_.Core.PickedCar != null) {
-          if (Target != container_.Core.PickedCar) {
+        if (container_.CarPicker.PickedCar != null) {
+          if (Target != container_.CarPicker.PickedCar) {
             LookAt = false;
           }
-          Target = container_.Core.PickedCar;
-          container_.Core.PickedCar = null;
+          Target = container_.CarPicker.PickedCar;
+          container_.CarPicker.Reset();
           pickTarget_ = false;
         }
       }
       if (pickParent_) {
-        if (container_.Core.PickedCar != null) {
-          if (Parent != container_.Core.PickedCar) {
+        if (container_.CarPicker.PickedCar != null) {
+          if (Parent != container_.CarPicker.PickedCar) {
             HookTo = false;
           }
-          Parent = container_.Core.PickedCar;
-          container_.Core.PickedCar = null;
+          Parent = container_.CarPicker.PickedCar;
+          container_.CarPicker.Reset();
           pickParent_ = false;
         }
       }
