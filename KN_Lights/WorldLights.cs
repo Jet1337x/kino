@@ -148,7 +148,7 @@ namespace KN_Lights {
         }
       }
 
-      GUI.enabled = guiEnabled;
+      GUI.enabled = enabled_;
       if (gui.Button(ref x, ref y, width, height, "RESET ALL", Skin.Button)) {
         data_.FogDistance = fogDistanceDefault_;
         data_.FogVolume = fogVolumeDefault_;
@@ -161,6 +161,7 @@ namespace KN_Lights {
         ToggleLights();
         enabled_ = false;
       }
+      GUI.enabled = guiEnabled;
     }
 
     private void UpdateMap() {
