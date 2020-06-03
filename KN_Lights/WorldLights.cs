@@ -211,13 +211,16 @@ namespace KN_Lights {
         dataLoaded_ = false;
       }
 
-      if (staticSky_ == null) {
-        foreach (var c in map_.GetComponents<MonoBehaviour>()) {
-          var type = c.GetType();
-          if (type.Name == "StaticLightingSky") {
-            staticSkyBeh_ = c;
-            staticSky_ = type.GetField("m_SkySettings", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(c) as SkySettings;
-            break;
+      if (staticSky_ == null && map_ != null) {
+        var components = map_.GetComponents<MonoBehaviour>();
+        if (components != null) {
+          foreach (var c in components) {
+            var type = c.GetType();
+            if (type.Name == "StaticLightingSky") {
+              staticSkyBeh_ = c;
+              staticSky_ = type.GetField("m_SkySettings", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(c) as SkySettings;
+              break;
+            }
           }
         }
 
