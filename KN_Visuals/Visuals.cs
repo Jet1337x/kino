@@ -25,9 +25,11 @@ namespace KN_Visuals {
     private float shiftY_;
 
     private readonly FilePicker filePicker_;
+    private readonly CarPicker carPicker_;
 
     public Visuals(Core core) : base(core, "VISUALS", 3) {
       filePicker_ = new FilePicker();
+      carPicker_ = new CarPicker(core);
     }
 
     public override void ResetState() {
@@ -37,6 +39,7 @@ namespace KN_Visuals {
 
     public override void ResetPickers() {
       filePicker_.Reset();
+      carPicker_.Reset();
     }
 
     public override bool LockCameraRotation() {
@@ -73,8 +76,12 @@ namespace KN_Visuals {
     }
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
+      if (carPicker_.IsPicking) {
+        carPicker_.OnGUI(gui, ref x, ref y);
+      }
+
       if (filePicker_.IsPicking) {
-        if (Core.CarPicker.IsPicking) {
+        if (carPicker_.IsPicking) {
           x += Gui.OffsetGuiX;
         }
         filePicker_.OnGui(gui, ref x, ref y);

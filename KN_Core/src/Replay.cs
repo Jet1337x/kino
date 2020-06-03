@@ -17,15 +17,15 @@ namespace KN_Core {
     private Vector2 carsListScroll_;
     private float carsListScrollH_;
 
-    private bool allowPick_;
     private readonly List<TFCar> cars_;
     private readonly List<GhostData> ghostData_;
 
     private readonly Core core_;
     private readonly FilePicker filePicker_;
+    private readonly CarPicker carPicker_;
 
-    public Replay(Core container) {
-      core_ = container;
+    public Replay(Core core) {
+      core_ = core;
 
       Player = new GhostPlayer();
       Recorder = new GhostRecorder();
@@ -34,11 +34,12 @@ namespace KN_Core {
       ghostData_ = new List<GhostData>();
 
       filePicker_ = new FilePicker();
+      carPicker_ = new CarPicker(core);
     }
 
     public void ResetState() {
       filePicker_.Reset();
-      allowPick_ = false;
+      carPicker_.Reset();
     }
 
     public void FixedUpdate() {
@@ -48,16 +49,13 @@ namespace KN_Core {
     }
 
     public void Update() {
-      if (core_.CarPicker.PickedCar != null) {
-        if (allowPick_) {
-          if (!core_.CarPicker.PickedCar.IsGhost) {
-            if (!cars_.Contains(core_.CarPicker.PickedCar)) {
-              cars_.Add(core_.CarPicker.PickedCar);
-            }
+      if (carPicker_.IsPicking && carPicker_.PickedCar != null) {
+        if (!carPicker_.PickedCar.IsGhost) {
+          if (!cars_.Contains(carPicker_.PickedCar)) {
+            cars_.Add(carPicker_.PickedCar);
           }
-          core_.CarPicker.Reset();
-          allowPick_ = false;
         }
+        carPicker_.Reset();
       }
 
       if (filePicker_.IsPicking) {
@@ -227,8 +225,12 @@ namespace KN_Core {
     }
 
     public void GuiPickers(Gui gui, ref float x, ref float y) {
+      if (carPicker_.IsPicking) {
+        carPicker_.OnGUI(gui, ref x, ref y);
+      }
+
       if (filePicker_.IsPicking) {
-        if (core_.CarPicker.IsPicking) {
+        if (carPicker_.IsPicking) {
           x += Gui.OffsetGuiX;
         }
         filePicker_.OnGui(gui, ref x, ref y);
@@ -240,8 +242,7 @@ namespace KN_Core {
 
       GUI.enabled = !IsRecording && !core_.IsInGarage;
       if (gui.Button(ref x, ref y, "PICK CAR", Skin.Button)) {
-        allowPick_ = !allowPick_;
-        core_.CarPicker.IsPicking = allowPick_;
+        carPicker_.Toggle();
       }
 
       const float listHeight = 300.0f;

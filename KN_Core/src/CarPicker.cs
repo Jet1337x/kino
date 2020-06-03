@@ -14,7 +14,7 @@ namespace KN_Core {
       }
     }
 
-    public TFCar PickedCar { get; set; }
+    public TFCar PickedCar { get; private set; }
     public TFCar PlayerCar { get; private set; }
 
     public List<TFCar> Cars { get; }
@@ -36,9 +36,10 @@ namespace KN_Core {
       PickedCar = null;
     }
 
-    public void Update() {
-      if (PlayerCar == null || PlayerCar.Base == null) {
-        UpdateCars();
+    public void Toggle() {
+      IsPicking = !IsPicking;
+      if (!IsPicking) {
+        Reset();
       }
     }
 
@@ -58,7 +59,6 @@ namespace KN_Core {
 
       if (gui.Button(ref x, ref y, "PLAYER CAR", Skin.Button)) {
         PickedCar = PlayerCar;
-        IsPicking = false;
       }
 
       if (Cars.Count > 0) {
@@ -68,7 +68,6 @@ namespace KN_Core {
         foreach (var c in Cars) {
           if (gui.Button(ref x, ref y, c.Name, Skin.Button)) {
             PickedCar = c;
-            IsPicking = false;
           }
         }
       }
@@ -83,7 +82,6 @@ namespace KN_Core {
         foreach (var c in Ghosts) {
           if (gui.Button(ref x, ref y, c.Name, Skin.Button)) {
             PickedCar = c;
-            IsPicking = false;
           }
         }
       }
@@ -112,7 +110,7 @@ namespace KN_Core {
         }
       }
 
-      var ghosts = core_.Replay.Player.players;
+      var ghosts = core_.Replay?.Player.players;
       if (ghosts != null && ghosts.Count > 0) {
         for (int i = 0; i < ghosts.Count; i++) {
           string ghostName = $"Ghost_{i}";

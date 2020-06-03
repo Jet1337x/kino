@@ -19,6 +19,8 @@ namespace KN_Cinematic {
     public CTCamera FreeCamera { get; private set; }
     public CTCamera ActiveCamera { get; private set; }
 
+    public CarPicker CarPicker { get; }
+
     private int ctCameraId_;
     private readonly IList<CTCamera> ctCameras_;
     private float ctListScrollH_;
@@ -38,6 +40,8 @@ namespace KN_Cinematic {
 
     public Cinematic(Core core) : base(core, "CINEMATIC", 1) {
       ctCameras_ = new List<CTCamera>();
+
+      CarPicker = new CarPicker(core);
 
       Core.Timeline.OnPlay += OnTimelinePlay;
       Core.Timeline.OnStop += OnTimelineStop;
@@ -63,6 +67,7 @@ namespace KN_Cinematic {
 
     public override void ResetPickers() {
       ActiveCamera?.ResetPickers();
+      CarPicker.Reset();
     }
 
     private void ResetAll() {
@@ -536,6 +541,10 @@ namespace KN_Cinematic {
     }
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
+      if (CarPicker.IsPicking) {
+        CarPicker.OnGUI(gui, ref x, ref y);
+      }
+
       Core.Replay.GuiPickers(gui, ref x, ref y);
     }
     #endregion
@@ -548,21 +557,21 @@ namespace KN_Cinematic {
         cameraTabActive_ = true;
         animationTabActive_ = false;
         replayTabActive_ = false;
-        Core.CarPicker.Reset();
+        CarPicker.Reset();
       }
 
       if (gui.ImageButton(ref x, ref y, animationTabActive_ ? Skin.IconAnimActive : Skin.IconAnim)) {
         cameraTabActive_ = false;
         animationTabActive_ = true;
         replayTabActive_ = false;
-        Core.CarPicker.Reset();
+        CarPicker.Reset();
       }
 
       if (gui.ImageButton(ref x, ref y, replayTabActive_ ? Skin.IconReplayActive : Skin.IconReplay)) {
         cameraTabActive_ = false;
         animationTabActive_ = false;
         replayTabActive_ = true;
-        Core.CarPicker.Reset();
+        CarPicker.Reset();
       }
 
       x += Gui.IconSize;

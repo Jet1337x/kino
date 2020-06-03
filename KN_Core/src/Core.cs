@@ -38,10 +38,7 @@ namespace KN_Core {
     public GameObject MainCamera { get; private set; }
     public GameObject ActiveCamera { get; set; }
 
-    public CarPicker CarPicker { get; }
-
-    // public TFCar PickedCar => CarPicker.PickedCar;
-    public TFCar PlayerCar => CarPicker.PlayerCar;
+    public TFCar PlayerCar { get; private set; }
 
     private bool isInGaragePrev_;
     public bool IsInGarage { get; private set; }
@@ -71,8 +68,6 @@ namespace KN_Core {
       ModConfig = new Config();
 
       gui_ = new Gui();
-
-      CarPicker = new CarPicker(this);
 
       Timeline = new Timeline(this);
       Replay = new Replay(this);
@@ -176,7 +171,9 @@ namespace KN_Core {
         }
       }
 
-      CarPicker.Update();
+      if (PlayerCar == null || PlayerCar.Base == null) {
+        FindPlayerCar();
+      }
 
       GuiRenderCheck();
 
@@ -197,7 +194,6 @@ namespace KN_Core {
 
     public void OnGUI() {
       if (!IsGuiEnabled) {
-        CarPicker.Reset();
         return;
       }
 
@@ -228,8 +224,6 @@ namespace KN_Core {
       float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;
       float ty = GuiContentBeginY - Gui.OffsetY;
 
-      CarPicker.OnGUI(gui_, ref x, ref y);
-
       mods_[tabs_[selectedTab_]].GuiPickers(selectedModId_, gui_, ref tx, ref ty);
 
       if (DrawTimeline) {
@@ -248,7 +242,6 @@ namespace KN_Core {
 
     private void HandleTabSelection() {
       if (selectedTab_ != selectedTabPrev_) {
-        CarPicker.Reset();
         Replay.ResetState();
         mods_[tabs_[selectedTabPrev_]].ResetState();
         selectedModId_ = mods_[tabs_[selectedTab_]].Id;
@@ -319,6 +312,19 @@ namespace KN_Core {
         return true;
       }
       return false;
+    }
+
+    private void FindPlayerCar() {
+      PlayerCar = null;
+      var cars = Object.FindObjectsOfType<RaceCar>();
+      if (cars != null && cars.Length > 0) {
+        foreach (var c in cars) {
+          if (!c.isNetworkCar) {
+            PlayerCar = new TFCar(c);
+            return;
+          }
+        }
+      }
     }
 
     public static Color32 DecodeColor(int color) {
