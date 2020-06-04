@@ -108,7 +108,9 @@ namespace KN_Core {
 
       if (gui.SliderH(ref x, ref y, tlWidth, ref time_, 0.0f, MaxTime, $"LOW: {lowBound_:F}s | TIME: {CurrentTime:F}s | HIGH: {highBound_:F}s", Skin.TimelineSliderMid)) {
         drag_ = true;
-        OnDrag?.Invoke(CurrentTime);
+        if (CurrentTime > LowBound && CurrentTime < HighBound) {
+          OnDrag?.Invoke(CurrentTime);
+        }
       }
       y -= Gui.Height + Gui.OffsetY * 2.0f;
 
