@@ -66,15 +66,21 @@ namespace KN_Lights {
 
       LightMask = Core.LoadTexture(assembly, "KN_Lights", "HeadLightMask.png");
 
-      lightsConfig_ = LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights) ? new LightsConfig(lights) : new LightsConfig();
-      nwLightsConfig_ = LightsConfigSerializer.Deserialize(NwLightsConfigFile, out var nwLights) ? new NwLightsConfig(nwLights) : new NwLightsConfig();
-
       LoadDefaultLights(assembly);
 #if KN_DEV_TOOLS
       carLightsDev_ = LightsConfigSerializer.Deserialize(LightsDevConfigFile, out var devLights) ? new LightsConfig(devLights) : new LightsConfig();
 #endif
 
       carLightsDiscard_ = Core.ModConfig.Get<float>("cl_discard_distance");
+
+      nwLightsConfig_ = LightsConfigSerializer.Deserialize(NwLightsConfigFile, out var nwLights) ? new NwLightsConfig(nwLights) : new NwLightsConfig();
+      if (!LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights)) {
+        lightsConfig_ = new LightsConfig();
+        LightsConfigSerializer.Serialize(lightsConfigDefault_, LightsConfigFile);
+      }
+      else {
+        lightsConfig_ = new LightsConfig(lights);
+      }
 
       worldLights_.OnStart();
     }
