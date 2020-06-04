@@ -120,6 +120,7 @@ namespace KN_Core {
 
       IsPlaying = false;
       core_.Timeline.IsPlaying = false;
+      core_.Timeline.LowBound = 0.0f;
       core_.Timeline.MaxTime = 1.0f;
       core_.Timeline.HighBound = 1.0f;
       core_.Timeline.CurrentTime = 0.0f;
@@ -217,6 +218,7 @@ namespace KN_Core {
 
       if (gui.Button(ref x, ref y, "LOAD", Skin.Button)) {
         filePicker_.Toggle(Config.ReplaysDir);
+        carPicker_.Reset();
       }
 
       float yAfterReplay = y;
@@ -251,6 +253,7 @@ namespace KN_Core {
       GUI.enabled = !IsRecording && !core_.IsInGarage;
       if (gui.Button(ref x, ref y, "PICK CAR", Skin.Button)) {
         carPicker_.Toggle();
+        filePicker_.Reset();
       }
 
       const float listHeight = 300.0f;
