@@ -455,6 +455,7 @@ namespace KN_Lights {
       var l = lightsConfig_.GetLights(Core.PlayerCar.Id);
       if (l == null) {
         l = CreateLights(Core.PlayerCar, lightsConfig_);
+        lightsConfig_.AddLights(l);
       }
       else {
         l.Attach(Core.PlayerCar);
@@ -476,6 +477,7 @@ namespace KN_Lights {
       var lights = nwLightsConfig_.GetLights(car.Id, car.Name);
       if (lights == null) {
         lights = CreateLights(car, nwLightsConfig_);
+        nwLightsConfig_.AddLights(lights);
       }
       else {
         lights.Attach(car);
