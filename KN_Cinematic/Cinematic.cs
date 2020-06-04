@@ -310,15 +310,19 @@ namespace KN_Cinematic {
         }
       }
 
+      var ghosts = Core.Replay.Player.players;
+      bool replayActive = ghosts != null && ghosts.Count > 0;
+
       if (gui.Button(ref x, ref y, "RESET ANIMATION", Skin.Button)) {
         if (cameraOk) {
           ActiveCamera.RemoveAnimation();
           Log.Write($"[KN_Cinematic]: Reset animation for camera '{ActiveCamera.Tag}'");
+          if (!replayActive) {
+            Core.Timeline.Reset();
+          }
         }
       }
 
-      var ghosts = Core.Replay.Player.players;
-      bool replayActive = ghosts != null && ghosts.Count > 0;
       float animMaxTime = replayActive ? Core.Replay.Player.length : Core.Timeline.MaxTime;
       animationMaxTimeString_ = $"{animMaxTime:F}";
       GUI.enabled = !replayActive;
