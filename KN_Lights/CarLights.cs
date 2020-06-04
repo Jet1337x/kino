@@ -255,6 +255,28 @@ namespace KN_Lights {
       }
     }
 
+    public CarLights Copy() {
+      var lights = new CarLights {
+        CarId = CarId,
+        IsNetworkCar = IsNetworkCar,
+        UserName = UserName,
+        hlColor_ = hlColor_,
+        pitch_ = pitch_,
+        pitchTail_ = pitchTail_,
+        hlBrightness_ = hlBrightness_,
+        hlAngle_ = hlAngle_,
+        tlBrightness_ = tlBrightness_,
+        tlAngle_ = tlAngle_,
+        hlLEnabled_ = hlLEnabled_,
+        hlREnabled_ = hlREnabled_,
+        HeadlightOffset = HeadlightOffset,
+        tlLEnabled_ = tlLEnabled_,
+        tlREnabled_ = tlREnabled_,
+        TailLightOffset = TailLightOffset
+      };
+      return lights;
+    }
+
     public void Attach(TFCar car) {
       Car = car;
       CarId = car.Id;

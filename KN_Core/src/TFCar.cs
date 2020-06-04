@@ -21,7 +21,7 @@ namespace KN_Core {
       }
 
       Base = car;
-      Name = car.networkPlayer != null ? car.networkPlayer.FilteredNickName : "OWN_CAR";
+      Name = car.isNetworkCar ? car.networkPlayer.FilteredNickName : "OWN_CAR";
       IsGhost = false;
     }
 

@@ -88,7 +88,7 @@ namespace KN_Lights {
     }
 
     public CarLights GetLights(int carId) {
-      return Lights.FirstOrDefault(cl => cl.CarId == carId);
+      return Lights.FirstOrDefault(light => light.CarId == carId);
     }
   }
 

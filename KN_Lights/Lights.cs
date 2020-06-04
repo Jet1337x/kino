@@ -74,13 +74,7 @@ namespace KN_Lights {
       carLightsDiscard_ = Core.ModConfig.Get<float>("cl_discard_distance");
 
       nwLightsConfig_ = LightsConfigSerializer.Deserialize(NwLightsConfigFile, out var nwLights) ? new NwLightsConfig(nwLights) : new NwLightsConfig();
-      if (!LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights)) {
-        lightsConfig_ = new LightsConfig();
-        LightsConfigSerializer.Serialize(lightsConfigDefault_, LightsConfigFile);
-      }
-      else {
-        lightsConfig_ = new LightsConfig(lights);
-      }
+      lightsConfig_ = LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights) ? new LightsConfig(lights) : new LightsConfig();
 
       worldLights_.OnStart();
     }
@@ -116,7 +110,7 @@ namespace KN_Lights {
           EnableLightsOn(carPicker_.PickedCar);
         }
         else {
-          EnableLightsOnOnwCar();
+          EnableLightsOn(Core.PlayerCar);
         }
         carPicker_.Reset();
       }
@@ -227,7 +221,7 @@ namespace KN_Lights {
 
       if (gui.Button(ref x, ref y, width, height, "ENABLE OWN LIGHTS", Skin.Button)) {
         colorPicker_.Reset();
-        EnableLightsOnOnwCar();
+        EnableLightsOn(Core.PlayerCar);
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
@@ -451,37 +445,23 @@ namespace KN_Lights {
       y += Gui.OffsetSmall;
     }
 
-    private void EnableLightsOnOnwCar() {
-      var l = lightsConfig_.GetLights(Core.PlayerCar.Id);
-      if (l == null) {
-        l = CreateLights(Core.PlayerCar, lightsConfig_);
-        lightsConfig_.AddLights(l);
-      }
-      else {
-        l.Attach(Core.PlayerCar);
-        Log.Write($"[KN_Lights]: Car lights for own car '{l.CarId}' attached");
-      }
-
-      int index = carLights_.FindIndex(cl => cl.Car == Core.PlayerCar);
-      if (index != -1) {
-        carLights_[index] = l;
-      }
-      else {
-        carLights_.Add(l);
-      }
-      activeLights_ = l;
-      ownLights_ = l;
-    }
-
     private void EnableLightsOn(TFCar car) {
-      var lights = nwLightsConfig_.GetLights(car.Id, car.Name);
+      bool player = car == Core.PlayerCar;
+
+      var lights = player ? lightsConfig_.GetLights(car.Id) : nwLightsConfig_.GetLights(car.Id, car.Name);
       if (lights == null) {
-        lights = CreateLights(car, nwLightsConfig_);
-        nwLightsConfig_.AddLights(lights);
+        if (player) {
+          lights = CreateLights(car, lightsConfig_);
+          lightsConfig_.AddLights(lights);
+        }
+        else {
+          lights = CreateLights(car, nwLightsConfig_);
+          nwLightsConfig_.AddLights(lights);
+        }
       }
       else {
         lights.Attach(car);
-        Log.Write($"[KN_Lights]: Car lights for '{lights.CarId}' attached");
+        Log.Write($"[KN_Lights]: Car lights for {(player ? "own car" : "")} '{lights.CarId}' attached");
       }
 
       int index = carLights_.FindIndex(cl => cl.Car == car);
@@ -492,12 +472,15 @@ namespace KN_Lights {
         carLights_.Add(lights);
       }
       activeLights_ = lights;
+      if (player) {
+        ownLights_ = lights;
+      }
     }
 
     private CarLights CreateLights(TFCar car, LightsConfigBase config) {
-      var light = lightsConfigDefault_.GetLights(car.Id);
-      if (light == null) {
-        light = new CarLights {
+      var l = lightsConfigDefault_.GetLights(car.Id);
+      if (l == null) {
+        l = new CarLights {
           HeadLightsColor = Color.white,
           Pitch = 0.0f,
           PitchTail = 0.0f,
@@ -515,6 +498,7 @@ namespace KN_Lights {
         Log.Write($"[KN_Lights]: Lights for car '{car.Id}' not found. Creating default.");
       }
 
+      var light = l.Copy();
       light.Attach(car);
       config.AddLights(light);
       Log.Write($"[KN_Lights]: Car lights attached to '{car.Id}'");
@@ -526,7 +510,7 @@ namespace KN_Lights {
       if (Controls.KeyDown("toggle_lights")) {
         if (ownLights_ == null) {
           colorPicker_.Reset();
-          EnableLightsOnOnwCar();
+          EnableLightsOn(Core.PlayerCar);
         }
         else {
           if (ownLights_ == activeLights_) {
