@@ -218,10 +218,6 @@ namespace KN_Lights {
           volume_ = map_.GetComponent<Volume>();
           volume_.profile.TryGet(out sky_);
           volume_.profile.TryGet(out fog_);
-          if (fog_ != null) {
-            data_.FogDistance = fog_.meanFreePath.value;
-            data_.FogVolume = fog_.depthExtent.value;
-          }
         }
 
         defaultLoaded_ = false;
