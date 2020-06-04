@@ -5,7 +5,6 @@ namespace KN_Core {
     private const float MaxSpeed = 8.0f;
     private const int MaxSlow = 8;
 
-    private string lowBoundString_ = "0.0";
     private float lowBound_;
     public float LowBound {
       get => lowBound_;
@@ -16,30 +15,33 @@ namespace KN_Core {
         else {
           lowBound_ = value > 0.0f ? value : 0.0f;
         }
-        lowBoundString_ = $"{LowBound:F}";
-        highBoundString_ = $"{highBound_:F}";
       }
     }
 
-    private string highBoundString_ = "1.0";
     private float highBound_;
     public float HighBound {
       get => highBound_;
+      // set {
+      //   if (value < LowBound) {
+      //     highBound_ = LowBound;
+      //   }
+      //   else {
+      //     var ghosts = core_.Replay?.Player.players;
+      //     if (ghosts != null && ghosts.Count > 0) {
+      //       highBound_ = value < MaxTime ? value : MaxTime;
+      //     }
+      //     else {
+      //       highBound_ = value;
+      //       MaxTime = value;
+      //     }
+      //   }
+      // }
       set {
-        if (value < LowBound) {
+        if (value < lowBound_) {
           highBound_ = LowBound;
         }
         else {
-          var ghosts = core_.Replay?.Player.players;
-          if (ghosts != null && ghosts.Count > 0) {
-            highBound_ = value < MaxTime ? value : MaxTime;
-          }
-          else {
-            highBound_ = value;
-            MaxTime = value;
-          }
-          lowBoundString_ = $"{LowBound:F}";
-          highBoundString_ = $"{highBound_:F}";
+          highBound_ = value < MaxTime ? value : MaxTime;
         }
       }
     }
@@ -88,12 +90,12 @@ namespace KN_Core {
     }
 
     public void OnGUI(Gui gui) {
-      float y = Screen.height - 100.0f;
+      const float boxHeight = 120.0f;
+      float y = Screen.height - boxHeight;
       float x = 120.0f;
-      const float boundsWidth = Gui.Width * 2.0f + Gui.OffsetSmall * 4.0f;
-      float boxWidth = Screen.width - boundsWidth + 100.0f;
-      const float boxHeight = 100.0f;
-      float tlWidth = boxWidth - boundsWidth;
+      float boundsWidth = x * 2.0f;
+      float boxWidth = Screen.width - boundsWidth;
+      float tlWidth = boxWidth - Gui.OffsetSmall * 2.0f;
 
       float xBegin = x;
 
@@ -101,43 +103,28 @@ namespace KN_Core {
 
       x += boxWidth / 2.0f - Gui.Width / 2.0f;
       gui.Label(ref x, ref y, $"SPEED: {Speed:F}");
-      y -= Gui.OffsetY;
-      x = xBegin;
 
-      y += Gui.OffsetY;
+      x = xBegin;
+      y += Gui.OffsetY * 2.0f;
       x += Gui.OffsetSmall;
 
-
-      if (gui.TextField(ref x, ref y, ref lowBoundString_, "LOW BOUND", 6, Config.FloatRegex)) {
-        float.TryParse(lowBoundString_, out float value);
-        LowBound = value;
-        if (CurrentTime < LowBound) {
-          CurrentTime = LowBound;
-          if (core_.Replay.IsPlaying) {
-            core_.Replay.Player.CurTimeOverride(CurrentTime);
-          }
-        }
-      }
-      y -= Gui.Height + Gui.OffsetY;
-      x += Gui.Width + Gui.OffsetSmall;
-
-      if (gui.SliderH(ref x, ref y, tlWidth, ref time_, LowBound, HighBound, $"TIME: {CurrentTime:F}  ")) {
+      if (gui.SliderH(ref x, ref y, tlWidth, ref time_, 0.0f, MaxTime, $"LOW: {lowBound_:F}s | TIME: {CurrentTime:F}s | HIGH: {highBound_:F}s", Skin.TimelineSliderMid)) {
         drag_ = true;
         OnDrag?.Invoke(CurrentTime);
       }
       y -= Gui.Height + Gui.OffsetY * 2.0f;
-      x += tlWidth + Gui.OffsetSmall;
 
-      if (gui.TextField(ref x, ref y, ref highBoundString_, "HIGH BOUND", 6, Config.FloatRegex)) {
-        float.TryParse(highBoundString_, out float value);
-        HighBound = value;
-        if (CurrentTime > HighBound) {
-          CurrentTime = HighBound - 0.001f;
-          if (core_.Replay.IsPlaying) {
-            core_.Replay.Player.CurTimeOverride(CurrentTime);
-          }
-        }
+      if (gui.SliderH(ref x, ref y, tlWidth, ref highBound_, 0.0f, MaxTime, "", Skin.TimelineSliderHigh)) {
+        HighBound = highBound_;
+        OnDrag?.Invoke(CurrentTime);
       }
+      y -= Gui.Height;
+
+      if (gui.SliderH(ref x, ref y, tlWidth, ref lowBound_, 0.0f, MaxTime, "", Skin.TimelineSliderLow)) {
+        LowBound = lowBound_;
+        OnDrag?.Invoke(CurrentTime);
+      }
+      y += Gui.OffsetY;
 
       const float buttonOffset = 20.0f;
       float barCenter = Screen.width / 2.0f;
@@ -278,6 +265,13 @@ namespace KN_Core {
         if (Input.GetKeyUp(KeyCode.Mouse0)) {
           drag_ = false;
         }
+      }
+
+      if (CurrentTime < LowBound) {
+        CurrentTime = LowBound;
+      }
+      else if (CurrentTime > HighBound) {
+        CurrentTime = HighBound;
       }
 
       if (IsPlaying && !drag_) {

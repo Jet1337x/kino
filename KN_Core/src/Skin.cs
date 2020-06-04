@@ -1,5 +1,3 @@
-using System.IO;
-using System.Reflection;
 using UnityEngine;
 
 namespace KN_Core {
@@ -131,6 +129,13 @@ namespace KN_Core {
     public static GUISkin TextField;
     public static GUISkin Label;
 
+    public static GUISkin TimelineSliderLow;
+    public static GUISkin TimelineSliderMid;
+    public static GUISkin TimelineSliderHigh;
+    private static Texture2D texTimelineLow_;
+    private static Texture2D texTimelineMid_;
+    private static Texture2D texTimelineHigh_;
+
     public static Color TextColor;
     public static Color TextColorInv;
     public static Color SeparatorColor;
@@ -186,6 +191,7 @@ namespace KN_Core {
       MakeSliderStyle();
       MakeScrollViewStyle();
       MakeTextFieldStyle();
+      MakeTimelineSlider();
     }
 
     private static void LoadButtonTex(out Texture2D normal, out Texture2D hover, out Texture2D active, out GUISkin skin, out GUISkin skinActive, string name) {
@@ -399,6 +405,53 @@ namespace KN_Core {
       Label.label.normal.textColor = TextColor;
       Label.label.alignment = TextAnchor.MiddleCenter;
       Label.label.font = FontLight;
+    }
+
+    private static void MakeTimelineSlider() {
+      texTimelineLow_ = Core.LoadCoreTexture("TimelineSliderLow.png");
+      texTimelineMid_ = Core.LoadCoreTexture("TimelineSliderMid.png");
+      texTimelineHigh_ = Core.LoadCoreTexture("TimelineSliderHigh.png");
+
+      TimelineSliderMid = ScriptableObject.CreateInstance<GUISkin>();
+      TimelineSliderMid.horizontalSlider.normal.background = texSliderBG_;
+      TimelineSliderMid.horizontalSlider.hover.background = texSliderBG_;
+      TimelineSliderMid.horizontalSlider.active.background = texSliderBG_;
+      TimelineSliderMid.horizontalSlider.fixedHeight = Gui.Height;
+      TimelineSliderMid.horizontalSliderThumb.normal.background = texTimelineMid_;
+      TimelineSliderMid.horizontalSliderThumb.hover.background = texTimelineMid_;
+      TimelineSliderMid.horizontalSliderThumb.active.background = texTimelineMid_;
+      TimelineSliderMid.horizontalSliderThumb.fixedWidth = Gui.WidthSlider;
+      TimelineSliderMid.horizontalSliderThumb.fixedHeight = Gui.Height;
+
+      TimelineSliderMid.label.normal.textColor = TextColor;
+      TimelineSliderMid.label.alignment = TextAnchor.MiddleCenter;
+      TimelineSliderMid.label.font = FontLight;
+
+      var bgTex = Core.CreateTexture(Color.clear);
+
+      //low bound
+      TimelineSliderLow = ScriptableObject.CreateInstance<GUISkin>();
+      TimelineSliderLow.horizontalSlider.normal.background = bgTex;
+      TimelineSliderLow.horizontalSlider.hover.background = bgTex;
+      TimelineSliderLow.horizontalSlider.active.background = bgTex;
+      TimelineSliderLow.horizontalSlider.fixedHeight = Gui.HeightTimeline;
+      TimelineSliderLow.horizontalSliderThumb.normal.background = texTimelineLow_;
+      TimelineSliderLow.horizontalSliderThumb.hover.background = texTimelineLow_;
+      TimelineSliderLow.horizontalSliderThumb.active.background = texTimelineLow_;
+      TimelineSliderLow.horizontalSliderThumb.fixedWidth = Gui.WidthSlider;
+      TimelineSliderLow.horizontalSliderThumb.fixedHeight = Gui.Height * 1.5f;
+
+      //high bound
+      TimelineSliderHigh = ScriptableObject.CreateInstance<GUISkin>();
+      TimelineSliderHigh.horizontalSlider.normal.background = bgTex;
+      TimelineSliderHigh.horizontalSlider.hover.background = bgTex;
+      TimelineSliderHigh.horizontalSlider.active.background = bgTex;
+      TimelineSliderHigh.horizontalSlider.fixedHeight = Gui.HeightTimeline;
+      TimelineSliderHigh.horizontalSliderThumb.normal.background = texTimelineHigh_;
+      TimelineSliderHigh.horizontalSliderThumb.hover.background = texTimelineHigh_;
+      TimelineSliderHigh.horizontalSliderThumb.active.background = texTimelineHigh_;
+      TimelineSliderHigh.horizontalSliderThumb.fixedWidth = Gui.WidthSlider;
+      TimelineSliderHigh.horizontalSliderThumb.fixedHeight = Gui.Height * 1.5f;
     }
   }
 }

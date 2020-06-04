@@ -205,6 +205,9 @@
         <EmbeddedResource Include="Resources\ProjectorActive.png" />
         <EmbeddedResource Include="Resources\ProjectorHover.png" />
         <EmbeddedResource Include="Resources\ProjectorNormal.png" />
+        <EmbeddedResource Include="Resources\TimelineSliderLow.png" />
+        <EmbeddedResource Include="Resources\TimelineSliderMid.png" />
+        <EmbeddedResource Include="Resources\TimelineSliderHigh.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

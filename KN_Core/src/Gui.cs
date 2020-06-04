@@ -7,6 +7,7 @@ namespace KN_Core {
     public const float WidthScroll = 140.0f;
     public const float WidthSlider = 16.0f;
     public const float Height = 20.0f;
+    public const float HeightTimeline = 10.0f;
     public const float SmallSize = Height;
     public const float IconSize = 40.0f;
     public const float ScrollBarWidth = 8.0f;

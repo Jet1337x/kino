@@ -328,6 +328,16 @@ namespace KN_Core {
       return (color.a & 0xff) << 24 | (color.r & 0xff) << 16 | (color.g & 0xff) << 8 | (color.b & 0xff);
     }
 
+    public static Texture2D CreateTexture(Color color) {
+      var texture = new Texture2D(1, 1, TextureFormat.ARGB32, false) {
+        wrapMode = TextureWrapMode.Clamp
+      };
+      texture.SetPixel(0, 0, color);
+      texture.Apply();
+
+      return texture;
+    }
+
     public static object Call(object o, string methodName, params object[] args) {
       var mi = o.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
       return mi != null ? mi.Invoke(o, args) : null;

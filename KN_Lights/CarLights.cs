@@ -358,10 +358,10 @@ namespace KN_Lights {
 
     private void InitializeDebug() {
       var matWhite = new UnityEngine.Material(Shader.Find("HDRP/Lit"));
-      matWhite.SetTexture(BaseColorMap, CreateTexture(Color.white));
+      matWhite.SetTexture(BaseColorMap, Core.CreateTexture(Color.white));
 
       var matRed = new UnityEngine.Material(Shader.Find("HDRP/Lit"));
-      matRed.SetTexture(BaseColorMap, CreateTexture(Color.red));
+      matRed.SetTexture(BaseColorMap, Core.CreateTexture(Color.red));
 
       if (hlLCapsule_ != null) {
         Object.Destroy(hlLCapsule_);
@@ -390,16 +390,6 @@ namespace KN_Lights {
       tlRCapsule_ = GameObject.CreatePrimitive(PrimitiveType.Capsule);
       tlRCapsule_.GetComponent<MeshRenderer>().material = matRed;
       tlRCapsule_.SetActive(IsDebugObjectsEnabled);
-    }
-
-    private static Texture2D CreateTexture(Color color) {
-      var texture = new Texture2D(1, 1, TextureFormat.ARGB32, false) {
-        wrapMode = TextureWrapMode.Clamp
-      };
-      texture.SetPixel(0, 0, color);
-      texture.Apply();
-
-      return texture;
     }
 
     private void MakeLights() {
