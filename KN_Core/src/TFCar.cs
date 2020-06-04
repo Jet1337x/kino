@@ -48,9 +48,7 @@ namespace KN_Core {
         return false;
       }
 
-      return car0.Name == car1.Name &&
-             car0.Id == car1.Id &&
-             car0.IsGhost == car1.IsGhost;
+      return car0.Name == car1.Name && car0.Id == car1.Id;
     }
 
     public static bool operator !=(TFCar car0, TFCar car1) {
