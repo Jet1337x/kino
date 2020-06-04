@@ -202,6 +202,9 @@
         <EmbeddedResource Include="Resources\SunlightActive.png" />
         <EmbeddedResource Include="Resources\SunlightHover.png" />
         <EmbeddedResource Include="Resources\SunlightNormal.png" />
+        <EmbeddedResource Include="Resources\ProjectorActive.png" />
+        <EmbeddedResource Include="Resources\ProjectorHover.png" />
+        <EmbeddedResource Include="Resources\ProjectorNormal.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

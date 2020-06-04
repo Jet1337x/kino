@@ -30,17 +30,20 @@ namespace KN_Lights {
     private Vector2 clListScroll_;
 
     private bool hlTabActive_ = true;
+    private bool wlTabActive_;
     private bool slTabActive_;
 
     private float carLightsDiscard_;
 
     private readonly WorldLights worldLights_;
+    private readonly StaticLights staticLights_;
 
     private readonly ColorPicker colorPicker_;
     private readonly CarPicker carPicker_;
 
     public Lights(Core core) : base(core, "LIGHTS", 2) {
       worldLights_ = new WorldLights(core);
+      staticLights_ = new StaticLights(core);
 
       colorPicker_ = new ColorPicker();
       carPicker_ = new CarPicker(core);
@@ -156,8 +159,11 @@ namespace KN_Lights {
       if (hlTabActive_) {
         GuiHeadLightsTab(gui, ref x, ref y);
       }
-      else if (slTabActive_) {
+      else if (wlTabActive_) {
         worldLights_.OnGUI(gui, ref x, ref y);
+      }
+      else if (slTabActive_) {
+        staticLights_.OnGUI(gui, ref x, ref y);
       }
     }
 
@@ -178,13 +184,23 @@ namespace KN_Lights {
       x += Gui.OffsetSmall;
       if (gui.ImageButton(ref x, ref y, hlTabActive_ ? Skin.IconHeadlightsActive : Skin.IconHeadlights)) {
         hlTabActive_ = true;
+        wlTabActive_ = false;
         slTabActive_ = false;
         carPicker_.Reset();
         colorPicker_.Reset();
       }
 
-      if (gui.ImageButton(ref x, ref y, slTabActive_ ? Skin.IconSunActive : Skin.IconSun)) {
+      if (gui.ImageButton(ref x, ref y, wlTabActive_ ? Skin.IconSunActive : Skin.IconSun)) {
         hlTabActive_ = false;
+        wlTabActive_ = true;
+        slTabActive_ = false;
+        carPicker_.Reset();
+        colorPicker_.Reset();
+      }
+
+      if (gui.ImageButton(ref x, ref y, slTabActive_ ? Skin.IconProjectorActive : Skin.IconProjector)) {
+        hlTabActive_ = false;
+        wlTabActive_ = false;
         slTabActive_ = true;
         carPicker_.Reset();
         colorPicker_.Reset();
