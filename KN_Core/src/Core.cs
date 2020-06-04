@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using BepInEx;
 using FMODUnity;
 using GameInput;
 using KN_Core.Submodule;
+using SyncMultiplayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Settings = KN_Core.Submodule.Settings;
@@ -47,7 +49,7 @@ namespace KN_Core {
     private readonly Gui gui_;
     public bool IsGuiEnabled { get; set; }
 
-    private bool showNamesToggle_ = true;
+    private int lastPlayersCount_;
 
     private readonly List<BaseMod> mods_;
     private readonly List<string> tabs_;
@@ -171,6 +173,10 @@ namespace KN_Core {
       foreach (var mod in mods_) {
         mod.Update(selectedModId_);
       }
+
+      foreach (var player in NetworkController.InstanceGame.Players.Where(player => player.userCar != null)) {
+        player.userCar.SetVisibleUIName(!settings_.HideNames);
+      }
     }
 
     public void LateUpdate() {
@@ -241,26 +247,6 @@ namespace KN_Core {
       if (Controls.KeyDown("player_names")) {
         settings_.HideNames = !settings_.HideNames;
       }
-
-      //todo: optimize
-      if (!settings_.HideNames) {
-        var allCars = FindObjectsOfType<RaceCar>();
-        foreach (var c in allCars) {
-          if (c.isNetworkCar) {
-            GUICommonNickNames.SetVisibleNick(c, false);
-          }
-        }
-        showNamesToggle_ = true;
-      }
-      else if (showNamesToggle_) {
-        var allCars = FindObjectsOfType<RaceCar>();
-        foreach (var c in allCars) {
-          if (c.isNetworkCar) {
-            GUICommonNickNames.SetVisibleNick(c, true);
-          }
-        }
-        showNamesToggle_ = false;
-      }
     }
 
     public void ToggleCxUi(bool active) {
@@ -304,7 +290,7 @@ namespace KN_Core {
 
     private void FindPlayerCar() {
       PlayerCar = null;
-      var cars = Object.FindObjectsOfType<RaceCar>();
+      var cars = FindObjectsOfType<RaceCar>();
       if (cars != null && cars.Length > 0) {
         foreach (var c in cars) {
           if (!c.isNetworkCar) {

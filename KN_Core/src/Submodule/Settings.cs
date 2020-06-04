@@ -42,7 +42,7 @@ namespace KN_Core.Submodule {
         RPoints = !RPoints;
       }
 
-      if (gui.Button(ref x, ref y, width, height, "HIDE NAMES", HideNames ? Skin.Button : Skin.ButtonActive)) {
+      if (gui.Button(ref x, ref y, width, height, "HIDE NAMES", HideNames ? Skin.ButtonActive : Skin.Button)) {
         HideNames = !HideNames;
       }
 
