@@ -37,6 +37,7 @@ namespace KN_Cinematic {
     private Vector2 kfListScroll_;
 
     private string animationScaleString_ = "0.0";
+    private string animationMaxTimeString_ = "0.0";
 
     public Cinematic(Core core) : base(core, "CINEMATIC", 1) {
       ctCameras_ = new List<CTCamera>();
@@ -316,10 +317,21 @@ namespace KN_Cinematic {
         }
       }
 
-      GUI.enabled = cameraOk && !Core.Replay.IsPlaying;
+      var ghosts = Core.Replay.Player.players;
+      bool replayActive = ghosts != null && ghosts.Count > 0;
+      float animMaxTime = replayActive ? Core.Replay.Player.length : Core.Timeline.MaxTime;
+      animationMaxTimeString_ = $"{animMaxTime:F}";
+      GUI.enabled = !replayActive;
+      if (gui.TextField(ref x, ref y, ref animationMaxTimeString_, "MAX TIME", 6, Config.FloatRegex)) {
+        float.TryParse(animationMaxTimeString_, out float time);
+        if (cameraOk && time > 0.0f) {
+          Core.Timeline.MaxTime = time;
+        }
+      }
 
       float currentLength = ActiveCamera?.Animation.Length ?? 0.0f;
       animationScaleString_ = $"{currentLength:F}";
+      GUI.enabled = cameraOk && !Core.Replay.IsPlaying;
       if (gui.TextField(ref x, ref y, ref animationScaleString_, "LENGTH", 6, Config.FloatRegex)) {
         float.TryParse(animationScaleString_, out float scaledLength);
         if (cameraOk && scaledLength > 0.01f) {

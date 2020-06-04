@@ -21,21 +21,6 @@ namespace KN_Core {
     private float highBound_;
     public float HighBound {
       get => highBound_;
-      // set {
-      //   if (value < LowBound) {
-      //     highBound_ = LowBound;
-      //   }
-      //   else {
-      //     var ghosts = core_.Replay?.Player.players;
-      //     if (ghosts != null && ghosts.Count > 0) {
-      //       highBound_ = value < MaxTime ? value : MaxTime;
-      //     }
-      //     else {
-      //       highBound_ = value;
-      //       MaxTime = value;
-      //     }
-      //   }
-      // }
       set {
         if (value < lowBound_) {
           highBound_ = LowBound;
@@ -51,7 +36,20 @@ namespace KN_Core {
       get => time_;
       set => time_ = value;
     }
-    public float MaxTime { get; set; }
+
+    private float maxTime_;
+    public float MaxTime {
+      get => maxTime_;
+      set {
+        maxTime_ = value;
+        if (value < HighBound) {
+          HighBound = value;
+        }
+        if (value < LowBound) {
+          maxTime_ = LowBound;
+        }
+      }
+    }
     public float Speed { get; private set; }
     public int Slow { get; private set; }
 
@@ -254,6 +252,7 @@ namespace KN_Core {
 
         if (IsKeyframeEditing) {
           IsPlaying = false;
+          core_.Replay.PlayPause(IsPlaying);
         }
       }
       x += Gui.IconSize + offset;
