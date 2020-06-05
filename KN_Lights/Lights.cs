@@ -359,7 +359,7 @@ namespace KN_Lights {
       x = xBegin;
 
       float brightness = activeLights_?.TailLightBrightness ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref brightness, 50.0f, 500.0f, $"TAILLIGHTS BRIGHTNESS: {brightness:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref brightness, 20.0f, 100.0f, $"TAILLIGHTS BRIGHTNESS: {brightness:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightBrightness = brightness;
         }
