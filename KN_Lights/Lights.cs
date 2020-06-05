@@ -400,10 +400,21 @@ namespace KN_Lights {
     }
 
     private void GuiLightsList(Gui gui, ref float x, ref float y) {
-      const float listHeight = 210.0f;
+      const float listHeight = 320.0f;
 
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !Core.IsInGarage;
+
+      if (gui.Button(ref x, ref y, "ADD LIGHTS TO EVERYONE", Skin.Button)) {
+        carPicker_.IsPicking = true;
+        foreach (var car in carPicker_.Cars) {
+          EnableLightsOn(car);
+        }
+        foreach (var ghost in carPicker_.Ghosts) {
+          EnableLightsOn(ghost);
+        }
+        carPicker_.IsPicking = false;
+      }
 
       if (gui.Button(ref x, ref y, "ADD LIGHTS TO", Skin.Button)) {
         carPicker_.Toggle();
