@@ -46,7 +46,8 @@ More options will be added to this tab in the future.
 ![Settings](Images/settings.png)  
 
 ## Config
-Inside your CarX Drift Racing Online\BepInEx\plugins\KN_Base folder you will find a kn_config.xml file that you can open with either notepad or notepad++ (recommended) where you can change the keybinds to your prefered buttons.
+Inside your CarX Drift Racing Online\BepInEx\plugins\KN_Base folder you will find a kn_config.xml file that you can open with either notepad or notepad++ (recommended) where you can change the keybinds to your prefered buttons.  
+You can also bind keys to your controller. Please google Unity key codes for your Xbox/Playstation controller.
 
 ## Installation
 1. Install [BepInEx mod loader](https://github.com/BepInEx/BepInEx/releases) if you haven't already  
