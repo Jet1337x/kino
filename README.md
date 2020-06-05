@@ -65,4 +65,4 @@ Forward all the bugs to the issues tab or in a specified channel in Discord
 Suggestions can also be left in the dedicated channel in Discord
 
 ## If you feel like supporting mod's development you can 
-[![paypal](https://raw.githubusercontent.com/trbflxr/kino/master/Images/donate.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KKFVJJWC7VKUG)
+[![donation](https://raw.githubusercontent.com/trbflxr/kino/master/Images/donate.png)](https://www.donationalerts.com/r/trbflxr)
