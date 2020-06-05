@@ -401,11 +401,13 @@ namespace KN_Lights {
 
     private void GuiLightsList(Gui gui, ref float x, ref float y) {
       const float listHeight = 320.0f;
+      const float widthScale = 1.2f;
+      const float buttonWidth = Gui.Width * widthScale;
 
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !Core.IsInGarage;
 
-      if (gui.Button(ref x, ref y, "ADD LIGHTS TO EVERYONE", Skin.Button)) {
+      if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO EVERYONE", Skin.Button)) {
         carPicker_.IsPicking = true;
         foreach (var car in carPicker_.Cars) {
           EnableLightsOn(car);
@@ -416,19 +418,19 @@ namespace KN_Lights {
         carPicker_.IsPicking = false;
       }
 
-      if (gui.Button(ref x, ref y, "ADD LIGHTS TO", Skin.Button)) {
+      if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO", Skin.Button)) {
         carPicker_.Toggle();
         colorPicker_.Reset();
       }
       GUI.enabled = guiEnabled;
 
-      gui.BeginScrollV(ref x, ref y, listHeight, clListScrollH_, ref clListScroll_, $"LIGHTS {carLights_.Count}");
+      gui.BeginScrollV(ref x, ref y, buttonWidth, listHeight, clListScrollH_, ref clListScroll_, $"LIGHTS {carLights_.Count}");
 
       float sx = x;
       float sy = y;
-      const float offset = Gui.ScrollBarWidth / 2.0f;
+      const float offset = Gui.ScrollBarWidth;
       bool scrollVisible = clListScrollH_ > listHeight;
-      float width = scrollVisible ? Gui.WidthScroll - offset : Gui.WidthScroll + offset;
+      float width = scrollVisible ? Gui.WidthScroll * widthScale - offset : Gui.WidthScroll * widthScale + offset;
       foreach (var cl in carLights_) {
         if (cl != null) {
           bool active = activeLights_ == cl;
