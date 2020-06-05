@@ -12,7 +12,7 @@ Main focus of this module is it's replay feature to record and playback your mul
 * Lights  
 Lights for your car with pre-configured locations for both your headlights and tail lights. You can also add lights to other players' cars and tweak the lights to your liking.
 This module also has sliders to configure world lighting to create gloomy weather or a dark night.
-* Visuals
+* Visuals  
 Allows for saving your liveries for copying (in case you want to experiment on it without risking unwanted changes being saved), creating backups (you never know when your profile can get reset for no reason), or sharing them with other players.  
 Also gives the ability to offset the camera in livery editor for easier livery creation.
 
@@ -61,7 +61,7 @@ CarX Drift Racing Online\BepInEx\plugins
 - Possibly adding other small features  
 
 ## Feedback
-Forward all the bugs to the issues tab or in a specified channel in Discord
+Forward all the bugs to the issues tab or in a specified channel in Discord  
 Suggestions can also be left in the dedicated channel in Discord
 
 ## If you feel like supporting mod's development you can 
