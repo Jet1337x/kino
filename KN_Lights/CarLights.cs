@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace KN_Lights {
   public class CarLights {
-    public const float BrakePower = 3.0f;
+    public const float BrakePower = 2.5f;
 
     public GameObject HeadLightLeft { get; private set; }
     public GameObject HeadLightRight { get; private set; }

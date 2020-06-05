@@ -359,7 +359,7 @@ namespace KN_Lights {
       x = xBegin;
 
       float brightness = activeLights_?.TailLightBrightness ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref brightness, 20.0f, 100.0f, $"TAILLIGHTS BRIGHTNESS: {brightness:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref brightness, 15.0f, 80.0f, $"TAILLIGHTS BRIGHTNESS: {brightness:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightBrightness = brightness;
         }
@@ -558,6 +558,10 @@ namespace KN_Lights {
       using (var stream = assembly.GetManifestResourceStream("KN_Lights.Resources." + LightsConfigDefault)) {
         if (LightsConfigSerializer.Deserialize(stream, out var lights)) {
           lightsConfigDefault_ = new LightsConfig(lights);
+#if false
+          foreach (var l in lightsConfigDefault_.Lights) { }
+          LightsConfigSerializer.Serialize(lightsConfigDefault_, "dump.knl");
+#endif
         }
       }
     }
