@@ -148,9 +148,7 @@ namespace KN_Core {
             continue;
           }
           int id = car.Id;
-          var vis = car != core_.PlayerCar &&
-                    car.Base != null &&
-                    car.Base.networkPlayer != null
+          var vis = car != core_.PlayerCar && car.Base != null && car.Base.networkPlayer != null
             ? car.Base.networkPlayer.PlayerProperties.VisualSettings.Copy()
             : gp.carSettings.GetVisualForCar(id).Copy();
           Log.Write($"[KN_Replay]: Car '{car.Name}' | id: {id} visuals: {vis != null} | base: {car.Base != null}");
@@ -420,7 +418,7 @@ namespace KN_Core {
 
             writer.Write(gd.carId);
             writer.Write(gd.profileId);
-            writer.Write(cars_[i].Name);
+            writer.Write($"Ghost_{cars_[i].Name}");
             if (gd.visual != null) {
               var buffer = CustomTypes.SerializeCarVS(gd.visual.Copy().MutateToNetworkParts());
               writer.Write(buffer.Length);
