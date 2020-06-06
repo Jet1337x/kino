@@ -1,3 +1,6 @@
+using SyncMultiplayer;
+using UnityEngine;
+
 namespace KN_Core.Submodule {
   public class Settings : BaseMod {
     private bool rPoints_;
@@ -20,7 +23,12 @@ namespace KN_Core.Submodule {
       }
     }
 
-    public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) { }
+    private int prevPlayersCount_;
+    private readonly Exhaust exhaust_;
+
+    public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) {
+      exhaust_ = new Exhaust(core);
+    }
 
     public void Awake() {
       RPoints = Core.ModConfig.Get<bool>("r_points");
@@ -30,6 +38,22 @@ namespace KN_Core.Submodule {
     public override void OnStop() {
       Core.ModConfig.Set("r_points", RPoints);
       Core.ModConfig.Set("hide_names", HideNames);
+    }
+
+    public override void Update(int id) {
+      int players = NetworkController.InstanceGame.Players.Count;
+      // if ((prevPlayersCount_ != players && !Core.IsInGarage) || !exhaust_.IsInitialized) {
+      // exhaust_.Initialize();
+      // }
+
+      if (Input.GetKeyDown(KeyCode.Delete)) {
+        exhaust_.Initialize();
+      }
+
+      prevPlayersCount_ = players;
+      if (!Core.IsInGarage) {
+        exhaust_.Update();
+      }
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
@@ -51,6 +75,9 @@ namespace KN_Core.Submodule {
 
       gui.Box(x, y, width, height, "In the future", Skin.MainContainerLeft);
       y += Gui.Height;
+
+      y += Gui.OffsetY;
+      exhaust_.OnGUI(gui, ref x, ref y);
     }
   }
 }

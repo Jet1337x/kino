@@ -49,8 +49,6 @@ namespace KN_Core {
     private readonly Gui gui_;
     public bool IsGuiEnabled { get; set; }
 
-    private int lastPlayersCount_;
-
     private readonly List<BaseMod> mods_;
     private readonly List<string> tabs_;
     private int selectedTab_;
