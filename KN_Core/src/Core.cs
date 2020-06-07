@@ -49,8 +49,6 @@ namespace KN_Core {
     private readonly Gui gui_;
     public bool IsGuiEnabled { get; set; }
 
-    private int lastPlayersCount_;
-
     private readonly List<BaseMod> mods_;
     private readonly List<string> tabs_;
     private int selectedTab_;
@@ -111,11 +109,10 @@ namespace KN_Core {
 
     private void OnDestroy() {
       ModConfig.Set("hide_cx_ui", hideCxUi_);
-
-      ModConfig.Write();
       foreach (var mod in mods_) {
         mod.OnStop();
       }
+      ModConfig.Write();
     }
 
     public void FixedUpdate() {

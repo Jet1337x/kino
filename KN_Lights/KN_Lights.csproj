@@ -107,6 +107,9 @@
         <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.InputLegacyModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.ParticleSystemModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
@@ -126,6 +129,7 @@
         <Compile Include="Loader.cs" />
         <Compile Include="Lights.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="StaticLightData.cs" />
         <Compile Include="StaticLights.cs" />
         <Compile Include="WorldLightsData.cs" />
         <Compile Include="WorldLights.cs" />

@@ -23,6 +23,9 @@ namespace KN_Core.Submodule {
 
       gui.Box(x, y, width, height, "trbflxr#8814 or John Sawyer#6915", Skin.MainContainerLeft);
       y += height;
+
+      gui.Box(x, y, width, height, "Also many thanks to Cursed and MRo for their support!", Skin.MainContainerLeft);
+      y += height;
     }
   }
 }
