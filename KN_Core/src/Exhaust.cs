@@ -1,36 +1,65 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace KN_Core {
   public class Exhaust {
+    private const string ExhaustConfigFile = "kn_exhaust.kne";
+    private const string ExhaustConfigDefaultFile = "kn_exhaust_default.kne";
+
     public const float MaxDistance = 100.0f;
 
     public const float TriggerFade = 3.0f;
     public const float RevTrigger = 500.0f;
     public const float LoadTrigger = 0.55f;
-    public const float RpmLowBound = 3000.0f;
-    public const float RpmHighBound = 5000.0f;
+    public const float RpmLowBound = 4000.0f;
+    public const float RpmHighBound = 5500.0f;
 
-    private float maxTime_;
-    public float MaxTime => maxTime_;
-
-    private float flamesTrigger_;
-    public float FlamesTrigger => flamesTrigger_;
-
-    private float volume_;
-    public float Volume => volume_;
-
+    private ExhaustData activeExhaust_;
     private readonly List<ExhaustData> exhausts_;
     private readonly List<ExhaustData> exhaustsToRemove_;
     private readonly Core core_;
+
+    private List<ExhaustFifeData> exhaustConfig_;
+    public List<ExhaustFifeData> ExhaustConfig => exhaustConfig_;
+
+    private List<ExhaustFifeData> exhaustConfigDefault_;
+    public List<ExhaustFifeData> ExhaustConfigDefault => exhaustConfigDefault_;
+
+#if KN_DEV_TOOLS
+    private List<ExhaustFifeData> exhaustConfigsDev_;
+#endif
 
     public Exhaust(Core core) {
       core_ = core;
       exhausts_ = new List<ExhaustData>();
       exhaustsToRemove_ = new List<ExhaustData>();
-      maxTime_ = 1.0f;
-      flamesTrigger_ = 0.06f;
-      volume_ = 0.23f;
+    }
+
+    public void OnStart() {
+      var assembly = Assembly.GetExecutingAssembly();
+      using (var stream = assembly.GetManifestResourceStream("KN_Core.Resources." + ExhaustConfigDefaultFile)) {
+        ExhaustSerializer.Deserialize(stream, out exhaustConfigDefault_);
+      }
+
+      if (!ExhaustSerializer.Deserialize(ExhaustConfigFile, out exhaustConfig_)) {
+        exhaustConfig_ = new List<ExhaustFifeData>();
+      }
+
+#if KN_DEV_TOOLS
+      if (!ExhaustSerializer.Deserialize(ExhaustConfigDefaultFile, out exhaustConfigsDev_)) {
+        exhaustConfigsDev_ = new List<ExhaustFifeData>();
+      }
+#endif
+    }
+
+    public void OnStop() {
+      ExhaustSerializer.Serialize(exhaustConfig_, ExhaustConfigFile);
+
+#if KN_DEV_TOOLS
+      ExhaustSerializer.Serialize(exhaustConfigsDev_, ExhaustConfigDefaultFile);
+#endif
     }
 
     public void Reset() {
@@ -41,14 +70,41 @@ namespace KN_Core {
         e.ToggleLights(false);
         exhausts_.Remove(e);
       }
+      activeExhaust_ = null;
     }
 
     public void Update() {
+#if !KN_DEV_TOOLS
       if (core_.IsInGarage) {
         return;
       }
+#endif
 
       foreach (var e in exhausts_) {
+#if KN_DEV_TOOLS
+        if (Input.GetKey(KeyCode.PageUp)) {
+          if (!e.Enabled) {
+            e.Initialize();
+          }
+          e.Enabled = true;
+          e.Update();
+        }
+        else {
+          e.Enabled = false;
+          e.ToggleLights(false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Insert)) {
+          int id = exhaustConfigsDev_.FindIndex(ed => ed.CarId == e.Car.Id);
+          if (id != -1) {
+            exhaustConfigsDev_[id] = new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume);
+            Log.Write($"[TF_Core]: Exhaust dev tools | Override config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
+            return;
+          }
+          exhaustConfigsDev_.Add(new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume));
+          Log.Write($"[TF_Core]: Exhaust dev tools | Added config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
+        }
+#else
         if (TFCar.IsNull(e.Car)) {
           exhaustsToRemove_.Add(e);
           continue;
@@ -64,6 +120,7 @@ namespace KN_Core {
           }
           e.Update();
         }
+#endif
       }
 
       if (exhaustsToRemove_.Count > 0) {
@@ -76,13 +133,35 @@ namespace KN_Core {
     }
 
     public void OnGUI(Gui gui, ref float x, ref float y, float width) {
-      if (gui.SliderH(ref x, ref y, width, ref volume_, 0.1f, 1.2f, $"VOLUME: {Volume:F}")) {
-        foreach (var e in exhausts_) {
-          e.Event.setVolume(Volume);
+      bool guiEnabled = GUI.enabled;
+      GUI.enabled = activeExhaust_ != null;
+
+      float volume = activeExhaust_?.Volume ?? 1.0f;
+      if (gui.SliderH(ref x, ref y, width, ref volume, 0.1f, 1.2f, $"VOLUME: {volume:F}")) {
+        if (activeExhaust_ != null) {
+          activeExhaust_.Volume = volume;
+          UpdateConfig(activeExhaust_);
         }
       }
-      gui.SliderH(ref x, ref y, width, ref maxTime_, 0.1f, 3.0f, $"MAX TIME: {MaxTime:F}");
-      gui.SliderH(ref x, ref y, width, ref flamesTrigger_, 0.05f, 0.5f, $"FLAMES TRIGGER: {FlamesTrigger:F}");
+
+      float maxTime = activeExhaust_?.MaxTime ?? 1.0f;
+      if (gui.SliderH(ref x, ref y, width, ref maxTime, 0.1f, 3.0f, $"MAX TIME: {maxTime:F}")) {
+        if (activeExhaust_ != null) {
+          activeExhaust_.MaxTime = maxTime;
+          UpdateConfig(activeExhaust_);
+        }
+      }
+
+#if KN_DEV_TOOLS
+      float flamesTrigger = activeExhaust_?.FlamesTrigger ?? 0.06f;
+      if (gui.SliderH(ref x, ref y, width, ref flamesTrigger, 0.05f, 0.5f, $"FLAMES TRIGGER: {flamesTrigger:F}")) {
+        if (activeExhaust_ != null) {
+          activeExhaust_.FlamesTrigger = flamesTrigger;
+          UpdateConfig(activeExhaust_);
+        }
+      }
+#endif
+      GUI.enabled = guiEnabled;
     }
 
     public void Initialize() {
@@ -98,10 +177,28 @@ namespace KN_Core {
 
       var scripts = Object.FindObjectsOfType<CarPopExhaust>();
       if (scripts != null && scripts.Length > 0) {
-        Log.Write($"{scripts.Length}");
         foreach (var s in scripts) {
           exhausts_.Add(new ExhaustData(this, s));
         }
+        foreach (var e in exhausts_.Where(e => e.Car == core_.PlayerCar)) {
+          activeExhaust_ = e;
+          break;
+        }
+      }
+      else {
+        activeExhaust_ = null;
+      }
+    }
+
+    private void UpdateConfig(ExhaustData data) {
+      Log.Write($"[TF_Core]: Conf size: {exhaustConfig_.Count} / Car data id: {data.Car.Id}");
+      int id = exhaustConfig_.FindIndex(ed => ed.CarId == data.Car.Id);
+      if (id != -1) {
+        Log.Write($"[TF_Core]: Overrider exhaust for car '{data.Car.Name}'");
+        exhaustConfig_[id] = new ExhaustFifeData(data.Car.Id, data.MaxTime, data.FlamesTrigger, data.Volume);
+      }
+      else {
+        exhaustConfig_.Add(new ExhaustFifeData(data.Car.Id, data.MaxTime, data.FlamesTrigger, data.Volume));
       }
     }
   }

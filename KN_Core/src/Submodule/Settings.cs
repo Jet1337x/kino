@@ -50,19 +50,19 @@ namespace KN_Core.Submodule {
       RPoints = Core.ModConfig.Get<bool>("r_points");
       HideNames = Core.ModConfig.Get<bool>("hide_names");
       BackFireEnabled = Core.ModConfig.Get<bool>("custom_backfire");
+      exhaust_.OnStart();
     }
 
     public override void OnStop() {
       Core.ModConfig.Set("r_points", RPoints);
       Core.ModConfig.Set("hide_names", HideNames);
       Core.ModConfig.Set("custom_backfire", BackFireEnabled);
+      exhaust_.OnStop();
     }
 
     public override void Update(int id) {
       bool sceneChanged = prevScene_ && !Core.IsInGarage || !prevScene_ && Core.IsInGarage;
       prevScene_ = Core.IsInGarage;
-
-      Log.Write($"{prevScene_} / {NetworkController.InstanceGame.Players.Count}");
 
       if (BackFireEnabled) {
         int players = NetworkController.InstanceGame.Players.Count;
@@ -80,13 +80,17 @@ namespace KN_Core.Submodule {
           }
         }
 
-        if (!Core.IsInGarage) {
-          exhaust_.Update();
-        }
-
         if (Input.GetKeyDown(KeyCode.Delete)) {
           exhaust_.Initialize();
         }
+
+#if KN_DEV_TOOLS
+        exhaust_.Update();
+#else
+        if (!Core.IsInGarage) {
+          exhaust_.Update();
+        }
+#endif
       }
     }
 
@@ -111,10 +115,10 @@ namespace KN_Core.Submodule {
         BackFireEnabled = !BackFireEnabled;
         Core.ModConfig.Set("custom_backfire", BackFireEnabled);
         if (!BackFireEnabled) {
-          exhaust_.Initialize();
+          exhaust_.Reset();
         }
         else {
-          exhaust_.Reset();
+          exhaust_.Initialize();
         }
       }
 

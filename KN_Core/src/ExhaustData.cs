@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace KN_Core {
-  internal class ExhaustData {
+  public class ExhaustData {
     private const float IntensityLow = 10.0f;
     private const float IntensityHigh = 30.0f;
 
@@ -22,6 +22,12 @@ namespace KN_Core {
     public FMODBaseScript.FMODEventNode Sound { get; private set; }
     public EventInstance Event { get; private set; }
 
+    public float MaxTime { get; set; }
+
+    public float FlamesTrigger { get; set; }
+
+    public float Volume { get; set; }
+
     private bool active_;
     private bool timeout_;
 
@@ -32,10 +38,7 @@ namespace KN_Core {
     private bool engineLoad_;
     private bool firstPop_;
 
-    private readonly Exhaust exhaust_;
-
     public ExhaustData(Exhaust exhaust, CarPopExhaust script) {
-      exhaust_ = exhaust;
       Particles = new List<ParticleSystem>();
       LightObjects = new List<GameObject>();
       Lights = new List<Light>();
@@ -43,15 +46,34 @@ namespace KN_Core {
       if (typeof(CarPopExhaust).GetField("m_car", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(script) is RaceCar car) {
         Car = new TFCar(car);
 
+        int id = exhaust.ExhaustConfig.FindIndex(ed => ed.CarId == Car.Id);
+        if (id != -1) {
+          var conf = exhaust.ExhaustConfig[id];
+          MaxTime = conf.MaxTime;
+          FlamesTrigger = conf.FlamesTrigger;
+          Volume = conf.Volume;
+        }
+        else {
+          id = exhaust.ExhaustConfigDefault.FindIndex(ed => ed.CarId == Car.Id);
+          if (id != -1) {
+            var conf = exhaust.ExhaustConfigDefault[id];
+            MaxTime = conf.MaxTime;
+            FlamesTrigger = conf.FlamesTrigger;
+            Volume = conf.Volume;
+          }
+          else {
+            MaxTime = 1.0f;
+            FlamesTrigger = 0.06f;
+            Volume = 0.23f;
+          }
+        }
+
         var points = Car.Base.GetComponentsInChildren<CarComponentRoot>(true).Filter(e => e.typeID == (TypeID) "flame").Convert(e => e.transform);
         foreach (var p in points) {
           Particles.Add(InstantiateParticleSystem(CarResourceProvider.instance.exhaustFlame, p));
           AddLight(p);
         }
       }
-
-      Log.Write($"{Car.Name} / {Car.Id}");
-
       Reload(script);
     }
 
@@ -93,12 +115,21 @@ namespace KN_Core {
         return;
       }
 
+#if KN_DEV_TOOLS
+      const float norm = 2.0f;
+
+      if (Input.GetKeyDown(KeyCode.PageUp)) {
+        active_ = true;
+        timeout_ = false;
+        Car.CarX.rpm = 6000.0f;
+      }
+#else
+      float t = (Car.CarX.engineRevLimiter - Exhaust.RpmLowBound) / (Exhaust.RpmHighBound - Exhaust.RpmLowBound);
+      float norm = MaxTime * t;
+
       float rpm = Car.CarX.rpm;
       float load = Car.CarX.load;
       engineLoad_ = load >= Exhaust.LoadTrigger;
-
-      float t = (Car.CarX.engineRevLimiter - Exhaust.RpmLowBound) / (Exhaust.RpmHighBound - Exhaust.RpmLowBound);
-      float norm = exhaust_.MaxTime * t;
 
       if (engineLoad_) {
         prevRevs_ = Car.CarX.rpm;
@@ -117,13 +148,14 @@ namespace KN_Core {
           }
         }
       }
+#endif
 
       ToggleLights(active_);
       if (active_ && !timeout_) {
         time_ += Time.deltaTime * Exhaust.TriggerFade;
         if (time_ > norm) {
           time_ = 0.0f;
-          time1_ = exhaust_.FlamesTrigger;
+          time1_ = FlamesTrigger;
           active_ = false;
           timeout_ = true;
           firstPop_ = true;
@@ -131,14 +163,14 @@ namespace KN_Core {
         }
         else {
           time1_ += Time.deltaTime;
-          if (time1_ >= exhaust_.FlamesTrigger) {
+          if (time1_ >= FlamesTrigger) {
             time1_ = 0.0f;
             if (firstPop_) {
               Event.setVolume(1.0f);
               firstPop_ = false;
             }
             else {
-              Event.setVolume(exhaust_.Volume);
+              Event.setVolume(Volume);
             }
             ToggleLights(true);
             foreach (var l in Lights) {
@@ -150,7 +182,7 @@ namespace KN_Core {
       }
       else {
         time_ = 0.0f;
-        time1_ = exhaust_.FlamesTrigger;
+        time1_ = FlamesTrigger;
       }
     }
 

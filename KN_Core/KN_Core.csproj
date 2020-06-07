@@ -130,6 +130,7 @@
         <Compile Include="src\Core.cs" />
         <Compile Include="src\Exhaust.cs" />
         <Compile Include="src\ExhaustData.cs" />
+        <Compile Include="src\ExhaustSerializer.cs" />
         <Compile Include="src\FilePicker.cs" />
         <Compile Include="src\Gui.cs" />
         <Compile Include="src\Log.cs" />
@@ -219,6 +220,9 @@
         <EmbeddedResource Include="Resources\TimelineSliderLow.png" />
         <EmbeddedResource Include="Resources\TimelineSliderMid.png" />
         <EmbeddedResource Include="Resources\TimelineSliderHigh.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\kn_exhaust_default.kne" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
