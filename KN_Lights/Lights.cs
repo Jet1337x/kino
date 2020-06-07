@@ -77,6 +77,7 @@ namespace KN_Lights {
       lightsConfig_ = LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights) ? new LightsConfig(lights) : new LightsConfig();
 
       worldLights_.OnStart();
+      staticLights_.OnStart();
     }
 
     public override void OnStop() {
@@ -88,6 +89,7 @@ namespace KN_Lights {
 #endif
 
       worldLights_.OnStop();
+      staticLights_.OnStop();
     }
 
     public override void Update(int id) {
@@ -100,6 +102,7 @@ namespace KN_Lights {
       ToggleOwnLights();
 
       worldLights_.Update();
+      staticLights_.Update();
 
       if (id != Id) {
         return;
