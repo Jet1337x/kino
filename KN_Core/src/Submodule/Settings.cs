@@ -81,10 +81,12 @@ namespace KN_Core.Submodule {
           }
         }
 
-        int carId = Core.PlayerCar.Id;
-        if (prevCarId_ != carId) {
-          exhaust_.Initialize();
-          prevCarId_ = carId;
+        if (!TFCar.IsNull(Core.PlayerCar)) {
+          int carId = Core.PlayerCar.Id;
+          if (prevCarId_ != carId) {
+            exhaust_.Initialize();
+            prevCarId_ = carId;
+          }
         }
 
         if (Input.GetKeyDown(KeyCode.Delete)) {
