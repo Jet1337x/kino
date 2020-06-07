@@ -134,7 +134,7 @@ namespace KN_Core {
 
     public void OnGUI(Gui gui, ref float x, ref float y, float width) {
       bool guiEnabled = GUI.enabled;
-      GUI.enabled = activeExhaust_ != null;
+      GUI.enabled = activeExhaust_ != null && !core_.IsInGarage;
 
       float volume = activeExhaust_?.Volume ?? 1.0f;
       if (gui.SliderH(ref x, ref y, width, ref volume, 0.1f, 1.2f, $"VOLUME: {volume:F}")) {

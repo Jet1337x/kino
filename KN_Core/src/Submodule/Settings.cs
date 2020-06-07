@@ -118,6 +118,8 @@ namespace KN_Core.Submodule {
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.OffsetY;
 
+      bool guiEnabled = GUI.enabled;
+      GUI.enabled = Core.IsInGarage;
       if (gui.Button(ref x, ref y, width, height, "CUSTOM BACKFIRE", BackFireEnabled ? Skin.ButtonActive : Skin.Button)) {
         BackFireEnabled = !BackFireEnabled;
         Core.ModConfig.Set("custom_backfire", BackFireEnabled);
@@ -132,6 +134,7 @@ namespace KN_Core.Submodule {
       if (BackFireEnabled) {
         exhaust_.OnGUI(gui, ref x, ref y, width);
       }
+      GUI.enabled = guiEnabled;
     }
   }
 }
