@@ -109,11 +109,10 @@ namespace KN_Core {
 
     private void OnDestroy() {
       ModConfig.Set("hide_cx_ui", hideCxUi_);
-
-      ModConfig.Write();
       foreach (var mod in mods_) {
         mod.OnStop();
       }
+      ModConfig.Write();
     }
 
     public void FixedUpdate() {

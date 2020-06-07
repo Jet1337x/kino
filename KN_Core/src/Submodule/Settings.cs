@@ -66,7 +66,7 @@ namespace KN_Core.Submodule {
       prevScene_ = Core.IsInGarage;
 
       if (BackFireEnabled) {
-        int players = NetworkController.InstanceGame.Players.Count;
+        int players = NetworkController.InstanceGame?.Players.Count ?? 0;
         if (prevPlayersCount_ != players || sceneChanged) {
           timerStart_ = true;
         }
