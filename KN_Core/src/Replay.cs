@@ -298,11 +298,12 @@ namespace KN_Core {
 
       LoadReplay(file);
       foreach (var gd in ghostData_) {
-        Player.AddPlayer(new GhostPlayer.StartArgs {
+        var player = Player.AddPlayer(new GhostPlayer.StartArgs {
           data = gd.Data,
           nickName = gd.Name,
           needCollisions = false
         });
+        player.ghostCar.name = $"Ghost_{gd.Name}";
       }
 
       Log.Write("[KN_Replay]: Replay info:");
