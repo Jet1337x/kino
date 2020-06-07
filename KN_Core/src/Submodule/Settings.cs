@@ -34,6 +34,7 @@ namespace KN_Core.Submodule {
       }
     }
 
+    private int prevCarId_;
     private bool prevScene_;
     private int prevPlayersCount_;
 
@@ -78,6 +79,12 @@ namespace KN_Core.Submodule {
             timerStart_ = false;
             crutchTimer_ = 0.0f;
           }
+        }
+
+        int carId = Core.PlayerCar.Id;
+        if (prevCarId_ != carId) {
+          exhaust_.Initialize();
+          prevCarId_ = carId;
         }
 
         if (Input.GetKeyDown(KeyCode.Delete)) {
