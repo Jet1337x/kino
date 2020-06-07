@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using System.Reflection;
+using ArrayExtension;
+using CarModelSystem;
 using FMOD.Studio;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace KN_Core {
   internal class ExhaustData {
@@ -37,14 +41,28 @@ namespace KN_Core {
       Lights = new List<Light>();
 
       if (typeof(CarPopExhaust).GetField("m_car", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(script) is RaceCar car) {
-        //todo: ghost check
         Car = new TFCar(car);
+
+        var points = Car.Base.GetComponentsInChildren<CarComponentRoot>(true).Filter(e => e.typeID == (TypeID) "flame").Convert(e => e.transform);
+        foreach (var p in points) {
+          Particles.Add(InstantiateParticleSystem(CarResourceProvider.instance.exhaustFlame, p));
+          AddLight(p);
+        }
       }
+
+      Log.Write($"{Car.Name} / {Car.Id}");
 
       Reload(script);
     }
 
+    public void ToggleLights(bool enabled) {
+      foreach (var lo in LightObjects) {
+        lo.SetActive(enabled);
+      }
+    }
+
     public void Initialize() {
+      ToggleLights(false);
       var scripts = Object.FindObjectsOfType<CarPopExhaust>();
       if (scripts != null && scripts.Length > 0) {
         foreach (var s in scripts) {
@@ -58,30 +76,7 @@ namespace KN_Core {
       }
     }
 
-    public void DisposeLights() {
-      foreach (var lo in LightObjects) {
-        Object.Destroy(lo);
-      }
-    }
-
     private void Reload(CarPopExhaust script) {
-      DisposeLights();
-
-      Particles.Clear();
-      LightObjects.Clear();
-      Lights.Clear();
-
-      if (!(typeof(CarPopExhaust).GetField("m_exhaustFlameInstances", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(script) is List<ParticleSystem> particles)) {
-        Log.Write($"[TF_Core]: Bad script on {Car.Id} / {Car.Name}");
-      }
-      else {
-        Log.Write($"[TF_Core]: Particles count {particles.Count} on {Car.Name}");
-        foreach (var p in particles) {
-          Particles.Add(p);
-          AddLight(p.transform);
-        }
-      }
-
       var popSound = typeof(CarPopExhaust).GetField("m_popSound", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(script) as FMODPopExhaust;
       Sound = typeof(FMODPopExhaust).GetField("m_popInstance", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(popSound) as FMODBaseScript.FMODEventNode;
       if (Sound != null) {
@@ -90,12 +85,11 @@ namespace KN_Core {
           Event = (EventInstance) obj;
         }
       }
-
-      Log.Write($"[TF_Core]: Constructed exhaust for car {Car.Id} / {Car.Name} / Particles: {Particles.Count} / Lights: {LightObjects.Count}");
     }
 
     public void Update() {
       if (!Enabled) {
+        ToggleLights(false);
         return;
       }
 
@@ -111,10 +105,7 @@ namespace KN_Core {
         active_ = false;
         timeout_ = false;
         firstPop_ = true;
-        foreach (var lo in LightObjects) {
-          lo.SetActive(false);
-          Event.setVolume(1.0f);
-        }
+        Event.setVolume(1.0f);
       }
       else {
         if (rpm <= prevRevs_ - Exhaust.RevTrigger && !timeout_) {
@@ -123,15 +114,11 @@ namespace KN_Core {
           }
           else {
             active_ = rpm > Exhaust.RpmLowBound;
-            if (!active_) {
-              foreach (var lo in LightObjects) {
-                lo.SetActive(false);
-              }
-            }
           }
         }
       }
 
+      ToggleLights(active_);
       if (active_ && !timeout_) {
         time_ += Time.deltaTime * Exhaust.TriggerFade;
         if (time_ > norm) {
@@ -140,9 +127,7 @@ namespace KN_Core {
           active_ = false;
           timeout_ = true;
           firstPop_ = true;
-          foreach (var lo in LightObjects) {
-            lo.SetActive(false);
-          }
+          ToggleLights(false);
         }
         else {
           time1_ += Time.deltaTime;
@@ -155,9 +140,7 @@ namespace KN_Core {
             else {
               Event.setVolume(exhaust_.Volume);
             }
-            foreach (var lo in LightObjects) {
-              lo.SetActive(true);
-            }
+            ToggleLights(true);
             foreach (var l in Lights) {
               l.intensity = Random.Range(IntensityLow, IntensityHigh);
             }
@@ -185,6 +168,12 @@ namespace KN_Core {
       Sound.Start();
     }
 
+    public void RemoveLights() {
+      foreach (var lo in LightObjects) {
+        Object.Destroy(lo);
+      }
+    }
+
     private void AddLight(Transform parent) {
       var obj = new GameObject();
       obj.AddComponent<Light>();
@@ -195,14 +184,24 @@ namespace KN_Core {
       light.spotAngle = 180.0f;
       light.innerSpotAngle = 10.0f;
       light.range = 2.0f;
-      obj.SetActive(false);
 
       obj.transform.parent = parent;
       obj.transform.position = parent.position;
       obj.transform.rotation = parent.rotation;
 
+      obj.SetActive(false);
+
       LightObjects.Add(obj);
       Lights.Add(light);
+    }
+
+    private static ParticleSystem InstantiateParticleSystem(ParticleSystem prefab, Transform parent) {
+      if (prefab == null) {
+        return null;
+      }
+      var particleSystem = Object.Instantiate(prefab);
+      parent.AddChildResetPRS(particleSystem);
+      return particleSystem;
     }
   }
 }

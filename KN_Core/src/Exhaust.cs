@@ -11,8 +11,6 @@ namespace KN_Core {
     public const float RpmLowBound = 3000.0f;
     public const float RpmHighBound = 5000.0f;
 
-    public bool IsInitialized { get; private set; }
-
     private float maxTime_;
     public float MaxTime => maxTime_;
 
@@ -35,6 +33,16 @@ namespace KN_Core {
       volume_ = 0.23f;
     }
 
+    public void Reset() {
+      foreach (var e in exhausts_) {
+        e.ToggleLights(false);
+      }
+      foreach (var e in exhaustsToRemove_) {
+        e.ToggleLights(false);
+        exhausts_.Remove(e);
+      }
+    }
+
     public void Update() {
       if (core_.IsInGarage) {
         return;
@@ -47,6 +55,7 @@ namespace KN_Core {
         }
         if (Vector3.Distance(core_.ActiveCamera.transform.position, e.Car.Transform.position) > MaxDistance) {
           e.Enabled = false;
+          e.ToggleLights(false);
         }
         else {
           if (!e.Enabled) {
@@ -60,15 +69,13 @@ namespace KN_Core {
       if (exhaustsToRemove_.Count > 0) {
         foreach (var e in exhaustsToRemove_) {
           Log.Write($"[TF_Core]: Removed for car '{e.Car.Name}'");
-          e.DisposeLights();
           exhausts_.Remove(e);
         }
         exhaustsToRemove_.Clear();
       }
     }
 
-    public void OnGUI(Gui gui, ref float x, ref float y) {
-      const float width = Gui.Width * 2.0f;
+    public void OnGUI(Gui gui, ref float x, ref float y, float width) {
       if (gui.SliderH(ref x, ref y, width, ref volume_, 0.1f, 1.2f, $"VOLUME: {Volume:F}")) {
         foreach (var e in exhausts_) {
           e.Event.setVolume(Volume);
@@ -79,23 +86,23 @@ namespace KN_Core {
     }
 
     public void Initialize() {
-      foreach (var e in exhaustsToRemove_) {
-        e.DisposeLights();
-      }
       foreach (var e in exhausts_) {
-        e.DisposeLights();
+        e.RemoveLights();
       }
+      foreach (var e in exhaustsToRemove_) {
+        e.RemoveLights();
+      }
+
       exhausts_.Clear();
       exhaustsToRemove_.Clear();
 
       var scripts = Object.FindObjectsOfType<CarPopExhaust>();
       if (scripts != null && scripts.Length > 0) {
+        Log.Write($"{scripts.Length}");
         foreach (var s in scripts) {
           exhausts_.Add(new ExhaustData(this, s));
         }
       }
-
-      IsInitialized = true;
     }
   }
 }

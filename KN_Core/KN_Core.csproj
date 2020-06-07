@@ -58,6 +58,9 @@
         <Reference Include="BepInEx.Preloader, Version=5.0.1.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\BepInEx\BepInEx.Preloader.dll</HintPath>
         </Reference>
+        <Reference Include="CarSystems.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\CarX\CarSystems.Runtime.dll</HintPath>
+        </Reference>
         <Reference Include="CarX.Extras.Surface, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\CarX.Extras.Surface.dll</HintPath>
         </Reference>
