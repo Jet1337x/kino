@@ -194,7 +194,7 @@ namespace KN_Core {
       Log.Write($"[TF_Core]: Conf size: {exhaustConfig_.Count} / Car data id: {data.Car.Id}");
       int id = exhaustConfig_.FindIndex(ed => ed.CarId == data.Car.Id);
       if (id != -1) {
-        Log.Write($"[TF_Core]: Overrider exhaust for car '{data.Car.Name}'");
+        Log.Write($"[TF_Core]: Override exhaust for car '{data.Car.Name}'");
         exhaustConfig_[id] = new ExhaustFifeData(data.Car.Id, data.MaxTime, data.FlamesTrigger, data.Volume);
       }
       else {
