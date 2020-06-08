@@ -212,7 +212,8 @@ namespace KN_Visuals {
         backupVisuals_ = prefs_.carSettings.GetVisualForCar(id).Copy();
       }
 
-      int pid = prefs_.carSettings.GetVinylsInfoForCar(id).GetPresetsList().Count * 2;
+      int count = prefs_.carSettings.GetVinylsInfoForCar(id).GetPresetsList().Count;
+      int pid = 10 + count * 2 << 0x2;
       var vp = new CarVilylsInfo.VinylPreset(pid);
       vp.layers.AddRange(carVisuals_.vinylLayers);
       prefs_.carSettings.GetVinylsInfoForCar(id).AddPreset(vp);
