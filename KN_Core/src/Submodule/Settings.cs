@@ -110,6 +110,7 @@ namespace KN_Core.Submodule {
         }
 #endif
       }
+      tachometer_.Update();
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
@@ -119,12 +120,9 @@ namespace KN_Core.Submodule {
       x += Gui.OffsetSmall;
 
       if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachometerEnabled_ ? Skin.ButtonActive : Skin.Button)) {
-        tachometerEnabled_ = !tachometerEnabled_;
-      }
-
-      string units = tachometer_.IsKmH ? "KMH" : "MPH";
-      if (gui.Button(ref x, ref y, width, height, $"SPEED UNITS {units}", Skin.Button)) {
-        tachometer_.IsKmH = !tachometer_.IsKmH;
+        if (!Core.IsInGarage) {
+          tachometerEnabled_ = !tachometerEnabled_;
+        }
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);

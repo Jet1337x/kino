@@ -1,3 +1,5 @@
+using DI;
+using PrefsModels;
 using UnityEngine;
 
 namespace KN_Core {
@@ -8,21 +10,29 @@ namespace KN_Core {
     private const float GearWidth = 35.0f;
     private const float GearHeight = 45.0f;
 
-    public bool IsKmH { get; set; }
-
     private readonly Core core_;
     private readonly Color tachColor_;
     private readonly Color tachColorAlpha_;
 
+    private GlobalModel globals_;
+
     public Tachometer(Core core) {
-      IsKmH = true;
       core_ = core;
       tachColor_ = new Color32(0xff, 0xff, 0xff, 0xff);
       tachColorAlpha_ = new Color32(0xff, 0xff, 0xff, 0xab);
     }
 
+    public void Update() {
+      if (globals_ == null) {
+        var gp = DependencyInjector.Resolve<GamePrefs>();
+        if (gp != null) {
+          globals_ = gp.globals;
+        }
+      }
+    }
+
     public void OnGUI(float x, float y) {
-      if (core_.PlayerCar.CarX == null) {
+      if (core_.PlayerCar.CarX == null || core_.IsInGarage) {
         return;
       }
 
@@ -45,9 +55,10 @@ namespace KN_Core {
       DrawBox(x, y, RpmWidth, Gui.Height, Skin.TachBg, tachColorAlpha_, $"{(int) rpm:D} RPM");
       x += RpmWidth + Gui.OffsetSmall;
 
+      bool speedKmh = globals_?.speedKmh ?? true;
       float spd = core_.PlayerCar.CarX.speedMPH;
-      float speed = IsKmH ? spd * 1.60934f : spd;
-      string units = IsKmH ? "KMH" : "MPH";
+      float speed = speedKmh ? spd * 1.60934f : spd;
+      string units = speedKmh ? "KMH" : "MPH";
       DrawBox(x, y, SpdWidth, Gui.Height, Skin.TachBg, tachColorAlpha_, $"{(int) speed:D} {units}");
       y += Gui.Height + Gui.OffsetSmall;
       x -= RpmWidth + Gui.OffsetSmall;
