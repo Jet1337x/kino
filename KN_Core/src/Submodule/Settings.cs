@@ -38,13 +38,18 @@ namespace KN_Core.Submodule {
     private bool prevScene_;
     private int prevPlayersCount_;
 
-    private readonly Exhaust exhaust_;
-
     private bool timerStart_;
     private float crutchTimer_;
+    private readonly Exhaust exhaust_;
+
+    private float tX_ = 500.0f;
+    private float tY_ = 500.0f;
+    private bool tachometerEnabled_ = true;
+    private readonly Tachometer tachometer_;
 
     public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) {
       exhaust_ = new Exhaust(core);
+      tachometer_ = new Tachometer(core);
     }
 
     public void Awake() {
@@ -101,6 +106,8 @@ namespace KN_Core.Submodule {
         }
 #endif
       }
+
+      tachometer_.Update();
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
@@ -108,6 +115,13 @@ namespace KN_Core.Submodule {
       const float height = Gui.Height;
 
       x += Gui.OffsetSmall;
+
+      if (gui.SliderH(ref x, ref y, width, ref tX_, 0.0f, 1920.0f, $"TACHOMETER X:{tX_:F1}")) { }
+      if (gui.SliderH(ref x, ref y, width, ref tY_, 0.0f, 1080.0f, $"TACHOMETER Y:{tY_:F1}")) { }
+
+      if (gui.Button(ref x, ref y, width, height, "TACHOMETER", tachometerEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+        tachometerEnabled_ = !tachometerEnabled_;
+      }
 
       if (gui.Button(ref x, ref y, width, height, "HIDE POINTS", RPoints ? Skin.Button : Skin.ButtonActive)) {
         RPoints = !RPoints;
@@ -137,6 +151,13 @@ namespace KN_Core.Submodule {
         exhaust_.OnGUI(gui, ref x, ref y, width);
       }
       GUI.enabled = guiEnabled;
+    }
+
+    public void GuiTachometer() {
+      if (!tachometerEnabled_) {
+        return;
+      }
+      tachometer_.OnGUI(tX_, tY_);
     }
   }
 }

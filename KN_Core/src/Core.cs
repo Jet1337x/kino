@@ -185,6 +185,8 @@ namespace KN_Core {
     }
 
     public void OnGUI() {
+      settings_.GuiTachometer();
+
       if (!IsGuiEnabled) {
         return;
       }

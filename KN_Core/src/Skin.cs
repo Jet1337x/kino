@@ -12,6 +12,13 @@ namespace KN_Core {
     public static GUISkin OutlineDark;
     private static Texture2D texOutlineDark_;
 
+    private static Texture2D texTachBg_;
+    public static GUISkin TachBg;
+    public static GUISkin TachRedBg;
+    public static GUISkin TachGearBg;
+    public static GUISkin TachFill;
+    public static GUISkin TachFillRed;
+
     public static GUISkin IconCam;
     public static GUISkin IconCamActive;
     private static Texture2D texCamN_;
@@ -147,6 +154,8 @@ namespace KN_Core {
 
     public static Font FontLight;
     public static Font FontTabs;
+    public static Font FontTach;
+    public static Font FontGear;
 
     private static bool initialized_;
 
@@ -167,6 +176,8 @@ namespace KN_Core {
 
       FontTabs = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
       FontLight = Font.CreateDynamicFontFromOSFont("Consolas", 12);
+      FontTach = Font.CreateDynamicFontFromOSFont("Consolas Bold", 16);
+      FontGear = Font.CreateDynamicFontFromOSFont("Consolas Bold", 32);
 
       LoadButtonTex(out texCamN_, out texCamH_, out texCamA_, out IconCam, out IconCamActive, "Camera");
       LoadButtonTex(out texAnimN_, out texAnimH_, out texAnimA_, out IconAnim, out IconAnimActive, "Animation");
@@ -192,6 +203,7 @@ namespace KN_Core {
       MakeScrollViewStyle();
       MakeTextFieldStyle();
       MakeTimelineSlider();
+      MakeTachStyle();
     }
 
     private static void LoadButtonTex(out Texture2D normal, out Texture2D hover, out Texture2D active, out GUISkin skin, out GUISkin skinActive, string name) {
@@ -452,6 +464,33 @@ namespace KN_Core {
       TimelineSliderHigh.horizontalSliderThumb.active.background = texTimelineHigh_;
       TimelineSliderHigh.horizontalSliderThumb.fixedWidth = Gui.WidthSlider;
       TimelineSliderHigh.horizontalSliderThumb.fixedHeight = Gui.Height * 1.5f;
+    }
+
+    private static void MakeTachStyle() {
+      texTachBg_ = Core.LoadCoreTexture("TachBg.png");
+
+      TachBg = ScriptableObject.CreateInstance<GUISkin>();
+      TachBg.box.normal.background = texTachBg_;
+      TachBg.box.normal.textColor = TextColorInv;
+      TachBg.box.alignment = TextAnchor.MiddleLeft;
+      TachBg.box.font = FontTach;
+      TachBg.box.padding = new RectOffset(5, 5, 0, 5);
+
+      TachGearBg = ScriptableObject.CreateInstance<GUISkin>();
+      TachGearBg.box.normal.background = texTachBg_;
+      TachGearBg.box.normal.textColor = TextColorInv;
+      TachGearBg.box.alignment = TextAnchor.MiddleCenter;
+      TachGearBg.box.font = FontGear;
+      TachGearBg.box.padding = new RectOffset(2, 0, 0, 8);
+
+      TachRedBg = ScriptableObject.CreateInstance<GUISkin>();
+      TachRedBg.box.normal.background = texRedButtonA_;
+
+      TachFill = ScriptableObject.CreateInstance<GUISkin>();
+      TachFill.box.normal.background = texSliderBG_;
+
+      TachFillRed = ScriptableObject.CreateInstance<GUISkin>();
+      TachFillRed.box.normal.background = texRedButtonH_;
     }
   }
 }

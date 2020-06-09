@@ -140,6 +140,7 @@
         <Compile Include="src\Skin.cs" />
         <Compile Include="src\Submodule\About.cs" />
         <Compile Include="src\Submodule\Settings.cs" />
+        <Compile Include="src\Tachometer.cs" />
         <Compile Include="src\TFCar.cs" />
         <Compile Include="src\Timeline.cs" />
     </ItemGroup>
@@ -170,6 +171,7 @@
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\SliderBG.png" />
+        <EmbeddedResource Include="Resources\TachBg.png" />
         <EmbeddedResource Include="Resources\SliderThumbHover.png" />
         <EmbeddedResource Include="Resources\SliderThumbNormal.png" />
     </ItemGroup>
