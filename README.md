@@ -42,7 +42,7 @@ There you can set the starting and the ending points of your replay.
 
 ## Settings
 This tab has toggles for points counter and player nicknames  
-Now with custom backfire and tachometer 
+Now with custom backfire and tachometer   
 More options will be added to this tab in the future.  
 ![Settings](Images/settings.png)  
 
