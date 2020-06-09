@@ -3,15 +3,19 @@ using UnityEngine;
 namespace KN_Core {
   public class Tachometer {
     private const float Width = 250.0f;
-    private const float RpmWidth = 46.0f;
-    private const float GearWidth = 36.0f;
+    private const float RpmWidth = 82.0f;
+    private const float SpdWidth = 73.0f;
+    private const float GearWidth = 35.0f;
     private const float GearHeight = 45.0f;
+
+    public bool IsKmH { get; set; }
 
     private readonly Core core_;
     private readonly Color tachColor_;
     private readonly Color tachColorAlpha_;
 
     public Tachometer(Core core) {
+      IsKmH = true;
       core_ = core;
       tachColor_ = new Color32(0xff, 0xff, 0xff, 0xff);
       tachColorAlpha_ = new Color32(0xff, 0xff, 0xff, 0xab);
@@ -22,10 +26,6 @@ namespace KN_Core {
     public void OnGUI(float x, float y) {
       if (core_.PlayerCar.CarX == null) {
         return;
-      }
-
-      if (Input.GetKey(KeyCode.H)) {
-        core_.PlayerCar.CarX.rpm = 15000.0f;
       }
 
       const float maxRpm = 10000.0f;
@@ -44,9 +44,15 @@ namespace KN_Core {
       DrawBox(x, y, GearWidth, GearHeight, Skin.TachGearBg, tachColorAlpha_, gearStr);
       x += GearWidth + Gui.OffsetSmall;
 
-      float rpmBoxAdd = rpm > 10000 ? 9.0f : 0.0f;
-      DrawBox(x, y, RpmWidth + rpmBoxAdd, Gui.Height, Skin.TachBg, tachColorAlpha_, $"{(int) rpm:D}");
+      DrawBox(x, y, RpmWidth, Gui.Height, Skin.TachBg, tachColorAlpha_, $"{(int) rpm:D} RPM");
+      x += RpmWidth + Gui.OffsetSmall;
+
+      float spd = core_.PlayerCar.CarX.speedMPH;
+      float speed = IsKmH ? spd * 1.60934f : spd;
+      string units = IsKmH ? "KMH" : "MPH";
+      DrawBox(x, y, SpdWidth, Gui.Height, Skin.TachBg, tachColorAlpha_, $"{(int) speed:D} {units}");
       y += Gui.Height + Gui.OffsetSmall;
+      x -= RpmWidth + Gui.OffsetSmall;
 
       DrawBox(x, y, boxWidth, Gui.Height, Skin.TachBg, tachColorAlpha_);
       x += boxWidth;

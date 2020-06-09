@@ -42,8 +42,8 @@ namespace KN_Core.Submodule {
     private float crutchTimer_;
     private readonly Exhaust exhaust_;
 
-    private float tX_ = 500.0f;
-    private float tY_ = 500.0f;
+    private const float OffsetTx = 50.0f;
+    private const float OffsetTy = 45.0f;
     private bool tachometerEnabled_ = true;
     private readonly Tachometer tachometer_;
 
@@ -116,12 +116,17 @@ namespace KN_Core.Submodule {
 
       x += Gui.OffsetSmall;
 
-      if (gui.SliderH(ref x, ref y, width, ref tX_, 0.0f, 1920.0f, $"TACHOMETER X:{tX_:F1}")) { }
-      if (gui.SliderH(ref x, ref y, width, ref tY_, 0.0f, 1080.0f, $"TACHOMETER Y:{tY_:F1}")) { }
-
-      if (gui.Button(ref x, ref y, width, height, "TACHOMETER", tachometerEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, "MINIMALISTIC HUD", tachometerEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         tachometerEnabled_ = !tachometerEnabled_;
       }
+
+      string units = tachometer_.IsKmH ? "KMH" : "MPH";
+      if (gui.Button(ref x, ref y, width, height, $"SPEED UNITS {units}", Skin.Button)) {
+        tachometer_.IsKmH = !tachometer_.IsKmH;
+      }
+
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.OffsetY;
 
       if (gui.Button(ref x, ref y, width, height, "HIDE POINTS", RPoints ? Skin.Button : Skin.ButtonActive)) {
         RPoints = !RPoints;
@@ -157,7 +162,8 @@ namespace KN_Core.Submodule {
       if (!tachometerEnabled_) {
         return;
       }
-      tachometer_.OnGUI(tX_, tY_);
+
+      tachometer_.OnGUI(Screen.width- (OffsetTx + 290.0f), Screen.height- (OffsetTy + 45.0f));
     }
   }
 }

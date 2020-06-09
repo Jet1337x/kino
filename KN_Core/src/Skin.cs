@@ -472,7 +472,7 @@ namespace KN_Core {
       TachBg = ScriptableObject.CreateInstance<GUISkin>();
       TachBg.box.normal.background = texTachBg_;
       TachBg.box.normal.textColor = TextColorInv;
-      TachBg.box.alignment = TextAnchor.MiddleLeft;
+      TachBg.box.alignment = TextAnchor.MiddleRight;
       TachBg.box.font = FontTach;
       TachBg.box.padding = new RectOffset(5, 5, 0, 5);
 
@@ -481,7 +481,7 @@ namespace KN_Core {
       TachGearBg.box.normal.textColor = TextColorInv;
       TachGearBg.box.alignment = TextAnchor.MiddleCenter;
       TachGearBg.box.font = FontGear;
-      TachGearBg.box.padding = new RectOffset(2, 0, 0, 8);
+      TachGearBg.box.padding = new RectOffset(1, 0, 0, 8);
 
       TachRedBg = ScriptableObject.CreateInstance<GUISkin>();
       TachRedBg.box.normal.background = texRedButtonA_;
