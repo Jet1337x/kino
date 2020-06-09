@@ -44,7 +44,7 @@ namespace KN_Core.Submodule {
 
     private const float OffsetTx = 50.0f;
     private const float OffsetTy = 45.0f;
-    private bool tachometerEnabled_ = true;
+    private bool tachometerEnabled_;
     private readonly Tachometer tachometer_;
 
     public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) {
@@ -69,6 +69,10 @@ namespace KN_Core.Submodule {
     public override void Update(int id) {
       bool sceneChanged = prevScene_ && !Core.IsInGarage || !prevScene_ && Core.IsInGarage;
       prevScene_ = Core.IsInGarage;
+
+      if (sceneChanged) {
+        tachometerEnabled_ = false;
+      }
 
       if (BackFireEnabled) {
         int players = NetworkController.InstanceGame?.Players.Count ?? 0;
@@ -106,8 +110,6 @@ namespace KN_Core.Submodule {
         }
 #endif
       }
-
-      tachometer_.Update();
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
@@ -116,7 +118,7 @@ namespace KN_Core.Submodule {
 
       x += Gui.OffsetSmall;
 
-      if (gui.Button(ref x, ref y, width, height, "MINIMALISTIC HUD", tachometerEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachometerEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         tachometerEnabled_ = !tachometerEnabled_;
       }
 
@@ -163,7 +165,7 @@ namespace KN_Core.Submodule {
         return;
       }
 
-      tachometer_.OnGUI(Screen.width- (OffsetTx + 290.0f), Screen.height- (OffsetTy + 45.0f));
+      tachometer_.OnGUI(Screen.width - (OffsetTx + 290.0f), Screen.height - (OffsetTy + 45.0f));
     }
   }
 }

@@ -21,8 +21,6 @@ namespace KN_Core {
       tachColorAlpha_ = new Color32(0xff, 0xff, 0xff, 0xab);
     }
 
-    public void Update() { }
-
     public void OnGUI(float x, float y) {
       if (core_.PlayerCar.CarX == null) {
         return;
