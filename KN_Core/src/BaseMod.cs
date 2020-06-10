@@ -30,5 +30,9 @@ namespace KN_Core {
     public virtual bool LockCameraRotation() {
       return false;
     }
+
+    public virtual bool WantsHideUi() {
+      return false;
+    }
   }
 }

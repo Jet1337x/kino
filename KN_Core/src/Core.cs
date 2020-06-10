@@ -185,7 +185,7 @@ namespace KN_Core {
     }
 
     public void OnGUI() {
-      settings_.GuiTachometer();
+      settings_.GuiTachometer(mods_[selectedTab_].WantsHideUi());
 
       if (!IsGuiEnabled) {
         return;
@@ -249,11 +249,7 @@ namespace KN_Core {
     }
 
     public void ToggleCxUi(bool active) {
-      foreach (var canvas in FindObjectsOfType<Canvas>()) {
-        if (canvas.name == KN_Core.Config.CxUiCanvasName) {
-          canvas.enabled = active;
-        }
-      }
+      KeepAliveManager.SetUIVisible(active);
     }
 
     //load texture from KN_Core.dll

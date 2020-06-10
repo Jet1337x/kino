@@ -56,6 +56,10 @@ namespace KN_Cinematic {
       speedMultiplier_ = Core.ModConfig.Get<float>("freecam_speed_multiplier");
     }
 
+    public override bool WantsHideUi() {
+      return CinematicEnabled;
+    }
+
     public override void ResetState() {
       ResetPickers();
       ActiveCamera?.ResetState();

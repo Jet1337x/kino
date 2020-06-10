@@ -179,8 +179,8 @@ namespace KN_Core.Submodule {
       GUI.enabled = guiEnabled;
     }
 
-    public void GuiTachometer() {
-      if (!tachometerEnabled_) {
+    public void GuiTachometer(bool hideUi) {
+      if (!tachometerEnabled_ || hideUi) {
         return;
       }
 
