@@ -8,7 +8,7 @@ namespace KN_Core {
     private const float RpmWidth = 82.0f;
     private const float SpdWidth = 73.0f;
     private const float GearWidth = 35.0f;
-    private const float GearHeight = 45.0f;
+    private const float GearHeight = 47.0f;
 
     private readonly Core core_;
     private readonly Color tachColor_;
@@ -37,6 +37,7 @@ namespace KN_Core {
       }
 
       const float maxRpm = 10000.0f;
+      const float outlineWidth = 4.0f;
 
       int gear = core_.PlayerCar.CarX.gear;
       float rpm = core_.PlayerCar.CarX.rpm;
@@ -49,20 +50,38 @@ namespace KN_Core {
       float redWidth = (maxRpm - limiter) / maxRpm * Width;
 
       string gearStr = gear == -1 ? "R" : gear == 0 ? "N" : $"{gear:D}";
+      DrawBox(x, y, GearWidth + outlineWidth, GearHeight + outlineWidth, Skin.TachOutline, tachColorAlpha_);
+      x += outlineWidth / 2.0f;
+      y += outlineWidth / 2.0f;
       DrawBox(x, y, GearWidth, GearHeight, Skin.TachGearBg, tachColorAlpha_, gearStr);
-      x += GearWidth + Gui.OffsetSmall;
+      x -= outlineWidth / 2.0f;
+      y -= outlineWidth / 2.0f;
+      x += GearWidth + Gui.OffsetSmall + outlineWidth / 2.0f;
 
+      DrawBox(x, y, RpmWidth + outlineWidth, Gui.Height + outlineWidth, Skin.TachOutline, tachColorAlpha_);
+      x += outlineWidth / 2.0f;
+      y += outlineWidth / 2.0f;
       DrawBox(x, y, RpmWidth, Gui.Height, Skin.TachBg, tachColorAlpha_, $"{(int) rpm:D} RPM");
-      x += RpmWidth + Gui.OffsetSmall;
+      x -= outlineWidth / 2.0f;
+      y -= outlineWidth / 2.0f;
+      x += RpmWidth + Gui.OffsetSmall + outlineWidth / 2.0f;
 
       bool speedKmh = globals_?.speedKmh ?? true;
       float spd = core_.PlayerCar.CarX.speedMPH;
       float speed = speedKmh ? spd * 1.60934f : spd;
       string units = speedKmh ? "KMH" : "MPH";
+      DrawBox(x, y, SpdWidth + outlineWidth, Gui.Height + outlineWidth, Skin.TachOutline, tachColorAlpha_);
+      x += outlineWidth / 2.0f;
+      y += outlineWidth / 2.0f;
       DrawBox(x, y, SpdWidth, Gui.Height, Skin.TachBg, tachColorAlpha_, $"{(int) speed:D} {units}");
-      y += Gui.Height + Gui.OffsetSmall;
-      x -= RpmWidth + Gui.OffsetSmall;
+      x -= outlineWidth / 2.0f;
+      y -= outlineWidth / 2.0f;
+      y += Gui.Height + Gui.OffsetSmall + outlineWidth / 2.0f;
+      x -= RpmWidth + Gui.OffsetSmall + outlineWidth / 2.0f;
 
+      DrawBox(x, y, boxWidth + redWidth + outlineWidth, Gui.Height + outlineWidth, Skin.TachOutline, tachColorAlpha_);
+      x += outlineWidth / 2.0f;
+      y += outlineWidth / 2.0f;
       DrawBox(x, y, boxWidth, Gui.Height, Skin.TachBg, tachColorAlpha_);
       x += boxWidth;
       DrawBox(x, y, redWidth, Gui.Height, Skin.TachRedBg, tachColorAlpha_);

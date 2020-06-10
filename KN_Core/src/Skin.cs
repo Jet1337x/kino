@@ -13,11 +13,13 @@ namespace KN_Core {
     private static Texture2D texOutlineDark_;
 
     private static Texture2D texTachBg_;
+    private static Texture2D texTachOutline_;
     public static GUISkin TachBg;
     public static GUISkin TachRedBg;
     public static GUISkin TachGearBg;
     public static GUISkin TachFill;
     public static GUISkin TachFillRed;
+    public static GUISkin TachOutline;
 
     public static GUISkin IconCam;
     public static GUISkin IconCamActive;
@@ -491,6 +493,15 @@ namespace KN_Core {
 
       TachFillRed = ScriptableObject.CreateInstance<GUISkin>();
       TachFillRed.box.normal.background = texRedButtonH_;
+
+      texTachOutline_ = Core.LoadCoreTexture("TachoOutline.png");
+      texTachOutline_.filterMode = FilterMode.Point;
+      TachOutline = ScriptableObject.CreateInstance<GUISkin>();
+      TachOutline.box.normal.background = texTachOutline_;
+      TachOutline.box.normal.textColor = TextColor;
+      TachOutline.box.alignment = TextAnchor.UpperCenter;
+      TachOutline.box.font = FontLight;
+      TachOutline.box.border = new RectOffset(2, 2, 2, 2);
     }
   }
 }
