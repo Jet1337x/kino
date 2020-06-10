@@ -45,7 +45,10 @@ namespace KN_Core.Submodule {
     private const float OffsetTx = 50.0f;
     private const float OffsetTy = 45.0f;
     private bool tachometerEnabled_;
+    private bool tachometerEnabledSettings_;
     private readonly Tachometer tachometer_;
+
+    private Canvas rootCanvas_;
 
     public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) {
       exhaust_ = new Exhaust(core);
@@ -56,6 +59,7 @@ namespace KN_Core.Submodule {
       RPoints = Core.ModConfig.Get<bool>("r_points");
       HideNames = Core.ModConfig.Get<bool>("hide_names");
       BackFireEnabled = Core.ModConfig.Get<bool>("custom_backfire");
+      tachometerEnabledSettings_ = Core.ModConfig.Get<bool>("custom_tach");
       exhaust_.OnStart();
     }
 
@@ -63,6 +67,7 @@ namespace KN_Core.Submodule {
       Core.ModConfig.Set("r_points", RPoints);
       Core.ModConfig.Set("hide_names", HideNames);
       Core.ModConfig.Set("custom_backfire", BackFireEnabled);
+      Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
       exhaust_.OnStop();
     }
 
@@ -72,6 +77,17 @@ namespace KN_Core.Submodule {
 
       if (sceneChanged) {
         tachometerEnabled_ = false;
+        rootCanvas_ = null;
+      }
+
+      if (rootCanvas_ == null) {
+        var cn = Object.FindObjectsOfType<Canvas>();
+        foreach (var c in cn) {
+          if (c.name == Config.CxUiCanvasName) {
+            rootCanvas_ = c;
+            tachometerEnabled_ = !c.enabled;
+          }
+        }
       }
 
       if (BackFireEnabled) {
@@ -110,6 +126,9 @@ namespace KN_Core.Submodule {
         }
 #endif
       }
+      if (tachometerEnabledSettings_) {
+        tachometerEnabled_ = !rootCanvas_.enabled;
+      }
       tachometer_.Update();
     }
 
@@ -119,9 +138,11 @@ namespace KN_Core.Submodule {
 
       x += Gui.OffsetSmall;
 
-      if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachometerEnabled_ ? Skin.ButtonActive : Skin.Button)) {
-        if (!Core.IsInGarage) {
-          tachometerEnabled_ = !tachometerEnabled_;
+      if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachometerEnabledSettings_ ? Skin.ButtonActive : Skin.Button)) {
+        tachometerEnabledSettings_ = !tachometerEnabledSettings_;
+        Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
+        if (!tachometerEnabledSettings_) {
+          tachometerEnabled_ = false;
         }
       }
 
