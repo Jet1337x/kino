@@ -31,19 +31,16 @@ namespace KN_Lights {
 
     private bool hlTabActive_ = true;
     private bool wlTabActive_;
-    private bool slTabActive_;
 
     private float carLightsDiscard_;
 
     private readonly WorldLights worldLights_;
-    private readonly StaticLights staticLights_;
 
     private readonly ColorPicker colorPicker_;
     private readonly CarPicker carPicker_;
 
     public Lights(Core core) : base(core, "LIGHTS", 2) {
       worldLights_ = new WorldLights(core);
-      staticLights_ = new StaticLights(core);
 
       colorPicker_ = new ColorPicker();
       carPicker_ = new CarPicker(core);
@@ -77,7 +74,6 @@ namespace KN_Lights {
       lightsConfig_ = LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights) ? new LightsConfig(lights) : new LightsConfig();
 
       worldLights_.OnStart();
-      staticLights_.OnStart();
     }
 
     public override void OnStop() {
@@ -89,7 +85,6 @@ namespace KN_Lights {
 #endif
 
       worldLights_.OnStop();
-      staticLights_.OnStop();
     }
 
     public override void Update(int id) {
@@ -102,7 +97,6 @@ namespace KN_Lights {
       ToggleOwnLights();
 
       worldLights_.Update();
-      staticLights_.Update();
 
       if (id != Id) {
         return;
@@ -165,9 +159,6 @@ namespace KN_Lights {
       else if (wlTabActive_) {
         worldLights_.OnGUI(gui, ref x, ref y);
       }
-      else if (slTabActive_) {
-        staticLights_.OnGUI(gui, ref x, ref y);
-      }
     }
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
@@ -188,7 +179,6 @@ namespace KN_Lights {
       if (gui.ImageButton(ref x, ref y, hlTabActive_ ? Skin.IconHeadlightsActive : Skin.IconHeadlights)) {
         hlTabActive_ = true;
         wlTabActive_ = false;
-        slTabActive_ = false;
         carPicker_.Reset();
         colorPicker_.Reset();
       }
@@ -196,15 +186,6 @@ namespace KN_Lights {
       if (gui.ImageButton(ref x, ref y, wlTabActive_ ? Skin.IconSunActive : Skin.IconSun)) {
         hlTabActive_ = false;
         wlTabActive_ = true;
-        slTabActive_ = false;
-        carPicker_.Reset();
-        colorPicker_.Reset();
-      }
-
-      if (gui.ImageButton(ref x, ref y, slTabActive_ ? Skin.IconProjectorActive : Skin.IconProjector)) {
-        hlTabActive_ = false;
-        wlTabActive_ = false;
-        slTabActive_ = true;
         carPicker_.Reset();
         colorPicker_.Reset();
       }
