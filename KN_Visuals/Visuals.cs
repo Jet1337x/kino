@@ -88,7 +88,7 @@ namespace KN_Visuals {
 
     private void GuiLivery(Gui gui, ref float x, ref float y, float width, float height) {
       string text = liveryCamEnabled_ ? "DISABLE" : "ENABLE";
-      if (gui.Button(ref x, ref y, width, height, text, liveryCamEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, $"{text} ZOOM", liveryCamEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         liveryCamEnabled_ = !liveryCamEnabled_;
       }
 
