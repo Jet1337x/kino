@@ -59,6 +59,7 @@ namespace KN_Lights {
     public override void ResetPickers() {
       colorPicker_.Reset();
       carPicker_.Reset();
+      staticLights_.ResetPickers();
     }
 
     public override void OnStart() {
@@ -179,6 +180,8 @@ namespace KN_Lights {
         }
         colorPicker_.OnGui(gui, ref x, ref y);
       }
+
+      staticLights_.GuiPickers(gui, ref x, ref y);
     }
 
     private void GuiSideBar(Gui gui, ref float x, ref float y) {
@@ -191,6 +194,7 @@ namespace KN_Lights {
         slTabActive_ = false;
         carPicker_.Reset();
         colorPicker_.Reset();
+        staticLights_.ResetPickers();
       }
 
       if (gui.ImageButton(ref x, ref y, wlTabActive_ ? Skin.IconSunActive : Skin.IconSun)) {
@@ -199,6 +203,7 @@ namespace KN_Lights {
         slTabActive_ = false;
         carPicker_.Reset();
         colorPicker_.Reset();
+        staticLights_.ResetPickers();
       }
 
       if (gui.ImageButton(ref x, ref y, slTabActive_ ? Skin.IconProjectorActive : Skin.IconProjector)) {
@@ -207,6 +212,7 @@ namespace KN_Lights {
         slTabActive_ = true;
         carPicker_.Reset();
         colorPicker_.Reset();
+        staticLights_.ResetPickers();
       }
 
       x += Gui.IconSize;
