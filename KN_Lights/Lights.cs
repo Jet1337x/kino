@@ -246,6 +246,13 @@ namespace KN_Lights {
         }
       }
 
+      bool hlIllumination = activeLights_?.IsLightsEnabledIl ?? false;
+      if (gui.Button(ref x, ref y, width, height, "HEADLIGHTS ILLUMINATION", hlIllumination ? Skin.ButtonActive : Skin.Button)) {
+        if (activeLights_ != null) {
+          activeLights_.IsLightsEnabledIl = !activeLights_.IsLightsEnabledIl;
+        }
+      }
+
       if (gui.SliderH(ref x, ref y, width, ref carLightsDiscard_, 50.0f, 500.0f, $"HIDE LIGHTS AFTER: {carLightsDiscard_:F1}")) {
         Core.ModConfig.Set("cl_discard_distance", carLightsDiscard_);
       }

@@ -10,6 +10,8 @@ namespace KN_Lights {
 
     public GameObject HeadLightLeft { get; private set; }
     public GameObject HeadLightRight { get; private set; }
+    public GameObject HeadLightLeftIl { get; private set; }
+    public GameObject HeadLightRightIl { get; private set; }
 
     public GameObject TailLightLeft { get; private set; }
     public GameObject TailLightRight { get; private set; }
@@ -44,6 +46,20 @@ namespace KN_Lights {
     public bool IsNetworkCar { get; private set; }
     public string UserName { get; private set; }
 
+    private bool lightsEnabledIl_;
+    public bool IsLightsEnabledIl {
+      get => lightsEnabledIl_;
+      set {
+        lightsEnabledIl_ = value;
+        if (HeadLightLeftIl != null) {
+          HeadLightLeftIl.SetActive(IsHeadLightLeftEnabled && value);
+        }
+        if (HeadLightRightIl != null) {
+          HeadLightRightIl.SetActive(IsHeadLightRightEnabled && value);
+        }
+      }
+    }
+
     private bool lightEnabled_ = true;
     public bool IsLightsEnabled {
       get => lightEnabled_;
@@ -52,12 +68,16 @@ namespace KN_Lights {
         if (lightEnabled_) {
           HeadLightLeft.SetActive(IsHeadLightLeftEnabled);
           HeadLightRight.SetActive(IsHeadLightRightEnabled);
+          HeadLightLeftIl.SetActive(IsLightsEnabledIl);
+          HeadLightRightIl.SetActive(IsLightsEnabledIl);
           TailLightLeft.SetActive(IsTailLightLeftEnabled);
           TailLightRight.SetActive(IsTailLightRightEnabled);
         }
         else {
           HeadLightLeft.SetActive(false);
           HeadLightRight.SetActive(false);
+          HeadLightLeftIl.SetActive(false);
+          HeadLightRightIl.SetActive(false);
           TailLightLeft.SetActive(false);
           TailLightRight.SetActive(false);
         }
@@ -72,6 +92,16 @@ namespace KN_Lights {
         if (GetHeadLights(out var l, out var r)) {
           l.color = hlColor_;
           r.color = hlColor_;
+        }
+        if (IsLightsEnabledIl) {
+          var il = HeadLightLeftIl.GetComponent<Light>();
+          var ir = HeadLightRightIl.GetComponent<Light>();
+          if (il != null) {
+            il.color = hlColor_;
+          }
+          if (ir != null) {
+            ir.color = hlColor_;
+          }
         }
       }
     }
@@ -170,6 +200,9 @@ namespace KN_Lights {
         if (HeadLightLeft != null) {
           HeadLightLeft.SetActive(hlLEnabled_);
         }
+        if (HeadLightLeftIl != null && IsLightsEnabledIl) {
+          HeadLightLeftIl.SetActive(value);
+        }
       }
     }
 
@@ -180,6 +213,9 @@ namespace KN_Lights {
         hlREnabled_ = value;
         if (HeadLightRight != null) {
           HeadLightRight.SetActive(hlREnabled_);
+        }
+        if (HeadLightRightIl != null && IsLightsEnabledIl) {
+          HeadLightRightIl.SetActive(value);
         }
       }
     }
@@ -247,6 +283,8 @@ namespace KN_Lights {
     public void Dispose() {
       Object.Destroy(HeadLightLeft);
       Object.Destroy(HeadLightRight);
+      Object.Destroy(HeadLightLeftIl);
+      Object.Destroy(HeadLightRightIl);
       Object.Destroy(TailLightLeft);
       Object.Destroy(TailLightRight);
 
@@ -282,6 +320,7 @@ namespace KN_Lights {
       CarId = car.Id;
       IsNetworkCar = car.IsNetworkCar;
       UserName = car.Name;
+      lightsEnabledIl_ = true;
 
       var position = car.Transform.position;
       var rotation = car.Transform.rotation;
@@ -298,6 +337,8 @@ namespace KN_Lights {
       HeadLightLeft.transform.position = position;
       HeadLightLeft.transform.rotation = headRotation;
       HeadLightLeft.transform.localPosition += hlOffsetL_;
+      HeadLightLeftIl.transform.parent = HeadLightLeft.transform;
+      HeadLightLeftIl.transform.position = HeadLightLeft.transform.position;
       hlLCapsule_.transform.parent = HeadLightLeft.transform;
       hlLCapsule_.transform.position = HeadLightLeft.transform.position;
       hlLCapsule_.transform.rotation = headRotationD;
@@ -307,6 +348,8 @@ namespace KN_Lights {
       HeadLightRight.transform.position = position;
       HeadLightRight.transform.rotation = headRotation;
       HeadLightRight.transform.localPosition += hlOffset_;
+      HeadLightRightIl.transform.parent = HeadLightRight.transform;
+      HeadLightRightIl.transform.position = HeadLightRight.transform.position;
       hlRCapsule_.transform.parent = HeadLightRight.transform;
       hlRCapsule_.transform.position = HeadLightRight.transform.position;
       hlRCapsule_.transform.rotation = headRotationD;
@@ -360,6 +403,20 @@ namespace KN_Lights {
       HeadLightRight = new GameObject();
       HeadLightRight.AddComponent<Light>();
       HeadLightRight.SetActive(IsHeadLightRightEnabled);
+
+      if (HeadLightLeftIl != null) {
+        Object.Destroy(HeadLightLeftIl);
+      }
+      HeadLightLeftIl = new GameObject();
+      HeadLightLeftIl.AddComponent<Light>();
+      HeadLightLeftIl.SetActive(IsLightsEnabledIl);
+
+      if (HeadLightRightIl != null) {
+        Object.Destroy(HeadLightRightIl);
+      }
+      HeadLightRightIl = new GameObject();
+      HeadLightRightIl.AddComponent<Light>();
+      HeadLightRightIl.SetActive(IsLightsEnabledIl);
 
       if (TailLightLeft != null) {
         Object.Destroy(TailLightLeft);
@@ -420,10 +477,26 @@ namespace KN_Lights {
       MakeHeadLight(ref hl);
       MakeHeadLight(ref hr);
 
+      var il = HeadLightLeftIl.GetComponent<Light>();
+      var ir = HeadLightRightIl.GetComponent<Light>();
+      MakeIllumination(ref il, ref ir);
+
       var tl = TailLightLeft.GetComponent<Light>();
       var tr = TailLightRight.GetComponent<Light>();
       MakeTailLight(ref tl);
       MakeTailLight(ref tr);
+    }
+
+    private void MakeIllumination(ref Light l, ref Light r) {
+      l.type = LightType.Point;
+      l.color = hlColor_;
+      l.range = 1.5f;
+      l.intensity = 5.0f;
+
+      r.type = LightType.Point;
+      r.color = hlColor_;
+      r.range = 1.5f;
+      r.intensity = 5.0f;
     }
 
     private void MakeHeadLight(ref Light light) {
@@ -461,7 +534,7 @@ namespace KN_Lights {
     private void CarUpdate(Car car) {
       if (!TFCar.IsNull(Car)) {
         //todo(trbflxr): maybe it should be optional?
-        bool enabled = IsTailLightLeftEnabled || IsTailLightRightEnabled;
+        bool enabled = IsLightsEnabled && (IsTailLightLeftEnabled || IsTailLightRightEnabled);
         Car.Base.carModel.SetLightsState(enabled, CarLightGroup.Brake);
       }
     }
@@ -477,6 +550,7 @@ namespace KN_Lights {
       writer.Write(hlAngle_);
       writer.Write(tlBrightness_);
       writer.Write(tlAngle_);
+      writer.Write(lightsEnabledIl_);
 
       writer.Write(hlLEnabled_);
       writer.Write(hlREnabled_);
@@ -487,7 +561,7 @@ namespace KN_Lights {
       WriteVec3(writer, TailLightOffset);
     }
 
-    public void Deserialize(BinaryReader reader) {
+    public void Deserialize(BinaryReader reader, int version) {
       CarId = reader.ReadInt32();
       IsNetworkCar = reader.ReadBoolean();
       UserName = reader.ReadString();
@@ -498,6 +572,7 @@ namespace KN_Lights {
       hlAngle_ = reader.ReadSingle();
       tlBrightness_ = reader.ReadSingle();
       tlAngle_ = reader.ReadSingle();
+      lightsEnabledIl_ = version != Config.Version || reader.ReadBoolean();
 
       hlLEnabled_ = reader.ReadBoolean();
       hlREnabled_ = reader.ReadBoolean();

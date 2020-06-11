@@ -13,7 +13,7 @@ namespace KN_Core {
   }
 
   public class Config {
-    public const int Version = 100;
+    public const int Version = 101;
 
     //cx stuff
     public const string CxUiCanvasName = "Root";

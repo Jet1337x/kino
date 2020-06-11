@@ -32,11 +32,11 @@ namespace KN_Lights {
       try {
         lights = new List<CarLights>();
         using (var reader = new BinaryReader(stream)) {
-          reader.ReadInt32(); //unused
+          int version = reader.ReadInt32();
           int size = reader.ReadInt32();
           for (int i = 0; i < size; i++) {
             var cl = new CarLights();
-            cl.Deserialize(reader);
+            cl.Deserialize(reader, version);
             lights.Add(cl);
           }
         }
