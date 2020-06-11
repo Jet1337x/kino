@@ -13,7 +13,7 @@ namespace KN_Lights {
     private Vector2 clListScroll_;
     private int lightId_;
     private StaticLightData activeLight_;
-    private List<StaticLightData> lights_;
+    private readonly List<StaticLightData> lights_;
 
     public StaticLights(Core core) {
       core_ = core;
@@ -141,25 +141,6 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref offset.z, 0.0f, 3.0f, $"Z: {offset.z:F}")) {
         if (activeLight_ != null) {
           activeLight_.Position = offset;
-        }
-      }
-
-      var rotation = activeLight_?.Rotation ?? Vector3.zero;
-      if (gui.SliderH(ref x, ref y, width, ref rotation.x, 0.0f, 360.0f, $"PITCH: {rotation.x:F}")) {
-        if (activeLight_ != null) {
-          activeLight_.Rotation = rotation;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref rotation.y, 0.0f, 360.0f, $"YAW: {rotation.y:F}")) {
-        if (activeLight_ != null) {
-          activeLight_.Rotation = rotation;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref rotation.z, 0.0f, 360.0f, $"ROLL: {rotation.z:F}")) {
-        if (activeLight_ != null) {
-          activeLight_.Rotation = rotation;
         }
       }
 

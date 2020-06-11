@@ -101,18 +101,6 @@ namespace KN_Lights {
       }
     }
 
-    public Vector3 Rotation {
-      get => Light.transform.eulerAngles;
-      set {
-        if (Parent != null) {
-          Light.transform.localEulerAngles = value;
-        }
-        else {
-          Light.transform.eulerAngles = value;
-        }
-      }
-    }
-
     public Transform Parent { get; private set; }
 
     private static readonly int BaseColorMap = Shader.PropertyToID("_BaseColorMap");
