@@ -289,7 +289,9 @@ namespace KN_Lights {
       Object.Destroy(TailLightRight);
 
       if (!TFCar.IsNull(Car)) {
-        Car.CarX.OnUpdateWheelsEvent -= CarUpdate;
+        if (Singletone<Simulator>.instance) {
+          Singletone<Simulator>.instance.OnUpdateWheelsEvent -= CarUpdate;
+        }
       }
     }
 
@@ -376,7 +378,9 @@ namespace KN_Lights {
       MakeLights();
 
       cxCar_ = Car.Base.GetComponent<CARXCar>();
-      Car.CarX.OnUpdateWheelsEvent += CarUpdate;
+      if (Singletone<Simulator>.instance) {
+        Singletone<Simulator>.instance.OnUpdateWheelsEvent += CarUpdate;
+      }
     }
 
     public void LateUpdate() {
@@ -531,7 +535,7 @@ namespace KN_Lights {
       return left != null && right != null;
     }
 
-    private void CarUpdate(Car car) {
+    private void CarUpdate() {
       if (!TFCar.IsNull(Car)) {
         //todo(trbflxr): maybe it should be optional?
         bool enabled = IsLightsEnabled && (IsTailLightLeftEnabled || IsTailLightRightEnabled);
