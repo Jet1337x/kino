@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using KN_Core;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace KN_Lights {
   public class WorldLights {
     private readonly Core core_;
 
-    private GameObject map_;
+    private List<GameObject> map_;
     private Volume volume_;
     private HDRISky sky_;
 
@@ -43,6 +44,7 @@ namespace KN_Lights {
       allData_ = new List<WorldLightsData>();
       data_ = new WorldLightsData();
       defaultData_ = new WorldLightsData();
+      map_ = new List<GameObject>();
     }
 
     public void OnStart() {
@@ -72,6 +74,11 @@ namespace KN_Lights {
         staticSkyBeh_ = null;
         fogEnabled_ = false;
         data_ = defaultData_;
+      }
+
+      bool resetMap = map_.Any(m => m == null) || TFCar.IsNull(core_.PlayerCar);
+      if (resetMap) {
+        map_.Clear();
       }
     }
 
@@ -165,59 +172,64 @@ namespace KN_Lights {
     }
 
     private void UpdateMap() {
-      if (map_ == null) {
+      if (map_.Count == 0) {
         switch (SceneManager.GetActiveScene().name) {
           case "Silverstone":
-            map_ = GameObject.Find("silverstone");
+            FindMap("silverstone");
             break;
           case "Bathurst":
-            map_ = GameObject.Find("bathurst");
+            FindMap("bathurst");
             break;
           case "Airfield":
-            map_ = GameObject.Find("airfield");
+            FindMap("airfield");
             break;
           case "Fiorano2":
-            map_ = GameObject.Find("fiorano");
+            FindMap("fiorano");
             break;
           case "Parking":
-            map_ = GameObject.Find("parking");
+            FindMap("parking");
             break;
           case "Japan":
-            map_ = GameObject.Find("japan");
+            FindMap("japan");
             break;
           case "Winterfell":
-            map_ = GameObject.Find("winterfell");
+            FindMap("winterfell");
             break;
           case "LosAngeles":
-            map_ = GameObject.Find("losAngeles");
+            FindMap("losAngeles");
             break;
           case "Ebisu":
-            map_ = GameObject.Find("ebisu");
+            FindMap("ebisu");
             break;
           case "Petersburg":
-            map_ = GameObject.Find("petersburg");
+            FindMap("petersburg");
             break;
           case "RedRing":
-            map_ = GameObject.Find("redring");
+            FindMap("redring");
             break;
           case "RedRock":
-            map_ = GameObject.Find("redrock");
+            FindMap("redrock");
             break;
           case "Irwindale":
-            map_ = GameObject.Find("irwindale");
+            FindMap("irwindale");
             break;
           case "RedRing_winter":
-            map_ = GameObject.Find("winterfell");
+            FindMap("winterfell");
             break;
           default: // Fiorano2
-            map_ = GameObject.Find("fiorano");
+            FindMap("fiorano");
             break;
         }
 
-        if (map_ != null) {
-          volume_ = map_.GetComponent<Volume>();
-          volume_.profile.TryGet(out sky_);
-          volume_.profile.TryGet(out fog_);
+        if (map_.Count > 0) {
+          foreach (var m in map_) {
+            volume_ = m.GetComponent<Volume>();
+            if (volume_ != null) {
+              volume_.profile.TryGet(out sky_);
+              volume_.profile.TryGet(out fog_);
+              break;
+            }
+          }
         }
 
         defaultLoaded_ = false;
@@ -235,15 +247,17 @@ namespace KN_Lights {
         dataLoaded_ = false;
       }
 
-      if (staticSky_ == null && map_ != null) {
-        var components = map_.GetComponents<MonoBehaviour>();
-        if (components != null) {
-          foreach (var c in components) {
-            var type = c.GetType();
-            if (type.Name == "StaticLightingSky") {
-              staticSkyBeh_ = c;
-              staticSky_ = type.GetField("m_SkySettings", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(c) as SkySettings;
-              break;
+      if (staticSky_ == null && map_.Count > 0) {
+        foreach (var m in map_) {
+          var components = m.GetComponents<MonoBehaviour>();
+          if (components != null) {
+            foreach (var c in components) {
+              var type = c.GetType();
+              if (type.Name == "StaticLightingSky") {
+                staticSkyBeh_ = c;
+                staticSky_ = type.GetField("m_SkySettings", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(c) as SkySettings;
+                break;
+              }
             }
           }
         }
@@ -252,8 +266,8 @@ namespace KN_Lights {
         dataLoaded_ = false;
       }
 
-      if (map_ != null) {
-        SelectMap(map_.name);
+      if (map_.Count > 0 && !TFCar.IsNull(core_.PlayerCar)) {
+        SelectMap(map_[0].name);
       }
       SaveDefault();
     }
@@ -353,6 +367,19 @@ namespace KN_Lights {
       fogEnabled_ = false;
 
       dataLoaded_ = true;
+    }
+
+    private void FindMap(string name) {
+      map_.Clear();
+
+      var tempList = Resources.FindObjectsOfTypeAll(typeof(GameObject));
+      foreach (var o in tempList) {
+        if (o is GameObject go) {
+          if (go.name == name) {
+            map_.Add(go);
+          }
+        }
+      }
     }
   }
 }
