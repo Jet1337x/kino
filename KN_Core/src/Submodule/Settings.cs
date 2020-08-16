@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using GameOverlay;
 using SyncMultiplayer;
 using UnityEngine;
 
@@ -50,9 +52,21 @@ namespace KN_Core.Submodule {
 
     private Canvas rootCanvas_;
 
+    private bool hideTimerStart_;
+    private bool hideForce_;
+    private float hideCrutchTimer_;
+    private int prevCars_;
+    private bool trashHidden_;
+    private readonly CarPicker carPicker_;
+    private bool hasNulls_;
+    private readonly List<TFCar> disabledCars_;
+
     public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) {
       exhaust_ = new Exhaust(core);
       tachometer_ = new Tachometer(core);
+
+      carPicker_ = new CarPicker(core);
+      disabledCars_ = new List<TFCar>(16);
     }
 
     public void Awake() {
@@ -60,6 +74,7 @@ namespace KN_Core.Submodule {
       HideNames = Core.ModConfig.Get<bool>("hide_names");
       BackFireEnabled = Core.ModConfig.Get<bool>("custom_backfire");
       tachometerEnabledSettings_ = Core.ModConfig.Get<bool>("custom_tach");
+      trashHidden_ = Core.ModConfig.Get<bool>("trash_autohide");
       exhaust_.OnStart();
     }
 
@@ -68,6 +83,7 @@ namespace KN_Core.Submodule {
       Core.ModConfig.Set("hide_names", HideNames);
       Core.ModConfig.Set("custom_backfire", BackFireEnabled);
       Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
+      Core.ModConfig.Set("trash_autohide", trashHidden_);
       exhaust_.OnStop();
     }
 
@@ -130,10 +146,12 @@ namespace KN_Core.Submodule {
         tachometerEnabled_ = !rootCanvas_.enabled;
       }
       tachometer_.Update();
+
+      UpdateHiddenCars(sceneChanged);
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
-      const float width = Gui.Width * 1.4f;
+      const float width = Gui.Width * 2.0f;
       const float height = Gui.Height;
 
       x += Gui.OffsetSmall;
@@ -176,6 +194,16 @@ namespace KN_Core.Submodule {
       if (BackFireEnabled) {
         exhaust_.OnGUI(gui, ref x, ref y, width);
       }
+
+      if (gui.Button(ref x, ref y, width, height, "CONSOLE TRASH AUTOHIDE", trashHidden_ ? Skin.ButtonActive : Skin.Button)) {
+        trashHidden_ = !trashHidden_;
+        hideForce_ = trashHidden_;
+
+        if (!trashHidden_) {
+          disabledCars_.Clear();
+        }
+      }
+
       GUI.enabled = guiEnabled;
     }
 
@@ -185,6 +213,50 @@ namespace KN_Core.Submodule {
       }
 
       tachometer_.OnGUI(Screen.width - (OffsetTx + 290.0f), Screen.height - (OffsetTy + 45.0f));
+    }
+
+    private void UpdateHiddenCars(bool sceneChanged) {
+      if (trashHidden_) {
+        int players = NetworkController.InstanceGame?.Players.Count ?? 0;
+        if (prevCars_ != players || sceneChanged) {
+          hideTimerStart_ = true;
+        }
+        prevCars_ = players;
+
+        if (hideTimerStart_ || hideForce_) {
+          hideCrutchTimer_ += Time.deltaTime;
+          if (hideCrutchTimer_ > 5.0f || hideForce_) {
+            hideTimerStart_ = false;
+            hideCrutchTimer_ = 0.0f;
+            carPicker_.IsPicking = true;
+            carPicker_.IsPicking = false;
+            hideForce_ = false;
+            foreach (var car in carPicker_.Cars) {
+              if (car != Core.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
+                if (!disabledCars_.Contains(car)) {
+                  disabledCars_.Add(car);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      foreach (var car in disabledCars_) {
+        if (!TFCar.IsNull(car)) {
+          var pos = car.CxTransform.position;
+          pos.y += 1000.0f;
+          car.CxTransform.position = pos;
+        }
+        else {
+          hasNulls_ = true;
+        }
+      }
+
+      if (hasNulls_) {
+        disabledCars_.RemoveAll(TFCar.IsNull);
+        hasNulls_ = false;
+      }
     }
   }
 }
