@@ -83,6 +83,11 @@ namespace KN_Core {
     }
 
     public void AddMod(BaseMod mod) {
+      //disabled for now
+      if (mod.Name == "CINEMATIC") {
+        return;
+      }
+
       mods_.Add(mod);
       mods_.Sort((m0, m1) => m0.Id.CompareTo(m1.Id));
 
