@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using KN_Core;
+using SyncMultiplayer;
 using UnityEngine;
 
 namespace KN_Lights {
@@ -33,6 +34,10 @@ namespace KN_Lights {
     private bool wlTabActive_;
 
     private float carLightsDiscard_;
+
+    private bool prevScene_;
+    private int carsCount_;
+    private bool autoAddLights_;
 
     private readonly WorldLights worldLights_;
 
@@ -117,29 +122,12 @@ namespace KN_Lights {
           activeLights_.HeadLightsColor = colorPicker_.PickedColor;
         }
       }
+
+      AutoAddLights();
     }
 
     public override void LateUpdate(int id) {
-      foreach (var cl in carLights_) {
-        if (TFCar.IsNull(cl.Car)) {
-          carLightsToRemove_.Add(cl);
-          continue;
-        }
-        cl.LateUpdate();
-      }
-
-      if (carLightsToRemove_.Count > 0) {
-        foreach (var cl in carLightsToRemove_) {
-          if (activeLights_ == cl) {
-            activeLights_ = null;
-          }
-          if (ownLights_ == cl) {
-            ownLights_ = null;
-          }
-          carLights_.Remove(cl);
-        }
-        carLightsToRemove_.Clear();
-      }
+      RemoveAllNullLights();
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
@@ -398,15 +386,8 @@ namespace KN_Lights {
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !Core.IsInGarage;
 
-      if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO EVERYONE", Skin.Button)) {
-        carPicker_.IsPicking = true;
-        foreach (var car in carPicker_.Cars) {
-          EnableLightsOn(car);
-        }
-        foreach (var ghost in carPicker_.Ghosts) {
-          EnableLightsOn(ghost);
-        }
-        carPicker_.IsPicking = false;
+      if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO EVERYONE", autoAddLights_ ? Skin.ButtonActive : Skin.Button)) {
+        autoAddLights_ = !autoAddLights_;
       }
 
       if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO", Skin.Button)) {
@@ -544,6 +525,59 @@ namespace KN_Lights {
             }
           }
         }
+      }
+    }
+
+    private void AutoAddLights() {
+      bool sceneChanged = prevScene_ && !Core.IsInGarage || !prevScene_ && Core.IsInGarage;
+      prevScene_ = Core.IsInGarage;
+
+      if ((sceneChanged || TFCar.IsNull(Core.PlayerCar)) && carLights_.Count > 0) {
+        autoAddLights_ = false;
+        carsCount_ = 0;
+        RemoveAllNullLights();
+      }
+
+      if (autoAddLights_) {
+        int players = NetworkController.InstanceGame?.Players.Count ?? 0;
+        if (carsCount_ != players || sceneChanged) {
+          carsCount_ = players;
+          AddLightsToEveryone();
+        }
+      }
+    }
+
+    private void AddLightsToEveryone() {
+      carPicker_.IsPicking = true;
+      foreach (var car in carPicker_.Cars) {
+        EnableLightsOn(car);
+      }
+      foreach (var ghost in carPicker_.Ghosts) {
+        EnableLightsOn(ghost);
+      }
+      carPicker_.IsPicking = false;
+    }
+
+    private void RemoveAllNullLights() {
+      foreach (var cl in carLights_) {
+        if (TFCar.IsNull(cl.Car)) {
+          carLightsToRemove_.Add(cl);
+          continue;
+        }
+        cl.LateUpdate();
+      }
+
+      if (carLightsToRemove_.Count > 0) {
+        foreach (var cl in carLightsToRemove_) {
+          if (activeLights_ == cl) {
+            activeLights_ = null;
+          }
+          if (ownLights_ == cl) {
+            ownLights_ = null;
+          }
+          carLights_.Remove(cl);
+        }
+        carLightsToRemove_.Clear();
       }
     }
 
