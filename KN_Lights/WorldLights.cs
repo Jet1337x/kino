@@ -216,6 +216,9 @@ namespace KN_Lights {
           case "RedRing_winter":
             FindMap("winterfell");
             break;
+          case "Atron":
+            FindMap("atron");
+            break;
           default: // Fiorano2
             FindMap("fiorano");
             break;
