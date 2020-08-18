@@ -5,8 +5,6 @@ using UnityEngine;
 
 namespace KN_Core.Submodule {
   public class Settings : BaseMod {
-    private const float JoinTime = 7.0f;
-
     private bool rPoints_;
     public bool RPoints {
       get => rPoints_;
@@ -52,6 +50,8 @@ namespace KN_Core.Submodule {
 
     private Canvas rootCanvas_;
 
+    private float joinDelay_;
+
     private bool hideTimerStart_;
     private bool hideForce_;
     private float hideCrutchTimer_;
@@ -75,6 +75,7 @@ namespace KN_Core.Submodule {
       BackFireEnabled = Core.ModConfig.Get<bool>("custom_backfire");
       tachometerEnabledSettings_ = Core.ModConfig.Get<bool>("custom_tach");
       trashHidden_ = Core.ModConfig.Get<bool>("trash_autohide");
+      joinDelay_ = Core.ModConfig.Get<float>("join_delay");
       exhaust_.OnStart();
     }
 
@@ -110,16 +111,15 @@ namespace KN_Core.Submodule {
         int players = NetworkController.InstanceGame?.Players.Count ?? 0;
         if (prevPlayersCount_ != players || sceneChanged) {
           timerStart_ = true;
+          crutchTimer_ = 0.0f;
         }
         prevPlayersCount_ = players;
 
-        if (timerStart_) {
-          crutchTimer_ += Time.deltaTime;
-          if (crutchTimer_ > JoinTime) {
-            exhaust_.Initialize();
-            timerStart_ = false;
-            crutchTimer_ = 0.0f;
-          }
+        crutchTimer_ += Time.deltaTime;
+
+        if (crutchTimer_ > joinDelay_ && timerStart_) {
+          exhaust_.Initialize();
+          timerStart_ = false;
         }
 
         if (!TFCar.IsNull(Core.PlayerCar)) {
@@ -220,22 +220,21 @@ namespace KN_Core.Submodule {
         int players = NetworkController.InstanceGame?.Players.Count ?? 0;
         if (prevCars_ != players || sceneChanged) {
           hideTimerStart_ = true;
+          hideCrutchTimer_ = 0.0f;
         }
         prevCars_ = players;
 
-        if (hideTimerStart_ || hideForce_) {
-          hideCrutchTimer_ += Time.deltaTime;
-          if (hideCrutchTimer_ > 5.0f || hideForce_) {
-            hideTimerStart_ = false;
-            hideCrutchTimer_ = 0.0f;
-            carPicker_.IsPicking = true;
-            carPicker_.IsPicking = false;
-            hideForce_ = false;
-            foreach (var car in carPicker_.Cars) {
-              if (car != Core.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
-                if (!disabledCars_.Contains(car)) {
-                  disabledCars_.Add(car);
-                }
+        hideCrutchTimer_ += Time.deltaTime;
+
+        if (hideTimerStart_ && hideCrutchTimer_ > joinDelay_ || hideForce_) {
+          hideTimerStart_ = false;
+          carPicker_.IsPicking = true;
+          carPicker_.IsPicking = false;
+          hideForce_ = false;
+          foreach (var car in carPicker_.Cars) {
+            if (car != Core.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
+              if (!disabledCars_.Contains(car)) {
+                disabledCars_.Add(car);
               }
             }
           }

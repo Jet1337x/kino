@@ -8,8 +8,6 @@ namespace KN_Lights {
   public class Lights : BaseMod {
     public static Texture2D LightMask;
 
-    private const float AutoAddLightsTime = 5.0f;
-
     private const string LightsConfigFile = "kn_lights.knl";
     private const string NwLightsConfigFile = "kn_nwlights.knl";
     private const string LightsConfigDefault = "kn_lights_default.knl";
@@ -42,6 +40,7 @@ namespace KN_Lights {
     private bool autoAddLights_;
     private float autoAddLightsTimer_;
     private bool autoAddLightsTimerStart_;
+    private float autoAddLightsDelay_;
 
     private readonly WorldLights worldLights_;
 
@@ -78,6 +77,7 @@ namespace KN_Lights {
 #endif
 
       carLightsDiscard_ = Core.ModConfig.Get<float>("cl_discard_distance");
+      autoAddLightsDelay_ = Core.ModConfig.Get<float>("join_delay");
 
       nwLightsConfig_ = LightsConfigSerializer.Deserialize(NwLightsConfigFile, out var nwLights) ? new NwLightsConfig(nwLights) : new NwLightsConfig();
       lightsConfig_ = LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights) ? new LightsConfig(lights) : new LightsConfig();
@@ -545,12 +545,12 @@ namespace KN_Lights {
       if (autoAddLights_) {
         int players = NetworkController.InstanceGame?.Players.Count ?? 0;
         if (carsCount_ != players || sceneChanged) {
-          carsCount_ = players;
           autoAddLightsTimer_ = 0.0f;
           autoAddLightsTimerStart_ = true;
         }
+        carsCount_ = players;
 
-        if (autoAddLightsTimerStart_ && autoAddLightsTimer_ >= AutoAddLightsTime) {
+        if (autoAddLightsTimerStart_ && autoAddLightsTimer_ >= autoAddLightsDelay_) {
           AddLightsToEveryone();
           autoAddLightsTimerStart_ = false;
         }
