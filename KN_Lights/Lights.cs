@@ -8,6 +8,8 @@ namespace KN_Lights {
   public class Lights : BaseMod {
     public static Texture2D LightMask;
 
+    private const float AutoAddLightsTime = 5.0f;
+
     private const string LightsConfigFile = "kn_lights.knl";
     private const string NwLightsConfigFile = "kn_nwlights.knl";
     private const string LightsConfigDefault = "kn_lights_default.knl";
@@ -38,6 +40,8 @@ namespace KN_Lights {
     private bool prevScene_;
     private int carsCount_;
     private bool autoAddLights_;
+    private float autoAddLightsTimer_;
+    private bool autoAddLightsTimerStart_;
 
     private readonly WorldLights worldLights_;
 
@@ -542,8 +546,16 @@ namespace KN_Lights {
         int players = NetworkController.InstanceGame?.Players.Count ?? 0;
         if (carsCount_ != players || sceneChanged) {
           carsCount_ = players;
-          AddLightsToEveryone();
+          autoAddLightsTimer_ = 0.0f;
+          autoAddLightsTimerStart_ = true;
         }
+
+        if (autoAddLightsTimerStart_ && autoAddLightsTimer_ >= AutoAddLightsTime) {
+          AddLightsToEveryone();
+          autoAddLightsTimerStart_ = false;
+        }
+
+        autoAddLightsTimer_ += Time.deltaTime;
       }
     }
 
