@@ -269,7 +269,7 @@ namespace KN_Lights {
         dataLoaded_ = false;
       }
 
-      if (map_.Count > 0 && !TFCar.IsNull(core_.PlayerCar)) {
+      if (map_.Count > 0 && map_[0] != null && !TFCar.IsNull(core_.PlayerCar)) {
         SelectMap(map_[0].name);
       }
       SaveDefault();
