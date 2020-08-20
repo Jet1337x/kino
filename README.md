@@ -51,12 +51,7 @@ Inside your CarX Drift Racing Online\BepInEx\plugins\KN_Base folder you will fin
 You can also bind keys to your controller. Please google Unity key codes for your Xbox/Playstation controller.
 
 ## Installation
-1. Install [BepInEx mod loader](https://github.com/BepInEx/BepInEx/releases) if you haven't already  
-Extract files from **BepInEx.zip** into your CarX Drift Racing Online folder
-2. Download the latest version from [release tab](https://github.com/trbflxr/kino/releases) **(DO NOT DOWNLOAD SOURCE CODE)**.  
-Put the .dll files from the **release_%version_name%.zip** inside:   
-CarX Drift Racing Online\BepInEx\plugins
-(if you didn't have mod loader before and don't have the folder then either create it yourself or launch the game once for it to be created automatically)  
+Installation is described in [Install.md](INSTALL.md).
 
 
 ## Roadmap
