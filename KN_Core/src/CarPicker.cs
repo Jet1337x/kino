@@ -20,7 +20,6 @@ namespace KN_Core {
     public List<TFCar> Cars { get; }
 
     private float carsListHeight_;
-    private float ghostsListHeight_;
 
     private readonly Core core_;
 

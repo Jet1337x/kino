@@ -242,6 +242,9 @@ namespace KN_Core {
 
     public void ToggleCxUi(bool active) {
       KeepAliveManager.SetUIVisible(active);
+      if (IsInGarage) {
+        InputManager.instance.SetCursorVisibility(true);
+      }
     }
 
     //load texture from KN_Core.dll
