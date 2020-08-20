@@ -18,7 +18,6 @@ namespace KN_Core {
     public TFCar PlayerCar { get; private set; }
 
     public List<TFCar> Cars { get; }
-    public List<TFCar> Ghosts { get; }
 
     private float carsListHeight_;
     private float ghostsListHeight_;
@@ -29,7 +28,6 @@ namespace KN_Core {
       core_ = core;
 
       Cars = new List<TFCar>(16);
-      Ghosts = new List<TFCar>(16);
     }
 
     public void Reset() {
@@ -57,14 +55,6 @@ namespace KN_Core {
 
       GuiCars(gui, ref x, ref y, boxWidth, width, height);
       carsListHeight_ = y - yBegin - Gui.Height;
-
-      if (Ghosts.Count > 0) {
-        y = yBegin;
-        x += boxWidth;
-
-        GuiGhosts(gui, ref x, ref y, boxWidth, width, height);
-        ghostsListHeight_ = y - yBegin - Gui.Height;
-      }
 
       x += Gui.Width + Gui.OffsetGuiX;
       y = yBegin;
@@ -94,27 +84,11 @@ namespace KN_Core {
       }
     }
 
-    private void GuiGhosts(Gui gui, ref float x, ref float y, float boxWidth, float width, float height) {
-      gui.Box(x, y, boxWidth, Gui.Height, "GHOSTS", Skin.MainContainerDark);
-      y += Gui.Height;
-
-      gui.Box(x, y, boxWidth, ghostsListHeight_, Skin.MainContainer);
-      y += Gui.OffsetY;
-      x += Gui.OffsetGuiX;
-
-      foreach (var c in Ghosts) {
-        if (gui.Button(ref x, ref y, width, height, c.Name, Skin.Button)) {
-          PickedCar = c;
-        }
-      }
-    }
-
     private void UpdateCars() {
       PlayerCar = null;
       PickedCar = null;
 
       Cars.Clear();
-      Ghosts.Clear();
 
       var cars = Object.FindObjectsOfType<RaceCar>();
       if (cars != null && cars.Length > 0) {
@@ -125,13 +99,6 @@ namespace KN_Core {
           else {
             Cars.Add(new TFCar(c));
           }
-        }
-      }
-
-      var ghosts = core_.Replay?.Player.players;
-      if (ghosts != null && ghosts.Count > 0) {
-        foreach (var car in ghosts) {
-          Ghosts.Add(new TFCar(car.NickName, car.ghostCar));
         }
       }
     }

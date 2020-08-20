@@ -23,7 +23,6 @@ namespace KN_Core {
 
     public bool DrawTimeline { get; set; }
     public Timeline Timeline { get; }
-    public Replay Replay { get; }
 
     public float GuiContentBeginY { get; private set; }
     public float GuiTabsHeight { get; private set; }
@@ -72,7 +71,6 @@ namespace KN_Core {
       gui_ = new Gui();
 
       Timeline = new Timeline(this);
-      Replay = new Replay(this);
 
       mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
@@ -83,11 +81,6 @@ namespace KN_Core {
     }
 
     public void AddMod(BaseMod mod) {
-      //disabled for now
-      if (mod.Name == "CINEMATIC") {
-        return;
-      }
-
       mods_.Add(mod);
       mods_.Sort((m0, m1) => m0.Id.CompareTo(m1.Id));
 
@@ -141,10 +134,6 @@ namespace KN_Core {
 
       isInGaragePrev_ = IsInGarage;
       IsInGarage = SceneManager.GetActiveScene().name == "SelectCar";
-
-      if (IsInGarage != isInGaragePrev_) {
-        Replay.StopRecord();
-      }
 
       if (IsInGarage && cameraRotation_ == null) {
         cameraRotation_ = FindObjectOfType<CameraRotation>();
@@ -234,14 +223,12 @@ namespace KN_Core {
       if (Controls.KeyDown("gui")) {
         IsGuiEnabled = !IsGuiEnabled;
 
-        Replay.ResetPickers();
         mods_[selectedTabPrev_].ResetPickers();
       }
     }
 
     private void HandleTabSelection() {
       if (selectedTab_ != selectedTabPrev_) {
-        Replay.ResetPickers();
         mods_[selectedTabPrev_].ResetState();
         selectedModId_ = mods_[selectedTab_].Id;
       }

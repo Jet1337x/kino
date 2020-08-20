@@ -100,7 +100,7 @@ namespace KN_Core {
       gui.Box(x, y, boxWidth, boxHeight, Skin.MainContainer);
 
       x += boxWidth / 2.0f - Gui.Width / 2.0f;
-      gui.Label(ref x, ref y, $"SPEED: {Speed:F}");
+      gui.Label(ref x, ref y, $"SPEED: {(Slow != 1 ? 1.0f / Slow : Speed):F}");
 
       x = xBegin;
       y += Gui.OffsetY * 2.0f;
@@ -254,7 +254,6 @@ namespace KN_Core {
 
         if (IsKeyframeEditing) {
           IsPlaying = false;
-          core_.Replay.PlayPause(IsPlaying);
         }
       }
       x += Gui.IconSize + offset;
@@ -283,18 +282,12 @@ namespace KN_Core {
           if (IsPlaying) {
             CurrentTime = LowBound;
           }
-          else {
-            core_.Replay.Player.Pause();
-          }
         }
         if (CurrentTime < LowBound) {
           CurrentTime = LowBound;
           IsPlaying = Loop;
           if (IsPlaying) {
             CurrentTime = HighBound;
-          }
-          else {
-            core_.Replay.Player.Pause();
           }
         }
       }

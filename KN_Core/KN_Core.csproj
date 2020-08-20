@@ -137,7 +137,6 @@
         <Compile Include="src\Log.cs" />
         <Compile Include="src\Movement.cs" />
         <Compile Include="src\Patcher.cs" />
-        <Compile Include="src\Replay.cs" />
         <Compile Include="src\Skin.cs" />
         <Compile Include="src\Submodule\About.cs" />
         <Compile Include="src\Submodule\Settings.cs" />

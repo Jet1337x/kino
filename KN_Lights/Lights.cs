@@ -564,9 +564,6 @@ namespace KN_Lights {
       foreach (var car in carPicker_.Cars) {
         EnableLightsOn(car);
       }
-      foreach (var ghost in carPicker_.Ghosts) {
-        EnableLightsOn(ghost);
-      }
       carPicker_.IsPicking = false;
     }
 

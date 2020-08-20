@@ -28,7 +28,6 @@ namespace KN_Cinematic {
 
     private bool cameraTabActive_ = true;
     private bool animationTabActive_;
-    private bool replayTabActive_;
 
     private float speed_;
     private float speedMultiplier_;
@@ -65,7 +64,6 @@ namespace KN_Cinematic {
       ActiveCamera?.ResetState();
       cameraTabActive_ = true;
       animationTabActive_ = false;
-      replayTabActive_ = false;
       Core.DrawTimeline = CinematicEnabled;
       Core.Timeline.IsPlaying = Core.Timeline.IsPlaying && CinematicEnabled;
     }
@@ -107,8 +105,6 @@ namespace KN_Cinematic {
         Core.ActiveCamera = Core.MainCamera;
       }
 
-      Core.Replay.Update();
-
       if (ActiveCamera != null) {
         ActiveCamera.Move(speed_, speedMultiplier_);
 
@@ -137,14 +133,6 @@ namespace KN_Cinematic {
 
         ActiveCamera.Update();
       }
-
-      if (Core.Timeline.IsPlaying) {
-        Core.Replay.TimeUpdate(Core.Timeline.CurrentTime, false);
-      }
-    }
-
-    public override void FixedUpdate(int id) {
-      Core.Replay.FixedUpdate();
     }
 
     #region gui
@@ -175,9 +163,6 @@ namespace KN_Cinematic {
       }
       else if (animationTabActive_) {
         GuiAnimationTab(gui, ref x, ref y);
-      }
-      else if (replayTabActive_) {
-        GuiReplay(gui, ref x, ref y);
       }
     }
 
@@ -314,22 +299,14 @@ namespace KN_Cinematic {
         }
       }
 
-      var ghosts = Core.Replay.Player.players;
-      bool replayActive = ghosts != null && ghosts.Count > 0;
-
       if (gui.Button(ref x, ref y, "RESET ANIMATION", Skin.Button)) {
         if (cameraOk) {
           ActiveCamera.RemoveAnimation();
           Log.Write($"[KN_Cinematic]: Reset animation for camera '{ActiveCamera.Tag}'");
-          if (!replayActive) {
-            Core.Timeline.Reset();
-          }
         }
       }
 
-      float animMaxTime = replayActive ? Core.Replay.Player.length : Core.Timeline.MaxTime;
-      animationMaxTimeString_ = $"{animMaxTime:F}";
-      GUI.enabled = !replayActive;
+      animationMaxTimeString_ = $"{Core.Timeline.MaxTime:F}";
       if (gui.TextField(ref x, ref y, ref animationMaxTimeString_, "MAX TIME", 6, Config.FloatRegex)) {
         float.TryParse(animationMaxTimeString_, out float time);
         if (cameraOk && time > 0.0f) {
@@ -339,7 +316,7 @@ namespace KN_Cinematic {
 
       float currentLength = ActiveCamera?.Animation.Length ?? 0.0f;
       animationScaleString_ = $"{currentLength:F}";
-      GUI.enabled = cameraOk && !Core.Replay.IsPlaying;
+      GUI.enabled = cameraOk;
       if (gui.TextField(ref x, ref y, ref animationScaleString_, "LENGTH", 6, Config.FloatRegex)) {
         float.TryParse(animationScaleString_, out float scaledLength);
         if (cameraOk && scaledLength > 0.01f) {
@@ -538,34 +515,6 @@ namespace KN_Cinematic {
     }
     #endregion
 
-    #region replay
-    private void GuiReplay(Gui gui, ref float x, ref float y) {
-      bool guiEnabled = GUI.enabled;
-      GUI.enabled = !Core.IsInGarage;
-
-      Core.Replay.OnGui(gui, ref x, ref y);
-
-      gui.Line(x, y, Gui.Width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
-
-      if (gui.Button(ref x, ref y, "FORCE PLAY / SP ONLY", Skin.Button)) {
-        var gm = Object.FindObjectOfType<GameManager>();
-        if (gm != null) {
-          gm.SetGamePause(false);
-          ActiveCamera.GameObject.GetComponent<Camera>().nearClipPlane = 0.1f;
-          ActiveCamera.GameObject.GetComponent<Camera>().farClipPlane = 1000.0f;
-        }
-      }
-
-      GUI.enabled = guiEnabled;
-    }
-
-    public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
-      CarPicker.OnGUI(gui, ref x, ref y);
-      Core.Replay.GuiPickers(gui, ref x, ref y);
-    }
-    #endregion
-
     private void GuiSideBar(Gui gui, ref float x, ref float y) {
       float yBegin = y;
 
@@ -573,27 +522,14 @@ namespace KN_Cinematic {
       if (gui.ImageButton(ref x, ref y, cameraTabActive_ ? Skin.IconCamActive : Skin.IconCam)) {
         cameraTabActive_ = true;
         animationTabActive_ = false;
-        replayTabActive_ = false;
         CarPicker.Reset();
-        Core.Replay.ResetPickers();
         ActiveCamera?.ResetPickers();
       }
 
       if (gui.ImageButton(ref x, ref y, animationTabActive_ ? Skin.IconAnimActive : Skin.IconAnim)) {
         cameraTabActive_ = false;
         animationTabActive_ = true;
-        replayTabActive_ = false;
         CarPicker.Reset();
-        Core.Replay.ResetPickers();
-        ActiveCamera?.ResetPickers();
-      }
-
-      if (gui.ImageButton(ref x, ref y, replayTabActive_ ? Skin.IconReplayActive : Skin.IconReplay)) {
-        cameraTabActive_ = false;
-        animationTabActive_ = false;
-        replayTabActive_ = true;
-        CarPicker.Reset();
-        Core.Replay.ResetPickers();
         ActiveCamera?.ResetPickers();
       }
 
@@ -607,21 +543,15 @@ namespace KN_Cinematic {
       if (ActiveCamera != null && ActiveCamera != FreeCamera) {
         ActiveCamera.UpdateAnimation(time);
       }
-
-      Core.Replay.Stop(time);
     }
 
     private void OnTimelineDrag(float time) {
       if (ActiveCamera != null && ActiveCamera != FreeCamera) {
         ActiveCamera.UpdateAnimation(time);
       }
-
-      Core.Replay.TimeUpdate(time, true);
     }
 
-    private void OnTimelinePlay(bool play) {
-      Core.Replay.PlayPause(play);
-    }
+    private void OnTimelinePlay(bool play) { }
 
     private void OnTimelineKeyframe(float time) {
       if (ActiveCamera != null) {
@@ -635,7 +565,6 @@ namespace KN_Cinematic {
 
         cameraTabActive_ = false;
         animationTabActive_ = true;
-        replayTabActive_ = false;
       }
     }
 
@@ -651,7 +580,6 @@ namespace KN_Cinematic {
 
       cameraTabActive_ = false;
       animationTabActive_ = true;
-      replayTabActive_ = false;
     }
     #endregion
 
