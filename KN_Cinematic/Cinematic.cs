@@ -166,6 +166,10 @@ namespace KN_Cinematic {
       }
     }
 
+    public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
+      CarPicker.OnGUI(gui, ref x, ref y);
+    }
+
     #region camera gui
     private void GuiCameraTab(Gui gui, ref float x, ref float y) {
       float yBegin = y;
