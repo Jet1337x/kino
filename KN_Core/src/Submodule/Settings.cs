@@ -267,6 +267,10 @@ namespace KN_Core.Submodule {
         }
       }
 
+      foreach (var car in disabledCars_) {
+        collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
+      }
+
       disabledCars_.RemoveAll(TFCar.IsNull);
     }
   }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using BepInEx;
@@ -193,7 +194,7 @@ namespace KN_Core {
 
       defaultParams_["cl_discard_distance"] = 170.0f;
 
-      defaultParams_["join_delay"] = 5.0f;
+      defaultParams_["join_delay"] = 13.0f;
 
       Controls.LoadDefault();
 
@@ -203,6 +204,9 @@ namespace KN_Core {
     private void Validate() {
       foreach (var p in defaultParams_) {
         if (!params_.ContainsKey(p.Key)) {
+          params_[p.Key] = p.Value;
+        }
+        if (p.Key == "join_delay") {
           params_[p.Key] = p.Value;
         }
       }
