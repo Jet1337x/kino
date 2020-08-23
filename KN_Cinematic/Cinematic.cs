@@ -38,7 +38,7 @@ namespace KN_Cinematic {
     private string animationScaleString_ = "0.0";
     private string animationMaxTimeString_ = "0.0";
 
-    public Cinematic(Core core) : base(core, "CINEMATIC", 1) {
+    public Cinematic(Core core) : base(core, "CINEMATIC", 2) {
       ctCameras_ = new List<CTCamera>();
 
       CarPicker = new CarPicker(core);
