@@ -56,6 +56,7 @@ namespace KN_Core.Submodule {
     private bool hideForce_;
     private float hideCrutchTimer_;
     private int prevCars_;
+    private bool trashDisabled_;
     private bool trashHidden_;
     private readonly CarPicker carPicker_;
     private readonly List<TFCar> disabledCars_;
@@ -75,6 +76,7 @@ namespace KN_Core.Submodule {
       HideNames = Core.ModConfig.Get<bool>("hide_names");
       BackFireEnabled = Core.ModConfig.Get<bool>("custom_backfire");
       tachometerEnabledSettings_ = Core.ModConfig.Get<bool>("custom_tach");
+      trashDisabled_ = Core.ModConfig.Get<bool>("trash_autodisable");
       trashHidden_ = Core.ModConfig.Get<bool>("trash_autohide");
       joinDelay_ = Core.ModConfig.Get<float>("join_delay");
       exhaust_.OnStart();
@@ -85,6 +87,7 @@ namespace KN_Core.Submodule {
       Core.ModConfig.Set("hide_names", HideNames);
       Core.ModConfig.Set("custom_backfire", BackFireEnabled);
       Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
+      Core.ModConfig.Set("trash_autodisable", trashDisabled_);
       Core.ModConfig.Set("trash_autohide", trashHidden_);
       exhaust_.OnStop();
     }
@@ -202,16 +205,20 @@ namespace KN_Core.Submodule {
 
       GUI.enabled = guiEnabled;
 
-      if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", trashHidden_ ? Skin.ButtonActive : Skin.Button)) {
-        trashHidden_ = !trashHidden_;
-        hideForce_ = trashHidden_;
+      if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", trashDisabled_ ? Skin.ButtonActive : Skin.Button)) {
+        trashDisabled_ = !trashDisabled_;
+        hideForce_ = trashDisabled_;
 
-        if (!trashHidden_) {
+        if (!trashDisabled_) {
           foreach (var car in disabledCars_) {
             collisionManager_?.MovePlayerToColliderGroup("", car.Base.networkPlayer);
           }
           disabledCars_.Clear();
         }
+      }
+
+      if (gui.Button(ref x, ref y, width, height, "HIDE CONSOLE PLAYERS", trashHidden_ ? Skin.ButtonActive : Skin.Button)) {
+        trashHidden_ = !trashHidden_;
       }
     }
 
@@ -224,7 +231,7 @@ namespace KN_Core.Submodule {
     }
 
     private void UpdateHiddenCars(bool sceneChanged) {
-      if (trashHidden_) {
+      if (trashDisabled_) {
         int players = NetworkController.InstanceGame?.Players.Count ?? 0;
         if (prevCars_ != players || sceneChanged) {
           hideCrutchTimer_ = 0.0f;
@@ -246,6 +253,16 @@ namespace KN_Core.Submodule {
                 collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
               }
             }
+          }
+        }
+      }
+
+      if (trashHidden_) {
+        foreach (var car in disabledCars_) {
+          if (!TFCar.IsNull(car)) {
+            var pos = car.CxTransform.position;
+            pos.y += 1000.0f;
+            car.CxTransform.position = pos;
           }
         }
       }
