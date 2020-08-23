@@ -58,8 +58,9 @@ namespace KN_Core.Submodule {
     private int prevCars_;
     private bool trashHidden_;
     private readonly CarPicker carPicker_;
-    private bool hasNulls_;
     private readonly List<TFCar> disabledCars_;
+
+    private NetGameCollisionManager collisionManager_;
 
     public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) {
       exhaust_ = new Exhaust(core);
@@ -95,6 +96,10 @@ namespace KN_Core.Submodule {
       if (sceneChanged) {
         tachometerEnabled_ = false;
         rootCanvas_ = null;
+      }
+
+      if (collisionManager_ == null || sceneChanged) {
+        collisionManager_ = NetworkController.InstanceGame.systems.Get<NetGameCollisionManager>();
       }
 
       if (rootCanvas_ == null) {
@@ -195,16 +200,19 @@ namespace KN_Core.Submodule {
         exhaust_.OnGUI(gui, ref x, ref y, width);
       }
 
-      if (gui.Button(ref x, ref y, width, height, "CONSOLE TRASH AUTOHIDE", trashHidden_ ? Skin.ButtonActive : Skin.Button)) {
+      GUI.enabled = guiEnabled;
+
+      if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", trashHidden_ ? Skin.ButtonActive : Skin.Button)) {
         trashHidden_ = !trashHidden_;
         hideForce_ = trashHidden_;
 
         if (!trashHidden_) {
+          foreach (var car in disabledCars_) {
+            collisionManager_?.MovePlayerToColliderGroup("", car.Base.networkPlayer);
+          }
           disabledCars_.Clear();
         }
       }
-
-      GUI.enabled = guiEnabled;
     }
 
     public void GuiTachometer(bool hideUi) {
@@ -219,8 +227,8 @@ namespace KN_Core.Submodule {
       if (trashHidden_) {
         int players = NetworkController.InstanceGame?.Players.Count ?? 0;
         if (prevCars_ != players || sceneChanged) {
-          hideTimerStart_ = true;
           hideCrutchTimer_ = 0.0f;
+          hideTimerStart_ = true;
         }
         prevCars_ = players;
 
@@ -235,27 +243,14 @@ namespace KN_Core.Submodule {
             if (car != Core.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
               if (!disabledCars_.Contains(car)) {
                 disabledCars_.Add(car);
+                collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
               }
             }
           }
         }
       }
 
-      foreach (var car in disabledCars_) {
-        if (!TFCar.IsNull(car)) {
-          var pos = car.CxTransform.position;
-          pos.y += 1000.0f;
-          car.CxTransform.position = pos;
-        }
-        else {
-          hasNulls_ = true;
-        }
-      }
-
-      if (hasNulls_) {
-        disabledCars_.RemoveAll(TFCar.IsNull);
-        hasNulls_ = false;
-      }
+      disabledCars_.RemoveAll(TFCar.IsNull);
     }
   }
 }
