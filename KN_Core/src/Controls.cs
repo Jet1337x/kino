@@ -13,8 +13,10 @@ namespace KN_Core {
 
     public static bool Key(string name) {
       try {
-        var ls = buttons_[name];
-        return IsPressed(ls);
+        if (buttons_.ContainsKey(name)) {
+          var ls = buttons_[name];
+          return IsPressed(ls);
+        }
       }
       catch (ArgumentNullException) {
         Log.Write($"Action '{name}' is null");
@@ -28,8 +30,10 @@ namespace KN_Core {
 
     public static bool KeyDown(string name) {
       try {
-        var ls = buttons_[name];
-        return IsClicked(ls);
+        if (buttons_.ContainsKey(name)) {
+          var ls = buttons_[name];
+          return IsClicked(ls);
+        }
       }
       catch (ArgumentNullException) {
         Log.Write($"Action '{name}' is null");
@@ -121,6 +125,29 @@ namespace KN_Core {
       defaultButtons_["slow"] = new object[] {KeyCode.LeftControl};
 
       defaultButtons_["toggle_lights"] = new object[] {KeyCode.PageDown};
+
+      // air
+      defaultButtons_["air_mode"] = new object[] {};
+
+      defaultButtons_["air_default"] = new object[] {KeyCode.I};
+      defaultButtons_["air_up_all"] = new object[] {KeyCode.O};
+      defaultButtons_["air_down_all"] = new object[] {KeyCode.P};
+
+      defaultButtons_["air_up_front"] = new object[] {KeyCode.T};
+      defaultButtons_["air_down_front"] = new object[] {KeyCode.G};
+
+      defaultButtons_["air_up_rear"] = new object[] {KeyCode.Y};
+      defaultButtons_["air_down_rear"] = new object[] {KeyCode.H};
+
+      defaultButtons_["air_up_frontLeft"] = new object[] {};
+      defaultButtons_["air_up_frontRight"] = new object[] {};
+      defaultButtons_["air_up_rearLeft"] = new object[] {};
+      defaultButtons_["air_up_rearRight"] = new object[] {};
+
+      defaultButtons_["air_down_frontLeft"] = new object[] {};
+      defaultButtons_["air_down_frontRight"] = new object[] {};
+      defaultButtons_["air_down_rearLeft"] = new object[] {};
+      defaultButtons_["air_down_rearRight"] = new object[] {};
     }
 
     public static void Validate() {
