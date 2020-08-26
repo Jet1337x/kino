@@ -197,7 +197,7 @@ namespace KN_Core {
       defaultParams_["join_delay"] = 13.0f;
 
       // air
-      defaultParams_["air_step_max"] = 5.0f;
+      defaultParams_["air_step_max"] = 2.0f;
       defaultParams_["air_height_max"] = 0.5f;
       defaultParams_["air_height_min"] = 0.01f;
 
