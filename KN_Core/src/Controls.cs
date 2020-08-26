@@ -128,26 +128,22 @@ namespace KN_Core {
 
       // air
       defaultButtons_["air_mode"] = new object[] {};
+      defaultButtons_["air_mode_altKey"] = new object[] {KeyCode.LeftAlt};
 
-      defaultButtons_["air_default"] = new object[] {KeyCode.I};
-      defaultButtons_["air_up_all"] = new object[] {KeyCode.O};
-      defaultButtons_["air_down_all"] = new object[] {KeyCode.P};
+      defaultButtons_["air_default"] = new object[] {};
+      defaultButtons_["air_up_all"] = new object[] {};
+      defaultButtons_["air_down_all"] = new object[] {};
 
-      defaultButtons_["air_up_front"] = new object[] {KeyCode.T};
-      defaultButtons_["air_down_front"] = new object[] {KeyCode.G};
+      defaultButtons_["air_up_front"] = new object[] {};
+      defaultButtons_["air_down_front"] = new object[] {};
 
-      defaultButtons_["air_up_rear"] = new object[] {KeyCode.Y};
-      defaultButtons_["air_down_rear"] = new object[] {KeyCode.H};
+      defaultButtons_["air_up_rear"] = new object[] {};
+      defaultButtons_["air_down_rear"] = new object[] {};
 
-      defaultButtons_["air_up_frontLeft"] = new object[] {};
-      defaultButtons_["air_up_frontRight"] = new object[] {};
-      defaultButtons_["air_up_rearLeft"] = new object[] {};
-      defaultButtons_["air_up_rearRight"] = new object[] {};
-
-      defaultButtons_["air_down_frontLeft"] = new object[] {};
-      defaultButtons_["air_down_frontRight"] = new object[] {};
-      defaultButtons_["air_down_rearLeft"] = new object[] {};
-      defaultButtons_["air_down_rearRight"] = new object[] {};
+      defaultButtons_["air_frontLeft"] = new object[] {};
+      defaultButtons_["air_frontRight"] = new object[] {};
+      defaultButtons_["air_rearLeft"] = new object[] {};
+      defaultButtons_["air_rearRight"] = new object[] {};
     }
 
     public static void Validate() {
