@@ -1,3 +1,5 @@
+using SyncMultiplayer;
+
 namespace KN_Core {
   public abstract class BaseMod {
     public Core Core { get; }
@@ -34,5 +36,7 @@ namespace KN_Core {
     public virtual bool WantsHideUi() {
       return false;
     }
+
+    public virtual void OnUdpData(SmartfoxDataPackage data) { }
   }
 }

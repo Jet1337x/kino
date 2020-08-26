@@ -57,6 +57,8 @@ namespace KN_Core {
     private CameraRotation cameraRotation_;
     private readonly Settings settings_;
 
+    public CarXUDP Udp { get; private set; }
+
     private static Assembly assembly_;
 
     public Core() {
@@ -74,6 +76,9 @@ namespace KN_Core {
 
       mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
+
+      Udp = new CarXUDP();
+      Udp.ProcessPacket += HandlePacket;
 
       settings_ = new Settings(this);
       AddMod(settings_);
@@ -123,6 +128,8 @@ namespace KN_Core {
       if (TFCar.IsNull(PlayerCar)) {
         FindPlayerCar();
       }
+
+      Udp.Update();
 
       if (MainCamera == null) {
         ActiveCamera = null;
@@ -312,6 +319,12 @@ namespace KN_Core {
       texture.Apply();
 
       return texture;
+    }
+
+    private void HandlePacket(SmartfoxDataPackage data) {
+      foreach (var mod in mods_) {
+        mod.OnUdpData(data);
+      }
     }
 
     public static object Call(object o, string methodName, params object[] args) {
