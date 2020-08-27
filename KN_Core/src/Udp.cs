@@ -2,7 +2,9 @@ using System.Reflection;
 using SyncMultiplayer;
 
 namespace KN_Core {
-  public class CarXUDP {
+  public class Udp {
+    public const int TypeSuspension = 0;
+
     public SmartfoxRoomClient Room { get; private set; }
     public SmartfoxClient Client { get; private set; }
 

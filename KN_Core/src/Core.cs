@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
-using CarX;
 using FMODUnity;
 using GameInput;
 using KN_Core.Submodule;
@@ -58,7 +57,7 @@ namespace KN_Core {
     private CameraRotation cameraRotation_;
     private readonly Settings settings_;
 
-    public CarXUDP Udp { get; private set; }
+    public Udp Udp { get; private set; }
 
     private static Assembly assembly_;
 
@@ -78,7 +77,7 @@ namespace KN_Core {
       mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
 
-      Udp = new CarXUDP();
+      Udp = new Udp();
       Udp.ProcessPacket += HandlePacket;
 
       settings_ = new Settings(this);
@@ -328,41 +327,14 @@ namespace KN_Core {
 
     private void HandlePacket(SmartfoxDataPackage data) {
       int type = data.Data.GetInt("type");
-      if (type == 0) {
-        ApplySuspension(data);
+      if (type == Udp.TypeSuspension) {
+        Suspension.Apply(data);
         return;
       }
 
       foreach (var mod in mods_) {
         mod.OnUdpData(data);
       }
-    }
-
-    private void ApplySuspension(SmartfoxDataPackage data) {
-      int id = data.Data.GetInt("id");
-      float fl = data.Data.GetFloat("fl");
-      float fr = data.Data.GetFloat("fr");
-      float rl = data.Data.GetFloat("rl");
-      float rr = data.Data.GetFloat("rr");
-
-      foreach (var player in NetworkController.InstanceGame.Players) {
-        if (player.NetworkID == id) {
-          Adjust(player.userCar.carX, fl, fr, rl, rr);
-          break;
-        }
-      }
-    }
-
-    private void Adjust(Car car, float fl, float fr, float rl, float rr) {
-      var flW = car.GetWheel(WheelIndex.FrontLeft);
-      var frW = car.GetWheel(WheelIndex.FrontRight);
-      var rlW = car.GetWheel(WheelIndex.RearLeft);
-      var rrW = car.GetWheel(WheelIndex.RearRight);
-
-      flW.maxSpringLen = fl;
-      frW.maxSpringLen = fr;
-      rlW.maxSpringLen = rl;
-      rrW.maxSpringLen = rr;
     }
 
     public static object Call(object o, string methodName, params object[] args) {
