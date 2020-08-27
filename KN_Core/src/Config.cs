@@ -198,7 +198,7 @@ namespace KN_Core {
 
       // air
       defaultParams_["air_use_controlKey"] = true;
-      defaultParams_["air_step_max"] = 2.0f;
+      defaultParams_["air_step_max"] = 3.0f;
       defaultParams_["air_height_max"] = 0.5f;
       defaultParams_["air_height_min"] = 0.01f;
 

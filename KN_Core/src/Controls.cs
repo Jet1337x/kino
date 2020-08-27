@@ -128,8 +128,7 @@ namespace KN_Core {
 
       // air
       defaultButtons_["air_mode"] = new object[] {KeyCode.None};
-      defaultButtons_["air_mode_altKey"] = new object[] {KeyCode.LeftAlt};
-      defaultButtons_["air_controlKey"] = new object[] {KeyCode.LeftControl};
+      defaultButtons_["air_controlKey"] = new object[] {KeyCode.LeftAlt};
 
       defaultButtons_["air_default"] = new object[] {KeyCode.None};
       defaultButtons_["air_up_all"] = new object[] {KeyCode.None};
