@@ -46,10 +46,7 @@ namespace KN_Core.Submodule {
 
     private int prevCarId_;
     private bool prevScene_;
-    private int prevPlayersCount_;
 
-    private bool timerStart_;
-    private float crutchTimer_;
     private readonly Exhaust exhaust_;
 
     private const float OffsetTx = 50.0f;
@@ -60,12 +57,6 @@ namespace KN_Core.Submodule {
 
     private Canvas rootCanvas_;
 
-    private float joinDelay_;
-
-    private bool hideTimerStart_;
-    private bool hideForce_;
-    private float hideCrutchTimer_;
-    private int prevCars_;
     private bool trashDisabled_;
     private bool trashHidden_;
     private readonly CarPicker carPicker_;
@@ -86,10 +77,13 @@ namespace KN_Core.Submodule {
       HideNames = Core.ModConfig.Get<bool>("hide_names");
       BackFireEnabled = Core.ModConfig.Get<bool>("custom_backfire");
       tachometerEnabledSettings_ = Core.ModConfig.Get<bool>("custom_tach");
-      trashDisabled_ = Core.ModConfig.Get<bool>("trash_autodisable");
-      trashHidden_ = Core.ModConfig.Get<bool>("trash_autohide");
-      joinDelay_ = Core.ModConfig.Get<float>("join_delay");
       receiveUdp_ = Core.ModConfig.Get<bool>("receive_udp");
+
+      if (!Core.IsCheatsEnabled) {
+        trashDisabled_ = Core.ModConfig.Get<bool>("trash_autodisable");
+        trashHidden_ = Core.ModConfig.Get<bool>("trash_autohide");
+      }
+
       exhaust_.OnStart();
     }
 
@@ -98,14 +92,40 @@ namespace KN_Core.Submodule {
       Core.ModConfig.Set("hide_names", HideNames);
       Core.ModConfig.Set("custom_backfire", BackFireEnabled);
       Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
-      Core.ModConfig.Set("trash_autodisable", trashDisabled_);
-      Core.ModConfig.Set("trash_autohide", trashHidden_);
       Core.ModConfig.Set("receive_udp", receiveUdp_);
+
+      if (!Core.IsCheatsEnabled) {
+        Core.ModConfig.Set("trash_autodisable", trashDisabled_);
+        Core.ModConfig.Set("trash_autohide", trashHidden_);
+      }
+
       exhaust_.OnStop();
     }
 
     public override void OnReloadAll() {
       exhaust_.Initialize();
+    }
+
+    protected override void OnCarLoaded() {
+      exhaust_.Initialize();
+
+      if (!Core.IsCheatsEnabled) {
+        disabledCars_.RemoveAll(TFCar.IsNull);
+
+        if (trashDisabled_) {
+          carPicker_.IsPicking = true;
+          carPicker_.IsPicking = false;
+          foreach (var car in carPicker_.Cars) {
+            if (car != Core.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
+              if (!disabledCars_.Contains(car)) {
+                disabledCars_.Add(car);
+                collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
+                Core.Udp.SendChangeRoomId(car.Base.networkPlayer, false);
+              }
+            }
+          }
+        }
+      }
     }
 
     public override void Update(int id) {
@@ -132,20 +152,6 @@ namespace KN_Core.Submodule {
       }
 
       if (BackFireEnabled) {
-        int players = NetworkController.InstanceGame?.Players.Count ?? 0;
-        if (prevPlayersCount_ != players || sceneChanged) {
-          timerStart_ = true;
-          crutchTimer_ = 0.0f;
-        }
-        prevPlayersCount_ = players;
-
-        crutchTimer_ += Time.deltaTime;
-
-        if (crutchTimer_ > joinDelay_ && timerStart_) {
-          exhaust_.Initialize();
-          timerStart_ = false;
-        }
-
         if (!TFCar.IsNull(Core.PlayerCar)) {
           int carId = Core.PlayerCar.Id;
           if (prevCarId_ != carId) {
@@ -169,7 +175,15 @@ namespace KN_Core.Submodule {
       }
       tachometer_.Update();
 
-      UpdateHiddenCars(sceneChanged);
+      if (trashHidden_) {
+        foreach (var car in disabledCars_) {
+          if (!TFCar.IsNull(car)) {
+            var pos = car.CxTransform.position;
+            pos.y += 1000.0f;
+            car.CxTransform.position = pos;
+          }
+        }
+      }
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
@@ -217,15 +231,16 @@ namespace KN_Core.Submodule {
         }
       }
 
+      GUI.enabled = guiEnabled;
+
       if (BackFireEnabled) {
         exhaust_.OnGUI(gui, ref x, ref y, width);
       }
 
-      GUI.enabled = guiEnabled;
+      GUI.enabled = !Core.IsCheatsEnabled;
 
       if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", trashDisabled_ ? Skin.ButtonActive : Skin.Button)) {
         trashDisabled_ = !trashDisabled_;
-        hideForce_ = trashDisabled_;
 
         if (!trashDisabled_) {
           foreach (var car in disabledCars_) {
@@ -239,6 +254,8 @@ namespace KN_Core.Submodule {
       if (gui.Button(ref x, ref y, width, height, "HIDE CONSOLE PLAYERS", trashHidden_ ? Skin.ButtonActive : Skin.Button)) {
         trashHidden_ = !trashHidden_;
       }
+
+      GUI.enabled = guiEnabled;
     }
 
     public void GuiTachometer(bool hideUi) {
@@ -247,47 +264,6 @@ namespace KN_Core.Submodule {
       }
 
       tachometer_.OnGUI(Screen.width - (OffsetTx + 290.0f), Screen.height - (OffsetTy + 45.0f));
-    }
-
-    private void UpdateHiddenCars(bool sceneChanged) {
-      disabledCars_.RemoveAll(TFCar.IsNull);
-
-      if (trashDisabled_) {
-        int players = NetworkController.InstanceGame?.Players.Count ?? 0;
-        if (prevCars_ != players || sceneChanged) {
-          hideCrutchTimer_ = 0.0f;
-          hideTimerStart_ = true;
-        }
-        prevCars_ = players;
-
-        hideCrutchTimer_ += Time.deltaTime;
-
-        if (hideTimerStart_ && hideCrutchTimer_ > joinDelay_ || hideForce_) {
-          hideTimerStart_ = false;
-          carPicker_.IsPicking = true;
-          carPicker_.IsPicking = false;
-          hideForce_ = false;
-          foreach (var car in carPicker_.Cars) {
-            if (car != Core.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
-              if (!disabledCars_.Contains(car)) {
-                disabledCars_.Add(car);
-                collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
-                Core.Udp.SendChangeRoomId(car.Base.networkPlayer, false);
-              }
-            }
-          }
-        }
-      }
-
-      if (trashHidden_) {
-        foreach (var car in disabledCars_) {
-          if (!TFCar.IsNull(car)) {
-            var pos = car.CxTransform.position;
-            pos.y += 1000.0f;
-            car.CxTransform.position = pos;
-          }
-        }
-      }
     }
   }
 }

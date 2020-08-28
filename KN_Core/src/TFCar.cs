@@ -1,5 +1,6 @@
 using CarX;
 using UnityEngine;
+using NetworkPlayer = SyncMultiplayer.NetworkPlayer;
 
 namespace KN_Core {
   public class TFCar {
@@ -82,10 +83,17 @@ namespace KN_Core {
     public bool Hide = false;
     public bool AutoDisable = false;
 
+    public bool Console = false;
     public TFCar Car;
 
     public static bool IsNull(DisabledCar car) {
       return car == null || car.Car == null || car.Car.Base == null;
     }
+  }
+
+  public class LoadingCar {
+    public bool Loaded = false;
+    public bool Loading = false;
+    public NetworkPlayer Player = null;
   }
 }

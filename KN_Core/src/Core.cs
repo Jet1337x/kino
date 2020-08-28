@@ -48,6 +48,8 @@ namespace KN_Core {
     private readonly Gui gui_;
     public bool IsGuiEnabled { get; set; }
 
+    public bool IsCheatsEnabled { get; private set; }
+
     private readonly List<BaseMod> mods_;
     private readonly List<string> tabs_;
     private int selectedTab_;
@@ -56,6 +58,11 @@ namespace KN_Core {
 
     private CameraRotation cameraRotation_;
     private readonly Settings settings_;
+
+    private readonly List<LoadingCar> loadingCars_;
+
+    public delegate void CarLoadCallback();
+    public event CarLoadCallback OnCarLoaded;
 
     public Udp Udp { get; private set; }
 
@@ -83,9 +90,15 @@ namespace KN_Core {
 
       Udp = new Udp(settings_);
       Udp.ProcessPacket += HandlePacket;
+
+      loadingCars_ = new List<LoadingCar>(16);
     }
 
     public void AddMod(BaseMod mod) {
+      if (mod.Name == "CHEATS") {
+        IsCheatsEnabled = true;
+      }
+
       mods_.Add(mod);
       mods_.Sort((m0, m1) => m0.Id.CompareTo(m1.Id));
 
@@ -175,15 +188,41 @@ namespace KN_Core {
 
       Timeline.Update();
 
+      loadingCars_.RemoveAll(car => car.Player == null);
+
+      var nwPlayers = NetworkController.InstanceGame?.Players;
+      if (nwPlayers != null) {
+        if (loadingCars_.Count != nwPlayers.Count) {
+          foreach (var player in nwPlayers) {
+            if (loadingCars_.All(c => c.Player != player)) {
+              loadingCars_.Add(new LoadingCar {Player = player});
+              Log.Write($"[KN_Core]: Added car to load: {player.NetworkID}");
+            }
+          }
+        }
+
+        foreach (var car in loadingCars_) {
+          if (car.Player.IsCarLoading()) {
+            car.Loading = true;
+          }
+          if (!car.Player.IsCarLoading() && car.Loading) {
+            car.Loaded = true;
+            car.Loading = false;
+            Log.Write($"[KN_Core]: Car loaded: {car.Player.NetworkID}");
+            OnCarLoaded?.Invoke();
+          }
+        }
+
+        foreach (var player in nwPlayers.Where(player => player.userCar != null)) {
+          player.userCar.SetVisibleUIName(!settings_.HideNames);
+        }
+      }
+
       foreach (var mod in mods_) {
         mod.Update(selectedModId_);
       }
 
       Udp.Update();
-
-      foreach (var player in NetworkController.InstanceGame.Players.Where(player => player.userCar != null)) {
-        player.userCar.SetVisibleUIName(!settings_.HideNames);
-      }
     }
 
     public void LateUpdate() {
@@ -344,11 +383,6 @@ namespace KN_Core {
       foreach (var mod in mods_) {
         mod.OnUdpData(data);
       }
-    }
-
-    public static object Call(object o, string methodName, params object[] args) {
-      var mi = o.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
-      return mi != null ? mi.Invoke(o, args) : null;
     }
   }
 }

@@ -10,6 +10,8 @@ namespace KN_Core {
       Core = core;
       Name = name;
       Id = id;
+
+      Core.OnCarLoaded += OnCarLoaded;
     }
 
     public virtual void OnStart() { }
@@ -40,5 +42,7 @@ namespace KN_Core {
     public virtual void OnReloadAll() { }
 
     public virtual void OnUdpData(SmartfoxDataPackage data) { }
+
+    protected virtual void OnCarLoaded() { }
   }
 }
