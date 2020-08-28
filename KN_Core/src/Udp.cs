@@ -56,9 +56,10 @@ namespace KN_Core {
       }
     }
 
-    public void SendChangeRoomId(NetworkPlayer receiver) {
+    public void SendChangeRoomId(NetworkPlayer receiver, bool enabled) {
       if (SubRoom != null) {
-        sendSubRoomId_?.Invoke(SubRoom, new object[] {receiver, guidString_});
+        string guid = enabled ? "" : guidString_;
+        sendSubRoomId_?.Invoke(SubRoom, new object[] {receiver, guid});
       }
     }
 

@@ -77,10 +77,15 @@ namespace KN_Core {
   }
 
   public class DisabledCar {
-    public bool Collision;
-    public bool CollisionPlayer;
-    public bool AutoDisable;
+    public bool Collision = true;
+    public bool CollisionPlayer = true;
+    public bool Hide = false;
+    public bool AutoDisable = false;
 
     public TFCar Car;
+
+    public static bool IsNull(DisabledCar car) {
+      return car == null || car.Car == null || car.Car.Base == null;
+    }
   }
 }

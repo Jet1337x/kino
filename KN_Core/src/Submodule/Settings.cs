@@ -71,9 +71,6 @@ namespace KN_Core.Submodule {
     private readonly CarPicker carPicker_;
     private readonly List<TFCar> disabledCars_;
 
-    private float collisionTimer_;
-    private const float CollisionTimerDelay = 10.0f;
-
     private NetGameCollisionManager collisionManager_;
 
     public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) {
@@ -233,6 +230,7 @@ namespace KN_Core.Submodule {
         if (!trashDisabled_) {
           foreach (var car in disabledCars_) {
             collisionManager_?.MovePlayerToColliderGroup("", car.Base.networkPlayer);
+            Core.Udp.SendChangeRoomId(car.Base.networkPlayer, true);
           }
           disabledCars_.Clear();
         }
@@ -274,6 +272,7 @@ namespace KN_Core.Submodule {
               if (!disabledCars_.Contains(car)) {
                 disabledCars_.Add(car);
                 collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
+                Core.Udp.SendChangeRoomId(car.Base.networkPlayer, false);
               }
             }
           }
@@ -288,21 +287,6 @@ namespace KN_Core.Submodule {
             car.CxTransform.position = pos;
           }
         }
-      }
-
-      collisionTimer_ += Time.deltaTime;
-      if (collisionTimer_ >= CollisionTimerDelay) {
-        collisionTimer_ = 0.0f;
-        int id = NetworkController.InstanceGame?.LocalPlayer?.NetworkID ?? -1;
-        if (id != -1) {
-          foreach (var car in disabledCars_) {
-            Core.Udp.SendChangeRoomId(car.Base.networkPlayer);
-          }
-        }
-      }
-
-      foreach (var car in disabledCars_) {
-        collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
       }
     }
   }
