@@ -37,6 +37,8 @@ namespace KN_Core {
       return false;
     }
 
+    public virtual void OnReloadAll() { }
+
     public virtual void OnUdpData(SmartfoxDataPackage data) { }
   }
 }

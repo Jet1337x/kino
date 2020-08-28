@@ -34,6 +34,15 @@ namespace KN_Core.Submodule {
       }
     }
 
+    private bool receiveUdp_;
+    public bool ReceiveUdp {
+      get => receiveUdp_;
+      set {
+        receiveUdp_ = value;
+        Core.ModConfig.Set("udp_receive", value);
+      }
+    }
+
     private int prevCarId_;
     private bool prevScene_;
     private int prevPlayersCount_;
@@ -92,6 +101,10 @@ namespace KN_Core.Submodule {
       exhaust_.OnStop();
     }
 
+    public override void OnReloadAll() {
+      exhaust_.Initialize();
+    }
+
     public override void Update(int id) {
       bool sceneChanged = prevScene_ && !Core.IsInGarage || !prevScene_ && Core.IsInGarage;
       prevScene_ = Core.IsInGarage;
@@ -138,10 +151,6 @@ namespace KN_Core.Submodule {
           }
         }
 
-        if (Input.GetKeyDown(KeyCode.Delete)) {
-          exhaust_.Initialize();
-        }
-
 #if KN_DEV_TOOLS
         exhaust_.Update();
 #else
@@ -151,7 +160,9 @@ namespace KN_Core.Submodule {
 #endif
       }
       if (tachometerEnabledSettings_) {
-        tachometerEnabled_ = !rootCanvas_.enabled;
+        if (rootCanvas_ != null) {
+          tachometerEnabled_ = !rootCanvas_.enabled;
+        }
       }
       tachometer_.Update();
 

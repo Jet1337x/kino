@@ -108,6 +108,7 @@ namespace KN_Core {
       defaultButtons_["mode"] = new object[] {KeyCode.F1};
       defaultButtons_["teleport"] = new object[] {KeyCode.F2};
       defaultButtons_["player_names"] = new object[] {KeyCode.F3};
+      defaultButtons_["reload_all"] = new object[] {KeyCode.Delete};
 
       defaultButtons_["fix_car"] = new object[] {KeyCode.Home, "joystick button 13"};
       defaultButtons_["disable_all"] = new object[] {KeyCode.End, "joystick button 12"};

@@ -164,17 +164,22 @@ namespace KN_Core {
 
       GuiRenderCheck();
 
+      if (Controls.KeyDown("reload_all")) {
+        Udp.ReloadClient = true;
+        foreach (var mod in mods_) {
+          mod.OnReloadAll();
+        }
+      }
+
       Timeline.Update();
 
       foreach (var mod in mods_) {
         mod.Update(selectedModId_);
       }
 
-      if (Input.GetKeyDown(KeyCode.P)) {
-        Udp.ReloadClient = true;
+      if (settings_.ReceiveUdp) {
+        Udp.Update();
       }
-
-      Udp.Update();
 
       foreach (var player in NetworkController.InstanceGame.Players.Where(player => player.userCar != null)) {
         player.userCar.SetVisibleUIName(!settings_.HideNames);
@@ -326,6 +331,10 @@ namespace KN_Core {
     }
 
     private void HandlePacket(SmartfoxDataPackage data) {
+      if (!settings_.ReceiveUdp) {
+        return;
+      }
+
       int type = data.Data.GetInt("type");
       if (type == Udp.TypeSuspension) {
         Suspension.Apply(data);

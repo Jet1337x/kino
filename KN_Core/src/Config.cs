@@ -196,6 +196,8 @@ namespace KN_Core {
 
       defaultParams_["join_delay"] = 13.0f;
 
+      defaultParams_["receive_udp"] = true;
+
       // air
       defaultParams_["air_use_controlKey"] = true;
       defaultParams_["air_step_max"] = 3.0f;
