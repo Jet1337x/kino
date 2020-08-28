@@ -3,6 +3,7 @@ using System.Reflection;
 using KN_Core;
 using SyncMultiplayer;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace KN_Lights {
   public class Lights : BaseMod {
@@ -97,6 +98,10 @@ namespace KN_Lights {
     }
 
     public override void Update(int id) {
+      if (Id != id) {
+        return;
+      }
+
       if (!Core.IsGuiEnabled && activeLights_ != null && activeLights_.IsDebugObjectsEnabled) {
         activeLights_.IsDebugObjectsEnabled = false;
       }

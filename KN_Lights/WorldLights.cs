@@ -213,14 +213,14 @@ namespace KN_Lights {
           case "Irwindale":
             FindMap("irwindale");
             break;
-          case "RedRing_winter":
+          case "RedRing_Winter":
             FindMap("winterfell");
             break;
           case "Atron":
             FindMap("atron");
             break;
-          default: // Fiorano2
-            FindMap("fiorano");
+          default:
+            Log.Write($"[KN_Lights]: Error. Unable to load lights data for '{SceneManager.GetActiveScene().name}'");
             break;
         }
 
