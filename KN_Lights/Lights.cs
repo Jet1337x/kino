@@ -95,10 +95,6 @@ namespace KN_Lights {
     }
 
     public override void Update(int id) {
-      if (Id != id) {
-        return;
-      }
-
       if (!Core.IsGuiEnabled && activeLights_ != null && activeLights_.IsDebugObjectsEnabled) {
         activeLights_.IsDebugObjectsEnabled = false;
       }
@@ -555,6 +551,7 @@ namespace KN_Lights {
 
     private void AddLightsToEveryone() {
       carPicker_.IsPicking = true;
+      carPicker_.IsPicking = false;
       foreach (var car in carPicker_.Cars) {
         bool found = false;
         foreach (var cl in carLights_) {
@@ -566,7 +563,6 @@ namespace KN_Lights {
           EnableLightsOn(car);
         }
       }
-      carPicker_.IsPicking = false;
     }
 
     private void RemoveAllNullLights() {
