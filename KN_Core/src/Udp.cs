@@ -1,11 +1,10 @@
-using System;
 using System.Reflection;
 using KN_Core.Submodule;
 using SyncMultiplayer;
 
 namespace KN_Core {
   public class Udp {
-    public const int TypeSuspension = 0;
+    public const int TypeSuspension = 0xE4;
 
     public SmartfoxRoomClient Room { get; private set; }
     public SmartfoxClient Client { get; private set; }

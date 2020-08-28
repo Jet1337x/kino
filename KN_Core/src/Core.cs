@@ -188,7 +188,7 @@ namespace KN_Core {
 
       Timeline.Update();
 
-      loadingCars_.RemoveAll(car => car.Player == null);
+      loadingCars_.RemoveAll(car => car.Player == null || car.Player.userCar == null);
 
       var nwPlayers = NetworkController.InstanceGame?.Players;
       if (nwPlayers != null) {
@@ -344,19 +344,6 @@ namespace KN_Core {
           }
         }
       }
-    }
-
-    public static Color32 DecodeColor(int color) {
-      return new Color32 {
-        a = (byte) ((color >> 24) & 0xff),
-        r = (byte) ((color >> 16) & 0xff),
-        g = (byte) ((color >> 8) & 0xff),
-        b = (byte) (color & 0xff)
-      };
-    }
-
-    public static int EncodeColor(Color32 color) {
-      return (color.a & 0xff) << 24 | (color.r & 0xff) << 16 | (color.g & 0xff) << 8 | (color.b & 0xff);
     }
 
     public static Texture2D CreateTexture(Color color) {
