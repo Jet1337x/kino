@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using KN_Core;
-using SyncMultiplayer;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace KN_Lights {
   public class Lights : BaseMod {
@@ -37,11 +35,7 @@ namespace KN_Lights {
     private float carLightsDiscard_;
 
     private bool prevScene_;
-    private int carsCount_;
     private bool autoAddLights_;
-    private float autoAddLightsTimer_;
-    private bool autoAddLightsTimerStart_;
-    private float autoAddLightsDelay_;
 
     private readonly WorldLights worldLights_;
 
@@ -78,7 +72,6 @@ namespace KN_Lights {
 #endif
 
       carLightsDiscard_ = Core.ModConfig.Get<float>("cl_discard_distance");
-      autoAddLightsDelay_ = Core.ModConfig.Get<float>("join_delay");
 
       nwLightsConfig_ = LightsConfigSerializer.Deserialize(NwLightsConfigFile, out var nwLights) ? new NwLightsConfig(nwLights) : new NwLightsConfig();
       lightsConfig_ = LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights) ? new LightsConfig(lights) : new LightsConfig();
@@ -95,6 +88,10 @@ namespace KN_Lights {
 #endif
 
       worldLights_.OnStop();
+    }
+
+    protected override void OnCarLoaded() {
+      AutoAddLights();
     }
 
     public override void Update(int id) {
@@ -131,8 +128,6 @@ namespace KN_Lights {
           activeLights_.HeadLightsColor = colorPicker_.PickedColor;
         }
       }
-
-      AutoAddLights();
     }
 
     public override void LateUpdate(int id) {
@@ -397,6 +392,8 @@ namespace KN_Lights {
 
       if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO EVERYONE", autoAddLights_ ? Skin.ButtonActive : Skin.Button)) {
         autoAddLights_ = !autoAddLights_;
+        AddLightsToEveryone();
+        EnableLightsOn(Core.PlayerCar);
       }
 
       if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO", Skin.Button)) {
@@ -543,24 +540,11 @@ namespace KN_Lights {
 
       if ((sceneChanged || TFCar.IsNull(Core.PlayerCar)) && carLights_.Count > 0) {
         autoAddLights_ = false;
-        carsCount_ = 0;
         RemoveAllNullLights();
       }
 
       if (autoAddLights_) {
-        int players = NetworkController.InstanceGame?.Players.Count ?? 0;
-        if (carsCount_ != players || sceneChanged) {
-          autoAddLightsTimer_ = 0.0f;
-          autoAddLightsTimerStart_ = true;
-        }
-        carsCount_ = players;
-
-        if (autoAddLightsTimerStart_ && autoAddLightsTimer_ >= autoAddLightsDelay_) {
-          AddLightsToEveryone();
-          autoAddLightsTimerStart_ = false;
-        }
-
-        autoAddLightsTimer_ += Time.deltaTime;
+        AddLightsToEveryone();
       }
     }
 
