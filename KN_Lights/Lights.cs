@@ -392,8 +392,11 @@ namespace KN_Lights {
 
       if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO EVERYONE", autoAddLights_ ? Skin.ButtonActive : Skin.Button)) {
         autoAddLights_ = !autoAddLights_;
-        AddLightsToEveryone();
-        EnableLightsOn(Core.PlayerCar);
+
+        if (autoAddLights_) {
+          AddLightsToEveryone();
+          EnableLightsOn(Core.PlayerCar);
+        }
       }
 
       if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO", Skin.Button)) {
@@ -452,7 +455,6 @@ namespace KN_Lights {
       }
       else {
         lights.Attach(car);
-        Log.Write($"[KN_Lights]: Car lights for {(player ? "own car" : "")} '{lights.CarId}' attached");
       }
 
       int index = carLights_.FindIndex(cl => cl.Car == car);
@@ -544,6 +546,9 @@ namespace KN_Lights {
       }
 
       if (autoAddLights_) {
+        if (!carLights_.Contains(ownLights_)) {
+          EnableLightsOn(Core.PlayerCar);
+        }
         AddLightsToEveryone();
       }
     }
@@ -551,7 +556,15 @@ namespace KN_Lights {
     private void AddLightsToEveryone() {
       carPicker_.IsPicking = true;
       foreach (var car in carPicker_.Cars) {
-        EnableLightsOn(car);
+        bool found = false;
+        foreach (var cl in carLights_) {
+          if (cl.Car == car) {
+            found = true;
+          }
+        }
+        if (!found) {
+          EnableLightsOn(car);
+        }
       }
       carPicker_.IsPicking = false;
     }
