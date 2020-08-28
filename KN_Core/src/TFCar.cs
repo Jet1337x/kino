@@ -75,4 +75,12 @@ namespace KN_Core {
       }
     }
   }
+
+  public class DisabledCar {
+    public bool Collision;
+    public bool CollisionPlayer;
+    public bool AutoDisable;
+
+    public TFCar Car;
+  }
 }
