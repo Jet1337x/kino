@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GameOverlay;
 using SyncMultiplayer;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace KN_Core.Submodule {
   public class Settings : BaseMod {
@@ -70,6 +71,9 @@ namespace KN_Core.Submodule {
     private readonly CarPicker carPicker_;
     private readonly List<TFCar> disabledCars_;
 
+    private float collisionTimer_;
+    private const float CollisionTimerDelay = 10.0f;
+
     private NetGameCollisionManager collisionManager_;
 
     public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) {
@@ -88,6 +92,7 @@ namespace KN_Core.Submodule {
       trashDisabled_ = Core.ModConfig.Get<bool>("trash_autodisable");
       trashHidden_ = Core.ModConfig.Get<bool>("trash_autohide");
       joinDelay_ = Core.ModConfig.Get<float>("join_delay");
+      receiveUdp_ = Core.ModConfig.Get<bool>("receive_udp");
       exhaust_.OnStart();
     }
 
@@ -98,6 +103,7 @@ namespace KN_Core.Submodule {
       Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
       Core.ModConfig.Set("trash_autodisable", trashDisabled_);
       Core.ModConfig.Set("trash_autohide", trashHidden_);
+      Core.ModConfig.Set("receive_udp", receiveUdp_);
       exhaust_.OnStop();
     }
 
@@ -175,6 +181,10 @@ namespace KN_Core.Submodule {
 
       x += Gui.OffsetSmall;
 
+      if (gui.Button(ref x, ref y, width, height, "RECEIVE UDP KINO DATA", receiveUdp_ ? Skin.ButtonActive : Skin.Button)) {
+        ReceiveUdp = !ReceiveUdp;
+      }
+
       if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachometerEnabledSettings_ ? Skin.ButtonActive : Skin.Button)) {
         tachometerEnabledSettings_ = !tachometerEnabledSettings_;
         Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
@@ -242,6 +252,8 @@ namespace KN_Core.Submodule {
     }
 
     private void UpdateHiddenCars(bool sceneChanged) {
+      disabledCars_.RemoveAll(TFCar.IsNull);
+
       if (trashDisabled_) {
         int players = NetworkController.InstanceGame?.Players.Count ?? 0;
         if (prevCars_ != players || sceneChanged) {
@@ -278,11 +290,20 @@ namespace KN_Core.Submodule {
         }
       }
 
+      collisionTimer_ += Time.deltaTime;
+      if (collisionTimer_ >= CollisionTimerDelay) {
+        collisionTimer_ = 0.0f;
+        int id = NetworkController.InstanceGame?.LocalPlayer?.NetworkID ?? -1;
+        if (id != -1) {
+          foreach (var car in disabledCars_) {
+            Core.Udp.SendChangeRoomId(car.Base.networkPlayer);
+          }
+        }
+      }
+
       foreach (var car in disabledCars_) {
         collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
       }
-
-      disabledCars_.RemoveAll(TFCar.IsNull);
     }
   }
 }

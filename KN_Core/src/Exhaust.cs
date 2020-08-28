@@ -125,7 +125,7 @@ namespace KN_Core {
 
       if (exhaustsToRemove_.Count > 0) {
         foreach (var e in exhaustsToRemove_) {
-          Log.Write($"[TF_Core]: Removed for car '{e.Car.Name}'");
+          Log.Write($"[TF_Core]: Removed exhaust for car '{e.Car.Name}'");
           exhausts_.Remove(e);
         }
         exhaustsToRemove_.Clear();

@@ -77,12 +77,12 @@ namespace KN_Core {
       mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
 
-      Udp = new Udp();
-      Udp.ProcessPacket += HandlePacket;
-
       settings_ = new Settings(this);
       AddMod(settings_);
       AddMod(new About(this));
+
+      Udp = new Udp(settings_);
+      Udp.ProcessPacket += HandlePacket;
     }
 
     public void AddMod(BaseMod mod) {
@@ -166,6 +166,8 @@ namespace KN_Core {
 
       if (Controls.KeyDown("reload_all")) {
         Udp.ReloadClient = true;
+        Udp.ReloadSubRoom = true;
+
         foreach (var mod in mods_) {
           mod.OnReloadAll();
         }
@@ -177,9 +179,7 @@ namespace KN_Core {
         mod.Update(selectedModId_);
       }
 
-      if (settings_.ReceiveUdp) {
-        Udp.Update();
-      }
+      Udp.Update();
 
       foreach (var player in NetworkController.InstanceGame.Players.Where(player => player.userCar != null)) {
         player.userCar.SetVisibleUIName(!settings_.HideNames);
