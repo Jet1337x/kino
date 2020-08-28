@@ -188,7 +188,7 @@ namespace KN_Core {
 
       Timeline.Update();
 
-      loadingCars_.RemoveAll(car => car.Player == null || car.Player.userCar == null);
+      loadingCars_.RemoveAll(car => car.Loaded && (car.Player == null || car.Player.userCar == null));
 
       var nwPlayers = NetworkController.InstanceGame?.Players;
       if (nwPlayers != null) {
