@@ -192,10 +192,6 @@ namespace KN_Core.Submodule {
 
       x += Gui.OffsetSmall;
 
-      if (gui.Button(ref x, ref y, width, height, "RECEIVE UDP KINO DATA", receiveUdp_ ? Skin.ButtonActive : Skin.Button)) {
-        ReceiveUdp = !ReceiveUdp;
-      }
-
       if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachometerEnabledSettings_ ? Skin.ButtonActive : Skin.Button)) {
         tachometerEnabledSettings_ = !tachometerEnabledSettings_;
         Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);

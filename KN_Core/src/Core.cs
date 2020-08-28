@@ -177,7 +177,8 @@ namespace KN_Core {
 
       GuiRenderCheck();
 
-      if (Controls.KeyDown("reload_all")) {
+#if false
+      if (Input.GetKeyDown(KeyCode.Delete)) {
         Udp.ReloadClient = true;
         Udp.ReloadSubRoom = true;
 
@@ -185,6 +186,7 @@ namespace KN_Core {
           mod.OnReloadAll();
         }
       }
+#endif
 
       Timeline.Update();
 

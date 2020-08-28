@@ -194,8 +194,6 @@ namespace KN_Core {
 
       defaultParams_["cl_discard_distance"] = 170.0f;
 
-      defaultParams_["join_delay"] = 13.0f;
-
       defaultParams_["receive_udp"] = true;
 
       // air
