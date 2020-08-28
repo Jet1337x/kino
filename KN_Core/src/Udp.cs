@@ -1,10 +1,12 @@
 using System.Reflection;
 using KN_Core.Submodule;
+using Sfs2X.Entities.Data;
 using SyncMultiplayer;
 
 namespace KN_Core {
   public class Udp {
     public const int TypeSuspension = 0xE4;
+    public const int TypeLights = 0xE5;
 
     public SmartfoxRoomClient Room { get; private set; }
     public SmartfoxClient Client { get; private set; }
@@ -49,6 +51,16 @@ namespace KN_Core {
 
       if (Client != null && Client.State != ClientState.Joined) {
         Client.Sfs.InitUDP();
+      }
+    }
+
+    public void Send(SmartfoxDataPackage data) {
+      if (Client != null) {
+        Client.Send(data.ToDataPackage(), true);
+        if (Client.State != ClientState.Joined) {
+          ReloadClient = true;
+          Client.Sfs.InitUDP();
+        }
       }
     }
 
