@@ -2,6 +2,7 @@ using System.IO;
 using CarModelSystem;
 using CarX;
 using KN_Core;
+using SyncMultiplayer;
 using UnityEngine;
 
 namespace KN_Lights {
@@ -272,11 +273,14 @@ namespace KN_Lights {
       }
     }
 
+    public bool IsNwCar;
+
     private CARXCar cxCar_;
 
     private static readonly int BaseColorMap = Shader.PropertyToID("_BaseColorMap");
 
     public CarLights() {
+      IsNwCar = false;
       Initialize();
     }
 
@@ -543,6 +547,33 @@ namespace KN_Lights {
       }
     }
 
+    public void ModifyFrom(SmartfoxDataPackage data) {
+      IsNwCar = true;
+
+      hlColor_ = Core.DecodeColor(data.Data.GetInt("color"));
+      pitch_ = data.Data.GetFloat("pitch");
+      pitchTail_ = data.Data.GetFloat("pitchTail");
+      hlBrightness_ = data.Data.GetFloat("hlBrightness");
+      hlAngle_ = data.Data.GetFloat("hlAngle");
+      tlBrightness_ = data.Data.GetFloat("tlBrightness");
+      tlAngle_ = data.Data.GetFloat("tlAngle");
+
+      hlLEnabled_ = data.Data.GetBool("hlLEnabled");
+      hlREnabled_ = data.Data.GetBool("hlREnabled");
+
+      float x = data.Data.GetFloat("hlOffsetX");
+      float y = data.Data.GetFloat("hlOffsetY");
+      float z = data.Data.GetFloat("hlOffsetZ");
+      HeadlightOffset = new Vector3(x, y, z);
+
+      tlLEnabled_ = data.Data.GetBool("tlLEnabled");
+      tlREnabled_ = data.Data.GetBool("tlREnabled");
+      x = data.Data.GetFloat("tlOffsetX");
+      y = data.Data.GetFloat("tlOffsetY");
+      z = data.Data.GetFloat("tlOffsetZ");
+      TailLightOffset = new Vector3(x, y, z);
+    }
+
     public void Serialize(BinaryWriter writer) {
       writer.Write(CarId);
       writer.Write(IsNetworkCar);
@@ -563,6 +594,36 @@ namespace KN_Lights {
       writer.Write(tlLEnabled_);
       writer.Write(tlREnabled_);
       WriteVec3(writer, TailLightOffset);
+    }
+
+    public void FromNwData(SmartfoxDataPackage data, int id, string name) {
+      CarId = id;
+      IsNetworkCar = true;
+      UserName = name;
+      IsNwCar = true;
+
+      hlColor_ = Core.DecodeColor(data.Data.GetInt("color"));
+      pitch_ = data.Data.GetFloat("pitch");
+      pitchTail_ = data.Data.GetFloat("pitchTail");
+      hlBrightness_ = data.Data.GetFloat("hlBrightness");
+      hlAngle_ = data.Data.GetFloat("hlAngle");
+      tlBrightness_ = data.Data.GetFloat("tlBrightness");
+      tlAngle_ = data.Data.GetFloat("tlAngle");
+
+      hlLEnabled_ = data.Data.GetBool("hlLEnabled");
+      hlREnabled_ = data.Data.GetBool("hlREnabled");
+
+      float x = data.Data.GetFloat("hlOffsetX");
+      float y = data.Data.GetFloat("hlOffsetY");
+      float z = data.Data.GetFloat("hlOffsetZ");
+      HeadlightOffset = new Vector3(x, y, z);
+
+      tlLEnabled_ = data.Data.GetBool("tlLEnabled");
+      tlREnabled_ = data.Data.GetBool("tlREnabled");
+      x = data.Data.GetFloat("tlOffsetX");
+      y = data.Data.GetFloat("tlOffsetY");
+      z = data.Data.GetFloat("tlOffsetZ");
+      TailLightOffset = new Vector3(x, y, z);
     }
 
     public void Deserialize(BinaryReader reader, int version) {

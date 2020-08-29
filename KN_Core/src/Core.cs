@@ -42,6 +42,8 @@ namespace KN_Core {
 
     public TFCar PlayerCar { get; private set; }
 
+    public Settings Settings { get; private set; }
+
     private bool isInGaragePrev_;
     public bool IsInGarage { get; private set; }
 
@@ -57,7 +59,6 @@ namespace KN_Core {
     private int selectedModId_;
 
     private CameraRotation cameraRotation_;
-    private readonly Settings settings_;
 
     private readonly List<LoadingCar> loadingCars_;
 
@@ -84,11 +85,11 @@ namespace KN_Core {
       mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
 
-      settings_ = new Settings(this);
-      AddMod(settings_);
+      Settings = new Settings(this);
+      AddMod(Settings);
       AddMod(new About(this));
 
-      Udp = new Udp(settings_);
+      Udp = new Udp(Settings);
       Udp.ProcessPacket += HandlePacket;
 
       loadingCars_ = new List<LoadingCar>(16);
@@ -120,7 +121,7 @@ namespace KN_Core {
 
       hideCxUi_ = ModConfig.Get<bool>("hide_cx_ui");
 
-      settings_.Awake();
+      Settings.Awake();
     }
 
     private void OnDestroy() {
@@ -216,7 +217,7 @@ namespace KN_Core {
         }
 
         foreach (var player in nwPlayers.Where(player => player.userCar != null)) {
-          player.userCar.SetVisibleUIName(!settings_.HideNames);
+          player.userCar.SetVisibleUIName(!Settings.HideNames);
         }
       }
 
@@ -236,7 +237,7 @@ namespace KN_Core {
     }
 
     public void OnGUI() {
-      settings_.GuiTachometer(mods_[selectedTab_].WantsHideUi());
+      Settings.GuiTachometer(mods_[selectedTab_].WantsHideUi());
 
       if (!IsGuiEnabled) {
         return;
@@ -293,7 +294,7 @@ namespace KN_Core {
 
     private void HideStuff() {
       if (Controls.KeyDown("player_names")) {
-        settings_.HideNames = !settings_.HideNames;
+        Settings.HideNames = !Settings.HideNames;
       }
     }
 
@@ -372,7 +373,7 @@ namespace KN_Core {
     }
 
     private void HandlePacket(SmartfoxDataPackage data) {
-      if (!settings_.ReceiveUdp) {
+      if (!Settings.ReceiveUdp) {
         return;
       }
 

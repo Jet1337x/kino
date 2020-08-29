@@ -1,6 +1,5 @@
 using System.Reflection;
 using KN_Core.Submodule;
-using Sfs2X.Entities.Data;
 using SyncMultiplayer;
 
 namespace KN_Core {

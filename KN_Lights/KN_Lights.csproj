@@ -83,6 +83,9 @@
         <Reference Include="MonoMod.Utils, Version=19.11.5.1, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\BepInEx\MonoMod.Utils.dll</HintPath>
         </Reference>
+        <Reference Include="SmartFox2X, Version=1.7.8.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\CarX\SmartFox2X.dll</HintPath>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />

@@ -44,6 +44,15 @@ namespace KN_Core.Submodule {
       }
     }
 
+    private bool syncLights_;
+    public bool SyncLights {
+      get => syncLights_;
+      set {
+        syncLights_ = value;
+        Core.ModConfig.Set("sync_lights", value);
+      }
+    }
+
     private int prevCarId_;
     private bool prevScene_;
 
@@ -83,6 +92,7 @@ namespace KN_Core.Submodule {
       BackFireEnabled = Core.ModConfig.Get<bool>("custom_backfire");
       tachometerEnabledSettings_ = Core.ModConfig.Get<bool>("custom_tach");
       receiveUdp_ = Core.ModConfig.Get<bool>("receive_udp");
+      syncLights_ = Core.ModConfig.Get<bool>("sync_lights");
 
       if (!Core.IsCheatsEnabled) {
         consolesDisabled_ = Core.ModConfig.Get<bool>("trash_autodisable");
@@ -98,6 +108,7 @@ namespace KN_Core.Submodule {
       Core.ModConfig.Set("custom_backfire", BackFireEnabled);
       Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
       Core.ModConfig.Set("receive_udp", receiveUdp_);
+      Core.ModConfig.Set("sync_lights", syncLights_);
 
       if (!Core.IsCheatsEnabled) {
         Core.ModConfig.Set("trash_autodisable", consolesDisabled_);
@@ -251,6 +262,10 @@ namespace KN_Core.Submodule {
 
       if (BackFireEnabled) {
         exhaust_.OnGUI(gui, ref x, ref y, width);
+      }
+
+      if (gui.Button(ref x, ref y, width, height, "SYNC LIGHTS", SyncLights ? Skin.ButtonActive : Skin.Button)) {
+        SyncLights = !SyncLights;
       }
 
       GUI.enabled = !Core.IsCheatsEnabled;

@@ -16,7 +16,7 @@ namespace KN_Core {
       MaxTime = maxTime;
       runOnce_ = runOnce;
       CurrentTime = 0.0f;
-      IsStarted = false;
+      IsStarted = true;
     }
 
     public void Update() {
@@ -32,6 +32,11 @@ namespace KN_Core {
           IsStarted = !runOnce_;
         }
       }
+    }
+
+    public void Reset() {
+      CurrentTime = 0.0f;
+      IsStarted = true;
     }
   }
 }

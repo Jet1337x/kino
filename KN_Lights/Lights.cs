@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using KN_Core;
+using KN_Core.Submodule;
+using SyncMultiplayer;
 using UnityEngine;
 
 namespace KN_Lights {
@@ -37,12 +39,20 @@ namespace KN_Lights {
     private bool prevScene_;
     private bool autoAddLights_;
 
+    private bool shouldSync_;
+    private readonly Timer syncTimer_;
+    private readonly Timer joinTimer_;
+
     private readonly WorldLights worldLights_;
 
     private readonly ColorPicker colorPicker_;
     private readonly CarPicker carPicker_;
 
+    private readonly Settings settings_;
+
     public Lights(Core core) : base(core, "LIGHTS", 1) {
+      settings_ = core.Settings;
+
       worldLights_ = new WorldLights(core);
 
       colorPicker_ = new ColorPicker();
@@ -50,6 +60,12 @@ namespace KN_Lights {
 
       carLights_ = new List<CarLights>();
       carLightsToRemove_ = new List<CarLights>();
+
+      syncTimer_ = new Timer(0.5f);
+      syncTimer_.Callback += SendLightsData;
+
+      joinTimer_ = new Timer(5.0f, true);
+      joinTimer_.Callback += SendLightsData;
     }
 
     public override void ResetState() {
@@ -91,7 +107,45 @@ namespace KN_Lights {
     }
 
     protected override void OnCarLoaded() {
-      AutoAddLights();
+      AutoAddLights(false);
+      shouldSync_ = true;
+    }
+
+    public override void OnUdpData(SmartfoxDataPackage data) {
+      int type = data.Data.GetInt("type");
+      if (type != Udp.TypeLights) {
+        return;
+      }
+
+      int id = data.Data.GetInt("id");
+
+      carPicker_.IsPicking = true;
+      carPicker_.IsPicking = false;
+      foreach (var car in carPicker_.Cars) {
+        if (car.IsNetworkCar && car.Base.networkPlayer.NetworkID == id) {
+          bool found = false;
+          foreach (var cl in nwLightsConfig_.Lights) {
+            if (cl.CarId == car.Id && cl.UserName == car.Name) {
+              cl.ModifyFrom(data);
+              if (autoAddLights_) {
+                EnableLightsOn(car, false);
+              }
+              found = true;
+              break;
+            }
+          }
+
+          if (!found) {
+            var lights = new CarLights();
+            lights.FromNwData(data, car.Id, car.Name);
+            if (autoAddLights_) {
+              EnableLightsOn(car, false);
+            }
+            nwLightsConfig_.AddLights(lights);
+          }
+          break;
+        }
+      }
     }
 
     public override void Update(int id) {
@@ -104,6 +158,12 @@ namespace KN_Lights {
       ToggleOwnLights();
 
       worldLights_.Update();
+
+      bool sceneChanged = prevScene_ && !Core.IsInGarage || !prevScene_ && Core.IsInGarage;
+      prevScene_ = Core.IsInGarage;
+      if (sceneChanged) {
+        joinTimer_.Reset();
+      }
 
       if (id != Id) {
         return;
@@ -124,6 +184,12 @@ namespace KN_Lights {
           activeLights_.HeadLightsColor = colorPicker_.PickedColor;
         }
       }
+
+      if (settings_.SyncLights && shouldSync_) {
+        syncTimer_.Update();
+      }
+
+      joinTimer_.Update();
     }
 
     public override void LateUpdate(int id) {
@@ -199,7 +265,7 @@ namespace KN_Lights {
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.OffsetY;
 
-      GUI.enabled = activeLights_ != null;
+      GUI.enabled = activeLights_ != null && !activeLights_.IsNwCar;
 
 #if KN_DEV_TOOLS
       if (gui.Button(ref x, ref y, width, height, "DEV SAVE", Skin.Button)) {
@@ -220,10 +286,12 @@ namespace KN_Lights {
         if (activeLights_ != null) {
           activeLights_.IsLightsEnabledIl = !activeLights_.IsLightsEnabledIl;
         }
+        shouldSync_ = activeLights_ == ownLights_;
       }
 
       if (gui.SliderH(ref x, ref y, width, ref carLightsDiscard_, 50.0f, 500.0f, $"HIDE LIGHTS AFTER: {carLightsDiscard_:F1}")) {
         Core.ModConfig.Set("cl_discard_distance", carLightsDiscard_);
+        shouldSync_ = activeLights_ == ownLights_;
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
@@ -256,6 +324,7 @@ namespace KN_Lights {
       if (gui.Button(ref x, ref y, widthLight, height, "LEFT HEADLIGHT", lh ? Skin.ButtonActive : Skin.Button)) {
         if (activeLights_ != null) {
           activeLights_.IsHeadLightLeftEnabled = !activeLights_.IsHeadLightLeftEnabled;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
       y -= Gui.OffsetY + height;
@@ -265,6 +334,7 @@ namespace KN_Lights {
       if (gui.Button(ref x, ref y, widthLight, height, "RIGHT HEADLIGHT", rh ? Skin.ButtonActive : Skin.Button)) {
         if (activeLights_ != null) {
           activeLights_.IsHeadLightRightEnabled = !activeLights_.IsHeadLightRightEnabled;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
       x = xBegin;
@@ -272,6 +342,7 @@ namespace KN_Lights {
       if (gui.Button(ref x, ref y, width, height, "COLOR", Skin.Button)) {
         if (activeLights_ != null) {
           colorPicker_.Toggle(activeLights_.HeadLightsColor, false);
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
@@ -279,6 +350,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref brightness, 100.0f, 10000.0f, $"HEADLIGHTS BRIGHTNESS: {brightness:F1}")) {
         if (activeLights_ != null) {
           activeLights_.HeadLightBrightness = brightness;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
@@ -286,6 +358,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 160.0f, $"HEADLIGHTS ANGLE: {angle:F1}")) {
         if (activeLights_ != null) {
           activeLights_.HeadLightAngle = angle;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
@@ -293,6 +366,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"HEADLIGHTS PITCH: {hlPitch:F}")) {
         if (activeLights_ != null) {
           activeLights_.Pitch = hlPitch;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
@@ -300,18 +374,21 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref offset.x, 0.0f, 3.0f, $"X: {offset.x:F}")) {
         if (activeLights_ != null) {
           activeLights_.HeadlightOffset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
       if (gui.SliderH(ref x, ref y, width, ref offset.y, 0.0f, 3.0f, $"Y: {offset.y:F}")) {
         if (activeLights_ != null) {
           activeLights_.HeadlightOffset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
       if (gui.SliderH(ref x, ref y, width, ref offset.z, 0.0f, 3.0f, $"Z: {offset.z:F}")) {
         if (activeLights_ != null) {
           activeLights_.HeadlightOffset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
     }
@@ -324,6 +401,7 @@ namespace KN_Lights {
       if (gui.Button(ref x, ref y, widthLight, height, "LEFT TAILLIGHT", lt ? Skin.ButtonActive : Skin.Button)) {
         if (activeLights_ != null) {
           activeLights_.IsTailLightLeftEnabled = !activeLights_.IsTailLightLeftEnabled;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
       y -= Gui.OffsetY + height;
@@ -333,6 +411,7 @@ namespace KN_Lights {
       if (gui.Button(ref x, ref y, widthLight, height, "RIGHT TAILLIGHT", rt ? Skin.ButtonActive : Skin.Button)) {
         if (activeLights_ != null) {
           activeLights_.IsTailLightRightEnabled = !activeLights_.IsTailLightRightEnabled;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
       x = xBegin;
@@ -341,6 +420,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref brightness, 15.0f, 80.0f, $"TAILLIGHTS BRIGHTNESS: {brightness:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightBrightness = brightness;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
@@ -348,6 +428,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 170.0f, $"TAILLIGHTS ANGLE: {angle:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightAngle = angle;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
@@ -355,6 +436,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"TAILLIGHTS PITCH: {tlPitch:F1}")) {
         if (activeLights_ != null) {
           activeLights_.PitchTail = tlPitch;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
@@ -362,24 +444,27 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref offset.x, 0.0f, 3.0f, $"X: {offset.x:F}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightOffset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
       if (gui.SliderH(ref x, ref y, width, ref offset.y, 0.0f, 3.0f, $"Y: {offset.y:F}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightOffset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
       if (gui.SliderH(ref x, ref y, width, ref offset.z, 0.0f, -3.0f, $"Z: {offset.z:F}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightOffset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
     }
 
     private void GuiLightsList(Gui gui, ref float x, ref float y) {
-      const float listHeight = 320.0f;
+      const float listHeight = 460.0f;
       const float widthScale = 1.2f;
       const float buttonWidth = Gui.Width * widthScale;
 
@@ -392,6 +477,7 @@ namespace KN_Lights {
         if (autoAddLights_) {
           AddLightsToEveryone();
           EnableLightsOn(Core.PlayerCar);
+          shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
@@ -435,7 +521,7 @@ namespace KN_Lights {
       y += Gui.OffsetSmall;
     }
 
-    private void EnableLightsOn(TFCar car) {
+    private void EnableLightsOn(TFCar car, bool select = true) {
       bool player = car == Core.PlayerCar;
 
       var lights = player ? lightsConfig_.GetLights(car.Id) : nwLightsConfig_.GetLights(car.Id, car.Name);
@@ -460,7 +546,9 @@ namespace KN_Lights {
       else {
         carLights_.Add(lights);
       }
-      activeLights_ = lights;
+      if (select) {
+        activeLights_ = lights;
+      }
       if (player) {
         ownLights_ = lights;
       }
@@ -532,7 +620,7 @@ namespace KN_Lights {
       }
     }
 
-    private void AutoAddLights() {
+    private void AutoAddLights(bool select = true) {
       bool sceneChanged = prevScene_ && !Core.IsInGarage || !prevScene_ && Core.IsInGarage;
       prevScene_ = Core.IsInGarage;
 
@@ -543,13 +631,13 @@ namespace KN_Lights {
 
       if (autoAddLights_) {
         if (!carLights_.Contains(ownLights_)) {
-          EnableLightsOn(Core.PlayerCar);
+          EnableLightsOn(Core.PlayerCar, select);
         }
-        AddLightsToEveryone();
+        AddLightsToEveryone(select);
       }
     }
 
-    private void AddLightsToEveryone() {
+    private void AddLightsToEveryone(bool select = true) {
       carPicker_.IsPicking = true;
       carPicker_.IsPicking = false;
       foreach (var car in carPicker_.Cars) {
@@ -560,7 +648,7 @@ namespace KN_Lights {
           }
         }
         if (!found) {
-          EnableLightsOn(car);
+          EnableLightsOn(car, select);
         }
       }
     }
@@ -598,6 +686,45 @@ namespace KN_Lights {
 #endif
         }
       }
+    }
+
+    private void SendLightsData() {
+      int id = NetworkController.InstanceGame?.LocalPlayer?.NetworkID ?? -1;
+      if (id == -1) {
+        return;
+      }
+
+      if (ownLights_ == null) {
+        return;
+      }
+
+      shouldSync_ = false;
+
+      var data = new SmartfoxDataPackage(PacketId.Subroom);
+      data.Add("1", (byte) 25);
+      data.Add("type", Udp.TypeLights);
+      data.Add("id", id);
+      data.Add("color", Core.EncodeColor(ownLights_.HeadLightsColor));
+      data.Add("pitch", ownLights_.Pitch);
+      data.Add("pitchTail", ownLights_.PitchTail);
+      data.Add("hlBrightness", ownLights_.HeadLightBrightness);
+      data.Add("hlAngle", ownLights_.HeadLightAngle);
+      data.Add("tlBrightness", ownLights_.TailLightBrightness);
+      data.Add("tlAngle", ownLights_.TailLightBrightness);
+
+      data.Add("hlLEnabled", ownLights_.IsHeadLightLeftEnabled);
+      data.Add("hlREnabled", ownLights_.IsHeadLightRightEnabled);
+      data.Add("hlOffsetX", ownLights_.HeadlightOffset.x);
+      data.Add("hlOffsetY", ownLights_.HeadlightOffset.y);
+      data.Add("hlOffsetZ", ownLights_.HeadlightOffset.z);
+
+      data.Add("tlLEnabled", ownLights_.IsTailLightLeftEnabled);
+      data.Add("tlREnabled", ownLights_.IsTailLightRightEnabled);
+      data.Add("tlOffsetX", ownLights_.TailLightOffset.x);
+      data.Add("tlOffsetY", ownLights_.TailLightOffset.y);
+      data.Add("tlOffsetZ", ownLights_.TailLightOffset.z);
+
+      Core.Udp.Send(data);
     }
   }
 }
