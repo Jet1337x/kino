@@ -57,10 +57,12 @@ namespace KN_Core.Submodule {
 
     private Canvas rootCanvas_;
 
-    private bool trashDisabled_;
-    private bool trashHidden_;
+    private bool consolesDisabled_;
+    private bool consolesHidden_;
     private readonly CarPicker carPicker_;
     private readonly List<TFCar> disabledCars_;
+
+    private Timer updateCarsTimer_;
 
     private NetGameCollisionManager collisionManager_;
 
@@ -70,6 +72,9 @@ namespace KN_Core.Submodule {
 
       carPicker_ = new CarPicker(core);
       disabledCars_ = new List<TFCar>(16);
+
+      updateCarsTimer_ = new Timer(10.0f);
+      updateCarsTimer_.Callback += UpdateDisabledPlayers;
     }
 
     public void Awake() {
@@ -80,8 +85,8 @@ namespace KN_Core.Submodule {
       receiveUdp_ = Core.ModConfig.Get<bool>("receive_udp");
 
       if (!Core.IsCheatsEnabled) {
-        trashDisabled_ = Core.ModConfig.Get<bool>("trash_autodisable");
-        trashHidden_ = Core.ModConfig.Get<bool>("trash_autohide");
+        consolesDisabled_ = Core.ModConfig.Get<bool>("trash_autodisable");
+        consolesHidden_ = Core.ModConfig.Get<bool>("trash_autohide");
       }
 
       exhaust_.OnStart();
@@ -95,8 +100,8 @@ namespace KN_Core.Submodule {
       Core.ModConfig.Set("receive_udp", receiveUdp_);
 
       if (!Core.IsCheatsEnabled) {
-        Core.ModConfig.Set("trash_autodisable", trashDisabled_);
-        Core.ModConfig.Set("trash_autohide", trashHidden_);
+        Core.ModConfig.Set("trash_autodisable", consolesDisabled_);
+        Core.ModConfig.Set("trash_autohide", consolesHidden_);
       }
 
       exhaust_.OnStop();
@@ -109,23 +114,7 @@ namespace KN_Core.Submodule {
     protected override void OnCarLoaded() {
       exhaust_.Initialize();
 
-      if (!Core.IsCheatsEnabled) {
-        disabledCars_.RemoveAll(TFCar.IsNull);
-
-        if (trashDisabled_) {
-          carPicker_.IsPicking = true;
-          carPicker_.IsPicking = false;
-          foreach (var car in carPicker_.Cars) {
-            if (car != Core.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
-              if (!disabledCars_.Contains(car)) {
-                disabledCars_.Add(car);
-                collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
-                Core.Udp.SendChangeRoomId(car.Base.networkPlayer, false);
-              }
-            }
-          }
-        }
-      }
+      UpdateDisabledPlayers();
     }
 
     public override void Update(int id) {
@@ -175,13 +164,44 @@ namespace KN_Core.Submodule {
       }
       tachometer_.Update();
 
-      if (trashHidden_) {
+      if (consolesHidden_ || consolesDisabled_) {
+        updateCarsTimer_.Update();
+      }
+
+      if (consolesHidden_) {
         foreach (var car in disabledCars_) {
           if (!TFCar.IsNull(car)) {
             var pos = car.CxTransform.position;
             pos.y += 1000.0f;
             car.CxTransform.position = pos;
           }
+        }
+      }
+    }
+
+    private void UpdateDisabledPlayers() {
+      if (!Core.IsCheatsEnabled) {
+        disabledCars_.RemoveAll(TFCar.IsNull);
+
+        if (consolesDisabled_) {
+          carPicker_.IsPicking = true;
+          carPicker_.IsPicking = false;
+          foreach (var car in carPicker_.Cars) {
+            if (car != Core.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
+              if (!disabledCars_.Contains(car)) {
+                disabledCars_.Add(car);
+                collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
+                Core.Udp.SendChangeRoomId(car.Base.networkPlayer, false);
+              }
+            }
+          }
+        }
+        else {
+          foreach (var car in disabledCars_) {
+            collisionManager_?.MovePlayerToColliderGroup("", car.Base.networkPlayer);
+            Core.Udp.SendChangeRoomId(car.Base.networkPlayer, true);
+          }
+          disabledCars_.Clear();
         }
       }
     }
@@ -235,20 +255,13 @@ namespace KN_Core.Submodule {
 
       GUI.enabled = !Core.IsCheatsEnabled;
 
-      if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", trashDisabled_ ? Skin.ButtonActive : Skin.Button)) {
-        trashDisabled_ = !trashDisabled_;
-
-        if (!trashDisabled_) {
-          foreach (var car in disabledCars_) {
-            collisionManager_?.MovePlayerToColliderGroup("", car.Base.networkPlayer);
-            Core.Udp.SendChangeRoomId(car.Base.networkPlayer, true);
-          }
-          disabledCars_.Clear();
-        }
+      if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", consolesDisabled_ ? Skin.ButtonActive : Skin.Button)) {
+        consolesDisabled_ = !consolesDisabled_;
+        UpdateDisabledPlayers();
       }
 
-      if (gui.Button(ref x, ref y, width, height, "HIDE CONSOLE PLAYERS", trashHidden_ ? Skin.ButtonActive : Skin.Button)) {
-        trashHidden_ = !trashHidden_;
+      if (gui.Button(ref x, ref y, width, height, "HIDE CONSOLE PLAYERS", consolesHidden_ ? Skin.ButtonActive : Skin.Button)) {
+        consolesHidden_ = !consolesHidden_;
       }
 
       GUI.enabled = guiEnabled;

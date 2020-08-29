@@ -128,6 +128,7 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="src\BaseMod.cs" />
         <Compile Include="src\CarPicker.cs" />
+        <Compile Include="src\Timer.cs" />
         <Compile Include="src\Udp.cs" />
         <Compile Include="src\ColorPicker.cs" />
         <Compile Include="src\Config.cs" />
