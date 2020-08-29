@@ -14,6 +14,8 @@ using Settings = KN_Core.Submodule.Settings;
 namespace KN_Core {
   [BepInPlugin("trbflxr.kn_0core", "KN_Core", "0.1.1")]
   public class Core : BaseUnityPlugin {
+    public const string StringVersion = "v1.1.4";
+
     public static Core CoreInstance { get; private set; }
 
     public const float GuiXLeft = 25.0f;
@@ -246,7 +248,7 @@ namespace KN_Core {
       float x = GuiYTop;
       float y = GuiXLeft;
 
-      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "KINO", Skin.ButtonDummy);
+      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "KINO " + StringVersion, Skin.ButtonDummy);
 
       selectedTabPrev_ = selectedTab_;
       gui_.Tabs(ref x, ref y, tabs_.ToArray(), ref selectedTab_);

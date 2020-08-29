@@ -264,9 +264,15 @@ namespace KN_Core.Submodule {
         exhaust_.OnGUI(gui, ref x, ref y, width);
       }
 
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.OffsetY;
+
       if (gui.Button(ref x, ref y, width, height, "SYNC LIGHTS", SyncLights ? Skin.ButtonActive : Skin.Button)) {
         SyncLights = !SyncLights;
       }
+
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.OffsetY;
 
       GUI.enabled = !Core.IsCheatsEnabled;
 
