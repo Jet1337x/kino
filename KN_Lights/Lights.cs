@@ -710,7 +710,7 @@ namespace KN_Lights {
       data.Add("hlBrightness", ownLights_.HeadLightBrightness);
       data.Add("hlAngle", ownLights_.HeadLightAngle);
       data.Add("tlBrightness", ownLights_.TailLightBrightness);
-      data.Add("tlAngle", ownLights_.TailLightBrightness);
+      data.Add("tlAngle", ownLights_.TailLightAngle);
 
       data.Add("hlLEnabled", ownLights_.IsHeadLightLeftEnabled);
       data.Add("hlREnabled", ownLights_.IsHeadLightRightEnabled);
