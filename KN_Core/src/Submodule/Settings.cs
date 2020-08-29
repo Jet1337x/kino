@@ -62,7 +62,7 @@ namespace KN_Core.Submodule {
     private readonly CarPicker carPicker_;
     private readonly List<TFCar> disabledCars_;
 
-    private Timer updateCarsTimer_;
+    private readonly Timer updateCarsTimer_;
 
     private NetGameCollisionManager collisionManager_;
 

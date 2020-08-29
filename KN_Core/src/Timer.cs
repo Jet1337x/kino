@@ -10,7 +10,7 @@ namespace KN_Core {
     public delegate void TimerCallback();
     public event TimerCallback Callback;
 
-    private bool runOnce_;
+    private readonly bool runOnce_;
 
     public Timer(float maxTime, bool runOnce = false) {
       MaxTime = maxTime;
