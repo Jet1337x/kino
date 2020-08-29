@@ -56,7 +56,7 @@ namespace KN_Lights {
       worldLights_ = new WorldLights(core);
 
       colorPicker_ = new ColorPicker();
-      carPicker_ = new CarPicker(core);
+      carPicker_ = new CarPicker(core, true);
 
       carLights_ = new List<CarLights>();
       carLightsToRemove_ = new List<CarLights>();

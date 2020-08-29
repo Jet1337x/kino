@@ -79,7 +79,7 @@ namespace KN_Core.Submodule {
       exhaust_ = new Exhaust(core);
       tachometer_ = new Tachometer(core);
 
-      carPicker_ = new CarPicker(core);
+      carPicker_ = new CarPicker(core, true);
       disabledCars_ = new List<TFCar>(16);
 
       updateCarsTimer_ = new Timer(10.0f);

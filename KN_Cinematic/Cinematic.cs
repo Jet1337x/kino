@@ -41,7 +41,7 @@ namespace KN_Cinematic {
     public Cinematic(Core core) : base(core, "CINEMATIC", 2) {
       ctCameras_ = new List<CTCamera>();
 
-      CarPicker = new CarPicker(core);
+      CarPicker = new CarPicker(core, true);
 
       Core.Timeline.OnPlay += OnTimelinePlay;
       Core.Timeline.OnStop += OnTimelineStop;

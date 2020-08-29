@@ -23,7 +23,7 @@ namespace KN_Core {
 
     private readonly Core core_;
 
-    public CarPicker(Core core) {
+    public CarPicker(Core core, bool dummy) {
       core_ = core;
 
       Cars = new List<TFCar>(16);

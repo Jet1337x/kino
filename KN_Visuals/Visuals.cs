@@ -29,7 +29,7 @@ namespace KN_Visuals {
 
     public Visuals(Core core) : base(core, "VISUALS", 3) {
       filePicker_ = new FilePicker();
-      carPicker_ = new CarPicker(core);
+      carPicker_ = new CarPicker(core, true);
     }
 
     public override void ResetState() {
