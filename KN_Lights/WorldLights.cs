@@ -172,13 +172,8 @@ namespace KN_Lights {
     }
 
     private void UpdateMap() {
-      string scene = SceneManager.GetActiveScene().name;
-      if (scene == "Start") {
-        return;
-      }
-
       if (map_.Count == 0) {
-        switch (scene) {
+        switch (SceneManager.GetActiveScene().name) {
           case "Silverstone":
             FindMap("silverstone");
             break;
@@ -223,6 +218,9 @@ namespace KN_Lights {
             break;
           case "Atron":
             FindMap("atron");
+            break;
+          case "Start":
+          case "Empty":
             break;
           default:
             Log.Write($"[KN_Lights]: Error. Unable to load lights data for '{SceneManager.GetActiveScene().name}'");
