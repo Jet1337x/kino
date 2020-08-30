@@ -172,8 +172,13 @@ namespace KN_Lights {
     }
 
     private void UpdateMap() {
+      string scene = SceneManager.GetActiveScene().name;
+      if (scene == "Start") {
+        return;
+      }
+
       if (map_.Count == 0) {
-        switch (SceneManager.GetActiveScene().name) {
+        switch (scene) {
           case "Silverstone":
             FindMap("silverstone");
             break;
