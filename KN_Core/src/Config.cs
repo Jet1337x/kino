@@ -197,6 +197,8 @@ namespace KN_Core {
       defaultParams_["receive_udp"] = true;
       defaultParams_["sync_lights"] = true;
 
+      defaultParams_["force_white_smoke"] = false;
+
       // air
       defaultParams_["air_use_controlKey"] = true;
       defaultParams_["air_step_max"] = 3.0f;

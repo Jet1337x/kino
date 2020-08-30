@@ -73,6 +73,8 @@ namespace KN_Core.Submodule {
 
     private readonly Timer updateCarsTimer_;
 
+    private bool forceWhiteSmoke_;
+
     private NetGameCollisionManager collisionManager_;
 
     public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) {
@@ -93,6 +95,7 @@ namespace KN_Core.Submodule {
       tachometerEnabledSettings_ = Core.ModConfig.Get<bool>("custom_tach");
       receiveUdp_ = Core.ModConfig.Get<bool>("receive_udp");
       syncLights_ = Core.ModConfig.Get<bool>("sync_lights");
+      forceWhiteSmoke_ = Core.ModConfig.Get<bool>("force_white_smoke");
 
       if (!Core.IsCheatsEnabled) {
         consolesDisabled_ = Core.ModConfig.Get<bool>("trash_autodisable");
@@ -109,6 +112,7 @@ namespace KN_Core.Submodule {
       Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
       Core.ModConfig.Set("receive_udp", receiveUdp_);
       Core.ModConfig.Set("sync_lights", syncLights_);
+      Core.ModConfig.Set("force_white_smoke", forceWhiteSmoke_);
 
       if (!Core.IsCheatsEnabled) {
         Core.ModConfig.Set("trash_autodisable", consolesDisabled_);
@@ -126,6 +130,14 @@ namespace KN_Core.Submodule {
       exhaust_.Initialize();
 
       UpdateDisabledPlayers();
+
+      if (forceWhiteSmoke_) {
+        carPicker_.IsPicking = true;
+        carPicker_.IsPicking = false;
+        foreach (var car in carPicker_.Cars) {
+          car.Base.SetSmokeColor(Color.white);
+        }
+      }
     }
 
     public override void Update(int id) {
@@ -266,6 +278,10 @@ namespace KN_Core.Submodule {
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.OffsetY;
+
+      if (gui.Button(ref x, ref y, width, height, "FORCE WHITE SMOKE TO ALL", forceWhiteSmoke_ ? Skin.ButtonActive : Skin.Button)) {
+        forceWhiteSmoke_ = !forceWhiteSmoke_;
+      }
 
       if (gui.Button(ref x, ref y, width, height, "SYNC LIGHTS", SyncLights ? Skin.ButtonActive : Skin.Button)) {
         SyncLights = !SyncLights;
