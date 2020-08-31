@@ -37,8 +37,14 @@
       <Optimize>true</Optimize>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="Assembly-CSharp, Version=13.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\CarX\Assembly-CSharp.dll</HintPath>
+        </Reference>
         <Reference Include="BepInEx, Version=5.0.1.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\BepInEx\BepInEx.dll</HintPath>
+        </Reference>
+        <Reference Include="CarX.Plugins.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\CarX\CarX.Plugins.Core.dll</HintPath>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
@@ -50,9 +56,18 @@
         <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.IMGUIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\Unity\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="FlyMod.cs" />
+        <Compile Include="SafeFlyMod.cs" />
         <Compile Include="Loader.cs" />
         <Compile Include="Maps.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
