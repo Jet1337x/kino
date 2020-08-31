@@ -34,8 +34,10 @@ namespace KN_Core {
     private float time_;
     private float time1_;
 
+#if !KN_DEV_TOOLS
     private float prevRevs_;
     private bool engineLoad_;
+#endif
     private bool firstPop_;
 
     public ExhaustData(Exhaust exhaust, CarPopExhaust script) {
