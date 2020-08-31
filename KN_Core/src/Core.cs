@@ -394,9 +394,13 @@ namespace KN_Core {
     }
 
     private void KillFlyMod() {
-      var flyMod = Chainloader.PluginInfos["fly.mod.goat"];
-      if (flyMod != null) {
-        flyMod.Instance.enabled = false;
+      const string flyModGuid = "fly.mod.goat";
+
+      if (Chainloader.PluginInfos.ContainsKey(flyModGuid)) {
+        var flyMod = Chainloader.PluginInfos[flyModGuid];
+        if (flyMod != null) {
+          flyMod.Instance.enabled = false;
+        }
       }
     }
   }
