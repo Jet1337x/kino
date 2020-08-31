@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
+using BepInEx.Bootstrap;
 using FMODUnity;
 using GameInput;
 using KN_Core.Submodule;
@@ -72,6 +73,8 @@ namespace KN_Core {
     private static Assembly assembly_;
 
     public Core() {
+      KillFlyMod();
+
       CoreInstance = this;
 
       Patcher.Hook();
@@ -387,6 +390,13 @@ namespace KN_Core {
 
       foreach (var mod in mods_) {
         mod.OnUdpData(data);
+      }
+    }
+
+    private void KillFlyMod() {
+      var flyMod = Chainloader.PluginInfos["fly.mod.goat"];
+      if (flyMod != null) {
+        flyMod.Instance.enabled = false;
       }
     }
   }
