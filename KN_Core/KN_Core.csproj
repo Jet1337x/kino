@@ -127,17 +127,18 @@
     <ItemGroup>
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="src\BaseMod.cs" />
-        <Compile Include="src\CarPicker.cs" />
+        <Compile Include="src\Components\DisableConsoles.cs" />
+        <Compile Include="src\Components\Exhaust\Exhaust.cs" />
+        <Compile Include="src\Components\Exhaust\ExhaustData.cs" />
+        <Compile Include="src\Components\Exhaust\ExhaustSerializer.cs" />
+        <Compile Include="src\Pickers\CarPicker.cs" />
+        <Compile Include="src\Pickers\ColorPicker.cs" />
+        <Compile Include="src\Pickers\FilePicker.cs" />
         <Compile Include="src\Timer.cs" />
         <Compile Include="src\Udp.cs" />
-        <Compile Include="src\ColorPicker.cs" />
         <Compile Include="src\KnConfig.cs" />
         <Compile Include="src\Controls.cs" />
         <Compile Include="src\Core.cs" />
-        <Compile Include="src\Exhaust.cs" />
-        <Compile Include="src\ExhaustData.cs" />
-        <Compile Include="src\ExhaustSerializer.cs" />
-        <Compile Include="src\FilePicker.cs" />
         <Compile Include="src\Gui.cs" />
         <Compile Include="src\Log.cs" />
         <Compile Include="src\Movement.cs" />
