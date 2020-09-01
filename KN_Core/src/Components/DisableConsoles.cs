@@ -14,6 +14,7 @@ namespace KN_Core {
     }
     public bool Hidden { get; set; }
 
+    private readonly Timer updateCarsTimer_;
     private readonly List<TFCar> disabledCars_;
 
     private NetGameCollisionManager collisionManager_;
@@ -24,6 +25,9 @@ namespace KN_Core {
       core_ = core;
 
       disabledCars_ = new List<TFCar>(16);
+
+      updateCarsTimer_ = new Timer(10.0f);
+      updateCarsTimer_.Callback += OnCarLoaded;
     }
 
     public void OnStart() {
@@ -43,6 +47,10 @@ namespace KN_Core {
     public void Update() {
       if (core_.IsCheatsEnabled) {
         return;
+      }
+
+      if (Hidden || Disabled) {
+        updateCarsTimer_.Update();
       }
 
       if (collisionManager_ == null || core_.IsSceneChanged) {
