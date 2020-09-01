@@ -11,7 +11,7 @@ namespace KN_Core {
       Name = name;
       Id = id;
 
-      Core.OnCarLoaded += OnCarLoaded;
+      Core.CarPicker.OnCarLoaded += OnCarLoaded;
     }
 
     public virtual void OnStart() { }

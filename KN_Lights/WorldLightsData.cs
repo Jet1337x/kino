@@ -9,12 +9,12 @@ namespace KN_Lights {
       try {
         using (var memoryStream = new MemoryStream()) {
           using (var writer = new BinaryWriter(memoryStream)) {
-            writer.Write(Config.Version);
+            writer.Write(KnConfig.Version);
             writer.Write(data.Count);
             foreach (var d in data) {
               d.Serialize(writer);
             }
-            using (var fileStream = File.Open(Config.BaseDir + file, FileMode.Create)) {
+            using (var fileStream = File.Open(KnConfig.BaseDir + file, FileMode.Create)) {
               memoryStream.WriteTo(fileStream);
             }
           }
@@ -29,7 +29,7 @@ namespace KN_Lights {
 
     public static bool Deserialize(string file, out List<WorldLightsData> data) {
       try {
-        using (var memoryStream = new MemoryStream(File.ReadAllBytes(Config.BaseDir + file))) {
+        using (var memoryStream = new MemoryStream(File.ReadAllBytes(KnConfig.BaseDir + file))) {
           using (var reader = new BinaryReader(memoryStream)) {
             data = new List<WorldLightsData>();
             reader.ReadInt32(); //unused

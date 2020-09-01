@@ -1,32 +1,27 @@
 using System.Collections.Generic;
+using System.Linq;
+using SyncMultiplayer;
 using UnityEngine;
 
 namespace KN_Core {
   public class CarPicker {
-    private bool isPicking_;
-    public bool IsPicking {
-      get => isPicking_;
-      set {
-        isPicking_ = value;
-        if (isPicking_) {
-          UpdateCars();
-        }
-      }
-    }
+    public bool IsPicking { get; set; }
 
     public TFCar PickedCar { get; private set; }
     public TFCar PlayerCar { get; private set; }
 
     public List<TFCar> Cars { get; }
 
+    public delegate void CarLoadCallback();
+    public event CarLoadCallback OnCarLoaded;
+
     private float carsListHeight_;
 
-    private readonly Core core_;
+    private readonly List<LoadingCar> loadingCars_;
 
-    public CarPicker(Core core, bool dummy) {
-      core_ = core;
-
+    public CarPicker() {
       Cars = new List<TFCar>(16);
+      loadingCars_ = new List<LoadingCar>(16);
     }
 
     public void Reset() {
@@ -83,20 +78,49 @@ namespace KN_Core {
       }
     }
 
-    private void UpdateCars() {
+    public void Update() {
+      if (TFCar.IsNull(PlayerCar)) {
+        FindPlayerCar();
+      }
+
+      Cars.RemoveAll(TFCar.IsNull);
+      
+      loadingCars_.RemoveAll(car => car.Loaded && (car.Player == null || car.Player.userCar == null));
+
+      var nwPlayers = NetworkController.InstanceGame?.Players;
+      if (nwPlayers != null) {
+        if (loadingCars_.Count != nwPlayers.Count) {
+          foreach (var player in nwPlayers) {
+            if (loadingCars_.All(c => c.Player != player)) {
+              loadingCars_.Add(new LoadingCar {Player = player});
+              Log.Write($"[KN_Core]: Added car to load: {player.NetworkID}");
+            }
+          }
+        }
+
+        foreach (var car in loadingCars_) {
+          if (car.Player.IsCarLoading()) {
+            car.Loading = true;
+          }
+          if (!car.Player.IsCarLoading() && car.Loading) {
+            car.Loaded = true;
+            car.Loading = false;
+            Cars.Add(new TFCar(car.Player.userCar));
+            Log.Write($"[KN_Core]: Car loaded: {car.Player.NetworkID}");
+            OnCarLoaded?.Invoke();
+          }
+        }
+      }
+    }
+
+    private void FindPlayerCar() {
       PlayerCar = null;
-      PickedCar = null;
-
-      Cars.Clear();
-
       var cars = Object.FindObjectsOfType<RaceCar>();
       if (cars != null && cars.Length > 0) {
         foreach (var c in cars) {
           if (!c.isNetworkCar) {
             PlayerCar = new TFCar(c);
-          }
-          else {
-            Cars.Add(new TFCar(c));
+            return;
           }
         }
       }

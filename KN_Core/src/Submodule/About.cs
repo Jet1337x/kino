@@ -1,4 +1,4 @@
-namespace KN_Core.Submodule {
+namespace KN_Core {
 
   public class About : BaseMod {
     public About(Core core) : base(core, "ABOUT", int.MaxValue) { }

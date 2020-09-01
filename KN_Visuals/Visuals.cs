@@ -25,11 +25,9 @@ namespace KN_Visuals {
     private float shiftY_;
 
     private readonly FilePicker filePicker_;
-    private readonly CarPicker carPicker_;
 
     public Visuals(Core core) : base(core, "VISUALS", 3) {
       filePicker_ = new FilePicker();
-      carPicker_ = new CarPicker(core, true);
     }
 
     public override void ResetState() {
@@ -39,7 +37,6 @@ namespace KN_Visuals {
 
     public override void ResetPickers() {
       filePicker_.Reset();
-      carPicker_.Reset();
     }
 
     public override bool LockCameraRotation() {
@@ -47,9 +44,9 @@ namespace KN_Visuals {
     }
 
     public override void OnStart() {
-      zoom_ = Core.ModConfig.Get<float>("vinylcam_zoom");
-      shiftY_ = Core.ModConfig.Get<float>("vinylcam_shift_y");
-      shiftZ_ = Core.ModConfig.Get<float>("vinylcam_shift_z");
+      zoom_ = Core.KnConfig.Get<float>("vinylcam_zoom");
+      shiftY_ = Core.KnConfig.Get<float>("vinylcam_shift_y");
+      shiftZ_ = Core.KnConfig.Get<float>("vinylcam_shift_z");
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
@@ -76,10 +73,8 @@ namespace KN_Visuals {
     }
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
-      carPicker_.OnGUI(gui, ref x, ref y);
-
       if (filePicker_.IsPicking) {
-        if (carPicker_.IsPicking) {
+        if (Core.CarPicker.IsPicking) {
           x += Gui.OffsetGuiX;
         }
         filePicker_.OnGui(gui, ref x, ref y);
@@ -93,15 +88,15 @@ namespace KN_Visuals {
       }
 
       if (gui.SliderH(ref x, ref y, width, ref zoom_, 0.0f, 20.0f, $"ZOOM: {zoom_:F1}")) {
-        Core.ModConfig.Set("vinylcam_zoom", zoom_);
+        Core.KnConfig.Set("vinylcam_zoom", zoom_);
       }
 
       if (gui.SliderH(ref x, ref y, width, ref shiftY_, -5.0f, 5.0f, $"SHIFT Y: {shiftY_:F1}")) {
-        Core.ModConfig.Set("vinylcam_shift_y", shiftY_);
+        Core.KnConfig.Set("vinylcam_shift_y", shiftY_);
       }
 
       if (gui.SliderH(ref x, ref y, width, ref shiftZ_, -20.0f, 20.0f, $"SHIFT Z: {shiftZ_:F1}")) {
-        Core.ModConfig.Set("vinylcam_shift_z", shiftZ_);
+        Core.KnConfig.Set("vinylcam_shift_z", shiftZ_);
       }
     }
 
@@ -111,7 +106,7 @@ namespace KN_Visuals {
       }
 
       if (gui.Button(ref x, ref y, width, height, "LOAD DESIGN", Skin.Button)) {
-        filePicker_.Toggle(Config.VisualsDir);
+        filePicker_.Toggle(KnConfig.VisualsDir);
       }
 
       bool enabled = GUI.enabled;
@@ -248,16 +243,16 @@ namespace KN_Visuals {
 
       using (var stream = new MemoryStream()) {
         using (var writer = new BinaryWriter(stream)) {
-          writer.Write(Config.Version);
+          writer.Write(KnConfig.Version);
           writer.Write(name);
           writer.Write(buffer.Length);
           writer.Write(id);
           writer.Write(buffer);
 
           string fileName = name + "_" + DateTime.Now.ToString("HH.mm.ss") + ".knvis";
-          Log.Write($"[KN_Visuals]: Saving visuals to '{Config.VisualsDir + fileName}'");
+          Log.Write($"[KN_Visuals]: Saving visuals to '{KnConfig.VisualsDir + fileName}'");
 
-          using (var fs = File.Open(Config.VisualsDir + fileName, FileMode.Create)) {
+          using (var fs = File.Open(KnConfig.VisualsDir + fileName, FileMode.Create)) {
             stream.WriteTo(fs);
           }
         }

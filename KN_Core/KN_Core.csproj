@@ -131,7 +131,7 @@
         <Compile Include="src\Timer.cs" />
         <Compile Include="src\Udp.cs" />
         <Compile Include="src\ColorPicker.cs" />
-        <Compile Include="src\Config.cs" />
+        <Compile Include="src\KnConfig.cs" />
         <Compile Include="src\Controls.cs" />
         <Compile Include="src\Core.cs" />
         <Compile Include="src\Exhaust.cs" />

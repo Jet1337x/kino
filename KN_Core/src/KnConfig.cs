@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using BepInEx;
@@ -13,8 +12,9 @@ namespace KN_Core {
     Controls
   }
 
-  public class Config {
-    public const int Version = 101;
+  public class KnConfig {
+    public const int Version = 120;
+    public const string StringVersion = "1.2.0";
 
     //cx stuff
     public const string CxUiCanvasName = "Root";
@@ -33,7 +33,7 @@ namespace KN_Core {
 
     private bool initialized_;
 
-    public Config() {
+    public KnConfig() {
       params_ = new Dictionary<string, object>();
       defaultParams_ = new Dictionary<string, object>();
 
@@ -90,25 +90,27 @@ namespace KN_Core {
       try {
         var settings = new XmlWriterSettings {Indent = true, IndentChars = "  ", Encoding = Encoding.UTF8};
         using (var writer = XmlWriter.Create(BaseDir + ConfigFile, settings)) {
-          writer.WriteStartElement("config");
+          if (writer != null) {
+            writer.WriteStartElement("config");
 
-          //config values
-          writer.WriteStartElement("params");
-          foreach (var item in params_) {
-            writer.WriteStartElement("item");
+            //config values
+            writer.WriteStartElement("params");
+            foreach (var item in params_) {
+              writer.WriteStartElement("item");
 
-            writer.WriteAttributeString("key", item.Key);
-            writer.WriteAttributeString("value", item.Value.ToString());
-            writer.WriteAttributeString("type", item.Value.GetType().ToString());
+              writer.WriteAttributeString("key", item.Key);
+              writer.WriteAttributeString("value", item.Value.ToString());
+              writer.WriteAttributeString("type", item.Value.GetType().ToString());
+
+              writer.WriteEndElement();
+            }
+
+            writer.WriteEndElement();
+
+            Controls.Save(writer);
 
             writer.WriteEndElement();
           }
-
-          writer.WriteEndElement();
-
-          Controls.Save(writer);
-
-          writer.WriteEndElement();
         }
       }
       catch (Exception e) {
@@ -149,13 +151,13 @@ namespace KN_Core {
           return;
         }
 
-        var key = reader.GetAttribute("key");
-        var value = reader.GetAttribute("value");
+        string key = reader.GetAttribute("key");
+        string value = reader.GetAttribute("value");
         if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(value)) {
           return;
         }
 
-        var type = reader.GetAttribute("type");
+        string type = reader.GetAttribute("type");
         switch (type) {
           case "System.Single": {
             float.TryParse(value, out float val);

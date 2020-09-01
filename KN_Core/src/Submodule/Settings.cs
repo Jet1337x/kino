@@ -4,14 +4,14 @@ using SyncMultiplayer;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace KN_Core.Submodule {
+namespace KN_Core {
   public class Settings : BaseMod {
     private bool rPoints_;
     public bool RPoints {
       get => rPoints_;
       set {
         rPoints_ = value;
-        Core.ModConfig.Set("r_points", value);
+        Core.KnConfig.Set("r_points", value);
         GameConsole.Bool["r_points"] = value;
         GameConsole.UpdatePoints();
       }
@@ -22,7 +22,7 @@ namespace KN_Core.Submodule {
       get => hideNames_;
       set {
         hideNames_ = value;
-        Core.ModConfig.Set("hide_names", value);
+        Core.KnConfig.Set("hide_names", value);
       }
     }
 
@@ -31,7 +31,7 @@ namespace KN_Core.Submodule {
       get => customBackfire_;
       set {
         customBackfire_ = value;
-        Core.ModConfig.Set("custom_backfire", value);
+        Core.KnConfig.Set("custom_backfire", value);
       }
     }
 
@@ -40,7 +40,7 @@ namespace KN_Core.Submodule {
       get => receiveUdp_;
       set {
         receiveUdp_ = value;
-        Core.ModConfig.Set("udp_receive", value);
+        Core.KnConfig.Set("udp_receive", value);
       }
     }
 
@@ -49,9 +49,11 @@ namespace KN_Core.Submodule {
       get => syncLights_;
       set {
         syncLights_ = value;
-        Core.ModConfig.Set("sync_lights", value);
+        Core.KnConfig.Set("sync_lights", value);
       }
     }
+
+    public bool ConsolesDisabled { get; private set; }
 
     private int prevCarId_;
     private bool prevScene_;
@@ -66,9 +68,7 @@ namespace KN_Core.Submodule {
 
     private Canvas rootCanvas_;
 
-    private bool consolesDisabled_;
     private bool consolesHidden_;
-    private readonly CarPicker carPicker_;
     private readonly List<TFCar> disabledCars_;
 
     private readonly Timer updateCarsTimer_;
@@ -81,7 +81,6 @@ namespace KN_Core.Submodule {
       exhaust_ = new Exhaust(core);
       tachometer_ = new Tachometer(core);
 
-      carPicker_ = new CarPicker(core, true);
       disabledCars_ = new List<TFCar>(16);
 
       updateCarsTimer_ = new Timer(10.0f);
@@ -89,34 +88,34 @@ namespace KN_Core.Submodule {
     }
 
     public void Awake() {
-      RPoints = Core.ModConfig.Get<bool>("r_points");
-      HideNames = Core.ModConfig.Get<bool>("hide_names");
-      BackFireEnabled = Core.ModConfig.Get<bool>("custom_backfire");
-      tachometerEnabledSettings_ = Core.ModConfig.Get<bool>("custom_tach");
-      receiveUdp_ = Core.ModConfig.Get<bool>("receive_udp");
-      syncLights_ = Core.ModConfig.Get<bool>("sync_lights");
-      forceWhiteSmoke_ = Core.ModConfig.Get<bool>("force_white_smoke");
+      RPoints = Core.KnConfig.Get<bool>("r_points");
+      HideNames = Core.KnConfig.Get<bool>("hide_names");
+      BackFireEnabled = Core.KnConfig.Get<bool>("custom_backfire");
+      tachometerEnabledSettings_ = Core.KnConfig.Get<bool>("custom_tach");
+      receiveUdp_ = Core.KnConfig.Get<bool>("receive_udp");
+      syncLights_ = Core.KnConfig.Get<bool>("sync_lights");
+      forceWhiteSmoke_ = Core.KnConfig.Get<bool>("force_white_smoke");
 
       if (!Core.IsCheatsEnabled) {
-        consolesDisabled_ = Core.ModConfig.Get<bool>("trash_autodisable");
-        consolesHidden_ = Core.ModConfig.Get<bool>("trash_autohide");
+        ConsolesDisabled = Core.KnConfig.Get<bool>("trash_autodisable");
+        consolesHidden_ = Core.KnConfig.Get<bool>("trash_autohide");
       }
 
       exhaust_.OnStart();
     }
 
     public override void OnStop() {
-      Core.ModConfig.Set("r_points", RPoints);
-      Core.ModConfig.Set("hide_names", HideNames);
-      Core.ModConfig.Set("custom_backfire", BackFireEnabled);
-      Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
-      Core.ModConfig.Set("receive_udp", receiveUdp_);
-      Core.ModConfig.Set("sync_lights", syncLights_);
-      Core.ModConfig.Set("force_white_smoke", forceWhiteSmoke_);
+      Core.KnConfig.Set("r_points", RPoints);
+      Core.KnConfig.Set("hide_names", HideNames);
+      Core.KnConfig.Set("custom_backfire", BackFireEnabled);
+      Core.KnConfig.Set("custom_tach", tachometerEnabledSettings_);
+      Core.KnConfig.Set("receive_udp", receiveUdp_);
+      Core.KnConfig.Set("sync_lights", syncLights_);
+      Core.KnConfig.Set("force_white_smoke", forceWhiteSmoke_);
 
       if (!Core.IsCheatsEnabled) {
-        Core.ModConfig.Set("trash_autodisable", consolesDisabled_);
-        Core.ModConfig.Set("trash_autohide", consolesHidden_);
+        Core.KnConfig.Set("trash_autodisable", ConsolesDisabled);
+        Core.KnConfig.Set("trash_autohide", consolesHidden_);
       }
 
       exhaust_.OnStop();
@@ -132,9 +131,7 @@ namespace KN_Core.Submodule {
       UpdateDisabledPlayers();
 
       if (forceWhiteSmoke_) {
-        carPicker_.IsPicking = true;
-        carPicker_.IsPicking = false;
-        foreach (var car in carPicker_.Cars) {
+        foreach (var car in Core.Cars) {
           car.Base.SetSmokeColor(Color.white);
         }
       }
@@ -156,7 +153,7 @@ namespace KN_Core.Submodule {
       if (rootCanvas_ == null) {
         var cn = Object.FindObjectsOfType<Canvas>();
         foreach (var c in cn) {
-          if (c.name == Config.CxUiCanvasName) {
+          if (c.name == KnConfig.CxUiCanvasName) {
             rootCanvas_ = c;
             tachometerEnabled_ = !c.enabled;
           }
@@ -187,7 +184,7 @@ namespace KN_Core.Submodule {
       }
       tachometer_.Update();
 
-      if (consolesHidden_ || consolesDisabled_) {
+      if (consolesHidden_ || ConsolesDisabled) {
         updateCarsTimer_.Update();
       }
 
@@ -206,10 +203,8 @@ namespace KN_Core.Submodule {
       if (!Core.IsCheatsEnabled) {
         disabledCars_.RemoveAll(TFCar.IsNull);
 
-        if (consolesDisabled_) {
-          carPicker_.IsPicking = true;
-          carPicker_.IsPicking = false;
-          foreach (var car in carPicker_.Cars) {
+        if (ConsolesDisabled) {
+          foreach (var car in Core.Cars) {
             if (car != Core.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
               if (!disabledCars_.Contains(car)) {
                 disabledCars_.Add(car);
@@ -237,7 +232,7 @@ namespace KN_Core.Submodule {
 
       if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachometerEnabledSettings_ ? Skin.ButtonActive : Skin.Button)) {
         tachometerEnabledSettings_ = !tachometerEnabledSettings_;
-        Core.ModConfig.Set("custom_tach", tachometerEnabledSettings_);
+        Core.KnConfig.Set("custom_tach", tachometerEnabledSettings_);
         if (!tachometerEnabledSettings_) {
           tachometerEnabled_ = false;
         }
@@ -261,7 +256,7 @@ namespace KN_Core.Submodule {
       GUI.enabled = !Core.IsInGarage;
       if (gui.Button(ref x, ref y, width, height, "CUSTOM BACKFIRE", BackFireEnabled ? Skin.ButtonActive : Skin.Button)) {
         BackFireEnabled = !BackFireEnabled;
-        Core.ModConfig.Set("custom_backfire", BackFireEnabled);
+        Core.KnConfig.Set("custom_backfire", BackFireEnabled);
         if (!BackFireEnabled) {
           exhaust_.Reset();
         }
@@ -292,8 +287,8 @@ namespace KN_Core.Submodule {
 
       GUI.enabled = !Core.IsCheatsEnabled;
 
-      if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", consolesDisabled_ ? Skin.ButtonActive : Skin.Button)) {
-        consolesDisabled_ = !consolesDisabled_;
+      if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", ConsolesDisabled ? Skin.ButtonActive : Skin.Button)) {
+        ConsolesDisabled = !ConsolesDisabled;
         UpdateDisabledPlayers();
       }
 

@@ -36,12 +36,12 @@ namespace KN_Core {
       try {
         using (var memoryStream = new MemoryStream()) {
           using (var writer = new BinaryWriter(memoryStream)) {
-            writer.Write(Config.Version);
+            writer.Write(KnConfig.Version);
             writer.Write(data.Count);
             foreach (var e in data) {
               e.Serialize(writer);
             }
-            using (var fileStream = File.Open(Config.BaseDir + file, FileMode.Create)) {
+            using (var fileStream = File.Open(KnConfig.BaseDir + file, FileMode.Create)) {
               memoryStream.WriteTo(fileStream);
             }
           }
@@ -78,7 +78,7 @@ namespace KN_Core {
     public static bool Deserialize(string file, out List<ExhaustFifeData> data) {
       try {
         data = new List<ExhaustFifeData>();
-        using (var memoryStream = new MemoryStream(File.ReadAllBytes(Config.BaseDir + file))) {
+        using (var memoryStream = new MemoryStream(File.ReadAllBytes(KnConfig.BaseDir + file))) {
           return Deserialize(memoryStream, out data);
         }
       }

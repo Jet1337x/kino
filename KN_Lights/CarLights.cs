@@ -637,7 +637,7 @@ namespace KN_Lights {
       hlAngle_ = reader.ReadSingle();
       tlBrightness_ = reader.ReadSingle();
       tlAngle_ = reader.ReadSingle();
-      lightsEnabledIl_ = version != Config.Version || reader.ReadBoolean();
+      lightsEnabledIl_ = reader.ReadBoolean();
 
       hlLEnabled_ = reader.ReadBoolean();
       hlREnabled_ = reader.ReadBoolean();

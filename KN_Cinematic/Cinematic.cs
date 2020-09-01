@@ -19,8 +19,6 @@ namespace KN_Cinematic {
     public CTCamera FreeCamera { get; private set; }
     public CTCamera ActiveCamera { get; private set; }
 
-    public CarPicker CarPicker { get; }
-
     private int ctCameraId_;
     private readonly IList<CTCamera> ctCameras_;
     private float ctListScrollH_;
@@ -41,8 +39,6 @@ namespace KN_Cinematic {
     public Cinematic(Core core) : base(core, "CINEMATIC", 2) {
       ctCameras_ = new List<CTCamera>();
 
-      CarPicker = new CarPicker(core, true);
-
       Core.Timeline.OnPlay += OnTimelinePlay;
       Core.Timeline.OnStop += OnTimelineStop;
       Core.Timeline.OnDrag += OnTimelineDrag;
@@ -51,8 +47,8 @@ namespace KN_Cinematic {
     }
 
     public override void OnStart() {
-      speed_ = Core.ModConfig.Get<float>("freecam_speed");
-      speedMultiplier_ = Core.ModConfig.Get<float>("freecam_speed_multiplier");
+      speed_ = Core.KnConfig.Get<float>("freecam_speed");
+      speedMultiplier_ = Core.KnConfig.Get<float>("freecam_speed_multiplier");
     }
 
     public override bool WantsHideUi() {
@@ -70,7 +66,6 @@ namespace KN_Cinematic {
 
     public override void ResetPickers() {
       ActiveCamera?.ResetPickers();
-      CarPicker.Reset();
     }
 
     private void ResetAll() {
@@ -166,10 +161,6 @@ namespace KN_Cinematic {
       }
     }
 
-    public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
-      CarPicker.OnGUI(gui, ref x, ref y);
-    }
-
     #region camera gui
     private void GuiCameraTab(Gui gui, ref float x, ref float y) {
       float yBegin = y;
@@ -184,11 +175,11 @@ namespace KN_Cinematic {
       }
 
       if (gui.SliderH(ref x, ref y, ref speed_, 1.0f, 100.0f, $"SPEED: {speed_:F1}")) {
-        Core.ModConfig.Set("freecam_speed", speed_);
+        Core.KnConfig.Set("freecam_speed", speed_);
       }
 
       if (gui.SliderH(ref x, ref y, ref speedMultiplier_, 1.0f, 10.0f, $"SPEED MULTIPLIER: {speedMultiplier_:F1}")) {
-        Core.ModConfig.Set("freecam_speed_multiplier", speedMultiplier_);
+        Core.KnConfig.Set("freecam_speed_multiplier", speedMultiplier_);
       }
 
       float fov = ActiveCamera?.Fov ?? 0.0f;
@@ -311,7 +302,7 @@ namespace KN_Cinematic {
       }
 
       animationMaxTimeString_ = $"{Core.Timeline.MaxTime:F}";
-      if (gui.TextField(ref x, ref y, ref animationMaxTimeString_, "MAX TIME", 6, Config.FloatRegex)) {
+      if (gui.TextField(ref x, ref y, ref animationMaxTimeString_, "MAX TIME", 6, KnConfig.FloatRegex)) {
         float.TryParse(animationMaxTimeString_, out float time);
         if (cameraOk && time > 0.0f) {
           Core.Timeline.MaxTime = time;
@@ -321,7 +312,7 @@ namespace KN_Cinematic {
       float currentLength = ActiveCamera?.Animation.Length ?? 0.0f;
       animationScaleString_ = $"{currentLength:F}";
       GUI.enabled = cameraOk;
-      if (gui.TextField(ref x, ref y, ref animationScaleString_, "LENGTH", 6, Config.FloatRegex)) {
+      if (gui.TextField(ref x, ref y, ref animationScaleString_, "LENGTH", 6, KnConfig.FloatRegex)) {
         float.TryParse(animationScaleString_, out float scaledLength);
         if (cameraOk && scaledLength > 0.01f) {
           ActiveCamera.Animation.Length = scaledLength;
@@ -526,14 +517,14 @@ namespace KN_Cinematic {
       if (gui.ImageButton(ref x, ref y, cameraTabActive_ ? Skin.IconCamActive : Skin.IconCam)) {
         cameraTabActive_ = true;
         animationTabActive_ = false;
-        CarPicker.Reset();
+        Core.CarPicker.Reset();
         ActiveCamera?.ResetPickers();
       }
 
       if (gui.ImageButton(ref x, ref y, animationTabActive_ ? Skin.IconAnimActive : Skin.IconAnim)) {
         cameraTabActive_ = false;
         animationTabActive_ = true;
-        CarPicker.Reset();
+        Core.CarPicker.Reset();
         ActiveCamera?.ResetPickers();
       }
 

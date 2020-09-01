@@ -1,28 +1,23 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Bootstrap;
 using FMODUnity;
 using GameInput;
-using KN_Core.Submodule;
 using SyncMultiplayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Settings = KN_Core.Submodule.Settings;
 
 namespace KN_Core {
-  [BepInPlugin("trbflxr.kn_0core", "KN_Core", "0.1.1")]
+  [BepInPlugin("trbflxr.kn_0core", "KN_Core", KnConfig.StringVersion)]
   public class Core : BaseUnityPlugin {
-    public const string StringVersion = "v1.1.4";
-
-    public static Core CoreInstance { get; private set; }
-
     public const float GuiXLeft = 25.0f;
     public const float GuiYTop = 25.0f;
 
-    public Config ModConfig { get; }
+    public static Core CoreInstance { get; private set; }
+
+    public KnConfig KnConfig { get; }
 
     public bool DrawTimeline { get; set; }
     public Timeline Timeline { get; }
@@ -36,18 +31,20 @@ namespace KN_Core {
       get => hideCxUi_;
       set {
         hideCxUi_ = value;
-        ModConfig.Set("hide_cx_ui", hideCxUi_);
+        KnConfig.Set("hide_cx_ui", hideCxUi_);
       }
     }
 
     public GameObject MainCamera { get; private set; }
     public GameObject ActiveCamera { get; set; }
 
-    public TFCar PlayerCar { get; private set; }
+    public CarPicker CarPicker { get; private set; }
+
+    public TFCar PlayerCar => CarPicker.PlayerCar;
+    public List<TFCar> Cars => CarPicker.Cars;
 
     public Settings Settings { get; private set; }
 
-    private bool isInGaragePrev_;
     public bool IsInGarage { get; private set; }
 
     private readonly Gui gui_;
@@ -63,12 +60,7 @@ namespace KN_Core {
 
     private CameraRotation cameraRotation_;
 
-    private readonly List<LoadingCar> loadingCars_;
-
-    public delegate void CarLoadCallback();
-    public event CarLoadCallback OnCarLoaded;
-
-    public Udp Udp { get; private set; }
+    public Udp Udp { get; }
 
     private static Assembly assembly_;
 
@@ -81,11 +73,13 @@ namespace KN_Core {
 
       assembly_ = Assembly.GetExecutingAssembly();
 
-      ModConfig = new Config();
+      KnConfig = new KnConfig();
 
       gui_ = new Gui();
 
       Timeline = new Timeline(this);
+
+      CarPicker = new CarPicker();
 
       mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
@@ -96,11 +90,14 @@ namespace KN_Core {
 
       Udp = new Udp(Settings);
       Udp.ProcessPacket += HandlePacket;
-
-      loadingCars_ = new List<LoadingCar>(16);
     }
 
     public void AddMod(BaseMod mod) {
+      if (mod.Name == "CINEMATIC") {
+        Log.Write($"[KN_Core]: Cinematic module is currently disabled.");
+        return;
+      }
+
       if (mod.Name == "CHEATS") {
         IsCheatsEnabled = true;
       }
@@ -121,20 +118,20 @@ namespace KN_Core {
     }
 
     private void Awake() {
-      ModConfig.Read();
+      KnConfig.Read();
       Skin.LoadAll();
 
-      hideCxUi_ = ModConfig.Get<bool>("hide_cx_ui");
+      hideCxUi_ = KnConfig.Get<bool>("hide_cx_ui");
 
       Settings.Awake();
     }
 
     private void OnDestroy() {
-      ModConfig.Set("hide_cx_ui", hideCxUi_);
+      KnConfig.Set("hide_cx_ui", hideCxUi_);
       foreach (var mod in mods_) {
         mod.OnStop();
       }
-      ModConfig.Write();
+      KnConfig.Write();
     }
 
     public void FixedUpdate() {
@@ -144,9 +141,7 @@ namespace KN_Core {
     }
 
     private void Update() {
-      if (TFCar.IsNull(PlayerCar)) {
-        FindPlayerCar();
-      }
+      CarPicker.Update();
 
       if (MainCamera == null) {
         ActiveCamera = null;
@@ -156,7 +151,6 @@ namespace KN_Core {
         ActiveCamera = MainCamera.gameObject;
       }
 
-      isInGaragePrev_ = IsInGarage;
       IsInGarage = SceneManager.GetActiveScene().name == "SelectCar";
 
       if (IsInGarage && cameraRotation_ == null) {
@@ -196,36 +190,6 @@ namespace KN_Core {
 
       Timeline.Update();
 
-      loadingCars_.RemoveAll(car => car.Loaded && (car.Player == null || car.Player.userCar == null));
-
-      var nwPlayers = NetworkController.InstanceGame?.Players;
-      if (nwPlayers != null) {
-        if (loadingCars_.Count != nwPlayers.Count) {
-          foreach (var player in nwPlayers) {
-            if (loadingCars_.All(c => c.Player != player)) {
-              loadingCars_.Add(new LoadingCar {Player = player});
-              Log.Write($"[KN_Core]: Added car to load: {player.NetworkID}");
-            }
-          }
-        }
-
-        foreach (var car in loadingCars_) {
-          if (car.Player.IsCarLoading()) {
-            car.Loading = true;
-          }
-          if (!car.Player.IsCarLoading() && car.Loading) {
-            car.Loaded = true;
-            car.Loading = false;
-            Log.Write($"[KN_Core]: Car loaded: {car.Player.NetworkID}");
-            OnCarLoaded?.Invoke();
-          }
-        }
-
-        foreach (var player in nwPlayers.Where(player => player.userCar != null)) {
-          player.userCar.SetVisibleUIName(!Settings.HideNames);
-        }
-      }
-
       foreach (var mod in mods_) {
         mod.Update(selectedModId_);
       }
@@ -238,7 +202,7 @@ namespace KN_Core {
         mod.LateUpdate(selectedModId_);
       }
 
-      HideStuff();
+      HideNames();
     }
 
     public void OnGUI() {
@@ -251,7 +215,7 @@ namespace KN_Core {
       float x = GuiYTop;
       float y = GuiXLeft;
 
-      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "KINO " + StringVersion, Skin.ButtonDummy);
+      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "KINO v" + KnConfig.StringVersion, Skin.ButtonDummy);
 
       selectedTabPrev_ = selectedTab_;
       gui_.Tabs(ref x, ref y, tabs_.ToArray(), ref selectedTab_);
@@ -275,6 +239,7 @@ namespace KN_Core {
       float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;
       float ty = GuiContentBeginY - Gui.OffsetY;
 
+      CarPicker.OnGUI(gui_, ref tx, ref ty);
       mods_[selectedTab_].GuiPickers(selectedModId_, gui_, ref tx, ref ty);
 
       if (DrawTimeline) {
@@ -286,6 +251,7 @@ namespace KN_Core {
       if (Controls.KeyDown("gui")) {
         IsGuiEnabled = !IsGuiEnabled;
 
+        CarPicker.Reset();
         mods_[selectedTabPrev_].ResetPickers();
       }
     }
@@ -297,9 +263,13 @@ namespace KN_Core {
       }
     }
 
-    private void HideStuff() {
+    private void HideNames() {
       if (Controls.KeyDown("player_names")) {
         Settings.HideNames = !Settings.HideNames;
+      }
+
+      foreach (var car in CarPicker.Cars) {
+        car.Base.SetVisibleUIName(!Settings.HideNames);
       }
     }
 
@@ -332,7 +302,7 @@ namespace KN_Core {
     }
 
     public bool SetMainCamera(bool camEnabled) {
-      MainCamera = GameObject.FindGameObjectWithTag(KN_Core.Config.CxMainCameraTag);
+      MainCamera = GameObject.FindGameObjectWithTag(KnConfig.CxMainCameraTag);
       if (MainCamera != null) {
         MainCamera.GetComponent<Camera>().enabled = camEnabled;
         MainCamera.GetComponent<StudioListener>().enabled = camEnabled;
@@ -352,19 +322,6 @@ namespace KN_Core {
 
     public static int EncodeColor(Color32 color) {
       return (color.a & 0xff) << 24 | (color.r & 0xff) << 16 | (color.g & 0xff) << 8 | (color.b & 0xff);
-    }
-
-    private void FindPlayerCar() {
-      PlayerCar = null;
-      var cars = FindObjectsOfType<RaceCar>();
-      if (cars != null && cars.Length > 0) {
-        foreach (var c in cars) {
-          if (!c.isNetworkCar) {
-            PlayerCar = new TFCar(c);
-            return;
-          }
-        }
-      }
     }
 
     public static Texture2D CreateTexture(Color color) {

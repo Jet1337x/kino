@@ -15,30 +15,25 @@ namespace KN_Maps {
 
     private Camera camera_;
 
-    private readonly CarPicker carPicker_;
-
     private bool prevScene_;
     private NetGameCollisionManager collisionManager_;
 
     public SafeFlyMod(Core core) {
       core_ = core;
-      //todo (trbflxr): enable on release
-      // cheatsEnabled_ = core_.IsCheatsEnabled;
-
-      carPicker_ = new CarPicker(core, true);
+      cheatsEnabled_ = core_.IsCheatsEnabled;
     }
 
     public void OnStart() {
       if (!cheatsEnabled_) {
-        speed_ = core_.ModConfig.Get<float>("speed");
-        speedMultiplier_ = core_.ModConfig.Get<float>("speed_multiplier");
+        speed_ = core_.KnConfig.Get<float>("speed");
+        speedMultiplier_ = core_.KnConfig.Get<float>("speed_multiplier");
       }
     }
 
     public void OnStop() {
       if (!cheatsEnabled_) {
-        core_.ModConfig.Set("speed", speed_);
-        core_.ModConfig.Set("speed_multiplier", speedMultiplier_);
+        core_.KnConfig.Set("speed", speed_);
+        core_.KnConfig.Set("speed_multiplier", speedMultiplier_);
       }
     }
 
@@ -67,6 +62,7 @@ namespace KN_Maps {
 
     public void Update() {
       if (cheatsEnabled_ || ModelValidator.isValid) {
+      if (cheatsEnabled_) {
         return;
       }
 
@@ -85,7 +81,7 @@ namespace KN_Maps {
         return;
       }
 
-      if (camera_ == null || !camera_.CompareTag(Config.CxMainCameraTag)) {
+      if (camera_ == null || !camera_.CompareTag(KnConfig.CxMainCameraTag)) {
         camera_ = Camera.main;
       }
 
@@ -138,17 +134,21 @@ namespace KN_Maps {
 
     private void SetCollisions() {
       if (cheatsEnabled_ || ModelValidator.isValid) {
+      if (cheatsEnabled_) {
         return;
       }
 
-      carPicker_.IsPicking = true;
-      carPicker_.IsPicking = false;
-
-      foreach (var car in carPicker_.Cars) {
+      foreach (var car in core_.Cars) {
         var nwPlayer = car.Base.networkPlayer;
         if (nwPlayer != null) {
-          core_.Udp.SendChangeRoomId(nwPlayer, !noclipEnabled_);
-          collisionManager_?.MovePlayerToColliderGroup(noclipEnabled_ ? "none" : "", car.Base.networkPlayer);
+          if (noclipEnabled_) {
+            core_.Udp.SendChangeRoomId(nwPlayer, false);
+            collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
+          }
+          else if (!(car.IsConsole && core_.Settings.ConsolesDisabled)) {
+            core_.Udp.SendChangeRoomId(nwPlayer, true);
+            collisionManager_?.MovePlayerToColliderGroup("", car.Base.networkPlayer);
+          }
         }
       }
     }

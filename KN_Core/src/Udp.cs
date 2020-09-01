@@ -1,5 +1,4 @@
 using System.Reflection;
-using KN_Core.Submodule;
 using SyncMultiplayer;
 
 namespace KN_Core {

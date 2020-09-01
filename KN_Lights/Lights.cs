@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using KN_Core;
-using KN_Core.Submodule;
 using SyncMultiplayer;
 using UnityEngine;
 
@@ -46,7 +45,6 @@ namespace KN_Lights {
     private readonly WorldLights worldLights_;
 
     private readonly ColorPicker colorPicker_;
-    private readonly CarPicker carPicker_;
 
     private readonly Settings settings_;
 
@@ -56,7 +54,6 @@ namespace KN_Lights {
       worldLights_ = new WorldLights(core);
 
       colorPicker_ = new ColorPicker();
-      carPicker_ = new CarPicker(core, true);
 
       carLights_ = new List<CarLights>();
       carLightsToRemove_ = new List<CarLights>();
@@ -74,7 +71,6 @@ namespace KN_Lights {
 
     public override void ResetPickers() {
       colorPicker_.Reset();
-      carPicker_.Reset();
     }
 
     public override void OnStart() {
@@ -87,7 +83,7 @@ namespace KN_Lights {
       carLightsDev_ = LightsConfigSerializer.Deserialize(LightsDevConfigFile, out var devLights) ? new LightsConfig(devLights) : new LightsConfig();
 #endif
 
-      carLightsDiscard_ = Core.ModConfig.Get<float>("cl_discard_distance");
+      carLightsDiscard_ = Core.KnConfig.Get<float>("cl_discard_distance");
 
       nwLightsConfig_ = LightsConfigSerializer.Deserialize(NwLightsConfigFile, out var nwLights) ? new NwLightsConfig(nwLights) : new NwLightsConfig();
       lightsConfig_ = LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights) ? new LightsConfig(lights) : new LightsConfig();
@@ -119,9 +115,7 @@ namespace KN_Lights {
 
       int id = data.Data.GetInt("id");
 
-      carPicker_.IsPicking = true;
-      carPicker_.IsPicking = false;
-      foreach (var car in carPicker_.Cars) {
+      foreach (var car in Core.Cars) {
         if (car.IsNetworkCar && car.Base.networkPlayer.NetworkID == id) {
           bool found = false;
           foreach (var cl in nwLightsConfig_.Lights) {
@@ -169,14 +163,14 @@ namespace KN_Lights {
         return;
       }
 
-      if (carPicker_.IsPicking && !TFCar.IsNull(carPicker_.PickedCar)) {
-        if (carPicker_.PickedCar != Core.PlayerCar) {
-          EnableLightsOn(carPicker_.PickedCar);
+      if (Core.CarPicker.IsPicking && !TFCar.IsNull(Core.CarPicker.PickedCar)) {
+        if (Core.CarPicker.PickedCar != Core.PlayerCar) {
+          EnableLightsOn(Core.CarPicker.PickedCar);
         }
         else {
           EnableLightsOn(Core.PlayerCar);
         }
-        carPicker_.Reset();
+        Core.CarPicker.Reset();
       }
 
       if (colorPicker_.IsPicking) {
@@ -216,10 +210,8 @@ namespace KN_Lights {
     }
 
     public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
-      carPicker_.OnGUI(gui, ref x, ref y);
-
       if (colorPicker_.IsPicking) {
-        if (carPicker_.IsPicking) {
+        if (Core.CarPicker.IsPicking) {
           x += Gui.OffsetGuiX;
         }
         colorPicker_.OnGui(gui, ref x, ref y);
@@ -233,14 +225,14 @@ namespace KN_Lights {
       if (gui.ImageButton(ref x, ref y, hlTabActive_ ? Skin.IconHeadlightsActive : Skin.IconHeadlights)) {
         hlTabActive_ = true;
         wlTabActive_ = false;
-        carPicker_.Reset();
+        Core.CarPicker.Reset();
         colorPicker_.Reset();
       }
 
       if (gui.ImageButton(ref x, ref y, wlTabActive_ ? Skin.IconSunActive : Skin.IconSun)) {
         hlTabActive_ = false;
         wlTabActive_ = true;
-        carPicker_.Reset();
+        Core.CarPicker.Reset();
         colorPicker_.Reset();
       }
 
@@ -290,7 +282,7 @@ namespace KN_Lights {
       }
 
       if (gui.SliderH(ref x, ref y, width, ref carLightsDiscard_, 50.0f, 500.0f, $"HIDE LIGHTS AFTER: {carLightsDiscard_:F1}")) {
-        Core.ModConfig.Set("cl_discard_distance", carLightsDiscard_);
+        Core.KnConfig.Set("cl_discard_distance", carLightsDiscard_);
         shouldSync_ = activeLights_ == ownLights_;
       }
 
@@ -482,7 +474,7 @@ namespace KN_Lights {
       }
 
       if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO", Skin.Button)) {
-        carPicker_.Toggle();
+        Core.CarPicker.Toggle();
         colorPicker_.Reset();
       }
       GUI.enabled = guiEnabled;
@@ -638,9 +630,7 @@ namespace KN_Lights {
     }
 
     private void AddLightsToEveryone(bool select = true) {
-      carPicker_.IsPicking = true;
-      carPicker_.IsPicking = false;
-      foreach (var car in carPicker_.Cars) {
+      foreach (var car in Core.Cars) {
         bool found = false;
         foreach (var cl in carLights_) {
           if (cl.Car == car) {

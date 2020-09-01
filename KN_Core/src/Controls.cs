@@ -9,7 +9,7 @@ namespace KN_Core {
     private static Dictionary<string, object[]> defaultButtons_ = new Dictionary<string, object[]>();
 
     private static string cKey_ = string.Empty;
-    private static List<object> cValue_ = new List<object>();
+    private static readonly List<object> cValue_ = new List<object>();
 
     public static bool Key(string name) {
       try {
