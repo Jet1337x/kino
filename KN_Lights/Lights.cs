@@ -44,16 +44,12 @@ namespace KN_Lights {
 
     private readonly WorldLights worldLights_;
 
-    private readonly ColorPicker colorPicker_;
-
     private readonly Settings settings_;
 
     public Lights(Core core, int version) : base(core, "LIGHTS", 1, version) {
       settings_ = core.Settings;
 
       worldLights_ = new WorldLights(core);
-
-      colorPicker_ = new ColorPicker();
 
       carLights_ = new List<CarLights>();
       carLightsToRemove_ = new List<CarLights>();
@@ -63,14 +59,6 @@ namespace KN_Lights {
 
       joinTimer_ = new Timer(5.0f, true);
       joinTimer_.Callback += SendLightsData;
-    }
-
-    public override void ResetState() {
-      ResetPickers();
-    }
-
-    public override void ResetPickers() {
-      colorPicker_.Reset();
     }
 
     public override void OnStart() {
@@ -173,9 +161,9 @@ namespace KN_Lights {
         Core.CarPicker.Reset();
       }
 
-      if (colorPicker_.IsPicking) {
-        if (activeLights_ != null && colorPicker_.PickedColor != activeLights_.HeadLightsColor) {
-          activeLights_.HeadLightsColor = colorPicker_.PickedColor;
+      if (Core.ColorPicker.IsPicking) {
+        if (activeLights_ != null && Core.ColorPicker.PickedColor != activeLights_.HeadLightsColor) {
+          activeLights_.HeadLightsColor = Core.ColorPicker.PickedColor;
         }
       }
 
@@ -209,15 +197,6 @@ namespace KN_Lights {
       }
     }
 
-    public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
-      if (colorPicker_.IsPicking) {
-        if (Core.CarPicker.IsPicking) {
-          x += Gui.OffsetGuiX;
-        }
-        colorPicker_.OnGui(gui, ref x, ref y);
-      }
-    }
-
     private void GuiSideBar(Gui gui, ref float x, ref float y) {
       float yBegin = y;
 
@@ -226,14 +205,14 @@ namespace KN_Lights {
         hlTabActive_ = true;
         wlTabActive_ = false;
         Core.CarPicker.Reset();
-        colorPicker_.Reset();
+        Core.ColorPicker.Reset();
       }
 
       if (gui.ImageButton(ref x, ref y, wlTabActive_ ? Skin.IconSunActive : Skin.IconSun)) {
         hlTabActive_ = false;
         wlTabActive_ = true;
         Core.CarPicker.Reset();
-        colorPicker_.Reset();
+        Core.ColorPicker.Reset();
       }
 
       x += Gui.IconSize;
@@ -250,7 +229,7 @@ namespace KN_Lights {
       GUI.enabled = !TFCar.IsNull(Core.PlayerCar);
 
       if (gui.Button(ref x, ref y, width, height, "ENABLE OWN LIGHTS", Skin.Button)) {
-        colorPicker_.Reset();
+        Core.ColorPicker.Reset();
         EnableLightsOn(Core.PlayerCar);
       }
 
@@ -333,7 +312,8 @@ namespace KN_Lights {
 
       if (gui.Button(ref x, ref y, width, height, "COLOR", Skin.Button)) {
         if (activeLights_ != null) {
-          colorPicker_.Toggle(activeLights_.HeadLightsColor, false);
+          Core.CarPicker.IsPicking = false;
+          Core.ColorPicker.Toggle(activeLights_.HeadLightsColor, false);
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
@@ -475,7 +455,7 @@ namespace KN_Lights {
 
       if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO", Skin.Button)) {
         Core.CarPicker.Toggle();
-        colorPicker_.Reset();
+        Core.ColorPicker.Reset();
       }
       GUI.enabled = guiEnabled;
 
@@ -502,8 +482,8 @@ namespace KN_Lights {
               break;
             }
             activeLights_ = cl;
-            if (colorPicker_.IsPicking) {
-              colorPicker_.Pick(activeLights_.HeadLightsColor, false);
+            if (Core.ColorPicker.IsPicking) {
+              Core.ColorPicker.Pick(activeLights_.HeadLightsColor, false);
             }
           }
         }
@@ -578,7 +558,7 @@ namespace KN_Lights {
     private void ToggleOwnLights() {
       if (Controls.KeyDown("toggle_lights")) {
         if (ownLights_ == null) {
-          colorPicker_.Reset();
+          Core.ColorPicker.Reset();
           EnableLightsOn(Core.PlayerCar);
         }
         else {

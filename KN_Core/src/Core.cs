@@ -38,12 +38,13 @@ namespace KN_Core {
     public GameObject MainCamera { get; private set; }
     public GameObject ActiveCamera { get; set; }
 
-    public CarPicker CarPicker { get; private set; }
-
+    public CarPicker CarPicker { get; }
     public TFCar PlayerCar => CarPicker.PlayerCar;
     public List<TFCar> Cars => CarPicker.Cars;
 
-    public Settings Settings { get; private set; }
+    public ColorPicker ColorPicker { get; }
+
+    public Settings Settings { get; }
 
     public bool IsInGarage { get; private set; }
 
@@ -80,6 +81,7 @@ namespace KN_Core {
       Timeline = new Timeline(this);
 
       CarPicker = new CarPicker();
+      ColorPicker = new ColorPicker();
 
       mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
@@ -243,7 +245,14 @@ namespace KN_Core {
       float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;
       float ty = GuiContentBeginY - Gui.OffsetY;
 
+      if (ColorPicker.IsPicking) {
+        if (CarPicker.IsPicking) {
+          tx += Gui.OffsetGuiX;
+        }
+        ColorPicker.OnGui(gui_, ref tx, ref ty);
+      }
       CarPicker.OnGUI(gui_, ref tx, ref ty);
+
       mods_[selectedTab_].GuiPickers(selectedModId_, gui_, ref tx, ref ty);
 
       if (DrawTimeline) {
@@ -256,6 +265,7 @@ namespace KN_Core {
         IsGuiEnabled = !IsGuiEnabled;
 
         CarPicker.Reset();
+        ColorPicker.Reset();
         mods_[selectedTabPrev_].ResetPickers();
       }
     }
