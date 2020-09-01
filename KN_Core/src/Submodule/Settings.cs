@@ -56,8 +56,6 @@ namespace KN_Core {
     private bool tachEnabled_;
     public Tachometer Tachometer { get; }
 
-    private int prevCarId_;
-
     private readonly Exhaust exhaust_;
 
     private Canvas rootCanvas_;
@@ -131,12 +129,8 @@ namespace KN_Core {
       }
 
       if (BackFireEnabled) {
-        if (!KnCar.IsNull(Core.PlayerCar)) {
-          int carId = Core.PlayerCar.Id;
-          if (prevCarId_ != carId) {
-            exhaust_.Initialize();
-            prevCarId_ = carId;
-          }
+        if (Core.IsCarChanged) {
+          exhaust_.Initialize();
         }
 
 #if KN_DEV_TOOLS

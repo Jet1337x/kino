@@ -34,6 +34,7 @@ namespace KN_Core {
     public bool IsInGarage { get; private set; }
     public bool IsInGarageChanged { get; private set; }
     public bool IsSceneChanged { get; private set; }
+    public bool IsCarChanged { get; private set; }
 
     public bool IsGuiEnabled { get; set; }
 
@@ -45,6 +46,7 @@ namespace KN_Core {
 
     private string prevScene_;
     private bool prevInGarage_;
+    private int carId_ = -1;
 
     private readonly List<BaseMod> mods_;
     private readonly List<string> tabs_;
@@ -141,6 +143,11 @@ namespace KN_Core {
       IsInGarageChanged = prevInGarage_ && !IsInGarage || !prevInGarage_ && IsInGarage;
       prevInGarage_ = IsInGarage;
       prevScene_ = scene;
+
+      if (PlayerCar != null) {
+        IsCarChanged = PlayerCar.Id != carId_;
+        carId_ = PlayerCar.Id;
+      }
 
       if (IsInGarage && cameraRotation_ == null) {
         cameraRotation_ = FindObjectOfType<CameraRotation>();
