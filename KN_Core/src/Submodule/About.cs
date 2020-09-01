@@ -1,10 +1,10 @@
 namespace KN_Core {
 
   public class About : BaseMod {
-    public About(Core core) : base(core, "ABOUT", int.MaxValue) { }
+    public About(Core core, int version) : base(core, "ABOUT", int.MaxValue, version) { }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
-      float width = Core.GuiTabsWidth - Gui.OffsetGuiX * 2.0f ;
+      float width = Core.GuiTabsWidth - Gui.OffsetGuiX * 2.0f;
       const float height = Gui.Height;
 
       x += Gui.OffsetSmall;

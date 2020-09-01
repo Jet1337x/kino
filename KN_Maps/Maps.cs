@@ -3,9 +3,9 @@ using KN_Core;
 namespace KN_Maps {
   public class Maps : BaseMod {
 
-    private SafeFlyMod fly_;
+    private readonly SafeFlyMod fly_;
 
-    public Maps(Core core) : base(core, "MAPS", 4) {
+    public Maps(Core core, int version) : base(core, "MAPS", 4, version) {
       fly_ = new SafeFlyMod(core);
     }
 

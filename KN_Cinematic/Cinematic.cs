@@ -36,7 +36,7 @@ namespace KN_Cinematic {
     private string animationScaleString_ = "0.0";
     private string animationMaxTimeString_ = "0.0";
 
-    public Cinematic(Core core) : base(core, "CINEMATIC", 2) {
+    public Cinematic(Core core, int version) : base(core, "CINEMATIC", 2, version) {
       ctCameras_ = new List<CTCamera>();
 
       Core.Timeline.OnPlay += OnTimelinePlay;

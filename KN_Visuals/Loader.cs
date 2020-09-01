@@ -4,8 +4,10 @@ using KN_Core;
 namespace KN_Visuals {
   [BepInPlugin("trbflxr.kn_visuals", "KN_Visuals", KnConfig.StringVersion)]
   public class Loader : BaseUnityPlugin {
+    private const int Version = 120;
+
     public Loader() {
-      Core.CoreInstance.AddMod(new Visuals(Core.CoreInstance));
+      Core.CoreInstance.AddMod(new Visuals(Core.CoreInstance, Version));
     }
   }
 }

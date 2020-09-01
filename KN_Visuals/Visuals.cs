@@ -26,7 +26,7 @@ namespace KN_Visuals {
 
     private readonly FilePicker filePicker_;
 
-    public Visuals(Core core) : base(core, "VISUALS", 3) {
+    public Visuals(Core core, int version) : base(core, "VISUALS", 3, version) {
       filePicker_ = new FilePicker();
     }
 

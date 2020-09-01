@@ -84,15 +84,19 @@ namespace KN_Core {
       mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
 
-      Settings = new Settings(this);
+      Settings = new Settings(this, KnConfig.Version);
       AddMod(Settings);
-      AddMod(new About(this));
+      AddMod(new About(this, KnConfig.Version));
 
       Udp = new Udp(Settings);
       Udp.ProcessPacket += HandlePacket;
     }
 
     public void AddMod(BaseMod mod) {
+      if (mod.Version != KnConfig.Version) {
+        return;
+      }
+
       if (mod.Name == "CINEMATIC") {
         Log.Write($"[KN_Core]: Cinematic module is currently disabled.");
         return;

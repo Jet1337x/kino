@@ -77,7 +77,7 @@ namespace KN_Core {
 
     private NetGameCollisionManager collisionManager_;
 
-    public Settings(Core core) : base(core, "SETTINGS", int.MaxValue - 1) {
+    public Settings(Core core, int version) : base(core, "SETTINGS", int.MaxValue - 1, version) {
       exhaust_ = new Exhaust(core);
       tachometer_ = new Tachometer(core);
 
