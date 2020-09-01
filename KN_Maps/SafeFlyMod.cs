@@ -59,7 +59,6 @@ namespace KN_Maps {
 
     public void Update() {
       if (cheatsEnabled_ || ModelValidator.isValid) {
-      if (cheatsEnabled_) {
         return;
       }
 
@@ -125,7 +124,6 @@ namespace KN_Maps {
 
     private void SetCollisions() {
       if (cheatsEnabled_ || ModelValidator.isValid) {
-      if (cheatsEnabled_) {
         return;
       }
 
