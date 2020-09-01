@@ -10,6 +10,11 @@ namespace KN_Core {
     private const float GearWidth = 35.0f;
     private const float GearHeight = 47.0f;
 
+    private const float OffsetTx = 50.0f;
+    private const float OffsetTy = 45.0f;
+
+    public bool Enabled;
+
     private readonly Core core_;
     private readonly Color tachColor_;
     private readonly Color tachColorAlpha_;
@@ -31,7 +36,14 @@ namespace KN_Core {
       }
     }
 
-    public void OnGUI(float x, float y) {
+    public void OnGui(bool hideUi) {
+      if (!Enabled || hideUi) {
+        return;
+      }
+
+      float x = Screen.width - (OffsetTx + 290.0f);
+      float y = Screen.height - (OffsetTy + 45.0f);
+
       if (core_.PlayerCar.CarX == null || core_.IsInGarage) {
         return;
       }

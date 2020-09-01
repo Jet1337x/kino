@@ -35,7 +35,6 @@ namespace KN_Lights {
 
     private float carLightsDiscard_;
 
-    private bool prevScene_;
     private bool autoAddLights_;
 
     private bool shouldSync_;
@@ -141,9 +140,7 @@ namespace KN_Lights {
 
       worldLights_.Update();
 
-      bool sceneChanged = prevScene_ && !Core.IsInGarage || !prevScene_ && Core.IsInGarage;
-      prevScene_ = Core.IsInGarage;
-      if (sceneChanged) {
+      if (Core.IsInGarageChanged) {
         joinTimer_.Reset();
       }
 
@@ -593,10 +590,7 @@ namespace KN_Lights {
     }
 
     private void AutoAddLights(bool select = true) {
-      bool sceneChanged = prevScene_ && !Core.IsInGarage || !prevScene_ && Core.IsInGarage;
-      prevScene_ = Core.IsInGarage;
-
-      if ((sceneChanged || TFCar.IsNull(Core.PlayerCar)) && carLights_.Count > 0) {
+      if ((Core.IsInGarageChanged || TFCar.IsNull(Core.PlayerCar)) && carLights_.Count > 0) {
         autoAddLights_ = false;
         RemoveAllNullLights();
       }

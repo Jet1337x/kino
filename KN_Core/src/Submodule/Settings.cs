@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using GameOverlay;
-using SyncMultiplayer;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -53,54 +50,36 @@ namespace KN_Core {
       }
     }
 
-    public bool ConsolesDisabled { get; private set; }
+    private readonly DisableConsoles disableConsoles_;
+    public bool ConsolesDisabled => disableConsoles_.Disabled;
+
+    private bool tachEnabled_;
+    public Tachometer Tachometer { get; }
 
     private int prevCarId_;
-    private bool prevScene_;
 
     private readonly Exhaust exhaust_;
 
-    private const float OffsetTx = 50.0f;
-    private const float OffsetTy = 45.0f;
-    private bool tachometerEnabled_;
-    private bool tachometerEnabledSettings_;
-    private readonly Tachometer tachometer_;
-
     private Canvas rootCanvas_;
-
-    private bool consolesHidden_;
-    private readonly List<TFCar> disabledCars_;
-
-    private readonly Timer updateCarsTimer_;
 
     private bool forceWhiteSmoke_;
 
-    private NetGameCollisionManager collisionManager_;
-
     public Settings(Core core, int version) : base(core, "SETTINGS", int.MaxValue - 1, version) {
       exhaust_ = new Exhaust(core);
-      tachometer_ = new Tachometer(core);
-
-      disabledCars_ = new List<TFCar>(16);
-
-      updateCarsTimer_ = new Timer(10.0f);
-      updateCarsTimer_.Callback += UpdateDisabledPlayers;
+      Tachometer = new Tachometer(core);
+      disableConsoles_ = new DisableConsoles(Core);
     }
 
     public void Awake() {
       RPoints = Core.KnConfig.Get<bool>("r_points");
       HideNames = Core.KnConfig.Get<bool>("hide_names");
       BackFireEnabled = Core.KnConfig.Get<bool>("custom_backfire");
-      tachometerEnabledSettings_ = Core.KnConfig.Get<bool>("custom_tach");
+      tachEnabled_ = Core.KnConfig.Get<bool>("custom_tach");
       receiveUdp_ = Core.KnConfig.Get<bool>("receive_udp");
       syncLights_ = Core.KnConfig.Get<bool>("sync_lights");
       forceWhiteSmoke_ = Core.KnConfig.Get<bool>("force_white_smoke");
 
-      if (!Core.IsCheatsEnabled) {
-        ConsolesDisabled = Core.KnConfig.Get<bool>("trash_autodisable");
-        consolesHidden_ = Core.KnConfig.Get<bool>("trash_autohide");
-      }
-
+      disableConsoles_.OnStart();
       exhaust_.OnStart();
     }
 
@@ -108,16 +87,12 @@ namespace KN_Core {
       Core.KnConfig.Set("r_points", RPoints);
       Core.KnConfig.Set("hide_names", HideNames);
       Core.KnConfig.Set("custom_backfire", BackFireEnabled);
-      Core.KnConfig.Set("custom_tach", tachometerEnabledSettings_);
+      Core.KnConfig.Set("custom_tach", tachEnabled_);
       Core.KnConfig.Set("receive_udp", receiveUdp_);
       Core.KnConfig.Set("sync_lights", syncLights_);
       Core.KnConfig.Set("force_white_smoke", forceWhiteSmoke_);
 
-      if (!Core.IsCheatsEnabled) {
-        Core.KnConfig.Set("trash_autodisable", ConsolesDisabled);
-        Core.KnConfig.Set("trash_autohide", consolesHidden_);
-      }
-
+      disableConsoles_.OnStop();
       exhaust_.OnStop();
     }
 
@@ -128,7 +103,7 @@ namespace KN_Core {
     protected override void OnCarLoaded() {
       exhaust_.Initialize();
 
-      UpdateDisabledPlayers();
+      disableConsoles_.OnCarLoaded();
 
       if (forceWhiteSmoke_) {
         foreach (var car in Core.Cars) {
@@ -138,24 +113,19 @@ namespace KN_Core {
     }
 
     public override void Update(int id) {
-      bool sceneChanged = prevScene_ && !Core.IsInGarage || !prevScene_ && Core.IsInGarage;
-      prevScene_ = Core.IsInGarage;
-
-      if (sceneChanged) {
-        tachometerEnabled_ = false;
+      if (Core.IsSceneChanged) {
+        Tachometer.Enabled = false;
         rootCanvas_ = null;
       }
 
-      if (collisionManager_ == null || sceneChanged) {
-        collisionManager_ = NetworkController.InstanceGame.systems.Get<NetGameCollisionManager>();
-      }
+      disableConsoles_.Update();
 
       if (rootCanvas_ == null) {
         var cn = Object.FindObjectsOfType<Canvas>();
         foreach (var c in cn) {
           if (c.name == KnConfig.CxUiCanvasName) {
             rootCanvas_ = c;
-            tachometerEnabled_ = !c.enabled;
+            Tachometer.Enabled = !c.enabled;
           }
         }
       }
@@ -177,51 +147,12 @@ namespace KN_Core {
         }
 #endif
       }
-      if (tachometerEnabledSettings_) {
+      if (tachEnabled_) {
         if (rootCanvas_ != null) {
-          tachometerEnabled_ = !rootCanvas_.enabled;
+          Tachometer.Enabled = !rootCanvas_.enabled;
         }
       }
-      tachometer_.Update();
-
-      if (consolesHidden_ || ConsolesDisabled) {
-        updateCarsTimer_.Update();
-      }
-
-      if (consolesHidden_) {
-        foreach (var car in disabledCars_) {
-          if (!TFCar.IsNull(car)) {
-            var pos = car.CxTransform.position;
-            pos.y += 1000.0f;
-            car.CxTransform.position = pos;
-          }
-        }
-      }
-    }
-
-    private void UpdateDisabledPlayers() {
-      if (!Core.IsCheatsEnabled) {
-        disabledCars_.RemoveAll(TFCar.IsNull);
-
-        if (ConsolesDisabled) {
-          foreach (var car in Core.Cars) {
-            if (car != Core.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
-              if (!disabledCars_.Contains(car)) {
-                disabledCars_.Add(car);
-                collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);
-                Core.Udp.SendChangeRoomId(car.Base.networkPlayer, false);
-              }
-            }
-          }
-        }
-        else {
-          foreach (var car in disabledCars_) {
-            collisionManager_?.MovePlayerToColliderGroup("", car.Base.networkPlayer);
-            Core.Udp.SendChangeRoomId(car.Base.networkPlayer, true);
-          }
-          disabledCars_.Clear();
-        }
-      }
+      Tachometer.Update();
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
@@ -230,11 +161,11 @@ namespace KN_Core {
 
       x += Gui.OffsetSmall;
 
-      if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachometerEnabledSettings_ ? Skin.ButtonActive : Skin.Button)) {
-        tachometerEnabledSettings_ = !tachometerEnabledSettings_;
-        Core.KnConfig.Set("custom_tach", tachometerEnabledSettings_);
-        if (!tachometerEnabledSettings_) {
-          tachometerEnabled_ = false;
+      if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+        tachEnabled_ = !tachEnabled_;
+        Core.KnConfig.Set("custom_tach", tachEnabled_);
+        if (!tachEnabled_) {
+          Tachometer.Enabled = false;
         }
       }
 
@@ -287,24 +218,15 @@ namespace KN_Core {
 
       GUI.enabled = !Core.IsCheatsEnabled;
 
-      if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", ConsolesDisabled ? Skin.ButtonActive : Skin.Button)) {
-        ConsolesDisabled = !ConsolesDisabled;
-        UpdateDisabledPlayers();
+      if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", disableConsoles_.Disabled ? Skin.ButtonActive : Skin.Button)) {
+        disableConsoles_.Disabled = !disableConsoles_.Disabled;
       }
 
-      if (gui.Button(ref x, ref y, width, height, "HIDE CONSOLE PLAYERS", consolesHidden_ ? Skin.ButtonActive : Skin.Button)) {
-        consolesHidden_ = !consolesHidden_;
+      if (gui.Button(ref x, ref y, width, height, "HIDE CONSOLE PLAYERS", disableConsoles_.Hidden ? Skin.ButtonActive : Skin.Button)) {
+        disableConsoles_.Hidden = !disableConsoles_.Hidden;
       }
 
       GUI.enabled = guiEnabled;
-    }
-
-    public void GuiTachometer(bool hideUi) {
-      if (!tachometerEnabled_ || hideUi) {
-        return;
-      }
-
-      tachometer_.OnGUI(Screen.width - (OffsetTx + 290.0f), Screen.height - (OffsetTy + 45.0f));
     }
   }
 }

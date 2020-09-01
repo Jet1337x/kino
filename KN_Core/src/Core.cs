@@ -26,15 +26,6 @@ namespace KN_Core {
     public float GuiTabsHeight { get; private set; }
     public float GuiTabsWidth { get; private set; }
 
-    private bool hideCxUi_;
-    public bool HideCxUi {
-      get => hideCxUi_;
-      set {
-        hideCxUi_ = value;
-        KnConfig.Set("hide_cx_ui", hideCxUi_);
-      }
-    }
-
     public GameObject MainCamera { get; private set; }
     public GameObject ActiveCamera { get; set; }
 
@@ -48,11 +39,17 @@ namespace KN_Core {
     public Settings Settings { get; }
 
     public bool IsInGarage { get; private set; }
+    public bool IsInGarageChanged { get; private set; }
+    public bool IsSceneChanged { get; private set; }
 
-    private readonly Gui gui_;
     public bool IsGuiEnabled { get; set; }
 
     public bool IsCheatsEnabled { get; private set; }
+
+    public Udp Udp { get; }
+
+    private string prevScene_;
+    private bool prevInGarage_;
 
     private readonly List<BaseMod> mods_;
     private readonly List<string> tabs_;
@@ -62,7 +59,7 @@ namespace KN_Core {
 
     private CameraRotation cameraRotation_;
 
-    public Udp Udp { get; }
+    private readonly Gui gui_;
 
     private static Assembly assembly_;
 
@@ -101,11 +98,6 @@ namespace KN_Core {
         return;
       }
 
-      if (mod.Name == "CINEMATIC") {
-        Log.Write($"[KN_Core]: Cinematic module is currently disabled.");
-        return;
-      }
-
       if (mod.Name == "CHEATS") {
         IsCheatsEnabled = true;
       }
@@ -129,13 +121,10 @@ namespace KN_Core {
       KnConfig.Read();
       Skin.LoadAll();
 
-      hideCxUi_ = KnConfig.Get<bool>("hide_cx_ui");
-
       Settings.Awake();
     }
 
     private void OnDestroy() {
-      KnConfig.Set("hide_cx_ui", hideCxUi_);
       foreach (var mod in mods_) {
         mod.OnStop();
       }
@@ -159,7 +148,12 @@ namespace KN_Core {
         ActiveCamera = MainCamera.gameObject;
       }
 
-      IsInGarage = SceneManager.GetActiveScene().name == "SelectCar";
+      string scene = SceneManager.GetActiveScene().name;
+      IsInGarage = scene == "SelectCar";
+      IsSceneChanged = scene != prevScene_;
+      IsInGarageChanged = prevInGarage_ && !IsInGarage || !prevInGarage_ && IsInGarage;
+      prevInGarage_ = IsInGarage;
+      prevScene_ = scene;
 
       if (IsInGarage && cameraRotation_ == null) {
         cameraRotation_ = FindObjectOfType<CameraRotation>();
@@ -214,7 +208,7 @@ namespace KN_Core {
     }
 
     public void OnGUI() {
-      Settings.GuiTachometer(mods_[selectedTab_].WantsHideUi());
+      Settings.Tachometer.OnGui(mods_[selectedTab_].WantsHideUi());
 
       if (!IsGuiEnabled) {
         return;
