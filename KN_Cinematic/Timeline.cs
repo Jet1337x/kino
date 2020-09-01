@@ -1,3 +1,4 @@
+#if false
 using UnityEngine;
 
 namespace KN_Core {
@@ -294,3 +295,4 @@ namespace KN_Core {
     }
   }
 }
+#endif
