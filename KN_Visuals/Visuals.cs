@@ -24,19 +24,10 @@ namespace KN_Visuals {
     private float shiftZ_;
     private float shiftY_;
 
-    private readonly FilePicker filePicker_;
-
-    public Visuals(Core core, int version) : base(core, "VISUALS", 3, version) {
-      filePicker_ = new FilePicker();
-    }
+    public Visuals(Core core, int version) : base(core, "VISUALS", 3, version) { }
 
     public override void ResetState() {
-      ResetPickers();
       liveryCamEnabled_ = false;
-    }
-
-    public override void ResetPickers() {
-      filePicker_.Reset();
     }
 
     public override bool LockCameraRotation() {
@@ -72,15 +63,6 @@ namespace KN_Visuals {
       GUI.enabled = guiEnabled;
     }
 
-    public override void GuiPickers(int id, Gui gui, ref float x, ref float y) {
-      if (filePicker_.IsPicking) {
-        if (Core.CarPicker.IsPicking) {
-          x += Gui.OffsetGuiX;
-        }
-        filePicker_.OnGui(gui, ref x, ref y);
-      }
-    }
-
     private void GuiLivery(Gui gui, ref float x, ref float y, float width, float height) {
       string text = liveryCamEnabled_ ? "DISABLE" : "ENABLE";
       if (gui.Button(ref x, ref y, width, height, $"{text} ZOOM", liveryCamEnabled_ ? Skin.ButtonActive : Skin.Button)) {
@@ -106,7 +88,7 @@ namespace KN_Visuals {
       }
 
       if (gui.Button(ref x, ref y, width, height, "LOAD DESIGN", Skin.Button)) {
-        filePicker_.Toggle(KnConfig.VisualsDir);
+        Core.FilePicker.Toggle(KnConfig.VisualsDir);
       }
 
       bool enabled = GUI.enabled;
@@ -162,10 +144,10 @@ namespace KN_Visuals {
         garage_ = Object.FindObjectOfType<UIGarageContext>();
       }
 
-      if (filePicker_.IsPicking) {
-        string file = filePicker_.PickedFile;
+      if (Core.FilePicker.IsPicking) {
+        string file = Core.FilePicker.PickedFile;
         if (file != null) {
-          filePicker_.Reset();
+          Core.FilePicker.Reset();
 
           carId_ = -1;
           carVisuals_ = null;

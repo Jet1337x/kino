@@ -25,8 +25,6 @@ namespace KN_Maps {
 
     public override void ResetPickers() { }
 
-    public override void GuiPickers(int id, Gui gui, ref float x, ref float y) { }
-
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
       fly_.OnGui(gui, ref x, ref y);
     }

@@ -43,6 +43,7 @@ namespace KN_Core {
     public List<TFCar> Cars => CarPicker.Cars;
 
     public ColorPicker ColorPicker { get; }
+    public FilePicker FilePicker { get; }
 
     public Settings Settings { get; }
 
@@ -82,6 +83,7 @@ namespace KN_Core {
 
       CarPicker = new CarPicker();
       ColorPicker = new ColorPicker();
+      FilePicker = new FilePicker();
 
       mods_ = new List<BaseMod>();
       tabs_ = new List<string>();
@@ -242,21 +244,25 @@ namespace KN_Core {
       GuiTabsHeight = gui_.TabsMaxHeight;
       GuiTabsWidth = gui_.TabsMaxWidth;
 
-      float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;
-      float ty = GuiContentBeginY - Gui.OffsetY;
-
-      if (ColorPicker.IsPicking) {
-        if (CarPicker.IsPicking) {
-          tx += Gui.OffsetGuiX;
-        }
-        ColorPicker.OnGui(gui_, ref tx, ref ty);
-      }
-      CarPicker.OnGUI(gui_, ref tx, ref ty);
-
-      mods_[selectedTab_].GuiPickers(selectedModId_, gui_, ref tx, ref ty);
+      GuiPickers();
 
       if (DrawTimeline) {
         Timeline.OnGUI(gui_);
+      }
+    }
+
+    private void GuiPickers() {
+      float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;
+      float ty = GuiContentBeginY - Gui.OffsetY;
+
+      if (CarPicker.IsPicking) {
+        CarPicker.OnGui(gui_, ref tx, ref ty);
+      }
+      if (ColorPicker.IsPicking) {
+        ColorPicker.OnGui(gui_, ref tx, ref ty);
+      }
+      if (FilePicker.IsPicking) {
+        FilePicker.OnGui(gui_, ref tx, ref ty);
       }
     }
 
@@ -266,12 +272,16 @@ namespace KN_Core {
 
         CarPicker.Reset();
         ColorPicker.Reset();
+        FilePicker.Reset();
         mods_[selectedTabPrev_].ResetPickers();
       }
     }
 
     private void HandleTabSelection() {
       if (selectedTab_ != selectedTabPrev_) {
+        CarPicker.Reset();
+        ColorPicker.Reset();
+        FilePicker.Reset();
         mods_[selectedTabPrev_].ResetState();
         selectedModId_ = mods_[selectedTab_].Id;
       }

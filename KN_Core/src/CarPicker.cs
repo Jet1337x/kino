@@ -36,7 +36,7 @@ namespace KN_Core {
       }
     }
 
-    public void OnGUI(Gui gui, ref float x, ref float y) {
+    public void OnGui(Gui gui, ref float x, ref float y) {
       if (!IsPicking) {
         return;
       }
@@ -84,7 +84,7 @@ namespace KN_Core {
       }
 
       Cars.RemoveAll(TFCar.IsNull);
-      
+
       loadingCars_.RemoveAll(car => car.Loaded && (car.Player == null || car.Player.userCar == null));
 
       var nwPlayers = NetworkController.InstanceGame?.Players;
