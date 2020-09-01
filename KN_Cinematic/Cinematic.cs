@@ -1,3 +1,4 @@
+#if false
 using System.Collections.Generic;
 using KN_Core;
 using UnityEngine;
@@ -692,3 +693,4 @@ namespace KN_Cinematic {
     #endregion
   }
 }
+#endif

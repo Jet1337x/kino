@@ -1,3 +1,4 @@
+#if false
 using KN_Core;
 using UnityEngine;
 
@@ -97,3 +98,4 @@ namespace KN_Cinematic {
     }
   }
 }
+#endif

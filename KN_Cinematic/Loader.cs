@@ -1,3 +1,4 @@
+#if false
 using BepInEx;
 using KN_Core;
 
@@ -11,3 +12,4 @@ namespace KN_Cinematic {
     }
   }
 }
+#endif
