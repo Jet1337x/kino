@@ -12,15 +12,10 @@ using UnityEngine.SceneManagement;
 namespace KN_Core {
   [BepInPlugin("trbflxr.kn_0core", "KN_Core", KnConfig.StringVersion)]
   public class Core : BaseUnityPlugin {
-    public const float GuiXLeft = 25.0f;
-    public const float GuiYTop = 25.0f;
+    private const float GuiXLeft = 25.0f;
+    private const float GuiYTop = 25.0f;
 
     public static Core CoreInstance { get; private set; }
-
-    public KnConfig KnConfig { get; }
-
-    public bool DrawTimeline { get; set; }
-    public Timeline Timeline { get; }
 
     public float GuiContentBeginY { get; private set; }
     public float GuiTabsHeight { get; private set; }
@@ -31,12 +26,10 @@ namespace KN_Core {
 
     public CarPicker CarPicker { get; }
     public TFCar PlayerCar => CarPicker.PlayerCar;
-    public List<TFCar> Cars => CarPicker.Cars;
+    public IEnumerable<TFCar> Cars => CarPicker.Cars;
 
     public ColorPicker ColorPicker { get; }
     public FilePicker FilePicker { get; }
-
-    public Settings Settings { get; }
 
     public bool IsInGarage { get; private set; }
     public bool IsInGarageChanged { get; private set; }
@@ -47,6 +40,8 @@ namespace KN_Core {
     public bool IsCheatsEnabled { get; private set; }
 
     public Udp Udp { get; }
+    public Settings Settings { get; }
+    public KnConfig KnConfig { get; }
 
     private string prevScene_;
     private bool prevInGarage_;
@@ -75,8 +70,6 @@ namespace KN_Core {
       KnConfig = new KnConfig();
 
       gui_ = new Gui();
-
-      Timeline = new Timeline(this);
 
       CarPicker = new CarPicker();
       ColorPicker = new ColorPicker();
@@ -140,13 +133,7 @@ namespace KN_Core {
     private void Update() {
       CarPicker.Update();
 
-      if (MainCamera == null) {
-        ActiveCamera = null;
-        SetMainCamera(true);
-      }
-      if (ActiveCamera == null && MainCamera != null) {
-        ActiveCamera = MainCamera.gameObject;
-      }
+      UpdateCamera();
 
       string scene = SceneManager.GetActiveScene().name;
       IsInGarage = scene == "SelectCar";
@@ -189,8 +176,6 @@ namespace KN_Core {
         }
       }
 #endif
-
-      Timeline.Update();
 
       foreach (var mod in mods_) {
         mod.Update(selectedModId_);
@@ -239,10 +224,6 @@ namespace KN_Core {
       GuiTabsWidth = gui_.TabsMaxWidth;
 
       GuiPickers();
-
-      if (DrawTimeline) {
-        Timeline.OnGUI(gui_);
-      }
     }
 
     private void GuiPickers() {
@@ -291,10 +272,13 @@ namespace KN_Core {
       }
     }
 
-    public void ToggleCxUi(bool active) {
-      KeepAliveManager.SetUIVisible(active);
-      if (IsInGarage) {
-        InputManager.instance.SetCursorVisibility(true);
+    private void UpdateCamera() {
+      if (MainCamera == null) {
+        ActiveCamera = null;
+        SetMainCamera(true);
+      }
+      if (ActiveCamera == null && MainCamera != null) {
+        ActiveCamera = MainCamera.gameObject;
       }
     }
 
@@ -319,7 +303,7 @@ namespace KN_Core {
       return tex;
     }
 
-    public bool SetMainCamera(bool camEnabled) {
+    private bool SetMainCamera(bool camEnabled) {
       MainCamera = GameObject.FindGameObjectWithTag(KnConfig.CxMainCameraTag);
       if (MainCamera != null) {
         MainCamera.GetComponent<Camera>().enabled = camEnabled;
