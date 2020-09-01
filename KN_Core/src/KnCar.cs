@@ -4,7 +4,7 @@ using UnityEngine;
 using NetworkPlayer = SyncMultiplayer.NetworkPlayer;
 
 namespace KN_Core {
-  public class TFCar {
+  public class KnCar {
     public RaceCar Base { get; }
     public string Name { get; }
 
@@ -17,7 +17,7 @@ namespace KN_Core {
 
     public bool IsConsole { get; }
 
-    public TFCar(RaceCar car) {
+    public KnCar(RaceCar car) {
       if (car == null) {
         Base = null;
         Name = null;
@@ -28,11 +28,11 @@ namespace KN_Core {
       IsConsole = car.isNetworkCar && car.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam;
     }
 
-    public static bool IsNull(TFCar car) {
+    public static bool IsNull(KnCar car) {
       return car == null || car.Base == null;
     }
 
-    public static bool operator ==(TFCar car0, TFCar car1) {
+    public static bool operator ==(KnCar car0, KnCar car1) {
       if (ReferenceEquals(car0, null)) {
         return ReferenceEquals(car1, null);
       }
@@ -43,11 +43,11 @@ namespace KN_Core {
       return car0.Name == car1.Name && car0.Id == car1.Id;
     }
 
-    public static bool operator !=(TFCar car0, TFCar car1) {
+    public static bool operator !=(KnCar car0, KnCar car1) {
       return !(car0 == car1);
     }
 
-    private bool Equals(TFCar other) {
+    private bool Equals(KnCar other) {
       return Equals(Base, other.Base) && Name == other.Name;
     }
 
@@ -55,7 +55,7 @@ namespace KN_Core {
       if (ReferenceEquals(null, obj)) return false;
       if (ReferenceEquals(this, obj)) return true;
       if (obj.GetType() != GetType()) return false;
-      return Equals((TFCar) obj);
+      return Equals((KnCar) obj);
     }
 
     public override int GetHashCode() {
@@ -74,7 +74,7 @@ namespace KN_Core {
     public bool Hide = false;
     public bool AutoDisable = false;
 
-    public TFCar Car;
+    public KnCar Car;
 
     public static bool IsNull(DisabledCar car) {
       return car == null || car.Car == null || car.Car.Base == null;

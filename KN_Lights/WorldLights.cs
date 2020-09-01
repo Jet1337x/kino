@@ -76,7 +76,7 @@ namespace KN_Lights {
         data_ = defaultData_;
       }
 
-      bool resetMap = map_.Any(m => m == null) || TFCar.IsNull(core_.PlayerCar);
+      bool resetMap = map_.Any(m => m == null) || KnCar.IsNull(core_.PlayerCar);
       if (resetMap) {
         map_.Clear();
       }
@@ -272,7 +272,7 @@ namespace KN_Lights {
         dataLoaded_ = false;
       }
 
-      if (map_.Count > 0 && map_[0] != null && !TFCar.IsNull(core_.PlayerCar)) {
+      if (map_.Count > 0 && map_[0] != null && !KnCar.IsNull(core_.PlayerCar)) {
         SelectMap(map_[0].name);
       }
       SaveDefault();

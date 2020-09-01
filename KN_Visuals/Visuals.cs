@@ -204,7 +204,7 @@ namespace KN_Visuals {
     }
 
     private void SaveCurrentVisuals() {
-      if (prefs_ == null || TFCar.IsNull(Core.PlayerCar) || Core.PlayerCar.Base.metaInfo == null) {
+      if (prefs_ == null || KnCar.IsNull(Core.PlayerCar) || Core.PlayerCar.Base.metaInfo == null) {
         return;
       }
 

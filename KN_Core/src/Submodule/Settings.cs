@@ -131,7 +131,7 @@ namespace KN_Core {
       }
 
       if (BackFireEnabled) {
-        if (!TFCar.IsNull(Core.PlayerCar)) {
+        if (!KnCar.IsNull(Core.PlayerCar)) {
           int carId = Core.PlayerCar.Id;
           if (prevCarId_ != carId) {
             exhaust_.Initialize();

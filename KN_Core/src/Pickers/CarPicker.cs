@@ -7,10 +7,10 @@ namespace KN_Core {
   public class CarPicker {
     public bool IsPicking { get; set; }
 
-    public TFCar PickedCar { get; private set; }
-    public TFCar PlayerCar { get; private set; }
+    public KnCar PickedCar { get; private set; }
+    public KnCar PlayerCar { get; private set; }
 
-    public List<TFCar> Cars { get; }
+    public List<KnCar> Cars { get; }
 
     public delegate void CarLoadCallback();
     public event CarLoadCallback OnCarLoaded;
@@ -20,7 +20,7 @@ namespace KN_Core {
     private readonly List<LoadingCar> loadingCars_;
 
     public CarPicker() {
-      Cars = new List<TFCar>(16);
+      Cars = new List<KnCar>(16);
       loadingCars_ = new List<LoadingCar>(16);
     }
 
@@ -79,11 +79,11 @@ namespace KN_Core {
     }
 
     public void Update() {
-      if (TFCar.IsNull(PlayerCar)) {
+      if (KnCar.IsNull(PlayerCar)) {
         FindPlayerCar();
       }
 
-      Cars.RemoveAll(TFCar.IsNull);
+      Cars.RemoveAll(KnCar.IsNull);
 
       loadingCars_.RemoveAll(car => car.Loaded && (car.Player == null || car.Player.userCar == null));
 
@@ -105,7 +105,7 @@ namespace KN_Core {
           if (!car.Player.IsCarLoading() && car.Loading) {
             car.Loaded = true;
             car.Loading = false;
-            Cars.Add(new TFCar(car.Player.userCar));
+            Cars.Add(new KnCar(car.Player.userCar));
             Log.Write($"[KN_Core]: Car loaded: {car.Player.NetworkID}");
             OnCarLoaded?.Invoke();
           }
@@ -119,7 +119,7 @@ namespace KN_Core {
       if (cars != null && cars.Length > 0) {
         foreach (var c in cars) {
           if (!c.isNetworkCar) {
-            PlayerCar = new TFCar(c);
+            PlayerCar = new KnCar(c);
             return;
           }
         }

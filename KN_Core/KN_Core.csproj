@@ -148,8 +148,7 @@
         <Compile Include="src\Skin.cs" />
         <Compile Include="src\Submodule\About.cs" />
         <Compile Include="src\Submodule\Settings.cs" />
-        <Compile Include="src\TFCar.cs" />
-        <Compile Include="src\Timeline.cs" />
+        <Compile Include="src\KnCar.cs" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\CameraActive.png" />

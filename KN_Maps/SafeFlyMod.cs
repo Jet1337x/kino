@@ -13,9 +13,6 @@ namespace KN_Maps {
     private bool noclipEnabled_;
     private float floatingPos_;
 
-    private Camera camera_;
-
-    private bool prevScene_;
     private NetGameCollisionManager collisionManager_;
 
     public SafeFlyMod(Core core) {
@@ -66,23 +63,17 @@ namespace KN_Maps {
         return;
       }
 
-      if (TFCar.IsNull(core_.PlayerCar)) {
+      if (KnCar.IsNull(core_.PlayerCar)) {
         return;
       }
 
-      bool sceneChanged = prevScene_ && !core_.IsInGarage || !prevScene_ && core_.IsInGarage;
-      prevScene_ = core_.IsInGarage;
-      if (sceneChanged || collisionManager_ == null) {
+      if (core_.IsInGarageChanged || collisionManager_ == null) {
         collisionManager_ = NetworkController.InstanceGame.systems.Get<NetGameCollisionManager>();
       }
 
       //if follow someone
       if (core_.PlayerCar.IsNetworkCar) {
         return;
-      }
-
-      if (camera_ == null || !camera_.CompareTag(KnConfig.CxMainCameraTag)) {
-        camera_ = Camera.main;
       }
 
       if (Controls.KeyDown("disable_all")) {
@@ -97,8 +88,8 @@ namespace KN_Maps {
 
       var currentPosition = core_.PlayerCar.CxTransform.position;
       if (Controls.KeyDown("teleport")) {
-        if (camera_ != null) {
-          currentPosition = camera_.transform.position;
+        if (core_.MainCamera != null) {
+          currentPosition = core_.MainCamera.transform.position;
           core_.PlayerCar.CxTransform.position = currentPosition;
         }
       }
@@ -111,8 +102,8 @@ namespace KN_Maps {
       currentPosition.y = floatingPos_;
 
       if (Controls.Key("cam_align")) {
-        if (camera_ != null) {
-          var rotation = camera_.transform.rotation;
+        if (core_.MainCamera != null) {
+          var rotation = core_.MainCamera.transform.rotation;
           rotation.x = 0.0f;
           rotation.z = 0.0f;
           core_.PlayerCar.CxTransform.rotation = rotation;

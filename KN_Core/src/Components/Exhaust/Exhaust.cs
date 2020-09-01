@@ -105,7 +105,7 @@ namespace KN_Core {
           Log.Write($"[TF_Core]: Exhaust dev tools | Added config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
         }
 #else
-        if (TFCar.IsNull(e.Car)) {
+        if (KnCar.IsNull(e.Car)) {
           exhaustsToRemove_.Add(e);
           continue;
         }

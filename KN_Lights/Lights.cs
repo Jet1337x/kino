@@ -148,7 +148,7 @@ namespace KN_Lights {
         return;
       }
 
-      if (Core.CarPicker.IsPicking && !TFCar.IsNull(Core.CarPicker.PickedCar)) {
+      if (Core.CarPicker.IsPicking && !KnCar.IsNull(Core.CarPicker.PickedCar)) {
         if (Core.CarPicker.PickedCar != Core.PlayerCar) {
           EnableLightsOn(Core.CarPicker.PickedCar);
         }
@@ -223,7 +223,7 @@ namespace KN_Lights {
       const float height = Gui.Height;
 
       bool guiEnabled = GUI.enabled;
-      GUI.enabled = !TFCar.IsNull(Core.PlayerCar);
+      GUI.enabled = !KnCar.IsNull(Core.PlayerCar);
 
       if (gui.Button(ref x, ref y, width, height, "ENABLE OWN LIGHTS", Skin.Button)) {
         Core.ColorPicker.Reset();
@@ -490,7 +490,7 @@ namespace KN_Lights {
       y += Gui.OffsetSmall;
     }
 
-    private void EnableLightsOn(TFCar car, bool select = true) {
+    private void EnableLightsOn(KnCar car, bool select = true) {
       bool player = car == Core.PlayerCar;
 
       var lights = player ? lightsConfig_.GetLights(car.Id) : nwLightsConfig_.GetLights(car.Id, car.Name);
@@ -523,7 +523,7 @@ namespace KN_Lights {
       }
     }
 
-    private CarLights CreateLights(TFCar car, LightsConfigBase config) {
+    private CarLights CreateLights(KnCar car, LightsConfigBase config) {
       var l = lightsConfigDefault_.GetLights(car.Id);
       if (l == null) {
         l = new CarLights {
@@ -573,7 +573,7 @@ namespace KN_Lights {
       var cam = Core.ActiveCamera;
       if (cam != null) {
         foreach (var cl in carLights_) {
-          if (!TFCar.IsNull(cl.Car)) {
+          if (!KnCar.IsNull(cl.Car)) {
             if (Vector3.Distance(cam.transform.position, cl.Car.Transform.position) > carLightsDiscard_) {
               if (cl.IsLightsEnabled) {
                 cl.IsLightsEnabled = false;
@@ -590,7 +590,7 @@ namespace KN_Lights {
     }
 
     private void AutoAddLights(bool select = true) {
-      if ((Core.IsInGarageChanged || TFCar.IsNull(Core.PlayerCar)) && carLights_.Count > 0) {
+      if ((Core.IsInGarageChanged || KnCar.IsNull(Core.PlayerCar)) && carLights_.Count > 0) {
         autoAddLights_ = false;
         RemoveAllNullLights();
       }
@@ -619,7 +619,7 @@ namespace KN_Lights {
 
     private void RemoveAllNullLights() {
       foreach (var cl in carLights_) {
-        if (TFCar.IsNull(cl.Car)) {
+        if (KnCar.IsNull(cl.Car)) {
           carLightsToRemove_.Add(cl);
           continue;
         }

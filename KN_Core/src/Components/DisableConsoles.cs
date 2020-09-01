@@ -15,7 +15,7 @@ namespace KN_Core {
     public bool Hidden { get; set; }
 
     private readonly Timer updateCarsTimer_;
-    private readonly List<TFCar> disabledCars_;
+    private readonly List<KnCar> disabledCars_;
 
     private NetGameCollisionManager collisionManager_;
 
@@ -24,7 +24,7 @@ namespace KN_Core {
     public DisableConsoles(Core core) {
       core_ = core;
 
-      disabledCars_ = new List<TFCar>(16);
+      disabledCars_ = new List<KnCar>(16);
 
       updateCarsTimer_ = new Timer(10.0f);
       updateCarsTimer_.Callback += OnCarLoaded;
@@ -59,7 +59,7 @@ namespace KN_Core {
 
       if (Hidden) {
         foreach (var car in disabledCars_) {
-          if (!TFCar.IsNull(car)) {
+          if (!KnCar.IsNull(car)) {
             var pos = car.CxTransform.position;
             pos.y += 1000.0f;
             car.CxTransform.position = pos;
@@ -70,7 +70,7 @@ namespace KN_Core {
 
     public void OnCarLoaded() {
       if (!core_.IsCheatsEnabled) {
-        disabledCars_.RemoveAll(TFCar.IsNull);
+        disabledCars_.RemoveAll(KnCar.IsNull);
 
         if (Disabled) {
           foreach (var car in core_.Cars) {

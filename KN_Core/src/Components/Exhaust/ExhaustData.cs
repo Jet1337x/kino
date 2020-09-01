@@ -14,7 +14,7 @@ namespace KN_Core {
 
     public bool Enabled { get; set; }
 
-    public TFCar Car { get; }
+    public KnCar Car { get; }
 
     public List<ParticleSystem> Particles { get; }
     public List<GameObject> LightObjects { get; }
@@ -46,7 +46,7 @@ namespace KN_Core {
       Lights = new List<Light>();
 
       if (typeof(CarPopExhaust).GetField("m_car", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(script) is RaceCar car) {
-        Car = new TFCar(car);
+        Car = new KnCar(car);
 
         int id = exhaust.ExhaustConfig.FindIndex(ed => ed.CarId == Car.Id);
         if (id != -1) {

@@ -41,7 +41,7 @@ namespace KN_Lights {
       }
     }
 
-    public TFCar Car { get; private set; }
+    public KnCar Car { get; private set; }
 
     public int CarId { get; private set; }
     public bool IsNetworkCar { get; private set; }
@@ -112,7 +112,7 @@ namespace KN_Lights {
       get => pitch_;
       set {
         pitch_ = value;
-        if (TFCar.IsNull(Car)) {
+        if (KnCar.IsNull(Car)) {
           return;
         }
         var rot = Car.Transform.rotation;
@@ -131,7 +131,7 @@ namespace KN_Lights {
       get => pitchTail_;
       set {
         pitchTail_ = value;
-        if (TFCar.IsNull(Car)) {
+        if (KnCar.IsNull(Car)) {
           return;
         }
         var rot = Car.Transform.rotation;
@@ -292,7 +292,7 @@ namespace KN_Lights {
       Object.Destroy(TailLightLeft);
       Object.Destroy(TailLightRight);
 
-      if (!TFCar.IsNull(Car)) {
+      if (!KnCar.IsNull(Car)) {
         if (Singletone<Simulator>.instance) {
           Singletone<Simulator>.instance.OnUpdateWheelsEvent -= CarUpdate;
         }
@@ -321,7 +321,7 @@ namespace KN_Lights {
       return lights;
     }
 
-    public void Attach(TFCar car) {
+    public void Attach(KnCar car) {
       Car = car;
       CarId = car.Id;
       IsNetworkCar = car.IsNetworkCar;
@@ -388,7 +388,7 @@ namespace KN_Lights {
     }
 
     public void LateUpdate() {
-      if (!TFCar.IsNull(Car) && cxCar_ != null) {
+      if (!KnCar.IsNull(Car) && cxCar_ != null) {
         float bb = cxCar_.brake > 0.2f ? tlBrightness_ * BrakePower : tlBrightness_;
         if (GetTailLights(out var l, out var r)) {
           l.intensity = bb;
@@ -540,7 +540,7 @@ namespace KN_Lights {
     }
 
     private void CarUpdate() {
-      if (!TFCar.IsNull(Car)) {
+      if (!KnCar.IsNull(Car)) {
         //todo(trbflxr): maybe it should be optional?
         bool enabled = IsLightsEnabled && (IsTailLightLeftEnabled || IsTailLightRightEnabled);
         Car.Base.carModel.SetLightsState(enabled, CarLightGroup.Brake);

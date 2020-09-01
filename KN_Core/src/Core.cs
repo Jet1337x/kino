@@ -25,8 +25,8 @@ namespace KN_Core {
     public GameObject ActiveCamera { get; set; }
 
     public CarPicker CarPicker { get; }
-    public TFCar PlayerCar => CarPicker.PlayerCar;
-    public IEnumerable<TFCar> Cars => CarPicker.Cars;
+    public KnCar PlayerCar => CarPicker.PlayerCar;
+    public IEnumerable<KnCar> Cars => CarPicker.Cars;
 
     public ColorPicker ColorPicker { get; }
     public FilePicker FilePicker { get; }
