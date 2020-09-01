@@ -8,7 +8,7 @@ namespace KN_Core {
     private const string ExhaustConfigFile = "kn_exhaust.kne";
     private const string ExhaustConfigDefaultFile = "kn_exhaust_default.kne";
 
-    public const float MaxDistance = 70.0f;
+    private const float MaxDistance = 50.0f;
 
     public const float TriggerFade = 3.0f;
     public const float RevTrigger = 500.0f;

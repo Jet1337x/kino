@@ -108,14 +108,6 @@ namespace KN_Visuals {
         RefreshCar();
       }
 
-#if false
-      // todo: apply visuals on other cars
-      if (gui.Button(ref x, ref y, width, height, "APPLY VISUALS ON", Skin.Button)) {
-        selectedCarId_ = 78;
-        ApplyVisuals(78);
-      }
-#endif
-
       GUI.enabled = selectedCarId_ != -1 && backupVisuals_ != null && Core.IsInGarage;
 
       if (gui.Button(ref x, ref y, width, height, "RESTORE DESIGN", Skin.Button)) {
