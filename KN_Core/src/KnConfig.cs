@@ -13,6 +13,7 @@ namespace KN_Core {
   }
 
   public class KnConfig {
+    public const int ClientVersion = 270;
     public const int Version = 120;
     public const string StringVersion = "1.2.0";
 

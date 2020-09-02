@@ -4,6 +4,7 @@ namespace KN_Core {
   public static class Skin {
     public static GUISkin MainContainer;
     public static GUISkin MainContainerLeft;
+    public static GUISkin MainContainerRed;
     private static Texture2D texMain_;
 
     public static GUISkin MainContainerDark;
@@ -146,6 +147,7 @@ namespace KN_Core {
     private static Texture2D texTimelineHigh_;
 
     public static Color TextColor;
+    public static Color TextColorRed;
     public static Color TextColorInv;
     public static Color SeparatorColor;
 
@@ -168,6 +170,7 @@ namespace KN_Core {
       initialized_ = true;
 
       TextColor = new Color32(0x30, 0x30, 0x30, 0xff);
+      TextColorRed = new Color32(0xff, 0x30, 0x30, 0xff);
       TextColorInv = new Color32(0xee, 0xee, 0xee, 0xff);
       SeparatorColor = new Color32(0xee, 0xee, 0xee, 0xff);
 
@@ -381,6 +384,13 @@ namespace KN_Core {
       MainContainerLeft.box.alignment = TextAnchor.MiddleLeft;
       MainContainerLeft.box.font = FontLight;
       MainContainerLeft.box.padding = new RectOffset(5, 5, 0, 0);
+
+      MainContainerRed = ScriptableObject.CreateInstance<GUISkin>();
+      MainContainerRed.box.normal.background = texMain_;
+      MainContainerRed.box.normal.textColor = TextColorRed;
+      MainContainerRed.box.alignment = TextAnchor.MiddleLeft;
+      MainContainerRed.box.font = FontLight;
+      MainContainerRed.box.padding = new RectOffset(5, 5, 0, 0);
 
       texMainDark_ = Core.LoadCoreTexture("MainDark.png");
       MainContainerDark = ScriptableObject.CreateInstance<GUISkin>();

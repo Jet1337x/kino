@@ -5,9 +5,13 @@ from shutil import move, copymode
 from os import fdopen, remove
 
 version = ['1', '2', '0']
+client_version = ['2', '7', '1']
 
-versionInt = ''.join(version)
-versionString = '{0}.{1}.{2}'.format(version[0], version[1], version[2])
+version_int = ''.join(version)
+version_string = '{0}.{1}.{2}'.format(version[0], version[1], version[2])
+
+client_version_int = ''.join(version)
+
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,13 +25,17 @@ def replace_version(file_path):
     with fdopen(fh,'w') as new_file:
         with open(file_path) as old_file:
             found = False
+            found_client = False
             for line in old_file:
-                if found:
+                if found and found_client:
                     new_file.write(line)
                 else:
-                    if 'Version = ' in line:
+                    if not found and 'Version = ' in line:
                         found = True
-                        new_file.write(re.sub('\d{3}', versionInt, line))
+                        new_file.write(re.sub('\d{3}', version_int, line))
+                    elif not found_client and 'ClientVersion = ' in line:
+                        found_client = True
+                        new_file.write(re.sub('\d{3}', client_version_int, line))
                     else:
                         new_file.write(line)
 
@@ -39,18 +47,18 @@ def replace_config_version(file_path):
     fh, abs_path = mkstemp()
     with fdopen(fh,'w') as new_file:
         with open(file_path) as old_file:
-            foundInt = False
-            foundString = False
+            found_int = False
+            found_string = False
             for line in old_file:
-                if foundInt and foundString:
+                if found_int and found_string:
                     new_file.write(line)
                 else:
-                    if not foundInt and 'Version = ' in line:
-                        foundInt = True
-                        new_file.write(re.sub('\d{3}', versionInt, line))
-                    elif not foundString and 'StringVersion = ' in line:
-                        foundString = True
-                        new_file.write(re.sub('\s*([\d.]+)', versionString, line))
+                    if not found_int and 'Version = ' in line:
+                        found_int = True
+                        new_file.write(re.sub('\d{3}', version_int, line))
+                    elif not found_string and 'StringVersion = ' in line:
+                        found_string = True
+                        new_file.write(re.sub('\s*([\d.]+)', version_string, line))
                     else:
                         new_file.write(line) 
 

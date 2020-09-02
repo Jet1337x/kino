@@ -54,6 +54,8 @@ namespace KN_Core {
     private int selectedTabPrev_;
     private int selectedModId_;
 
+    private readonly bool badVersion_;
+
     private CameraRotation cameraRotation_;
 
     private readonly Gui gui_;
@@ -61,6 +63,8 @@ namespace KN_Core {
     private static Assembly assembly_;
 
     public Core() {
+      badVersion_ = KnConfig.ClientVersion != GameVersion.version;
+
       KillFlyMod();
 
       CoreInstance = this;
@@ -73,23 +77,30 @@ namespace KN_Core {
 
       gui_ = new Gui();
 
+      mods_ = new List<BaseMod>();
+      tabs_ = new List<string>();
+
       CarPicker = new CarPicker();
       ColorPicker = new ColorPicker();
       FilePicker = new FilePicker();
 
-      mods_ = new List<BaseMod>();
-      tabs_ = new List<string>();
+      AddMod(new About(this, KnConfig.Version, GameVersion.version, badVersion_));
 
-      Settings = new Settings(this, KnConfig.Version);
+      if (badVersion_) {
+        return;
+      }
+
+      Settings = new Settings(this, KnConfig.Version, KnConfig.ClientVersion);
       AddMod(Settings);
-      AddMod(new About(this, KnConfig.Version));
 
       Udp = new Udp(Settings);
       Udp.ProcessPacket += HandlePacket;
     }
 
     public void AddMod(BaseMod mod) {
-      if (mod.Version != KnConfig.Version) {
+      if ((badVersion_ && mod.Name != "ABOUT") ||
+          mod.Version != KnConfig.Version ||
+          mod.ClientVersion != GameVersion.version) {
         return;
       }
 
@@ -128,10 +139,18 @@ namespace KN_Core {
       KnConfig.Read();
       Skin.LoadAll();
 
+      if (badVersion_) {
+        return;
+      }
+
       Settings.Awake();
     }
 
     private void OnDestroy() {
+      if (badVersion_) {
+        return;
+      }
+
       foreach (var mod in mods_) {
         mod.OnStop();
       }
@@ -139,12 +158,22 @@ namespace KN_Core {
     }
 
     public void FixedUpdate() {
+      if (badVersion_) {
+        return;
+      }
+
       foreach (var mod in mods_) {
         mod.FixedUpdate(selectedModId_);
       }
     }
 
     private void Update() {
+      GuiRenderCheck();
+
+      if (badVersion_) {
+        return;
+      }
+
       CarPicker.Update();
 
       UpdateCamera();
@@ -183,8 +212,6 @@ namespace KN_Core {
         }
       }
 
-      GuiRenderCheck();
-
 #if false
       if (Input.GetKeyDown(KeyCode.Delete)) {
         Udp.ReloadClient = true;
@@ -204,6 +231,10 @@ namespace KN_Core {
     }
 
     public void LateUpdate() {
+      if (badVersion_) {
+        return;
+      }
+
       foreach (var mod in mods_) {
         mod.LateUpdate(selectedModId_);
       }
@@ -212,8 +243,6 @@ namespace KN_Core {
     }
 
     public void OnGUI() {
-      Settings.Tachometer.OnGui(mods_[selectedTab_].WantsHideUi());
-
       if (!IsGuiEnabled) {
         return;
       }
@@ -242,7 +271,13 @@ namespace KN_Core {
       GuiTabsHeight = gui_.TabsMaxHeight;
       GuiTabsWidth = gui_.TabsMaxWidth;
 
+      if (badVersion_) {
+        return;
+      }
+
       GuiPickers();
+
+      Settings.Tachometer.OnGui(mods_[selectedTab_].WantsHideUi());
     }
 
     private void GuiPickers() {
@@ -264,10 +299,12 @@ namespace KN_Core {
       if (Controls.KeyDown("gui")) {
         IsGuiEnabled = !IsGuiEnabled;
 
-        CarPicker.Reset();
-        ColorPicker.Reset();
-        FilePicker.Reset();
-        mods_[selectedTabPrev_].ResetPickers();
+        if (!badVersion_) {
+          CarPicker.Reset();
+          ColorPicker.Reset();
+          FilePicker.Reset();
+          mods_[selectedTabPrev_].ResetPickers();
+        }
       }
     }
 
