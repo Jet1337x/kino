@@ -194,6 +194,7 @@ namespace KN_Core {
       defaultParams_["custom_backfire"] = true;
       defaultParams_["trash_autohide"] = false;
       defaultParams_["trash_autodisable"] = false;
+      defaultParams_["grip_autodisable"] = true;
       defaultParams_["custom_tach"] = false;
 
       defaultParams_["cl_discard_distance"] = 170.0f;
