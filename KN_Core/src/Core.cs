@@ -112,6 +112,18 @@ namespace KN_Core {
       selectedModId_ = mods_[selectedTab_].Id;
     }
 
+    public void RemoveMod(BaseMod mod) {
+      mods_.Remove(mod);
+      tabs_.Remove(mod.Name);
+
+      mod.OnStop();
+
+      selectedTab_ = 0;
+      selectedModId_ = mods_[selectedTab_].Id;
+
+      Log.Write($"[KN_Core]: Mod {mod.Name} was removed");
+    }
+
     private void Awake() {
       KnConfig.Read();
       Skin.LoadAll();
