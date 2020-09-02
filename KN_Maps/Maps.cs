@@ -5,7 +5,7 @@ namespace KN_Maps {
 
     private readonly SafeFlyMod fly_;
 
-    public Maps(Core core, int version) : base(core, "MAPS", 4, version) {
+    public Maps(Core core, int version, int clientVersion) : base(core, "MAPS", 4, version, clientVersion) {
       fly_ = new SafeFlyMod(core);
     }
 

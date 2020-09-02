@@ -24,7 +24,7 @@ namespace KN_Visuals {
     private float shiftZ_;
     private float shiftY_;
 
-    public Visuals(Core core, int version) : base(core, "VISUALS", 3, version) { }
+    public Visuals(Core core, int version, int clientVersion) : base(core, "VISUALS", 3, version, clientVersion) { }
 
     public override void ResetState() {
       liveryCamEnabled_ = false;
