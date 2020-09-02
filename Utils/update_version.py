@@ -10,7 +10,7 @@ client_version = ['2', '7', '1']
 version_int = ''.join(version)
 version_string = '{0}.{1}.{2}'.format(version[0], version[1], version[2])
 
-client_version_int = ''.join(version)
+client_version_int = ''.join(client_version)
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -30,10 +30,10 @@ def replace_version(file_path):
                 if found and found_client:
                     new_file.write(line)
                 else:
-                    if not found and 'Version = ' in line:
+                    if not found and ' Version = ' in line:
                         found = True
                         new_file.write(re.sub('\d{3}', version_int, line))
-                    elif not found_client and 'ClientVersion = ' in line:
+                    elif not found_client and ' ClientVersion = ' in line:
                         found_client = True
                         new_file.write(re.sub('\d{3}', client_version_int, line))
                     else:
@@ -49,16 +49,20 @@ def replace_config_version(file_path):
         with open(file_path) as old_file:
             found_int = False
             found_string = False
+            found_client = False
             for line in old_file:
-                if found_int and found_string:
+                if found_int and found_string and found_client:
                     new_file.write(line)
                 else:
-                    if not found_int and 'Version = ' in line:
+                    if not found_int and ' Version = ' in line:
                         found_int = True
                         new_file.write(re.sub('\d{3}', version_int, line))
-                    elif not found_string and 'StringVersion = ' in line:
+                    elif not found_string and ' StringVersion = ' in line:
                         found_string = True
                         new_file.write(re.sub('\s*([\d.]+)', version_string, line))
+                    elif not found_client and ' ClientVersion = ' in line:
+                        found_client = True
+                        new_file.write(re.sub('\d{3}', client_version_int, line))
                     else:
                         new_file.write(line) 
 
