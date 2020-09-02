@@ -243,6 +243,10 @@ namespace KN_Core {
     }
 
     public void OnGUI() {
+      if (!badVersion_) {
+        Settings.Tachometer.OnGui(mods_[selectedTab_].WantsHideUi());
+      }
+
       if (!IsGuiEnabled) {
         return;
       }
@@ -276,8 +280,6 @@ namespace KN_Core {
       }
 
       GuiPickers();
-
-      Settings.Tachometer.OnGui(mods_[selectedTab_].WantsHideUi());
     }
 
     private void GuiPickers() {
