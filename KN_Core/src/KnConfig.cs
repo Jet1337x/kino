@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using BepInEx;
+using UnityEngine;
 
 namespace KN_Core {
   internal enum ReadMode {
@@ -218,8 +219,14 @@ namespace KN_Core {
         if (!params_.ContainsKey(p.Key)) {
           params_[p.Key] = p.Value;
         }
-        if (p.Key == "join_delay") {
-          params_[p.Key] = p.Value;
+        if (p.Key == "air_step_max") {
+          params_[p.Key] = Mathf.Clamp((float) p.Value, 0.01f, 3.0f);
+        }
+        else if (p.Key == "air_height_max") {
+          params_[p.Key] = Mathf.Clamp((float) p.Value, 0.25f, 0.5f);
+        }
+        else if (p.Key == "air_height_min") {
+          params_[p.Key] = Mathf.Clamp((float) p.Value, 0.01f, 0.1f);
         }
       }
 
