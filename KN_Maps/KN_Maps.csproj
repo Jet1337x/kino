@@ -37,11 +37,17 @@
       <Optimize>true</Optimize>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="0Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\BepInEx\0Harmony.dll</HintPath>
+        </Reference>
         <Reference Include="Assembly-CSharp, Version=13.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="BepInEx, Version=5.0.1.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\BepInEx\BepInEx.dll</HintPath>
+        </Reference>
+        <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\Dependencies\BepInEx\BepInEx.Harmony.dll</HintPath>
         </Reference>
         <Reference Include="CarX.Plugins.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\CarX.Plugins.Core.dll</HintPath>
@@ -67,6 +73,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Patcher.cs" />
         <Compile Include="SafeFlyMod.cs" />
         <Compile Include="Loader.cs" />
         <Compile Include="Maps.cs" />

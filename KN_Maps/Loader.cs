@@ -9,6 +9,7 @@ namespace KN_Maps {
 
     public Loader() {
       Core.CoreInstance.AddMod(new Maps(Core.CoreInstance, Version, ClientVersion));
+      Patcher.Hook();
     }
   }
 }
