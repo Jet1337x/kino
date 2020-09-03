@@ -47,20 +47,19 @@ namespace KN_Maps {
       }
 
       bool guiEnabled = GUI.enabled;
-
-      GUI.enabled = !cheatsEnabled_ && !ModelValidator.isValid;
+      GUI.enabled = !cheatsEnabled_ && ModelValidator.modelName != "";
 
       gui.SliderH(ref x, ref y, width, ref speed_, 1.0f, 100.0f, $"FLY SPEED: {speed_:F1}");
       gui.SliderH(ref x, ref y, width, ref speedMultiplier_, 1.0f, 10.0f, $"FLY SPEED MULTIPLIER {speedMultiplier_:F1}");
 
-      gui.Line(x, y, core_.GuiTabsWidth - Gui.OffsetSmall * 2.0f, 1.0f, Skin.SeparatorColor);
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.OffsetY;
 
       GUI.enabled = guiEnabled;
     }
 
     public void Update() {
-      if (cheatsEnabled_ || ModelValidator.isValid) {
+      if (cheatsEnabled_ || ModelValidator.modelName == "") {
         return;
       }
 
@@ -125,7 +124,7 @@ namespace KN_Maps {
     }
 
     private void SetCollisions() {
-      if (cheatsEnabled_ || ModelValidator.isValid) {
+      if (cheatsEnabled_ || ModelValidator.modelName == "") {
         return;
       }
 

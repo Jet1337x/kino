@@ -34,6 +34,8 @@ namespace KN_Maps {
 
       float yBegin = y;
 
+      x += Gui.OffsetSmall;
+
       fly_.OnGui(gui, ref x, ref y, width);
 
       x += width;
