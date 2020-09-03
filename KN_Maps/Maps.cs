@@ -26,7 +26,9 @@ namespace KN_Maps {
     public override void ResetPickers() { }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
-      fly_.OnGui(gui, ref x, ref y);
+      const float width = Gui.Width * 2.0f;
+
+      fly_.OnGui(gui, ref x, ref y, width);
     }
 
     public override void Update(int id) {

@@ -41,18 +41,20 @@ namespace KN_Maps {
       SetCollisions();
     }
 
-    public void OnGui(Gui gui, ref float x, ref float y) {
+    public void OnGui(Gui gui, ref float x, ref float y, float width) {
       if (cheatsEnabled_) {
         return;
       }
 
-      const float width = Gui.Width;
-
       bool guiEnabled = GUI.enabled;
 
       GUI.enabled = !cheatsEnabled_ && !ModelValidator.isValid;
-      gui.SliderH(ref x, ref y, width, ref speed_, 1.0f, 100.0f, $"SPEED: {speed_:F1}");
-      gui.SliderH(ref x, ref y, width, ref speedMultiplier_, 1.0f, 10.0f, $"SPEED MULTIPLIER {speedMultiplier_:F1}");
+
+      gui.SliderH(ref x, ref y, width, ref speed_, 1.0f, 100.0f, $"FLY SPEED: {speed_:F1}");
+      gui.SliderH(ref x, ref y, width, ref speedMultiplier_, 1.0f, 10.0f, $"FLY SPEED MULTIPLIER {speedMultiplier_:F1}");
+
+      gui.Line(x, y, core_.GuiTabsWidth - Gui.OffsetSmall * 2.0f, 1.0f, Skin.SeparatorColor);
+      y += Gui.OffsetY;
 
       GUI.enabled = guiEnabled;
     }
