@@ -118,6 +118,7 @@ namespace KN_Core {
     public static GUISkin ButtonActiveTab;
     public static GUISkin ButtonDisabled;
     public static GUISkin ButtonDummy;
+    public static GUISkin ButtonDummyRed;
     private static Texture2D texButtonN_;
     private static Texture2D texButtonH_;
     private static Texture2D texButtonA_;
@@ -260,6 +261,16 @@ namespace KN_Core {
       ButtonDummy.button.active.background = texButtonN_;
       ButtonDummy.button.alignment = TextAnchor.MiddleCenter;
       ButtonDummy.button.font = FontLight;
+
+      ButtonDummyRed = ScriptableObject.CreateInstance<GUISkin>();
+      ButtonDummyRed.button.normal.textColor = TextColorInv;
+      ButtonDummyRed.button.normal.background = texRedButtonN_;
+      ButtonDummyRed.button.hover.textColor = TextColorInv;
+      ButtonDummyRed.button.hover.background = texRedButtonN_;
+      ButtonDummyRed.button.active.textColor = TextColorInv;
+      ButtonDummyRed.button.active.background = texRedButtonN_;
+      ButtonDummyRed.button.alignment = TextAnchor.MiddleCenter;
+      ButtonDummyRed.button.font = FontTabs;
 
       ButtonTab = ScriptableObject.CreateInstance<GUISkin>();
       ButtonTab.button.normal.textColor = color;

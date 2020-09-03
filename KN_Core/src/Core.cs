@@ -254,7 +254,7 @@ namespace KN_Core {
       float x = GuiYTop;
       float y = GuiXLeft;
 
-      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "KINO v" + KnConfig.StringVersion, Skin.ButtonDummy);
+      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "KINO v" + KnConfig.StringVersion, badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy);
 
       selectedTabPrev_ = selectedTab_;
       gui_.Tabs(ref x, ref y, tabs_.ToArray(), ref selectedTab_);
@@ -278,6 +278,10 @@ namespace KN_Core {
       if (badVersion_) {
         return;
       }
+
+      float tx = GuiXLeft;
+      float ty = GuiContentBeginY + GuiTabsHeight - Gui.OffsetY;
+      gui_.Button(ref tx, ref ty, GuiTabsWidth, Gui.TabButtonHeight, "CARX INPUT IS LOCKED. CLOSE MOD MENU TO UNLOCK IT.", Skin.ButtonDummyRed);
 
       GuiPickers();
     }
