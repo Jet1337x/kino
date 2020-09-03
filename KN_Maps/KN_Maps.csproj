@@ -73,6 +73,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="MapList.cs" />
         <Compile Include="Patcher.cs" />
         <Compile Include="SafeFlyMod.cs" />
         <Compile Include="Loader.cs" />

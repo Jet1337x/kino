@@ -29,6 +29,7 @@ namespace KN_Core {
     public static string BaseDir { get; private set; }
     public static string ReplaysDir { get; private set; }
     public static string VisualsDir { get; private set; }
+    public static string MapsDir { get; private set; }
 
     private readonly Dictionary<string, object> params_;
     private readonly Dictionary<string, object> defaultParams_;
@@ -52,6 +53,11 @@ namespace KN_Core {
       VisualsDir = BaseDir + Path.DirectorySeparatorChar + "visuals" + Path.DirectorySeparatorChar;
       if (!Directory.Exists(VisualsDir)) {
         Directory.CreateDirectory(VisualsDir);
+      }
+
+      MapsDir = BaseDir + Path.DirectorySeparatorChar + "maps" + Path.DirectorySeparatorChar;
+      if (!Directory.Exists(MapsDir)) {
+        Directory.CreateDirectory(MapsDir);
       }
 
       Log.Write($"[KN_Core]: Base dir: '{BaseDir}'");
