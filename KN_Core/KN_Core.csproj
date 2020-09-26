@@ -132,6 +132,8 @@
         <Compile Include="src\Components\Exhaust\ExhaustData.cs" />
         <Compile Include="src\Components\Exhaust\ExhaustSerializer.cs" />
         <Compile Include="src\Components\Suspension.cs" />
+        <Compile Include="src\Components\Swaps.cs" />
+        <Compile Include="src\Components\SwapsConfig.cs" />
         <Compile Include="src\Components\Tachometer.cs" />
         <Compile Include="src\Pickers\CarPicker.cs" />
         <Compile Include="src\Pickers\ColorPicker.cs" />
