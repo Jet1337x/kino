@@ -32,15 +32,6 @@ namespace KN_Core {
       }
     }
 
-    private bool receiveUdp_;
-    public bool ReceiveUdp {
-      get => receiveUdp_;
-      set {
-        receiveUdp_ = value;
-        Core.KnConfig.Set("udp_receive", value);
-      }
-    }
-
     private bool syncLights_;
     public bool SyncLights {
       get => syncLights_;
@@ -73,7 +64,6 @@ namespace KN_Core {
       HideNames = Core.KnConfig.Get<bool>("hide_names");
       BackFireEnabled = Core.KnConfig.Get<bool>("custom_backfire");
       tachEnabled_ = Core.KnConfig.Get<bool>("custom_tach");
-      receiveUdp_ = Core.KnConfig.Get<bool>("receive_udp");
       syncLights_ = Core.KnConfig.Get<bool>("sync_lights");
       forceWhiteSmoke_ = Core.KnConfig.Get<bool>("force_white_smoke");
 
@@ -86,7 +76,6 @@ namespace KN_Core {
       Core.KnConfig.Set("hide_names", HideNames);
       Core.KnConfig.Set("custom_backfire", BackFireEnabled);
       Core.KnConfig.Set("custom_tach", tachEnabled_);
-      Core.KnConfig.Set("receive_udp", receiveUdp_);
       Core.KnConfig.Set("sync_lights", syncLights_);
       Core.KnConfig.Set("force_white_smoke", forceWhiteSmoke_);
 

@@ -407,10 +407,6 @@ namespace KN_Core {
     }
 
     private void HandlePacket(SmartfoxDataPackage data) {
-      if (!Settings.ReceiveUdp) {
-        return;
-      }
-
       int type = data.Data.GetInt("type");
       switch (type) {
         case Udp.TypeSuspension: {

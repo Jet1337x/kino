@@ -205,7 +205,6 @@ namespace KN_Core {
 
       defaultParams_["cl_discard_distance"] = 170.0f;
 
-      defaultParams_["receive_udp"] = true;
       defaultParams_["sync_lights"] = true;
 
       defaultParams_["force_white_smoke"] = false;

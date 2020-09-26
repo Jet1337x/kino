@@ -93,9 +93,7 @@ namespace KN_Core {
     }
 
     private void MainPacketHandler(NetworkPlayer sender, SmartfoxDataPackage data) {
-      if (settings_.ReceiveUdp) {
-        ProcessPacket?.Invoke(data);
-      }
+      ProcessPacket?.Invoke(data);
     }
   }
 }
