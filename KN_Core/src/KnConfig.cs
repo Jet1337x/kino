@@ -209,6 +209,7 @@ namespace KN_Core {
       defaultParams_["sync_lights"] = true;
 
       defaultParams_["force_white_smoke"] = false;
+      defaultParams_["subscribe"] = true;
 
       // air
       defaultParams_["air_use_controlKey"] = true;

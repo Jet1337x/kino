@@ -3,6 +3,7 @@ using System.IO;
 using SyncMultiplayer;
 using KN_Core;
 using UnityEngine;
+using VinylSystem;
 using Object = UnityEngine.Object;
 
 namespace KN_Visuals {
@@ -23,6 +24,10 @@ namespace KN_Visuals {
     private float zoom_;
     private float shiftZ_;
     private float shiftY_;
+
+#if TEST_MOVE
+    private Livery livery_;
+#endif
 
     public Visuals(Core core, int version, int clientVersion) : base(core, "VISUALS", 3, version, clientVersion) { }
 
@@ -80,6 +85,35 @@ namespace KN_Visuals {
       if (gui.SliderH(ref x, ref y, width, ref shiftZ_, -20.0f, 20.0f, $"SHIFT Z: {shiftZ_:F1}")) {
         Core.KnConfig.Set("vinylcam_shift_z", shiftZ_);
       }
+
+#if TEST_MOVE
+      if (gui.Button(ref x, ref y, width, height, "HOOK", livery_ != null ? Skin.ButtonActive : Skin.Button)) {
+        if (livery_ == null) {
+          if (!KnCar.IsNull(Core.PlayerCar)) {
+            livery_ = Core.PlayerCar.Base.carModel.livery;
+          }
+        }
+        else {
+          livery_ = null;
+        }
+      }
+
+      if (gui.Button(ref x, ref y, width, height, "Move Z+", Skin.Button)) {
+        MoveLivery(new Vector3(100.0f, 0.0f, 0.0f));
+      }
+
+      if (gui.Button(ref x, ref y, width, height, "Move Z-", Skin.Button)) {
+        MoveLivery(new Vector3(-100.0f, 0.0f, 0.0f));
+      }
+
+      if (gui.Button(ref x, ref y, width, height, "Move Y+", Skin.Button)) {
+        MoveLivery(new Vector3(0.0f, 100.0f, 0.0f));
+      }
+
+      if (gui.Button(ref x, ref y, width, height, "Move Y-", Skin.Button)) {
+        MoveLivery(new Vector3(0.0f, -100.0f, 0.0f));
+      }
+#endif
     }
 
     private void GuiVisuals(Gui gui, ref float x, ref float y, float width, float height) {
@@ -182,7 +216,7 @@ namespace KN_Visuals {
       }
 
       int count = prefs_.carSettings.GetVinylsInfoForCar(id).GetPresetsList().Count;
-      int pid = 10 + count * 2 << 0x2;
+      int pid = id + count * 2 << 0x2;
       var vp = new CarVilylsInfo.VinylPreset(pid);
       vp.layers.AddRange(carVisuals_.vinylLayers);
       prefs_.carSettings.GetVinylsInfoForCar(id).AddPreset(vp);
@@ -270,5 +304,22 @@ namespace KN_Visuals {
       carVisuals_ = null;
       carName_ = string.Empty;
     }
+
+#if TEST_MOVE
+    private void MoveLivery(Vector3 direction) {
+      if (livery_ != null) {
+        var editor = VinylSystemKernel.instance.editor;
+        var cam = Camera.main;
+
+        foreach (var l in livery_.layers) {
+          var pos = editor.GetWorldSpacePosition(l);
+          var ssPos = cam.WorldToScreenPoint(pos);
+
+          editor.SetScreenSpacePositionToLayer(cam, ssPos + direction * Time.deltaTime, l);
+        }
+        livery_.Invalidate();
+      }
+    }
+#endif
   }
 }
