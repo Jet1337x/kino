@@ -99,6 +99,8 @@ namespace KN_Core {
 
       Udp = new Udp(Settings);
       Udp.ProcessPacket += HandlePacket;
+
+      CarPicker.OnCarLoaded += Swaps.OnCarLoaded;
     }
 
     public void AddMod(BaseMod mod) {

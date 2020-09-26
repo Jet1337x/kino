@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace KN_Core {
-  public struct SwapData {
+  public class SwapData {
     public const string ConfigFile = "kn_swapdata.knd";
 
     public int carId;

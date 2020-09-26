@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CarX;
 using SyncMultiplayer;
+using UnityEngine;
 
 namespace KN_Core {
   public class Swaps {
@@ -10,16 +11,25 @@ namespace KN_Core {
     private readonly List<Tuple<int, string, string, CarDesc.Engine>> engines_;
 
     private readonly Timer joinTimer_;
+    private readonly Timer sendTimer_;
 
     private readonly Core core_;
 
     private SwapData currentEngine_;
+    private float currentEngineTurboMax_;
     private string defaultSoundId_;
     private readonly CarDesc.Engine defaultEngine_;
+
+    private int activeEngine_;
+    private float carListScrollH_;
+    private Vector2 carListScroll_;
+
+    private bool swapReload_;
 
     public Swaps(Core core) {
       core_ = core;
 
+      activeEngine_ = 0;
       defaultSoundId_ = "";
       defaultEngine_ = new CarDesc.Engine();
 
@@ -28,10 +38,14 @@ namespace KN_Core {
         turbo = -1.0f,
         engineId = 0
       };
+      currentEngineTurboMax_ = 0.0f;
 
       allData_ = new List<SwapData>();
 
-      joinTimer_ = new Timer(5.0f, true);
+      sendTimer_ = new Timer(5.0f);
+      sendTimer_.Callback += SendSwapData;
+
+      joinTimer_ = new Timer(3.0f, true);
       joinTimer_.Callback += SendSwapData;
 
       engines_ = new List<Tuple<int, string, string, CarDesc.Engine>> {
@@ -87,7 +101,7 @@ namespace KN_Core {
           idleRPM = 1000.0f,
           maxTorqueRPM = 5145.75f
         }),
-        new Tuple<int, string, string, CarDesc.Engine>(5, "5.0L V8 (Coyote)", "Cobra GT530", new CarDesc.Engine {
+        new Tuple<int, string, string, CarDesc.Engine>(5, "5.0L V8 (COYOTE)", "Cobra GT530", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 736.5f,
           revLimiter = 9430.3f,
@@ -127,6 +141,10 @@ namespace KN_Core {
       SwapsDataSerializer.Serialize(allData_, SwapData.ConfigFile);
     }
 
+    public void OnCarLoaded() {
+      SetEngine(core_.PlayerCar.Base, currentEngine_.engineId, true);
+    }
+
     public void Update() {
       if (core_.IsCarChanged) {
         defaultSoundId_ = core_.PlayerCar.Base.metaInfo.name;
@@ -134,14 +152,82 @@ namespace KN_Core {
         CopyEngine(desc.carXDesc.engine, defaultEngine_);
       }
 
-      if (core_.IsInGarageChanged) {
+      if (core_.IsInGarageChanged || core_.IsSceneChanged) {
+        swapReload_ = true;
         joinTimer_.Reset();
       }
 
       joinTimer_.Update();
+      sendTimer_.Update();
+
+      if (swapReload_ && !KnCar.IsNull(core_.PlayerCar)) {
+        foreach (var swap in allData_) {
+          if (swap.carId == core_.PlayerCar.Id) {
+            SetEngine(core_.PlayerCar.Base, swap.engineId, true);
+            activeEngine_ = swap.engineId;
+            currentEngine_.turbo = swap.turbo;
+            currentEngine_.carId = swap.carId;
+            currentEngine_.engineId = swap.engineId;
+            break;
+          }
+        }
+        swapReload_ = false;
+      }
     }
 
-    public void SetEngine(RaceCar car, int engineId) {
+    public void OnGui(Gui gui, ref float x, ref float y, float width) {
+      const float listHeight = 220.0f;
+      const float height = Gui.Height;
+
+      bool allowSwap = core_.IsInGarage || core_.IsCheatsEnabled;
+
+      bool enabled = GUI.enabled;
+      GUI.enabled = allowSwap;
+
+      gui.BeginScrollV(ref x, ref y, width, listHeight, carListScrollH_, ref carListScroll_, "ENGINES");
+
+      y += Gui.OffsetSmall;
+
+      float sx = x;
+      float sy = y;
+      const float offset = Gui.ScrollBarWidth;
+      bool scrollVisible = carListScrollH_ > listHeight;
+      float w = scrollVisible ? width - (offset + Gui.OffsetSmall * 3.0f) : width - Gui.OffsetSmall * 3.0f;
+
+      if (gui.Button(ref sx, ref sy, w, height, "STOCK", activeEngine_ == 0 ? Skin.ButtonActive : Skin.Button)) {
+        if (activeEngine_ != 0) {
+          activeEngine_ = 0;
+          SetEngine(core_.PlayerCar.Base, activeEngine_);
+        }
+      }
+
+      foreach (var engine in engines_) {
+        if (gui.Button(ref sx, ref sy, w, height, engine.Item2, activeEngine_ == engine.Item1 ? Skin.ButtonActive : Skin.Button)) {
+          if (activeEngine_ != engine.Item1) {
+            activeEngine_ = engine.Item1;
+            SetEngine(core_.PlayerCar.Base, activeEngine_);
+          }
+        }
+      }
+      carListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
+
+      GUI.enabled = allowSwap && activeEngine_ != 0;
+      if (gui.SliderH(ref x, ref y, width, ref currentEngine_.turbo, 0.0f, currentEngineTurboMax_, $"TURBO: {currentEngine_.turbo:F1}")) {
+        var desc = core_.PlayerCar.Base.GetDesc();
+        desc.carXDesc.engine.turboPressure = currentEngine_.turbo;
+        core_.PlayerCar.Base.SetDesc(desc);
+
+        foreach (var swap in allData_) {
+          if (swap.carId == currentEngine_.carId && swap.engineId == currentEngine_.engineId) {
+            swap.turbo = currentEngine_.turbo;
+            break;
+          }
+        }
+      }
+      GUI.enabled = enabled;
+    }
+
+    private void SetEngine(RaceCar car, int engineId, bool silent = false) {
       var data = new SwapData {
         carId = car.metaInfo.id,
         turbo = -1.0f,
@@ -149,7 +235,7 @@ namespace KN_Core {
       };
 
       if (engineId == 0) {
-        if (TryApplyEngine(car, data)) {
+        if (TryApplyEngine(car, data, silent)) {
           SendSwapData();
         }
         return;
@@ -157,10 +243,29 @@ namespace KN_Core {
 
       bool found = false;
       foreach (var swap in allData_) {
-        if (swap.carId == car.metaInfo.id && swap.engineId == engineId) {
+        if (swap.carId == car.metaInfo.id) {
           found = true;
-          data.turbo = swap.turbo;
-          Log.Write($"[KN_Swaps]: Found engine '{engineId}' in config, turbo: {swap.turbo}");
+
+          if (swap.engineId == engineId) {
+            data.turbo = swap.turbo;
+            if (!silent) {
+              Log.Write($"[KN_Swaps]: Found engine '{engineId}' in config, turbo: {swap.turbo}");
+            }
+          }
+          else {
+            var defaultEngine = GetEngine(engineId);
+            if (defaultEngine == null) {
+              if (!silent) {
+                Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}'");
+              }
+              return;
+            }
+
+            swap.engineId = data.engineId;
+            swap.turbo = defaultEngine.Item4.turboPressure;
+            data.turbo = swap.turbo;
+          }
+
           break;
         }
       }
@@ -168,10 +273,14 @@ namespace KN_Core {
       if (!found) {
         var defaultEngine = GetEngine(engineId);
         if (defaultEngine == null) {
-          Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}'");
+          if (!silent) {
+            Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}'");
+          }
           return;
         }
-        Log.Write($"[KN_Swaps]: Created config for engine '{engineId}'");
+        if (!silent) {
+          Log.Write($"[KN_Swaps]: Created config for engine '{engineId}'");
+        }
         data.turbo = defaultEngine.Item4.turboPressure;
 
         allData_.Add(data);
@@ -179,7 +288,7 @@ namespace KN_Core {
 
       currentEngine_ = data;
 
-      if (TryApplyEngine(car, data)) {
+      if (TryApplyEngine(car, data, silent)) {
         SendSwapData();
       }
     }
@@ -203,7 +312,7 @@ namespace KN_Core {
             engineId = engineId
           };
 
-          TryApplyEngine(player.userCar, swapData);
+          TryApplyEngine(player.userCar, swapData, true);
           break;
         }
       }
@@ -229,7 +338,7 @@ namespace KN_Core {
       core_.Udp.Send(nwData);
     }
 
-    private bool TryApplyEngine(RaceCar car, SwapData data) {
+    private bool TryApplyEngine(RaceCar car, SwapData data, bool silent) {
       if (car.metaInfo.id != data.carId) {
         return false;
       }
@@ -239,17 +348,23 @@ namespace KN_Core {
         CopyEngine(defaultEngine_, d.carXDesc.engine);
         car.SetDesc(d);
 
-        Log.Write($"[KN_Swaps]: Stock engine applied on '{data.carId}'");
+        if (!silent) {
+          Log.Write($"[KN_Swaps]: Stock engine applied on '{data.carId}'");
+        }
 
-        ApplySoundOn(car, data.engineId);
+        ApplySoundOn(car, data.engineId, silent);
         return true;
       }
 
       var defaultEngine = GetEngine(data.engineId);
       if (defaultEngine == null) {
-        Log.Write($"[KN_Swaps]: Unable to apply engine '{data.engineId}'");
+        if (!silent) {
+          Log.Write($"[KN_Swaps]: Unable to apply engine '{data.engineId}'");
+        }
         return false;
       }
+
+      currentEngineTurboMax_ = defaultEngine.Item4.turboPressure;
 
       var engine = new CarDesc.Engine();
       CopyEngine(defaultEngine.Item4, engine);
@@ -257,7 +372,9 @@ namespace KN_Core {
       engine.turboPressure = data.turbo;
 
       if (!Verify(engine, defaultEngine.Item4)) {
-        Log.Write($"[KN_Swaps]: Engine verification failed '{data.engineId}', applying default");
+        if (!silent) {
+          Log.Write($"[KN_Swaps]: Engine verification failed '{data.engineId}', applying default");
+        }
         return false;
       }
 
@@ -265,17 +382,21 @@ namespace KN_Core {
       CopyEngine(engine, desc.carXDesc.engine);
       car.SetDesc(desc);
 
-      Log.Write($"[KN_Swaps]: Engine '{defaultEngine.Item2}' applied on '{car.metaInfo.id}'");
+      if (!silent) {
+        Log.Write($"[KN_Swaps]: Engine '{defaultEngine.Item2}' applied on '{car.metaInfo.id}'");
+      }
 
-      ApplySoundOn(car, data.engineId);
+      ApplySoundOn(car, data.engineId, silent);
 
       return true;
     }
 
-    private void ApplySoundOn(RaceCar car, int engineId) {
+    private void ApplySoundOn(RaceCar car, int engineId, bool silent) {
       var engine = GetEngine(engineId);
       if (engine == null) {
-        Log.Write($"[KN_Swaps]: Unable to apply sound of engine '{engineId}'");
+        if (!silent) {
+          Log.Write($"[KN_Swaps]: Unable to apply sound of engine '{engineId}'");
+        }
         return;
       }
 
@@ -304,7 +425,9 @@ namespace KN_Core {
         }
       }
 
-      Log.Write($"[KN_Swaps]: Engine sound applied on '{car.metaInfo.id}'");
+      if (!silent) {
+        Log.Write($"[KN_Swaps]: Engine sound applied on '{car.metaInfo.id}'");
+      }
     }
 
     private Tuple<int, string, string, CarDesc.Engine> GetEngine(int id) {
