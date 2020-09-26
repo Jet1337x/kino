@@ -9,12 +9,30 @@ namespace KN_Core {
 
     private readonly List<Tuple<int, string, string, CarDesc.Engine>> engines_;
 
+    private readonly Timer joinTimer_;
+
     private readonly Core core_;
+
+    private SwapData currentEngine_;
+    private string defaultSoundId_;
+    private readonly CarDesc.Engine defaultEngine_;
 
     public Swaps(Core core) {
       core_ = core;
 
+      defaultSoundId_ = "";
+      defaultEngine_ = new CarDesc.Engine();
+
+      currentEngine_ = new SwapData {
+        carId = -1,
+        turbo = -1.0f,
+        engineId = 0
+      };
+
       allData_ = new List<SwapData>();
+
+      joinTimer_ = new Timer(5.0f, true);
+      joinTimer_.Callback += SendSwapData;
 
       engines_ = new List<Tuple<int, string, string, CarDesc.Engine>> {
         new Tuple<int, string, string, CarDesc.Engine>(1, "6.0L V8 (L98)", "Raven RV8", new CarDesc.Engine {
@@ -79,8 +97,8 @@ namespace KN_Core {
           revLimiterStep = 450.0f,
           useTC = false,
           cutRPM = 300.0f,
-          idleRPM = 810.7f,
-          maxTorqueRPM = 1126.9f
+          idleRPM = 1126.7f,
+          maxTorqueRPM = 4767.0f
         }),
         new Tuple<int, string, string, CarDesc.Engine>(6, "3.0L I6 (RB30DET)", "Last Prince", new CarDesc.Engine {
           inertiaRatio = 1.1f,
@@ -109,6 +127,63 @@ namespace KN_Core {
       SwapsDataSerializer.Serialize(allData_, SwapData.ConfigFile);
     }
 
+    public void Update() {
+      if (core_.IsCarChanged) {
+        defaultSoundId_ = core_.PlayerCar.Base.metaInfo.name;
+        var desc = core_.PlayerCar.Base.GetDesc();
+        CopyEngine(desc.carXDesc.engine, defaultEngine_);
+      }
+
+      if (core_.IsInGarageChanged) {
+        joinTimer_.Reset();
+      }
+
+      joinTimer_.Update();
+    }
+
+    public void SetEngine(RaceCar car, int engineId) {
+      var data = new SwapData {
+        carId = car.metaInfo.id,
+        turbo = -1.0f,
+        engineId = engineId
+      };
+
+      if (engineId == 0) {
+        if (TryApplyEngine(car, data)) {
+          SendSwapData();
+        }
+        return;
+      }
+
+      bool found = false;
+      foreach (var swap in allData_) {
+        if (swap.carId == car.metaInfo.id && swap.engineId == engineId) {
+          found = true;
+          data.turbo = swap.turbo;
+          Log.Write($"[KN_Swaps]: Found engine '{engineId}' in config, turbo: {swap.turbo}");
+          break;
+        }
+      }
+
+      if (!found) {
+        var defaultEngine = GetEngine(engineId);
+        if (defaultEngine == null) {
+          Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}'");
+          return;
+        }
+        Log.Write($"[KN_Swaps]: Created config for engine '{engineId}'");
+        data.turbo = defaultEngine.Item4.turboPressure;
+
+        allData_.Add(data);
+      }
+
+      currentEngine_ = data;
+
+      if (TryApplyEngine(car, data)) {
+        SendSwapData();
+      }
+    }
+
     public void OnUdpData(SmartfoxDataPackage data) {
       int id = data.Data.GetInt("id");
       int engineId = data.Data.GetInt("engineId");
@@ -134,7 +209,11 @@ namespace KN_Core {
       }
     }
 
-    public void SendSwapData(SwapData data) {
+    private void SendSwapData() {
+      if (currentEngine_.carId == -1 || currentEngine_.engineId == 0) {
+        return;
+      }
+
       int id = NetworkController.InstanceGame?.LocalPlayer?.NetworkID ?? -1;
       if (id == -1) {
         return;
@@ -144,33 +223,42 @@ namespace KN_Core {
       nwData.Add("1", (byte) 25);
       nwData.Add("type", Udp.TypeSwaps);
       nwData.Add("id", id);
-      nwData.Add("engineId", data.engineId);
-      nwData.Add("turbo", data.turbo);
+      nwData.Add("engineId", currentEngine_.engineId);
+      nwData.Add("turbo", currentEngine_.turbo);
 
       core_.Udp.Send(nwData);
     }
 
-    public void TryApplyEngine(RaceCar car, SwapData data) {
+    private bool TryApplyEngine(RaceCar car, SwapData data) {
       if (car.metaInfo.id != data.carId) {
-        return;
+        return false;
+      }
+
+      if (data.engineId == 0) {
+        var d = car.GetDesc();
+        CopyEngine(defaultEngine_, d.carXDesc.engine);
+        car.SetDesc(d);
+
+        Log.Write($"[KN_Swaps]: Stock engine applied on '{data.carId}'");
+
+        ApplySoundOn(car, data.engineId);
+        return true;
       }
 
       var defaultEngine = GetEngine(data.engineId);
       if (defaultEngine == null) {
         Log.Write($"[KN_Swaps]: Unable to apply engine '{data.engineId}'");
-        return;
+        return false;
       }
 
       var engine = new CarDesc.Engine();
       CopyEngine(defaultEngine.Item4, engine);
 
-      if (data.turbo >= 0.0f) {
-        engine.turboPressure = data.turbo;
-      }
+      engine.turboPressure = data.turbo;
 
       if (!Verify(engine, defaultEngine.Item4)) {
         Log.Write($"[KN_Swaps]: Engine verification failed '{data.engineId}', applying default");
-        return;
+        return false;
       }
 
       var desc = car.GetDesc();
@@ -180,9 +268,11 @@ namespace KN_Core {
       Log.Write($"[KN_Swaps]: Engine '{defaultEngine.Item2}' applied on '{car.metaInfo.id}'");
 
       ApplySoundOn(car, data.engineId);
+
+      return true;
     }
 
-    public void ApplySoundOn(RaceCar car, int engineId) {
+    private void ApplySoundOn(RaceCar car, int engineId) {
       var engine = GetEngine(engineId);
       if (engine == null) {
         Log.Write($"[KN_Swaps]: Unable to apply sound of engine '{engineId}'");
@@ -202,7 +292,7 @@ namespace KN_Core {
               onDisable?.Invoke(engineSound, new object[] { });
 
               string oldName = raceCar.metaInfo.name;
-              raceCar.metaInfo.name = engine.Item3;
+              raceCar.metaInfo.name = engineId == 0 ? defaultSoundId_ : engine.Item3;
               KnUtils.SetField(engineSound, "m_raceCar", raceCar);
 
               onEnable?.Invoke(engineSound, new object[] { });
@@ -218,6 +308,10 @@ namespace KN_Core {
     }
 
     private Tuple<int, string, string, CarDesc.Engine> GetEngine(int id) {
+      if (id == 0) {
+        return new Tuple<int, string, string, CarDesc.Engine>(0, "STOCK", defaultSoundId_, defaultEngine_);
+      }
+
       foreach (var engine in engines_) {
         if (engine.Item1 == id) {
           return engine;

@@ -235,6 +235,8 @@ namespace KN_Core {
         mod.Update(selectedModId_);
       }
 
+      Swaps.Update();
+
       Udp.Update();
     }
 
