@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CarX;
+using SyncMultiplayer;
 
 namespace KN_Core {
   public class Swaps {
@@ -8,7 +9,11 @@ namespace KN_Core {
 
     private readonly List<Tuple<int, string, string, CarDesc.Engine>> engines_;
 
-    public Swaps() {
+    private readonly Core core_;
+
+    public Swaps(Core core) {
+      core_ = core;
+
       allData_ = new List<SwapData>();
 
       engines_ = new List<Tuple<int, string, string, CarDesc.Engine>> {
@@ -102,6 +107,47 @@ namespace KN_Core {
 
     public void OnStop() {
       SwapsDataSerializer.Serialize(allData_, SwapData.ConfigFile);
+    }
+
+    public void OnUdpData(SmartfoxDataPackage data) {
+      int id = data.Data.GetInt("id");
+      int engineId = data.Data.GetInt("engineId");
+      float turbo = data.Data.GetFloat("turbo");
+
+      foreach (var player in NetworkController.InstanceGame.Players) {
+        if (player.NetworkID == id) {
+          var engine = GetEngine(engineId);
+          if (engine == null) {
+            Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}' for '{id}'. Check for mod updates!");
+            return;
+          }
+
+          var swapData = new SwapData {
+            carId = player.userCar.metaInfo.id,
+            turbo = turbo,
+            engineId = engineId
+          };
+
+          TryApplyEngine(player.userCar, swapData);
+          break;
+        }
+      }
+    }
+
+    public void SendSwapData(SwapData data) {
+      int id = NetworkController.InstanceGame?.LocalPlayer?.NetworkID ?? -1;
+      if (id == -1) {
+        return;
+      }
+
+      var nwData = new SmartfoxDataPackage(PacketId.Subroom);
+      nwData.Add("1", (byte) 25);
+      nwData.Add("type", Udp.TypeSwaps);
+      nwData.Add("id", id);
+      nwData.Add("engineId", data.engineId);
+      nwData.Add("turbo", data.turbo);
+
+      core_.Udp.Send(nwData);
     }
 
     public void TryApplyEngine(RaceCar car, SwapData data) {

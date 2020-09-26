@@ -44,6 +44,8 @@ namespace KN_Core {
     public Settings Settings { get; }
     public KnConfig KnConfig { get; }
 
+    public Swaps Swaps { get; }
+
     private string prevScene_;
     private bool prevInGarage_;
     private int carId_ = -1;
@@ -74,6 +76,8 @@ namespace KN_Core {
       assembly_ = Assembly.GetExecutingAssembly();
 
       KnConfig = new KnConfig();
+
+      Swaps = new Swaps(this);
 
       gui_ = new Gui();
 
@@ -143,6 +147,8 @@ namespace KN_Core {
         return;
       }
 
+      Swaps.OnStart();
+
       Settings.Awake();
     }
 
@@ -150,6 +156,8 @@ namespace KN_Core {
       if (badVersion_) {
         return;
       }
+
+      Swaps.OnStop();
 
       foreach (var mod in mods_) {
         mod.OnStop();
@@ -404,9 +412,15 @@ namespace KN_Core {
       }
 
       int type = data.Data.GetInt("type");
-      if (type == Udp.TypeSuspension) {
-        Suspension.Apply(data);
-        return;
+      switch (type) {
+        case Udp.TypeSuspension: {
+          Suspension.Apply(data);
+          return;
+        }
+        case Udp.TypeSwaps: {
+          Swaps.OnUdpData(data);
+          return;
+        }
       }
 
       foreach (var mod in mods_) {

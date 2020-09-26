@@ -5,6 +5,7 @@ namespace KN_Core {
   public class Udp {
     public const int TypeSuspension = 0xE4;
     public const int TypeLights = 0xE5;
+    public const int TypeSwaps = 0xE6;
 
     public SmartfoxRoomClient Room { get; private set; }
     public SmartfoxClient Client { get; private set; }
