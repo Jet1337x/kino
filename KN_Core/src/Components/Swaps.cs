@@ -48,7 +48,7 @@ namespace KN_Core {
       joinTimer_ = new Timer(3.0f, true);
       joinTimer_.Callback += SendSwapData;
       engines_ = new List<Tuple<int, bool, string, string, CarDesc.Engine>> {
-        new Tuple<int, bool, string, string, CarDesc.Engine>(1, core_.IsCarChanged, "6.0L V8 (L98)", "Raven RV8", new CarDesc.Engine {
+        new Tuple<int, bool, string, string, CarDesc.Engine>(1, core_.IsCheatsEnabled, "6.0L V8 (L98)", "Raven RV8", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 758.5f,
           revLimiter = 8036.1f,
