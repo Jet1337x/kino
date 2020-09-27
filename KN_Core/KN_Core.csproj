@@ -126,6 +126,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="src\AccessValidator.cs" />
         <Compile Include="src\BaseMod.cs" />
         <Compile Include="src\Components\DisableConsoles.cs" />
         <Compile Include="src\Components\Exhaust\Exhaust.cs" />
