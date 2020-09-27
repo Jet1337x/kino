@@ -12,6 +12,7 @@ namespace KN_Core {
 
     private readonly Timer joinTimer_;
     private readonly Timer sendTimer_;
+    private readonly Timer soundTimer_;
 
     private readonly Core core_;
 
@@ -47,6 +48,10 @@ namespace KN_Core {
 
       joinTimer_ = new Timer(3.0f, true);
       joinTimer_.Callback += SendSwapData;
+
+      soundTimer_ = new Timer(1.0f);
+      soundTimer_.Callback += RefreshSound;
+
       engines_ = new List<Tuple<int, bool, string, string, CarDesc.Engine>> {
         new Tuple<int, bool, string, string, CarDesc.Engine>(1, false, "6.0L V8 (L98)", "Raven RV8", new CarDesc.Engine {
           inertiaRatio = 1.0f,
@@ -185,6 +190,7 @@ namespace KN_Core {
 
       joinTimer_.Update();
       sendTimer_.Update();
+      soundTimer_.Update();
 
       if (swapReload_ && !KnCar.IsNull(core_.PlayerCar)) {
         FindAndSwap();
@@ -456,6 +462,10 @@ namespace KN_Core {
       if (!silent) {
         Log.Write($"[KN_Swaps]: Engine sound applied on '{car.metaInfo.id}'");
       }
+    }
+
+    private void RefreshSound() {
+      ApplySoundOn(core_.PlayerCar.Base, currentEngine_.engineId, true);
     }
 
     private Tuple<int, bool, string, string, CarDesc.Engine> GetEngine(int id) {
