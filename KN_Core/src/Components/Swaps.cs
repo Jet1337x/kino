@@ -27,8 +27,13 @@ namespace KN_Core {
 
     private bool swapReload_;
 
+    private readonly AccessValidator validator_;
+
     public Swaps(Core core) {
       core_ = core;
+
+      validator_ = new AccessValidator("KN_Air");
+      validator_.Initialize("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RyYmZseHIva2lub19kYXRhL21hc3Rlci9kYXRhMi50eHQ=");
 
       activeEngine_ = 0;
       defaultSoundId_ = "";
@@ -159,6 +164,10 @@ namespace KN_Core {
     }
 
     public void OnStart() {
+      if (!validator_.Allowed) {
+        return;
+      }
+
       if (SwapsDataSerializer.Deserialize(SwapData.ConfigFile, out var data)) {
         Log.Write($"[KN_Swaps]: Swap data loaded {data.Count} items");
         allData_.AddRange(data);
@@ -166,14 +175,27 @@ namespace KN_Core {
     }
 
     public void OnStop() {
+      if (!validator_.Allowed) {
+        return;
+      }
+
       SwapsDataSerializer.Serialize(allData_, SwapData.ConfigFile);
     }
 
     public void OnCarLoaded() {
+      if (!validator_.Allowed) {
+        return;
+      }
+
       SetEngine(core_.PlayerCar.Base, currentEngine_.engineId, true);
     }
 
     public void Update() {
+      validator_.Update();
+      if (!validator_.Allowed) {
+        return;
+      }
+
       if (core_.IsCarChanged) {
         defaultSoundId_ = core_.PlayerCar.Base.metaInfo.name;
         defaultFinalDrive_ = core_.PlayerCar.CarX.finaldrive;
@@ -197,6 +219,10 @@ namespace KN_Core {
     }
 
     public void ReloadSound() {
+      if (!validator_.Allowed) {
+        return;
+      }
+
       ApplySoundOn(core_.PlayerCar.Base, currentEngine_.engineId, true);
     }
 
@@ -216,6 +242,10 @@ namespace KN_Core {
     }
 
     public void OnGui(Gui gui, ref float x, ref float y, float width) {
+      if (!validator_.Allowed) {
+        return;
+      }
+
       const float listHeight = 220.0f;
       const float height = Gui.Height;
 
@@ -270,7 +300,7 @@ namespace KN_Core {
           }
         }
       }
-      if (gui.SliderH(ref x, ref y, width, ref currentEngine_.finalDrive, 2.5f, 5.0f, $"FINAL DRIVE: {currentEngine_.finalDrive:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref currentEngine_.finalDrive, 2.5f, 5.0f, $"FINAL DRIVE: {currentEngine_.finalDrive:F2}")) {
         var desc = core_.PlayerCar.Base.GetDesc();
         desc.carXDesc.gearBox.finalDrive = currentEngine_.finalDrive;
         core_.PlayerCar.Base.SetDesc(desc);
