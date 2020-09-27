@@ -74,7 +74,7 @@ namespace KN_Core {
         new Tuple<int, bool, string, string, CarDesc.Engine>(2, true, "6.2L V8 (LS9)", "Spark ZR", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 437.5f,
-          revLimiter = 8800.0f,
+          revLimiter = 9000.0f,
           turboCharged = true,
           turboPressure = 1.4f,
           brakeTorqueRatio = 0.12f,
@@ -166,10 +166,6 @@ namespace KN_Core {
     }
 
     public void OnStart() {
-      if (!validator_.Allowed) {
-        return;
-      }
-
       if (SwapsDataSerializer.Deserialize(SwapData.ConfigFile, out var data)) {
         Log.Write($"[KN_Swaps]: Swap data loaded {data.Count} items");
         allData_.AddRange(data);
@@ -177,10 +173,6 @@ namespace KN_Core {
     }
 
     public void OnStop() {
-      if (!validator_.Allowed) {
-        return;
-      }
-
       SwapsDataSerializer.Serialize(allData_, SwapData.ConfigFile);
     }
 
