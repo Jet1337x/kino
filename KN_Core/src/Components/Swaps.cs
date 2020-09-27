@@ -53,16 +53,16 @@ namespace KN_Core {
       engines_ = new List<Tuple<int, bool, string, string, CarDesc.Engine>> {
         new Tuple<int, bool, string, string, CarDesc.Engine>(1, false, "6.0L V8 (L98)", "Raven RV8", new CarDesc.Engine {
           inertiaRatio = 1.0f,
-          maxTorque = 758.5f,
-          revLimiter = 8036.1f,
+          maxTorque = 736.5f,
+          revLimiter = 9430.3f,
           turboCharged = true,
-          turboPressure = 0.4f,
+          turboPressure = 1.1f,
           brakeTorqueRatio = 0.12f,
-          revLimiterStep = 500.0f,
+          revLimiterStep = 450.0f,
           useTC = false,
           cutRPM = 300.0f,
           idleRPM = 810.7f,
-          maxTorqueRPM = 5160.75f
+          maxTorqueRPM = 4767.0f
         }),
         new Tuple<int, bool, string, string, CarDesc.Engine>(2, true, "6.2L V8 (LS9)", "Spark ZR", new CarDesc.Engine {
           inertiaRatio = 1.0f,
@@ -80,15 +80,15 @@ namespace KN_Core {
         new Tuple<int, bool, string, string, CarDesc.Engine>(3, true, "5.0L V8 (COYOTE)", "Cobra GT530", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 736.5f,
-          revLimiter = 9430.3f,
+          revLimiter = 9030.1f,
           turboCharged = true,
-          turboPressure = 1.1f,
+          turboPressure = 0.6f,
           brakeTorqueRatio = 0.12f,
-          revLimiterStep = 450.0f,
+          revLimiterStep = 500.0f,
           useTC = false,
           cutRPM = 300.0f,
           idleRPM = 1126.7f,
-          maxTorqueRPM = 4767.0f
+          maxTorqueRPM = 5160.75f
         }),
         new Tuple<int, bool, string, string, CarDesc.Engine>(4, true, "3.8L V6 (VR38DETT)", "Atlas GT", new CarDesc.Engine {
           inertiaRatio = 1.0f,
