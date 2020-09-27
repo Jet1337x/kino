@@ -175,6 +175,7 @@ namespace KN_Core {
         defaultSoundId_ = core_.PlayerCar.Base.metaInfo.name;
         var desc = core_.PlayerCar.Base.GetDesc();
         CopyEngine(desc.carXDesc.engine, defaultEngine_);
+        FindAndSwap();
       }
 
       if (core_.IsInGarageChanged || core_.IsSceneChanged) {
@@ -186,17 +187,22 @@ namespace KN_Core {
       sendTimer_.Update();
 
       if (swapReload_ && !KnCar.IsNull(core_.PlayerCar)) {
-        foreach (var swap in allData_) {
-          if (swap.carId == core_.PlayerCar.Id) {
-            SetEngine(core_.PlayerCar.Base, swap.engineId, true);
-            activeEngine_ = swap.engineId;
-            currentEngine_.turbo = swap.turbo;
-            currentEngine_.carId = swap.carId;
-            currentEngine_.engineId = swap.engineId;
-            break;
-          }
-        }
+        FindAndSwap();
         swapReload_ = false;
+      }
+    }
+
+    private void FindAndSwap() {
+      activeEngine_ = 0;
+      foreach (var swap in allData_) {
+        if (swap.carId == core_.PlayerCar.Id) {
+          SetEngine(core_.PlayerCar.Base, swap.engineId, true);
+          activeEngine_ = swap.engineId;
+          currentEngine_.turbo = swap.turbo;
+          currentEngine_.carId = swap.carId;
+          currentEngine_.engineId = swap.engineId;
+          break;
+        }
       }
     }
 
@@ -260,8 +266,17 @@ namespace KN_Core {
       };
 
       if (engineId == 0) {
+        currentEngineTurboMax_ = 0.0f;
         if (TryApplyEngine(car, data, silent)) {
           SendSwapData();
+        }
+        return;
+      }
+
+      var defaultEngine = GetEngine(engineId);
+      if (defaultEngine == null) {
+        if (!silent) {
+          Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}'");
         }
         return;
       }
@@ -278,14 +293,6 @@ namespace KN_Core {
             }
           }
           else {
-            var defaultEngine = GetEngine(engineId);
-            if (defaultEngine == null) {
-              if (!silent) {
-                Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}'");
-              }
-              return;
-            }
-
             swap.engineId = data.engineId;
             swap.turbo = defaultEngine.Item4.turboPressure;
             data.turbo = swap.turbo;
@@ -296,13 +303,6 @@ namespace KN_Core {
       }
 
       if (!found) {
-        var defaultEngine = GetEngine(engineId);
-        if (defaultEngine == null) {
-          if (!silent) {
-            Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}'");
-          }
-          return;
-        }
         if (!silent) {
           Log.Write($"[KN_Swaps]: Created config for engine '{engineId}'");
         }
@@ -312,6 +312,7 @@ namespace KN_Core {
       }
 
       currentEngine_ = data;
+      currentEngineTurboMax_ = defaultEngine.Item4.turboPressure;
 
       if (TryApplyEngine(car, data, silent)) {
         SendSwapData();
@@ -388,8 +389,6 @@ namespace KN_Core {
         }
         return false;
       }
-
-      currentEngineTurboMax_ = defaultEngine.Item4.turboPressure;
 
       var engine = new CarDesc.Engine();
       CopyEngine(defaultEngine.Item4, engine);
