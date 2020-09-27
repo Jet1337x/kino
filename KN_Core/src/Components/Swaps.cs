@@ -282,7 +282,7 @@ namespace KN_Core {
       carListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
 
       GUI.enabled = allowSwap && activeEngine_ != 0;
-      if (gui.SliderH(ref x, ref y, width, ref currentEngine_.turbo, 0.0f, currentEngineTurboMax_, $"TURBO: {currentEngine_.turbo:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref currentEngine_.turbo, 0.0f, currentEngineTurboMax_, $"TURBO: {currentEngine_.turbo:F2}")) {
         var desc = core_.PlayerCar.Base.GetDesc();
         desc.carXDesc.engine.turboPressure = currentEngine_.turbo;
         core_.PlayerCar.Base.SetDesc(desc);

@@ -144,6 +144,8 @@ namespace KN_Core {
       const float width = Gui.Width * 2.0f;
       const float height = Gui.Height;
 
+      float yBegin = y;
+
       x += Gui.OffsetSmall;
 
       if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachEnabled_ ? Skin.ButtonActive : Skin.Button)) {
@@ -212,12 +214,30 @@ namespace KN_Core {
       }
 
       GUI.enabled = Core.Swaps.Active;
+      GuiSwaps(gui, ref x, ref y, width, yBegin);
 
-      if (gui.Button(ref x, ref y, width, height, "LOG ENGINES", LogEngines ? Skin.ButtonActive : Skin.Button)) {
+      GUI.enabled = guiEnabled;
+    }
+
+    private void GuiSwaps(Gui gui, ref float x, ref float y, float width, float yBegin) {
+      float tempX = x;
+      float tempY = y;
+
+      x += width;
+      y = yBegin;
+
+      x += Gui.OffsetGuiX;
+      gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
+      x += Gui.OffsetGuiX;
+
+      if (gui.Button(ref x, ref y, width, Gui.Height, "LOG ENGINES", LogEngines ? Skin.ButtonActive : Skin.Button)) {
         LogEngines = !LogEngines;
       }
 
-      GUI.enabled = guiEnabled;
+      Core.Swaps.OnGui(gui, ref x, ref y, width);
+
+      x = tempX;
+      y = tempY;
     }
 
     public void ReloadSound() {
