@@ -335,11 +335,14 @@ namespace KN_Core {
       int engineId = data.Data.GetInt("engineId");
       float turbo = data.Data.GetFloat("turbo");
 
+      if (engineId == 0) {
+        return;
+      }
+
       foreach (var player in NetworkController.InstanceGame.Players) {
         if (player.NetworkID == id) {
           var engine = GetEngine(engineId);
           if (engine == null) {
-            Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}' for '{id}'. Check for mod updates!");
             return;
           }
 
