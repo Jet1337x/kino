@@ -62,6 +62,8 @@ namespace KN_Core {
     private bool soundReloadNext_;
 
     private readonly bool badVersion_;
+    private readonly bool showUpdateWarn_;
+    private readonly int latestVersion_;
 
     private CameraRotation cameraRotation_;
 
@@ -71,6 +73,8 @@ namespace KN_Core {
 
     public Core() {
       badVersion_ = KnConfig.ClientVersion != GameVersion.version;
+      latestVersion_ = Updater.Initialize();
+      showUpdateWarn_ = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
 
       //KillFlyMod();
 
@@ -285,6 +289,10 @@ namespace KN_Core {
         return;
       }
 
+      if (showUpdateWarn_) {
+        GuiUpdateWarn();
+      }
+
       float x = GuiYTop;
       float y = GuiXLeft;
 
@@ -340,6 +348,21 @@ namespace KN_Core {
       }
       if (FilePicker.IsPicking) {
         FilePicker.OnGui(gui_, ref tx, ref ty);
+      }
+    }
+
+    private void GuiUpdateWarn() {
+      const float width = Gui.Width * 3.0f;
+      const float height = Gui.Height * 3.0f;
+
+      float x = Screen.width / 2.0f - width / 2.0f;
+      float y = Screen.height / 2.0f - height / 2.0f;
+
+      if (gui_.Button(ref x, ref y, width, height, "YOUR MOD IS OUTDATED!\n" +
+                                                   "PLEASE CHECK FOR UPDATES IN OUR DISCORD (CLICK)\n" +
+                                                   $"CURRENT VERSION: {KnConfig.Version}, LATEST VERSION: {latestVersion_}",
+        Skin.ButtonDummyRed)) {
+        System.Diagnostics.Process.Start("https://discord.gg/yvRxHuX");
       }
     }
 

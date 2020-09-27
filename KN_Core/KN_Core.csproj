@@ -153,6 +153,7 @@
         <Compile Include="src\Submodule\Settings.cs" />
         <Compile Include="src\KnCar.cs" />
         <Compile Include="src\KnUtils.cs" />
+        <Compile Include="src\Updater.cs" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\CameraActive.png" />
