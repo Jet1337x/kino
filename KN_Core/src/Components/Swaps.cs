@@ -233,6 +233,10 @@ namespace KN_Core {
       }
 
       foreach (var engine in engines_) {
+        if (!engine.Item2) {
+          continue;
+        }
+
         if (gui.Button(ref sx, ref sy, w, height, engine.Item3, activeEngine_ == engine.Item1 ? Skin.ButtonActive : Skin.Button)) {
           if (activeEngine_ != engine.Item1) {
             activeEngine_ = engine.Item1;
