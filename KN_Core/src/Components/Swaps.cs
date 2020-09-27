@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace KN_Core {
   public class Swaps {
+    public bool Active => validator_.Allowed;
+
     private readonly List<SwapData> allData_;
 
     private readonly List<Tuple<int, bool, string, string, CarDesc.Engine>> engines_;
@@ -360,7 +362,7 @@ namespace KN_Core {
       if (engineId == 0) {
         currentEngineTurboMax_ = 0.0f;
         data.finalDrive = defaultFinalDrive_;
-        if (TryApplyEngine(car, data, silent)) {
+        if (TryApplyEngine(car, data, 0, silent)) {
           SendSwapData();
         }
         return;
@@ -379,7 +381,7 @@ namespace KN_Core {
       currentEngine_ = data;
       currentEngineTurboMax_ = defaultEngine.Item5.turboPressure;
 
-      if (TryApplyEngine(car, data, silent)) {
+      if (TryApplyEngine(car, data, 0, silent)) {
         SendSwapData();
       }
     }
@@ -392,6 +394,10 @@ namespace KN_Core {
 
       if (engineId == 0) {
         return;
+      }
+
+      if (core_.Settings.LogEngines) {
+        Log.Write($"[KN_Swaps]: Applying engine '{engineId}' on '{id}', turbo: {turbo}, finalDrive: {finalDrive}");
       }
 
       foreach (var player in NetworkController.InstanceGame.Players) {
@@ -408,7 +414,7 @@ namespace KN_Core {
             finalDrive = finalDrive
           };
 
-          TryApplyEngine(player.userCar, swapData, true);
+          TryApplyEngine(player.userCar, swapData, id, true);
           break;
         }
       }
@@ -435,7 +441,7 @@ namespace KN_Core {
       core_.Udp.Send(nwData);
     }
 
-    private bool TryApplyEngine(RaceCar car, SwapData data, bool silent) {
+    private bool TryApplyEngine(RaceCar car, SwapData data, int id, bool silent) {
       if (car.metaInfo.id != data.carId) {
         return false;
       }
@@ -448,7 +454,7 @@ namespace KN_Core {
         car.SetDesc(d);
 
         if (!silent) {
-          Log.Write($"[KN_Swaps]: Stock engine applied on '{data.carId}'");
+          Log.Write($"[KN_Swaps]: Stock engine applied on '{data.carId}' ({id})");
         }
 
         ApplySoundOn(car, data.engineId, silent);
@@ -458,7 +464,7 @@ namespace KN_Core {
       var defaultEngine = GetEngine(data.engineId);
       if (defaultEngine == null) {
         if (!silent) {
-          Log.Write($"[KN_Swaps]: Unable to apply engine '{data.engineId}'");
+          Log.Write($"[KN_Swaps]: Unable to apply engine '{data.engineId}' ({id})");
         }
         return false;
       }
@@ -471,7 +477,7 @@ namespace KN_Core {
 
       if (!Verify(engine, defaultEngine.Item5)) {
         if (!silent) {
-          Log.Write($"[KN_Swaps]: Engine verification failed '{data.engineId}', applying default");
+          Log.Write($"[KN_Swaps]: Engine verification failed '{data.engineId}', applying default ({id})");
         }
         return false;
       }
@@ -481,7 +487,7 @@ namespace KN_Core {
       car.SetDesc(desc);
 
       if (!silent) {
-        Log.Write($"[KN_Swaps]: Engine '{defaultEngine.Item3}' applied on '{car.metaInfo.id}'");
+        Log.Write($"[KN_Swaps]: Engine '{defaultEngine.Item3}' applied on '{car.metaInfo.id}' ({id})");
       }
 
       ApplySoundOn(car, data.engineId, silent);

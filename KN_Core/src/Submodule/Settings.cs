@@ -41,6 +41,8 @@ namespace KN_Core {
       }
     }
 
+    public bool LogEngines { get; private set; }
+
     private readonly DisableConsoles disableConsoles_;
     public bool ConsolesDisabled => disableConsoles_.Disabled;
 
@@ -207,6 +209,12 @@ namespace KN_Core {
 
       if (gui.Button(ref x, ref y, width, height, "HIDE CONSOLE PLAYERS", disableConsoles_.Hidden ? Skin.ButtonActive : Skin.Button)) {
         disableConsoles_.Hidden = !disableConsoles_.Hidden;
+      }
+
+      GUI.enabled = Core.Swaps.Active;
+
+      if (gui.Button(ref x, ref y, width, height, "LOG ENGINES", LogEngines ? Skin.ButtonActive : Skin.Button)) {
+        LogEngines = !LogEngines;
       }
 
       GUI.enabled = guiEnabled;
