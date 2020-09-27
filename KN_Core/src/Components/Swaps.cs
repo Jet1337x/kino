@@ -47,7 +47,6 @@ namespace KN_Core {
 
       joinTimer_ = new Timer(3.0f, true);
       joinTimer_.Callback += SendSwapData;
-
       engines_ = new List<Tuple<int, string, string, CarDesc.Engine>> {
         new Tuple<int, string, string, CarDesc.Engine>(1, "6.0L V8 (L98)", "Raven RV8", new CarDesc.Engine {
           inertiaRatio = 1.0f,
@@ -75,7 +74,20 @@ namespace KN_Core {
           idleRPM = 800.0f,
           maxTorqueRPM = 5145.0f
         }),
-        new Tuple<int, string, string, CarDesc.Engine>(3, "3.8L V6 (VR38DETT)", "Atlas GT", new CarDesc.Engine {
+        new Tuple<int, string, string, CarDesc.Engine>(3, "5.0L V8 (COYOTE)", "Cobra GT530", new CarDesc.Engine {
+          inertiaRatio = 1.0f,
+          maxTorque = 736.5f,
+          revLimiter = 9430.3f,
+          turboCharged = true,
+          turboPressure = 1.1f,
+          brakeTorqueRatio = 0.12f,
+          revLimiterStep = 450.0f,
+          useTC = false,
+          cutRPM = 300.0f,
+          idleRPM = 1126.7f,
+          maxTorqueRPM = 4767.0f
+        }),
+        new Tuple<int, string, string, CarDesc.Engine>(4, "3.8L V6 (VR38DETT)", "Atlas GT", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 542.85f,
           revLimiter = 8580.0f,
@@ -88,7 +100,7 @@ namespace KN_Core {
           idleRPM = 810.7f,
           maxTorqueRPM = 5055.75f
         }),
-        new Tuple<int, string, string, CarDesc.Engine>(4, "3.4L I6 (2JZ-GTE)", "Carrot II", new CarDesc.Engine {
+        new Tuple<int, string, string, CarDesc.Engine>(5, "3.4L I6 (2JZ-GTE)", "Carrot II", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 307.5f,
           revLimiter = 9500.0f,
@@ -100,19 +112,6 @@ namespace KN_Core {
           cutRPM = 300.0f,
           idleRPM = 1000.0f,
           maxTorqueRPM = 5145.75f
-        }),
-        new Tuple<int, string, string, CarDesc.Engine>(5, "5.0L V8 (COYOTE)", "Cobra GT530", new CarDesc.Engine {
-          inertiaRatio = 1.0f,
-          maxTorque = 736.5f,
-          revLimiter = 9430.3f,
-          turboCharged = true,
-          turboPressure = 1.1f,
-          brakeTorqueRatio = 0.12f,
-          revLimiterStep = 450.0f,
-          useTC = false,
-          cutRPM = 300.0f,
-          idleRPM = 1126.7f,
-          maxTorqueRPM = 4767.0f
         }),
         new Tuple<int, string, string, CarDesc.Engine>(6, "3.0L I6 (RB30DET)", "Last Prince", new CarDesc.Engine {
           inertiaRatio = 1.1f,
@@ -126,6 +125,32 @@ namespace KN_Core {
           cutRPM = 300.0f,
           idleRPM = 1200.0f,
           maxTorqueRPM = 5131.75f
+        }),
+        new Tuple<int, string, string, CarDesc.Engine>(7, "2.2L I4 (SR20VET)", "Phoenix NX", new CarDesc.Engine {
+          inertiaRatio = 1.0f,
+          maxTorque = 441.0f,
+          revLimiter = 8812.0f,
+          turboCharged = true,
+          turboPressure = 1.7f,
+          brakeTorqueRatio = 0.12f,
+          revLimiterStep = 500.0f,
+          useTC = false,
+          cutRPM = 300.0f,
+          idleRPM = 600.0f,
+          maxTorqueRPM = 4047.75f
+        }),
+        new Tuple<int, string, string, CarDesc.Engine>(8, "1.3L R2 (13B)", "Falcon FC 90-s", new CarDesc.Engine {
+          inertiaRatio = 0.95f,
+          maxTorque = 367.5f,
+          revLimiter = 10000.0f,
+          turboCharged = true,
+          turboPressure = 1.5f,
+          brakeTorqueRatio = 0.2f,
+          revLimiterStep = 350.0f,
+          useTC = false,
+          cutRPM = 300.0f,
+          idleRPM = 1200.0f,
+          maxTorqueRPM = 5343.75f
         })
       };
     }
