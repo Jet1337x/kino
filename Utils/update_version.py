@@ -16,6 +16,7 @@ client_version_int = ''.join(client_version)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 config_path = os.path.join(current_dir, '..', 'KN_Core', 'src', 'KnConfig.cs')
+version_path = os.path.join(current_dir, '..', 'version')
 
 def module_path(module):
     return os.path.join(current_dir, '..', module, 'Loader.cs')
@@ -70,6 +71,10 @@ def replace_config_version(file_path):
     remove(file_path)
     move(abs_path, file_path)
 
+def replace_core_version(file_path):
+    with open(file_path, 'w') as file:
+        file.write(version_int)
+
 modules = [
     module_path('KN_Cinematic'),
     module_path('KN_Lights'),
@@ -81,3 +86,4 @@ for m in modules:
     replace_version(m)
     
 replace_config_version(config_path)
+replace_core_version(version_path)
