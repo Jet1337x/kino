@@ -10,7 +10,7 @@ namespace KN_Core {
 
     private readonly List<SwapData> allData_;
 
-    private readonly List<Tuple<int, bool, string, string, CarDesc.Engine>> engines_;
+    private readonly List<Tuple<int, bool, float, string, string, CarDesc.Engine>> engines_;
 
     private readonly Timer joinTimer_;
     private readonly Timer sendTimer_;
@@ -21,6 +21,7 @@ namespace KN_Core {
     private float currentEngineTurboMax_;
     private string defaultSoundId_;
     private float defaultFinalDrive_;
+    private float defaultClutch_;
     private readonly CarDesc.Engine defaultEngine_;
 
     private int activeEngine_;
@@ -57,8 +58,8 @@ namespace KN_Core {
       joinTimer_ = new Timer(3.0f, true);
       joinTimer_.Callback += SendSwapData;
 
-      engines_ = new List<Tuple<int, bool, string, string, CarDesc.Engine>> {
-        new Tuple<int, bool, string, string, CarDesc.Engine>(1, false, "6.0L V8 (L98)", "Raven RV8", new CarDesc.Engine {
+      engines_ = new List<Tuple<int, bool, float, string, string, CarDesc.Engine>> {
+        new Tuple<int, bool, float, string, string, CarDesc.Engine>(1, false, 1600.0f, "6.0L V8 (L98)", "Raven RV8", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 736.5f,
           revLimiter = 9430.3f,
@@ -71,7 +72,7 @@ namespace KN_Core {
           idleRPM = 810.7f,
           maxTorqueRPM = 4767.0f
         }),
-        new Tuple<int, bool, string, string, CarDesc.Engine>(2, true, "6.2L V8 (LS9)", "Spark ZR", new CarDesc.Engine {
+        new Tuple<int, bool, float, string, string, CarDesc.Engine>(2, true, 1200.0f, "6.2L V8 (LS9)", "Spark ZR", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 437.5f,
           revLimiter = 9000.0f,
@@ -84,7 +85,7 @@ namespace KN_Core {
           idleRPM = 800.0f,
           maxTorqueRPM = 5145.0f
         }),
-        new Tuple<int, bool, string, string, CarDesc.Engine>(3, true, "5.0L V8 (COYOTE)", "Cobra GT530", new CarDesc.Engine {
+        new Tuple<int, bool, float, string, string, CarDesc.Engine>(3, true, 1300.0f, "5.0L V8 (COYOTE)", "Cobra GT530", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 736.5f,
           revLimiter = 9030.1f,
@@ -97,7 +98,7 @@ namespace KN_Core {
           idleRPM = 1126.7f,
           maxTorqueRPM = 5160.75f
         }),
-        new Tuple<int, bool, string, string, CarDesc.Engine>(4, true, "3.8L V6 (VR38DETT)", "Atlas GT", new CarDesc.Engine {
+        new Tuple<int, bool, float, string, string, CarDesc.Engine>(4, true, 1200.0f, "3.8L V6 (VR38DETT)", "Atlas GT", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 542.85f,
           revLimiter = 8580.0f,
@@ -110,7 +111,7 @@ namespace KN_Core {
           idleRPM = 810.7f,
           maxTorqueRPM = 5055.75f
         }),
-        new Tuple<int, bool, string, string, CarDesc.Engine>(5, true, "3.4L I6 (2JZ-GTE)", "Carrot II", new CarDesc.Engine {
+        new Tuple<int, bool, float, string, string, CarDesc.Engine>(5, true, 1200.0f, "3.4L I6 (2JZ-GTE)", "Carrot II", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 307.5f,
           revLimiter = 9500.0f,
@@ -123,7 +124,7 @@ namespace KN_Core {
           idleRPM = 1000.0f,
           maxTorqueRPM = 5145.75f
         }),
-        new Tuple<int, bool, string, string, CarDesc.Engine>(6, true, "3.0L I6 (RB30DET)", "Last Prince", new CarDesc.Engine {
+        new Tuple<int, bool, float, string, string, CarDesc.Engine>(6, true, 1100.0f, "3.0L I6 (RB30DET)", "Last Prince", new CarDesc.Engine {
           inertiaRatio = 1.1f,
           maxTorque = 453.8f,
           revLimiter = 9294.4f,
@@ -136,7 +137,7 @@ namespace KN_Core {
           idleRPM = 1200.0f,
           maxTorqueRPM = 5131.75f
         }),
-        new Tuple<int, bool, string, string, CarDesc.Engine>(7, true, "2.2L I4 (SR20VET)", "Phoenix NX", new CarDesc.Engine {
+        new Tuple<int, bool, float, string, string, CarDesc.Engine>(7, true, 850.0f, "2.2L I4 (SR20VET)", "Phoenix NX", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 441.0f,
           revLimiter = 8812.0f,
@@ -149,7 +150,7 @@ namespace KN_Core {
           idleRPM = 600.0f,
           maxTorqueRPM = 4047.75f
         }),
-        new Tuple<int, bool, string, string, CarDesc.Engine>(8, true, "1.3L R2 (13B)", "Falcon FC 90-s", new CarDesc.Engine {
+        new Tuple<int, bool, float, string, string, CarDesc.Engine>(8, true, 800.0f, "1.3L R2 (13B)", "Falcon FC 90-s", new CarDesc.Engine {
           inertiaRatio = 0.95f,
           maxTorque = 367.5f,
           revLimiter = 10000.0f,
@@ -193,6 +194,7 @@ namespace KN_Core {
       if (core_.IsCarChanged) {
         defaultSoundId_ = core_.PlayerCar.Base.metaInfo.name;
         defaultFinalDrive_ = core_.PlayerCar.CarX.finaldrive;
+        defaultClutch_ = core_.PlayerCar.CarX.clutchMaxTorque;
         var desc = core_.PlayerCar.Base.GetDesc();
         CopyEngine(desc.carXDesc.engine, defaultEngine_);
         FindAndSwap();
@@ -272,7 +274,7 @@ namespace KN_Core {
           continue;
         }
 
-        if (gui.Button(ref sx, ref sy, w, height, engine.Item3, activeEngine_ == engine.Item1 ? Skin.ButtonActive : Skin.Button)) {
+        if (gui.Button(ref sx, ref sy, w, height, engine.Item4, activeEngine_ == engine.Item1 ? Skin.ButtonActive : Skin.Button)) {
           if (activeEngine_ != engine.Item1) {
             activeEngine_ = engine.Item1;
             SetEngine(core_.PlayerCar.Base, activeEngine_);
@@ -340,7 +342,7 @@ namespace KN_Core {
           else {
             swap.engineId = data.engineId;
             if (engineId != 0) {
-              swap.turbo = defaultEngine.Item5.turboPressure;
+              swap.turbo = defaultEngine.Item6.turboPressure;
               swap.finalDrive = car.carX.finaldrive;
               data.turbo = swap.turbo;
               data.finalDrive = swap.finalDrive;
@@ -364,14 +366,14 @@ namespace KN_Core {
         if (!silent) {
           Log.Write($"[KN_Swaps]: Created config for engine '{engineId}'");
         }
-        data.turbo = defaultEngine.Item5.turboPressure;
+        data.turbo = defaultEngine.Item6.turboPressure;
         data.finalDrive = car.carX.finaldrive;
 
         allData_.Add(data);
       }
 
       currentEngine_ = data;
-      currentEngineTurboMax_ = defaultEngine.Item5.turboPressure;
+      currentEngineTurboMax_ = defaultEngine.Item6.turboPressure;
 
       if (TryApplyEngine(car, data, 0, silent)) {
         SendSwapData();
@@ -440,6 +442,7 @@ namespace KN_Core {
 
       if (data.engineId == 0) {
         car.carX.finaldrive = defaultFinalDrive_;
+        car.carX.clutchMaxTorque = defaultClutch_;
 
         var d = car.GetDesc();
         CopyEngine(defaultEngine_, d.carXDesc.engine);
@@ -462,12 +465,13 @@ namespace KN_Core {
       }
 
       var engine = new CarDesc.Engine();
-      CopyEngine(defaultEngine.Item5, engine);
+      CopyEngine(defaultEngine.Item6, engine);
 
       engine.turboPressure = data.turbo;
       car.carX.finaldrive = data.finalDrive;
+      car.carX.clutchMaxTorque = defaultEngine.Item3;
 
-      if (!Verify(engine, defaultEngine.Item5)) {
+      if (!Verify(engine, defaultEngine.Item6)) {
         if (!silent) {
           Log.Write($"[KN_Swaps]: Engine verification failed '{data.engineId}', applying default ({id})");
         }
@@ -479,7 +483,7 @@ namespace KN_Core {
       car.SetDesc(desc);
 
       if (!silent) {
-        Log.Write($"[KN_Swaps]: Engine '{defaultEngine.Item3}' applied on '{car.metaInfo.id}' ({id})");
+        Log.Write($"[KN_Swaps]: Engine '{defaultEngine.Item4}' applied on '{car.metaInfo.id}' ({id})");
       }
 
       ApplySoundOn(car, data.engineId, silent);
@@ -510,7 +514,7 @@ namespace KN_Core {
               onDisable?.Invoke(engineSound, new object[] { });
 
               string oldName = raceCar.metaInfo.name;
-              raceCar.metaInfo.name = engineId == 0 ? defaultSoundId_ : engine.Item4;
+              raceCar.metaInfo.name = engineId == 0 ? defaultSoundId_ : engine.Item5;
               KnUtils.SetField(engineSound, "m_raceCar", raceCar);
 
               onEnable?.Invoke(engineSound, new object[] { });
@@ -530,9 +534,9 @@ namespace KN_Core {
       }
     }
 
-    private Tuple<int, bool, string, string, CarDesc.Engine> GetEngine(int id) {
+    private Tuple<int, bool, float, string, string, CarDesc.Engine> GetEngine(int id) {
       if (id == 0) {
-        return new Tuple<int, bool, string, string, CarDesc.Engine>(0, true, "STOCK", defaultSoundId_, defaultEngine_);
+        return new Tuple<int, bool, float, string, string, CarDesc.Engine>(0, true, defaultClutch_, "STOCK", defaultSoundId_, defaultEngine_);
       }
 
       foreach (var engine in engines_) {
