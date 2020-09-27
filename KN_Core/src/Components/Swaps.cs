@@ -356,7 +356,9 @@ namespace KN_Core {
 
     public void OnUdpData(SmartfoxDataPackage data) {
       int id = data.Data.GetInt("id");
-      int engineId = data.Data.GetInt("engineId");
+      int engineId = data.Data.GetInt("ei");
+      float turbo = data.Data.GetFloat("tb");
+      float finalDrive = data.Data.GetFloat("fd");
 
       if (engineId == 0) {
         return;
@@ -372,8 +374,8 @@ namespace KN_Core {
           var swapData = new SwapData {
             carId = player.userCar.metaInfo.id,
             engineId = engineId,
-            turbo = 1.0f,
-            finalDrive = -1.0f
+            turbo = turbo,
+            finalDrive = finalDrive
           };
 
           TryApplyEngine(player.userCar, swapData, true);
@@ -396,7 +398,9 @@ namespace KN_Core {
       nwData.Add("1", (byte) 25);
       nwData.Add("type", Udp.TypeSwaps);
       nwData.Add("id", id);
-      nwData.Add("engineId", currentEngine_.engineId);
+      nwData.Add("ei", currentEngine_.engineId);
+      nwData.Add("tb", currentEngine_.turbo);
+      nwData.Add("fd", currentEngine_.finalDrive);
 
       core_.Udp.Send(nwData);
     }
