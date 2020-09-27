@@ -9,17 +9,20 @@ namespace KN_Core {
     public int carId;
     public int engineId;
     public float turbo;
+    public float finalDrive;
 
     public void Serialize(BinaryWriter writer) {
       writer.Write(carId);
       writer.Write(engineId);
       writer.Write(turbo);
+      writer.Write(finalDrive);
     }
 
     public void Deserialize(BinaryReader reader) {
       carId = reader.ReadInt32();
       engineId = reader.ReadInt32();
       turbo = reader.ReadSingle();
+      finalDrive = reader.ReadSingle();
     }
   }
 

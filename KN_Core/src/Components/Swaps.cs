@@ -18,6 +18,7 @@ namespace KN_Core {
     private SwapData currentEngine_;
     private float currentEngineTurboMax_;
     private string defaultSoundId_;
+    private float defaultFinalDrive_;
     private readonly CarDesc.Engine defaultEngine_;
 
     private int activeEngine_;
@@ -35,8 +36,9 @@ namespace KN_Core {
 
       currentEngine_ = new SwapData {
         carId = -1,
+        engineId = 0,
         turbo = -1.0f,
-        engineId = 0
+        finalDrive = -1.0f
       };
       currentEngineTurboMax_ = 0.0f;
 
@@ -174,6 +176,7 @@ namespace KN_Core {
     public void Update() {
       if (core_.IsCarChanged) {
         defaultSoundId_ = core_.PlayerCar.Base.metaInfo.name;
+        defaultFinalDrive_ = core_.PlayerCar.CarX.finaldrive;
         var desc = core_.PlayerCar.Base.GetDesc();
         CopyEngine(desc.carXDesc.engine, defaultEngine_);
         FindAndSwap();
@@ -204,6 +207,7 @@ namespace KN_Core {
           SetEngine(core_.PlayerCar.Base, swap.engineId, true);
           activeEngine_ = swap.engineId;
           currentEngine_.turbo = swap.turbo;
+          currentEngine_.finalDrive = swap.finalDrive;
           currentEngine_.carId = swap.carId;
           currentEngine_.engineId = swap.engineId;
           break;
@@ -233,6 +237,8 @@ namespace KN_Core {
       if (gui.Button(ref sx, ref sy, w, height, "STOCK", activeEngine_ == 0 ? Skin.ButtonActive : Skin.Button)) {
         if (activeEngine_ != 0) {
           activeEngine_ = 0;
+          currentEngine_.finalDrive = defaultFinalDrive_;
+          currentEngine_.turbo = defaultEngine_.turboPressure;
           SetEngine(core_.PlayerCar.Base, activeEngine_);
         }
       }
@@ -264,14 +270,27 @@ namespace KN_Core {
           }
         }
       }
+      if (gui.SliderH(ref x, ref y, width, ref currentEngine_.finalDrive, 2.5f, 5.0f, $"FINAL DRIVE: {currentEngine_.finalDrive:F1}")) {
+        var desc = core_.PlayerCar.Base.GetDesc();
+        desc.carXDesc.gearBox.finalDrive = currentEngine_.finalDrive;
+        core_.PlayerCar.Base.SetDesc(desc);
+
+        foreach (var swap in allData_) {
+          if (swap.carId == currentEngine_.carId && swap.engineId == currentEngine_.engineId) {
+            swap.finalDrive = currentEngine_.finalDrive;
+            break;
+          }
+        }
+      }
       GUI.enabled = enabled;
     }
 
     private void SetEngine(RaceCar car, int engineId, bool silent = false) {
       var data = new SwapData {
         carId = car.metaInfo.id,
+        engineId = engineId,
         turbo = -1.0f,
-        engineId = engineId
+        finalDrive = -1.0f
       };
 
       var defaultEngine = GetEngine(engineId);
@@ -289,15 +308,18 @@ namespace KN_Core {
 
           if (swap.engineId == engineId) {
             data.turbo = swap.turbo;
+            data.finalDrive = swap.finalDrive;
             if (!silent) {
-              Log.Write($"[KN_Swaps]: Found engine '{engineId}' in config, turbo: {swap.turbo}");
+              Log.Write($"[KN_Swaps]: Found engine '{engineId}' in config, turbo: {swap.turbo}, finalDrive: {swap.finalDrive}");
             }
           }
           else {
             swap.engineId = data.engineId;
             if (engineId != 0) {
               swap.turbo = defaultEngine.Item5.turboPressure;
+              swap.finalDrive = car.carX.finaldrive;
               data.turbo = swap.turbo;
+              data.finalDrive = swap.finalDrive;
             }
           }
 
@@ -307,6 +329,7 @@ namespace KN_Core {
 
       if (engineId == 0) {
         currentEngineTurboMax_ = 0.0f;
+        data.finalDrive = defaultFinalDrive_;
         if (TryApplyEngine(car, data, silent)) {
           SendSwapData();
         }
@@ -318,6 +341,7 @@ namespace KN_Core {
           Log.Write($"[KN_Swaps]: Created config for engine '{engineId}'");
         }
         data.turbo = defaultEngine.Item5.turboPressure;
+        data.finalDrive = car.carX.finaldrive;
 
         allData_.Add(data);
       }
@@ -333,7 +357,6 @@ namespace KN_Core {
     public void OnUdpData(SmartfoxDataPackage data) {
       int id = data.Data.GetInt("id");
       int engineId = data.Data.GetInt("engineId");
-      float turbo = data.Data.GetFloat("turbo");
 
       if (engineId == 0) {
         return;
@@ -348,8 +371,9 @@ namespace KN_Core {
 
           var swapData = new SwapData {
             carId = player.userCar.metaInfo.id,
-            turbo = turbo,
-            engineId = engineId
+            engineId = engineId,
+            turbo = 1.0f,
+            finalDrive = -1.0f
           };
 
           TryApplyEngine(player.userCar, swapData, true);
@@ -373,7 +397,6 @@ namespace KN_Core {
       nwData.Add("type", Udp.TypeSwaps);
       nwData.Add("id", id);
       nwData.Add("engineId", currentEngine_.engineId);
-      nwData.Add("turbo", currentEngine_.turbo);
 
       core_.Udp.Send(nwData);
     }
@@ -384,6 +407,8 @@ namespace KN_Core {
       }
 
       if (data.engineId == 0) {
+        car.carX.finaldrive = defaultFinalDrive_;
+
         var d = car.GetDesc();
         CopyEngine(defaultEngine_, d.carXDesc.engine);
         car.SetDesc(d);
@@ -408,6 +433,7 @@ namespace KN_Core {
       CopyEngine(defaultEngine.Item5, engine);
 
       engine.turboPressure = data.turbo;
+      car.carX.finaldrive = data.finalDrive;
 
       if (!Verify(engine, defaultEngine.Item5)) {
         if (!silent) {
