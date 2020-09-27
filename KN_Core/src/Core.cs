@@ -67,7 +67,7 @@ namespace KN_Core {
     public Core() {
       badVersion_ = KnConfig.ClientVersion != GameVersion.version;
 
-      KillFlyMod();
+      //KillFlyMod();
 
       CoreInstance = this;
 
