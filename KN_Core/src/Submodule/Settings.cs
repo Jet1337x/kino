@@ -211,5 +211,9 @@ namespace KN_Core {
 
       GUI.enabled = guiEnabled;
     }
+
+    public void ReloadSound() {
+      exhaust_.Initialize();
+    }
   }
 }

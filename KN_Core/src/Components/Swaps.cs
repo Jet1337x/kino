@@ -12,7 +12,6 @@ namespace KN_Core {
 
     private readonly Timer joinTimer_;
     private readonly Timer sendTimer_;
-    private readonly Timer soundTimer_;
 
     private readonly Core core_;
 
@@ -48,9 +47,6 @@ namespace KN_Core {
 
       joinTimer_ = new Timer(3.0f, true);
       joinTimer_.Callback += SendSwapData;
-
-      soundTimer_ = new Timer(1.0f);
-      soundTimer_.Callback += RefreshSound;
 
       engines_ = new List<Tuple<int, bool, string, string, CarDesc.Engine>> {
         new Tuple<int, bool, string, string, CarDesc.Engine>(1, false, "6.0L V8 (L98)", "Raven RV8", new CarDesc.Engine {
@@ -190,12 +186,15 @@ namespace KN_Core {
 
       joinTimer_.Update();
       sendTimer_.Update();
-      soundTimer_.Update();
 
       if (swapReload_ && !KnCar.IsNull(core_.PlayerCar)) {
         FindAndSwap();
         swapReload_ = false;
       }
+    }
+
+    public void ReloadSound() {
+      ApplySoundOn(core_.PlayerCar.Base, currentEngine_.engineId, true);
     }
 
     private void FindAndSwap() {
@@ -275,14 +274,6 @@ namespace KN_Core {
         engineId = engineId
       };
 
-      if (engineId == 0) {
-        currentEngineTurboMax_ = 0.0f;
-        if (TryApplyEngine(car, data, silent)) {
-          SendSwapData();
-        }
-        return;
-      }
-
       var defaultEngine = GetEngine(engineId);
       if (defaultEngine == null) {
         if (!silent) {
@@ -304,12 +295,22 @@ namespace KN_Core {
           }
           else {
             swap.engineId = data.engineId;
-            swap.turbo = defaultEngine.Item5.turboPressure;
-            data.turbo = swap.turbo;
+            if (engineId != 0) {
+              swap.turbo = defaultEngine.Item5.turboPressure;
+              data.turbo = swap.turbo;
+            }
           }
 
           break;
         }
+      }
+
+      if (engineId == 0) {
+        currentEngineTurboMax_ = 0.0f;
+        if (TryApplyEngine(car, data, silent)) {
+          SendSwapData();
+        }
+        return;
       }
 
       if (!found) {
@@ -417,7 +418,7 @@ namespace KN_Core {
       car.SetDesc(desc);
 
       if (!silent) {
-        Log.Write($"[KN_Swaps]: Engine '{defaultEngine.Item2}' applied on '{car.metaInfo.id}'");
+        Log.Write($"[KN_Swaps]: Engine '{defaultEngine.Item3}' applied on '{car.metaInfo.id}'");
       }
 
       ApplySoundOn(car, data.engineId, silent);
@@ -434,6 +435,7 @@ namespace KN_Core {
         return;
       }
 
+      bool found = false;
       for (int i = 0; i < car.transform.childCount; i++) {
         var child = car.transform.GetChild(i);
         if (child.name == "Engine") {
@@ -454,18 +456,17 @@ namespace KN_Core {
 
               raceCar.metaInfo.name = oldName;
               KnUtils.SetField(engineSound, "m_raceCar", raceCar);
+
+              found = true;
             }
           }
+          break;
         }
       }
 
-      if (!silent) {
+      if (!silent && found) {
         Log.Write($"[KN_Swaps]: Engine sound applied on '{car.metaInfo.id}'");
       }
-    }
-
-    private void RefreshSound() {
-      ApplySoundOn(core_.PlayerCar.Base, currentEngine_.engineId, true);
     }
 
     private Tuple<int, bool, string, string, CarDesc.Engine> GetEngine(int id) {

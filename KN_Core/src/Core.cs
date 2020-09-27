@@ -12,6 +12,8 @@ using UnityEngine.SceneManagement;
 namespace KN_Core {
   [BepInPlugin("trbflxr.kn_0core", "KN_Core", KnConfig.StringVersion)]
   public class Core : BaseUnityPlugin {
+    private const float SoundReloadDistance = 70.0f;
+
     private const float GuiXLeft = 25.0f;
     private const float GuiYTop = 25.0f;
 
@@ -55,6 +57,9 @@ namespace KN_Core {
     private int selectedTab_;
     private int selectedTabPrev_;
     private int selectedModId_;
+
+    private bool soundReload_;
+    private bool soundReloadNext_;
 
     private readonly bool badVersion_;
 
@@ -235,6 +240,23 @@ namespace KN_Core {
 
       foreach (var mod in mods_) {
         mod.Update(selectedModId_);
+      }
+
+      if (soundReloadNext_) {
+        soundReloadNext_ = false;
+        Swaps.ReloadSound();
+        Settings.ReloadSound();
+      }
+
+      if (!KnCar.IsNull(PlayerCar)) {
+        float distance = Vector3.Distance(MainCamera.transform.position, PlayerCar.Transform.position);
+        if (distance > SoundReloadDistance) {
+          soundReload_ = true;
+        }
+        else if (soundReload_ || soundReloadNext_) {
+          soundReload_ = false;
+          soundReloadNext_ = true;
+        }
       }
 
       Swaps.Update();
