@@ -289,6 +289,14 @@ namespace KN_Core {
       float y = GuiXLeft;
 
       bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "KINO v" + KnConfig.StringVersion, badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy);
+      y -= Gui.TabButtonHeight + Gui.OffsetY;
+
+      float tempX = x;
+      x += Gui.Width + Gui.OffsetGuiX;
+      if (gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "DISCORD", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy)) {
+        System.Diagnostics.Process.Start("https://discord.gg/jrMReAB");
+      }
+      x = tempX;
 
       selectedTabPrev_ = selectedTab_;
       gui_.Tabs(ref x, ref y, tabs_.ToArray(), ref selectedTab_);

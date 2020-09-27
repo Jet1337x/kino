@@ -40,10 +40,10 @@ namespace KN_Core {
       gui.Box(x, y, width, height, "trbflxr#8814 or John Sawyer#6915", Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "or in the mod's discord: discord.gg/jrMReAB", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, "or in the mod's discord (top button)", Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "Also many thanks to Cursed and MRo for their support!", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, "Also many thanks to Cursed, MRo and diip for their support!", Skin.MainContainerLeft);
       y += height;
     }
 
@@ -54,7 +54,7 @@ namespace KN_Core {
       gui.Box(x, y, width, height, "Please download new version of KiNO mod", Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "from official discord: discord.gg/jrMReAB", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, "from official discord (top button)", Skin.MainContainerLeft);
       y += height;
 
       gui.Box(x, y, width, height, "or contact us at trbflxr#8814 or John Sawyer#6915", Skin.MainContainerLeft);
