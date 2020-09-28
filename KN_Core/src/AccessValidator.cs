@@ -52,13 +52,18 @@ namespace KN_Core {
 
       ulong sid = overlay.steamID.m_SteamID;
 
-      foreach (string line in data_) {
-        string bytes = Encoding.UTF8.GetString(Convert.FromBase64String(line));
-        ulong id = Convert.ToUInt64(bytes);
-        if (id == sid) {
-          Allowed = true;
-          return;
+      try {
+        foreach (string line in data_) {
+          string bytes = Encoding.UTF8.GetString(Convert.FromBase64String(line));
+          ulong id = Convert.ToUInt64(bytes);
+          if (id == sid) {
+            Allowed = true;
+            return;
+          }
         }
+      }
+      catch (Exception) {
+        Log.Write($"[KN_AccessValidator]: Unable to parse id");
       }
 
       Log.Write($"[KN_AccessValidator]: You not allowed to use '{module_}'!");
