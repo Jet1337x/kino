@@ -1,28 +1,47 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CarX;
 
 namespace KN_Core {
+  public class EngineData {
+    public readonly int Id;
+    public readonly bool Enabled;
+    public readonly float ClutchTorque;
+    public readonly string Name;
+    public readonly string SoundId;
+    public readonly CarDesc.Engine Engine;
+
+    public EngineData(int id, bool enabled, float clutch, string name, string soundId, CarDesc.Engine engine) {
+      Id = id;
+      Enabled = enabled;
+      ClutchTorque = clutch;
+      Name = name;
+      SoundId = soundId;
+      Engine = engine;
+    }
+  }
+
   public class SwapData {
     public const string ConfigFile = "kn_swapdata.knd";
 
-    public int carId;
-    public int engineId;
-    public float turbo;
-    public float finalDrive;
+    public int CarId;
+    public int EngineId;
+    public float Turbo;
+    public float FinalDrive;
 
     public void Serialize(BinaryWriter writer) {
-      writer.Write(carId);
-      writer.Write(engineId);
-      writer.Write(turbo);
-      writer.Write(finalDrive);
+      writer.Write(CarId);
+      writer.Write(EngineId);
+      writer.Write(Turbo);
+      writer.Write(FinalDrive);
     }
 
     public void Deserialize(BinaryReader reader) {
-      carId = reader.ReadInt32();
-      engineId = reader.ReadInt32();
-      turbo = reader.ReadSingle();
-      finalDrive = reader.ReadSingle();
+      CarId = reader.ReadInt32();
+      EngineId = reader.ReadInt32();
+      Turbo = reader.ReadSingle();
+      FinalDrive = reader.ReadSingle();
     }
   }
 
