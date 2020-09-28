@@ -481,7 +481,7 @@ namespace KN_Core {
     }
 
     private bool LoadEngines() {
-      var data = WebDataLoader.LoadAsBytes("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2luby9yYXcvbWFzdGVyL0RhdGEva25fZGF0YTAua25k");
+      var data = WebDataLoader.LoadAsBytes("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2lub19kYXRhL3Jhdy9tYXN0ZXIva25fZGF0YTAua25k");
       if (data == null) {
         return false;
       }
