@@ -24,7 +24,7 @@ namespace KN_Core {
       throw new NotImplementedException();
     }
 
-    public void Deserialize(BinaryReader reader) {
+    public void Deserialize(BinaryReader reader, int version) {
       throw new NotImplementedException();
     }
   }
@@ -44,7 +44,7 @@ namespace KN_Core {
       writer.Write(FinalDrive);
     }
 
-    public void Deserialize(BinaryReader reader) {
+    public void Deserialize(BinaryReader reader, int version) {
       CarId = reader.ReadInt32();
       EngineId = reader.ReadInt32();
       Turbo = reader.ReadSingle();

@@ -48,14 +48,14 @@ namespace KN_Lights {
     }
 
     public void OnStart() {
-      if (WorldLightsDataSerializer.Deserialize(WorldLightsData.ConfigFile, out var data)) {
+      if (DataSerializer.Deserialize<WorldLightsData>("KN_Lights", KnConfig.BaseDir + WorldLightsData.ConfigFile, out var data)) {
         Log.Write($"[KN_Lights]: World lights loaded {data.Count} items");
-        allData_.AddRange(data);
+        allData_.AddRange(data.ConvertAll(d => (WorldLightsData) d));
       }
     }
 
     public void OnStop() {
-      WorldLightsDataSerializer.Serialize(allData_, WorldLightsData.ConfigFile);
+      DataSerializer.Serialize("KN_Lights", allData_.ToList<ISerializable>(), KnConfig.BaseDir + WorldLightsData.ConfigFile);
     }
 
     public void Update() {

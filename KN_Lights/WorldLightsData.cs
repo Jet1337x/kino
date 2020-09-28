@@ -1,57 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using KN_Core;
 
 namespace KN_Lights {
-  public static class WorldLightsDataSerializer {
-    public static bool Serialize(List<WorldLightsData> data, string file) {
-      try {
-        using (var memoryStream = new MemoryStream()) {
-          using (var writer = new BinaryWriter(memoryStream)) {
-            writer.Write(KnConfig.Version);
-            writer.Write(data.Count);
-            foreach (var d in data) {
-              d.Serialize(writer);
-            }
-            using (var fileStream = File.Open(KnConfig.BaseDir + file, FileMode.Create)) {
-              memoryStream.WriteTo(fileStream);
-            }
-          }
-        }
-      }
-      catch (Exception e) {
-        Log.Write($"[KN_Lights]: Unable to write file '{file}', {e.Message}");
-        return false;
-      }
-      return true;
-    }
 
-    public static bool Deserialize(string file, out List<WorldLightsData> data) {
-      try {
-        using (var memoryStream = new MemoryStream(File.ReadAllBytes(KnConfig.BaseDir + file))) {
-          using (var reader = new BinaryReader(memoryStream)) {
-            data = new List<WorldLightsData>();
-            reader.ReadInt32(); //unused
-            int size = reader.ReadInt32();
-            for (int i = 0; i < size; i++) {
-              var d = new WorldLightsData();
-              d.Deserialize(reader);
-              data.Add(d);
-            }
-          }
-        }
-      }
-      catch (Exception e) {
-        Log.Write($"[KN_Lights]: Unable to read file '{file}', {e.Message}");
-        data = default;
-        return false;
-      }
-      return true;
-    }
-  }
-
-  public class WorldLightsData {
+  public class WorldLightsData : ISerializable {
     public const string ConfigFile = "kn_wldata.knl";
 
     public float FogDistance;
@@ -78,7 +30,7 @@ namespace KN_Lights {
       writer.Write(Map);
     }
 
-    public void Deserialize(BinaryReader reader) {
+    public void Deserialize(BinaryReader reader, int version) {
       FogDistance = reader.ReadSingle();
       FogVolume = reader.ReadSingle();
       SunBrightness = reader.ReadSingle();

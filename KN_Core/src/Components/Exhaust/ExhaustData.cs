@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using ArrayExtension;
 using CarModelSystem;
@@ -8,6 +9,36 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace KN_Core {
+  public class ExhaustFifeData : ISerializable {
+    public int CarId;
+    public float MaxTime;
+    public float FlamesTrigger;
+    public float Volume;
+
+    public ExhaustFifeData() { }
+
+    public ExhaustFifeData(int carId, float time, float trigger, float volume) {
+      CarId = carId;
+      MaxTime = time;
+      FlamesTrigger = trigger;
+      Volume = volume;
+    }
+
+    public void Serialize(BinaryWriter writer) {
+      writer.Write(CarId);
+      writer.Write(MaxTime);
+      writer.Write(FlamesTrigger);
+      writer.Write(Volume);
+    }
+
+    public void Deserialize(BinaryReader reader, int version) {
+      CarId = reader.ReadInt32();
+      MaxTime = reader.ReadSingle();
+      FlamesTrigger = reader.ReadSingle();
+      Volume = reader.ReadSingle();
+    }
+  }
+
   public class ExhaustData {
     private const float IntensityLow = 10.0f;
     private const float IntensityHigh = 30.0f;

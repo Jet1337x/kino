@@ -21,44 +21,51 @@ namespace KN_Core {
     private readonly List<ExhaustData> exhaustsToRemove_;
     private readonly Core core_;
 
-    private List<ExhaustFifeData> exhaustConfig_;
+    private readonly List<ExhaustFifeData> exhaustConfig_;
     public List<ExhaustFifeData> ExhaustConfig => exhaustConfig_;
 
-    private List<ExhaustFifeData> exhaustConfigDefault_;
+    private readonly List<ExhaustFifeData> exhaustConfigDefault_;
     public List<ExhaustFifeData> ExhaustConfigDefault => exhaustConfigDefault_;
 
 #if KN_DEV_TOOLS
-    private List<ExhaustFifeData> exhaustConfigsDev_;
+    private readonly List<ExhaustFifeData> exhaustConfigsDev_;
 #endif
 
     public Exhaust(Core core) {
       core_ = core;
       exhausts_ = new List<ExhaustData>();
       exhaustsToRemove_ = new List<ExhaustData>();
+      exhaustConfig_ = new List<ExhaustFifeData>();
+      exhaustConfigDefault_ = new List<ExhaustFifeData>();
+#if KN_DEV_TOOLS
+      exhaustConfigsDev_ = new List<ExhaustFifeData>();
+#endif
     }
 
     public void OnStart() {
       var assembly = Assembly.GetExecutingAssembly();
       using (var stream = assembly.GetManifestResourceStream("KN_Core.Resources." + ExhaustConfigDefaultFile)) {
-        ExhaustSerializer.Deserialize(stream, out exhaustConfigDefault_);
+        if (DataSerializer.Deserialize<ExhaustFifeData>("KN_Exhaust", stream, out var defaultData)) {
+          exhaustConfigDefault_.AddRange(defaultData.ConvertAll(d => (ExhaustFifeData) d));
+        }
       }
 
-      if (!ExhaustSerializer.Deserialize(ExhaustConfigFile, out exhaustConfig_)) {
-        exhaustConfig_ = new List<ExhaustFifeData>();
+      if (DataSerializer.Deserialize<ExhaustFifeData>("KN_Exhaust", KnConfig.BaseDir + ExhaustConfigFile, out var data)) {
+        exhaustConfig_.AddRange(data.ConvertAll(d => (ExhaustFifeData) d));
       }
 
 #if KN_DEV_TOOLS
-      if (!ExhaustSerializer.Deserialize(ExhaustConfigDefaultFile, out exhaustConfigsDev_)) {
-        exhaustConfigsDev_ = new List<ExhaustFifeData>();
+      if (DataSerializer.Deserialize<ExhaustFifeData>("KN_Exhaust", KnConfig.BaseDir + ExhaustConfigDefaultFile, out var devData)) {
+        exhaustConfigsDev_.AddRange(devData.ConvertAll(d => (ExhaustFifeData) d));
       }
 #endif
     }
 
     public void OnStop() {
-      ExhaustSerializer.Serialize(exhaustConfig_, ExhaustConfigFile);
+      DataSerializer.Serialize("KN_Exhaust", exhaustConfig_.ToList<ISerializable>(), KnConfig.BaseDir + ExhaustConfigFile);
 
 #if KN_DEV_TOOLS
-      ExhaustSerializer.Serialize(exhaustConfigsDev_, ExhaustConfigDefaultFile);
+      DataSerializer.Serialize("KN_Exhaust", exhaustConfigsDev_.ToList<ISerializable>(), KnConfig.BaseDir + ExhaustConfigDefaultFile);
 #endif
     }
 

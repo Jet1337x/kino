@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using KN_Core;
 using SyncMultiplayer;
@@ -67,23 +68,30 @@ namespace KN_Lights {
 
       LoadDefaultLights(assembly);
 #if KN_DEV_TOOLS
-      carLightsDev_ = LightsConfigSerializer.Deserialize(LightsDevConfigFile, out var devLights) ? new LightsConfig(devLights) : new LightsConfig();
+      carLightsDev_ = DataSerializer.Deserialize<CarLights>("KN_Lights", KnConfig.BaseDir + LightsDevConfigFile, out var devLights)
+        ? new LightsConfig(devLights.ConvertAll(l => (CarLights) l))
+        : new LightsConfig();
 #endif
 
       carLightsDiscard_ = Core.KnConfig.Get<float>("cl_discard_distance");
 
-      nwLightsConfig_ = LightsConfigSerializer.Deserialize(NwLightsConfigFile, out var nwLights) ? new NwLightsConfig(nwLights) : new NwLightsConfig();
-      lightsConfig_ = LightsConfigSerializer.Deserialize(LightsConfigFile, out var lights) ? new LightsConfig(lights) : new LightsConfig();
+      nwLightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_Lights", KnConfig.BaseDir + NwLightsConfigFile, out var nwLights)
+        ? new NwLightsConfig(nwLights.ConvertAll(l => (CarLights) l))
+        : new NwLightsConfig();
+
+      lightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_Lights", KnConfig.BaseDir + LightsConfigFile, out var lights)
+        ? new LightsConfig(nwLights.ConvertAll(l => (CarLights) l))
+        : new LightsConfig();
 
       worldLights_.OnStart();
     }
 
     public override void OnStop() {
-      if (!LightsConfigSerializer.Serialize(lightsConfig_, LightsConfigFile)) { }
-      if (!LightsConfigSerializer.Serialize(nwLightsConfig_, NwLightsConfigFile)) { }
+      if (!DataSerializer.Serialize("KN_Lights", lightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsConfigFile)) { }
+      if (!DataSerializer.Serialize("KN_Lights", nwLightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + NwLightsConfigFile)) { }
 
 #if KN_DEV_TOOLS
-      LightsConfigSerializer.Serialize(carLightsDev_, LightsDevConfigFile);
+      if (!DataSerializer.Serialize("KN_Lights", carLightsDev_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsDevConfigFile)) { }
 #endif
 
       worldLights_.OnStop();
@@ -642,8 +650,8 @@ namespace KN_Lights {
 
     private void LoadDefaultLights(Assembly assembly) {
       using (var stream = assembly.GetManifestResourceStream("KN_Lights.Resources." + LightsConfigDefault)) {
-        if (LightsConfigSerializer.Deserialize(stream, out var lights)) {
-          lightsConfigDefault_ = new LightsConfig(lights);
+        if (DataSerializer.Deserialize<CarLights>("KN_Lights", stream, out var lights)) {
+          lightsConfigDefault_ = new LightsConfig(lights.ConvertAll(l => (CarLights) l));
 #if false
           foreach (var l in lightsConfigDefault_.Lights) { }
           LightsConfigSerializer.Serialize(lightsConfigDefault_, "dump.knl");

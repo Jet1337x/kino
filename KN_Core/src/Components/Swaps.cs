@@ -167,14 +167,14 @@ namespace KN_Core {
     }
 
     public void OnStart() {
-      if (DataSerializer.Deserialize<SwapData>("KN_Swaps", SwapData.ConfigFile, out var data)) {
+      if (DataSerializer.Deserialize<SwapData>("KN_Swaps", KnConfig.BaseDir +SwapData.ConfigFile, out var data)) {
         Log.Write($"[KN_Swaps]: Swap data loaded {data.Count} items");
         allData_.AddRange(data.ConvertAll(d => (SwapData) d));
       }
     }
 
     public void OnStop() {
-      DataSerializer.Serialize("KN_Swaps", allData_.ToList<ISerializable>(), SwapData.ConfigFile);
+      DataSerializer.Serialize("KN_Swaps", allData_.ToList<ISerializable>(), KnConfig.BaseDir +SwapData.ConfigFile);
     }
 
     public void OnCarLoaded() {

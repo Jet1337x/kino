@@ -6,7 +6,7 @@ using SyncMultiplayer;
 using UnityEngine;
 
 namespace KN_Lights {
-  public class CarLights {
+  public class CarLights : ISerializable {
     public const float BrakePower = 2.5f;
 
     public GameObject HeadLightLeft { get; private set; }
