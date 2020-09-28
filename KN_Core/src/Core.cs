@@ -41,13 +41,15 @@ namespace KN_Core {
     public bool IsGuiEnabled { get; set; }
 
     public bool IsCheatsEnabled { get; private set; }
-    public bool IsDevToolsEnabled => validator_.Allowed;
+    public bool IsDevToolsEnabled { get; private set; }
 
     public Udp Udp { get; }
     public Settings Settings { get; }
     public KnConfig KnConfig { get; }
 
     public Swaps Swaps { get; }
+
+    private bool shouldRequestTools_;
 
     private string prevScene_;
     private bool prevInGarage_;
@@ -72,15 +74,14 @@ namespace KN_Core {
 
     private static Assembly assembly_;
 
-    private readonly AccessValidator validator_;
-
     public Core() {
       badVersion_ = KnConfig.ClientVersion != GameVersion.version;
       latestVersion_ = Updater.Initialize();
       showUpdateWarn_ = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
 
-      validator_ = new AccessValidator("KN_DevTools");
-      validator_.Initialize("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RyYmZseHIva2lub19kYXRhL21hc3Rlci9kYXRhMi50eHQ=");
+      shouldRequestTools_ = true;
+
+      AccessValidator.Initialize("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2lub19kYXRhL3Jhdy9tYXN0ZXIvZGF0YS5rbmQ=");
 
       //KillFlyMod();
 
@@ -197,7 +198,17 @@ namespace KN_Core {
     }
 
     private void Update() {
-      validator_.Update();
+      AccessValidator.Update();
+
+      if (shouldRequestTools_) {
+        var status = AccessValidator.IsGranted(1, "KN_Devtools");
+        if (status != AccessValidator.Status.Loading) {
+          shouldRequestTools_ = false;
+        }
+        if (status == AccessValidator.Status.Granted) {
+          IsDevToolsEnabled = true;
+        }
+      }
 
       GuiRenderCheck();
 
