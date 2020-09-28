@@ -28,7 +28,7 @@ namespace KN_Core {
 
     public CarPicker CarPicker { get; }
     public KnCar PlayerCar => CarPicker.PlayerCar;
-    public IEnumerable<KnCar> Cars => CarPicker.Cars;
+    public List<KnCar> Cars => CarPicker.Cars;
 
     public ColorPicker ColorPicker { get; }
     public FilePicker FilePicker { get; }
