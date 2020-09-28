@@ -59,7 +59,7 @@ namespace KN_Core {
       joinTimer_.Callback += SendSwapData;
 
       engines_ = new List<Tuple<int, bool, float, string, string, CarDesc.Engine>> {
-        new Tuple<int, bool, float, string, string, CarDesc.Engine>(1, false, 1600.0f, "6.2L V8 (LS3)", "Raven RV8", new CarDesc.Engine {
+        new Tuple<int, bool, float, string, string, CarDesc.Engine>(1, false, 1600.0f, "7.0L V8 (LS7)", "Raven RV8", new CarDesc.Engine {
           inertiaRatio = 1.0f,
           maxTorque = 736.5f,
           revLimiter = 9430.3f,
@@ -124,7 +124,7 @@ namespace KN_Core {
           idleRPM = 1000.0f,
           maxTorqueRPM = 5145.75f
         }),
-        new Tuple<int, bool, float, string, string, CarDesc.Engine>(6, true, 1100.0f, "3.0L I6 (RB30DET)", "Last Prince", new CarDesc.Engine {
+        new Tuple<int, bool, float, string, string, CarDesc.Engine>(6, true, 1100.0f, "3.0L I6 (RB26DET)", "Last Prince", new CarDesc.Engine {
           inertiaRatio = 1.1f,
           maxTorque = 453.8f,
           revLimiter = 9294.4f,
