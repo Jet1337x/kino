@@ -154,6 +154,7 @@
         <Compile Include="src\KnCar.cs" />
         <Compile Include="src\KnUtils.cs" />
         <Compile Include="src\Updater.cs" />
+        <Compile Include="src\WebDataLoader.cs" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\CameraActive.png" />

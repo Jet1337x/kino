@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text;
 using BepInEx.Bootstrap;
 using GameOverlay;
@@ -8,7 +7,7 @@ using GameOverlay;
 namespace KN_Core {
   public class AccessValidator {
     public bool Allowed { get; private set; }
-    public bool Initialized { get; private set; }
+    public bool Initialized { get; set; }
 
     private IEnumerable<string> data_;
 
@@ -33,7 +32,7 @@ namespace KN_Core {
     public void Initialize(string remote) {
       Allowed = false;
       Initialized = false;
-      data_ = GetDataFromRemote(remote);
+      data_ = WebDataLoader.LoadAsList(remote, module_);
 
       if (data_ == null) {
         Initialized = true;
@@ -67,20 +66,6 @@ namespace KN_Core {
 
       if (Initialized && !Allowed) {
         Disable();
-      }
-    }
-
-    private IEnumerable<string> GetDataFromRemote(string remote) {
-      using (var client = new WebClient()) {
-        try {
-          string uri = Encoding.UTF8.GetString(Convert.FromBase64String(remote));
-          string response = client.DownloadString(uri);
-          return response.Split('\n');
-        }
-        catch (Exception e) {
-          Log.Write($"[KN_AccessValidator]: Unable to load data for '{module_}' from remote, {e.Message}");
-          return null;
-        }
       }
     }
 
