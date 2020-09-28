@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using CarX;
 using SyncMultiplayer;
 using UnityEngine;
@@ -167,14 +167,14 @@ namespace KN_Core {
     }
 
     public void OnStart() {
-      if (SwapsDataSerializer.Deserialize(SwapData.ConfigFile, out var data)) {
+      if (DataSerializer.Deserialize<SwapData>("KN_Swaps", SwapData.ConfigFile, out var data)) {
         Log.Write($"[KN_Swaps]: Swap data loaded {data.Count} items");
-        allData_.AddRange(data);
+        allData_.AddRange(data.ConvertAll(d => (SwapData) d));
       }
     }
 
     public void OnStop() {
-      SwapsDataSerializer.Serialize(allData_, SwapData.ConfigFile);
+      DataSerializer.Serialize("KN_Swaps", allData_.ToList<ISerializable>(), SwapData.ConfigFile);
     }
 
     public void OnCarLoaded() {
