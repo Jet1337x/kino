@@ -222,6 +222,10 @@ namespace KN_Core {
     }
 
     private void GuiSwaps(Gui gui, ref float x, ref float y, float width, float yBegin) {
+      if (KnCar.IsNull(Core.PlayerCar)) {
+        return;
+      }
+
       float tempX = x;
       float tempY = y;
 

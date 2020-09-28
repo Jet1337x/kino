@@ -11,6 +11,7 @@ namespace KN_Core {
     private readonly List<SwapData> allData_;
 
     private readonly List<EngineData> engines_;
+    private readonly List<SwapBalance> balance_;
 
     private readonly Timer joinTimer_;
     private readonly Timer sendTimer_;
@@ -41,7 +42,8 @@ namespace KN_Core {
       validator_.Initialize("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RyYmZseHIva2lub19kYXRhL21hc3Rlci9kYXRhMi50eHQ=");
 
       engines_ = new List<EngineData>();
-      dataLoaded_ = LoadEngines();
+      balance_ = new List<SwapBalance>();
+      dataLoaded_ = LoadData();
       if (!dataLoaded_) {
         return;
       }
@@ -179,7 +181,8 @@ namespace KN_Core {
       }
 
       foreach (var engine in engines_) {
-        if (!core_.IsCheatsEnabled && !engine.Enabled) {
+        bool allowed = balance_.Any(b => b.CarId == core_.PlayerCar.Id && b.Rating >= engine.Rating);
+        if (!core_.IsCheatsEnabled && (!engine.Enabled || !allowed)) {
           continue;
         }
 
@@ -480,6 +483,10 @@ namespace KN_Core {
       dst.maxTorqueRPM = src.maxTorqueRPM;
     }
 
+    private bool LoadData() {
+      return LoadEngines() && LoadBalance();
+    }
+
     private bool LoadEngines() {
       var data = WebDataLoader.LoadAsBytes("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2lub19kYXRhL3Jhdy9tYXN0ZXIva25fZGF0YTAua25k");
       if (data == null) {
@@ -494,6 +501,26 @@ namespace KN_Core {
       }
       else {
         Log.Write("[KN_Swaps]: Unable to parse engine data");
+        return false;
+      }
+
+      return true;
+    }
+
+    private bool LoadBalance() {
+      var data = WebDataLoader.LoadAsBytes("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2lub19kYXRhL3Jhdy9tYXN0ZXIva25fZGF0YTEua25k");
+      if (data == null) {
+        return false;
+      }
+
+      Log.Write("[KN_Swaps]: Balance data loaded from remote");
+
+      if (DataSerializer.Deserialize<SwapBalance>("KN_Swaps", data, out var balance)) {
+        balance_.AddRange(balance.ConvertAll(d => (SwapBalance) d));
+        Log.Write($"[KN_Swaps]: Balance data parsed, count: {balance_.Count}");
+      }
+      else {
+        Log.Write("[KN_Swaps]: Unable to parse balance data");
         return false;
       }
 
