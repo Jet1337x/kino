@@ -80,7 +80,7 @@ namespace KN_Lights {
         : new NwLightsConfig();
 
       lightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_Lights", KnConfig.BaseDir + LightsConfigFile, out var lights)
-        ? new LightsConfig(nwLights.ConvertAll(l => (CarLights) l))
+        ? new LightsConfig(lights.ConvertAll(l => (CarLights) l))
         : new LightsConfig();
 
       worldLights_.OnStart();
