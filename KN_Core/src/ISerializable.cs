@@ -44,6 +44,7 @@ namespace KN_Core {
             data.Add(d);
           }
         }
+        Log.Write($"[{module}]: Data loaded ({data.Count} items)");
       }
       catch (Exception e) {
         Log.Write($"[{module}]: Unable to read stream, {e.Message}");
