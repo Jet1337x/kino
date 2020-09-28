@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace KN_Core {
   public class Swaps {
-    public bool Active => validator_.Allowed && dataLoaded_;
+    public bool Active => swapsEnabled_ && dataLoaded_;
 
     private readonly List<SwapData> allData_;
 
@@ -33,13 +33,13 @@ namespace KN_Core {
 
     private readonly bool dataLoaded_;
 
-    private readonly AccessValidator validator_;
+    private bool swapsEnabled_;
+    private bool shouldRequestSwaps_;
 
     public Swaps(Core core) {
       core_ = core;
 
-      validator_ = new AccessValidator("KN_Air");
-      validator_.Initialize("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RyYmZseHIva2lub19kYXRhL21hc3Rlci9kYXRhMi50eHQ=");
+      shouldRequestSwaps_ = true;
 
       engines_ = new List<EngineData>();
       balance_ = new List<SwapBalance>();
@@ -89,7 +89,7 @@ namespace KN_Core {
     }
 
     public void OnCarLoaded() {
-      if (!dataLoaded_ || !validator_.Allowed) {
+      if (!dataLoaded_ || !swapsEnabled_) {
         return;
       }
 
@@ -97,8 +97,17 @@ namespace KN_Core {
     }
 
     public void Update() {
-      validator_.Update();
-      if (!dataLoaded_ || !validator_.Allowed) {
+      if (shouldRequestSwaps_) {
+        var status = AccessValidator.IsGranted(4, "KN_Swaps");
+        if (status != AccessValidator.Status.Loading) {
+          shouldRequestSwaps_ = false;
+        }
+        if (status == AccessValidator.Status.Granted) {
+          swapsEnabled_ = true;
+        }
+      }
+
+      if (!dataLoaded_ || !swapsEnabled_) {
         return;
       }
 
@@ -126,7 +135,7 @@ namespace KN_Core {
     }
 
     public void ReloadSound() {
-      if (!dataLoaded_ || !validator_.Allowed) {
+      if (!dataLoaded_ || !swapsEnabled_) {
         return;
       }
 
@@ -137,26 +146,27 @@ namespace KN_Core {
       activeEngine_ = 0;
       foreach (var swap in allData_) {
         if (swap.CarId == core_.PlayerCar.Id) {
-          SetEngine(core_.PlayerCar.Base, swap.EngineId, true);
-          activeEngine_ = swap.EngineId;
-          currentEngine_.Turbo = swap.Turbo;
-          currentEngine_.FinalDrive = swap.FinalDrive;
-          currentEngine_.CarId = swap.CarId;
-          currentEngine_.EngineId = swap.EngineId;
+          if (SetEngine(core_.PlayerCar.Base, swap.EngineId, true)) {
+            activeEngine_ = swap.EngineId;
+            currentEngine_.Turbo = swap.Turbo;
+            currentEngine_.FinalDrive = swap.FinalDrive;
+            currentEngine_.CarId = swap.CarId;
+            currentEngine_.EngineId = swap.EngineId;
+          }
           break;
         }
       }
     }
 
     public void OnGui(Gui gui, ref float x, ref float y, float width) {
-      if (!dataLoaded_ || !validator_.Allowed) {
+      if (!dataLoaded_ || !swapsEnabled_) {
         return;
       }
 
       const float listHeight = 220.0f;
       const float height = Gui.Height;
 
-      bool allowSwap = core_.IsInGarage || core_.IsCheatsEnabled;
+      bool allowSwap = core_.IsInGarage || core_.IsCheatsEnabled && core_.IsDevToolsEnabled;
 
       bool enabled = GUI.enabled;
       GUI.enabled = allowSwap;
@@ -173,23 +183,22 @@ namespace KN_Core {
 
       if (gui.Button(ref sx, ref sy, w, height, "STOCK", activeEngine_ == 0 ? Skin.ButtonActive : Skin.Button)) {
         if (activeEngine_ != 0) {
-          activeEngine_ = 0;
-          currentEngine_.FinalDrive = defaultFinalDrive_;
-          currentEngine_.Turbo = defaultEngine_.turboPressure;
-          SetEngine(core_.PlayerCar.Base, activeEngine_);
+          SetStockEngine();
         }
       }
 
       foreach (var engine in engines_) {
         bool allowed = balance_.Any(b => b.CarId == core_.PlayerCar.Id && b.Rating >= engine.Rating);
-        if (!core_.IsCheatsEnabled && (!engine.Enabled || !allowed)) {
+        if (!(core_.IsCheatsEnabled && core_.IsDevToolsEnabled) && (!engine.Enabled || !allowed)) {
           continue;
         }
 
         if (gui.Button(ref sx, ref sy, w, height, engine.Name, activeEngine_ == engine.Id ? Skin.ButtonActive : Skin.Button)) {
           if (activeEngine_ != engine.Id) {
             activeEngine_ = engine.Id;
-            SetEngine(core_.PlayerCar.Base, activeEngine_);
+            if (!SetEngine(core_.PlayerCar.Base, activeEngine_)) {
+              SetStockEngine();
+            }
           }
         }
       }
@@ -223,7 +232,14 @@ namespace KN_Core {
       GUI.enabled = enabled;
     }
 
-    private void SetEngine(RaceCar car, int engineId, bool silent = false) {
+    private void SetStockEngine() {
+      activeEngine_ = 0;
+      currentEngine_.FinalDrive = defaultFinalDrive_;
+      currentEngine_.Turbo = defaultEngine_.turboPressure;
+      SetEngine(core_.PlayerCar.Base, activeEngine_);
+    }
+
+    private bool SetEngine(RaceCar car, int engineId, bool silent = false) {
       var data = new SwapData {
         CarId = car.metaInfo.id,
         EngineId = engineId,
@@ -236,13 +252,23 @@ namespace KN_Core {
         if (!silent) {
           Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}'");
         }
-        return;
+        return false;
       }
 
       bool found = false;
       foreach (var swap in allData_) {
         if (swap.CarId == car.metaInfo.id) {
           found = true;
+
+          bool allowed = balance_.Any(b => b.CarId == core_.PlayerCar.Id && b.Rating >= defaultEngine.Rating);
+          if (!(core_.IsCheatsEnabled && core_.IsDevToolsEnabled) && !allowed) {
+            Log.Write($"[KN_Swaps]: Engine '{engineId}' disabled for car '{swap.CarId}'");
+            data.EngineId = 0;
+            data.FinalDrive = defaultFinalDrive_;
+            currentEngine_.EngineId = 0;
+            activeEngine_ = 0;
+            return false;
+          }
 
           if (swap.EngineId == engineId) {
             data.Turbo = swap.Turbo;
@@ -271,7 +297,7 @@ namespace KN_Core {
         if (TryApplyEngine(car, data, 0, silent)) {
           SendSwapData();
         }
-        return;
+        return false;
       }
 
       if (!found) {
@@ -290,6 +316,7 @@ namespace KN_Core {
       if (TryApplyEngine(car, data, 0, silent)) {
         SendSwapData();
       }
+      return true;
     }
 
     public void OnUdpData(SmartfoxDataPackage data) {
@@ -377,6 +404,10 @@ namespace KN_Core {
         if (!silent) {
           Log.Write($"[KN_Swaps]: Unable to apply engine '{data.EngineId}' ({id})");
         }
+        currentEngine_.EngineId = 0;
+        activeEngine_ = 0;
+        ApplySoundOn(car, activeEngine_, true);
+
         return false;
       }
 
@@ -387,7 +418,7 @@ namespace KN_Core {
       car.carX.finaldrive = data.FinalDrive;
       car.carX.clutchMaxTorque = defaultEngine.ClutchTorque;
 
-      if (!Verify(engine, defaultEngine.Engine)) {
+      if (!Verify(engine, defaultEngine.Engine, defaultEngine.Rating)) {
         if (!silent) {
           Log.Write($"[KN_Swaps]: Engine verification failed '{data.EngineId}', applying default ({id})");
         }
@@ -465,8 +496,9 @@ namespace KN_Core {
       return null;
     }
 
-    private static bool Verify(CarDesc.Engine engine, CarDesc.Engine defaultEngine) {
-      return engine.turboPressure <= defaultEngine.turboPressure;
+    private bool Verify(CarDesc.Engine engine, CarDesc.Engine defaultEngine, int rating) {
+      bool allowed = balance_.Any(b => b.CarId == core_.PlayerCar.Id && b.Rating >= rating);
+      return engine.turboPressure <= defaultEngine.turboPressure && (allowed || core_.IsCheatsEnabled && core_.IsDevToolsEnabled);
     }
 
     private void CopyEngine(CarDesc.Engine src, CarDesc.Engine dst) {
