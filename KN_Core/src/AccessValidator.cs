@@ -63,7 +63,7 @@ namespace KN_Core {
         }
       }
       catch (Exception) {
-        Log.Write($"[KN_AccessValidator]: Unable to parse id");
+        Log.Write("[KN_AccessValidator]: Unable to parse id");
       }
 
       Log.Write($"[KN_AccessValidator]: You not allowed to use '{module_}'!");

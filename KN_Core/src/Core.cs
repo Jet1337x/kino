@@ -41,6 +41,7 @@ namespace KN_Core {
     public bool IsGuiEnabled { get; set; }
 
     public bool IsCheatsEnabled { get; private set; }
+    public bool IsDevToolsEnabled => validator_.Allowed;
 
     public Udp Udp { get; }
     public Settings Settings { get; }
@@ -71,10 +72,15 @@ namespace KN_Core {
 
     private static Assembly assembly_;
 
+    private readonly AccessValidator validator_;
+
     public Core() {
       badVersion_ = KnConfig.ClientVersion != GameVersion.version;
       latestVersion_ = Updater.Initialize();
       showUpdateWarn_ = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
+
+      validator_ = new AccessValidator("KN_DevTools");
+      validator_.Initialize("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RyYmZseHIva2lub19kYXRhL21hc3Rlci9kYXRhMi50eHQ=");
 
       //KillFlyMod();
 
@@ -139,6 +145,10 @@ namespace KN_Core {
     }
 
     public void RemoveMod(BaseMod mod) {
+      if (mod.Name == "CHEATS") {
+        IsCheatsEnabled = false;
+      }
+
       mods_.Remove(mod);
       tabs_.Remove(mod.Name);
 
@@ -187,6 +197,8 @@ namespace KN_Core {
     }
 
     private void Update() {
+      validator_.Update();
+
       GuiRenderCheck();
 
       if (badVersion_) {
