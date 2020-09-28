@@ -136,6 +136,7 @@
         <Compile Include="src\Components\Swaps.cs" />
         <Compile Include="src\Components\SwapsConfig.cs" />
         <Compile Include="src\Components\Tachometer.cs" />
+        <Compile Include="src\ISerializable.cs" />
         <Compile Include="src\Pickers\CarPicker.cs" />
         <Compile Include="src\Pickers\ColorPicker.cs" />
         <Compile Include="src\Pickers\FilePicker.cs" />
