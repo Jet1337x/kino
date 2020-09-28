@@ -213,8 +213,10 @@ namespace KN_Core {
         disableConsoles_.Hidden = !disableConsoles_.Hidden;
       }
 
-      GUI.enabled = Core.Swaps.Active;
-      GuiSwaps(gui, ref x, ref y, width, yBegin);
+      if (Core.Swaps.Active) {
+        GUI.enabled = guiEnabled;
+        GuiSwaps(gui, ref x, ref y, width, yBegin);
+      }
 
       GUI.enabled = guiEnabled;
     }

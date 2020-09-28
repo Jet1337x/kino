@@ -66,5 +66,19 @@ namespace KN_Core {
         return false;
       }
     }
+
+    public static bool Deserialize<T>(string module, byte[] bytes, out List<ISerializable> data) where T : ISerializable, new() {
+      try {
+        data = new List<ISerializable>();
+        using (var memoryStream = new MemoryStream(bytes)) {
+          return Deserialize<T>(module, memoryStream, out data);
+        }
+      }
+      catch (Exception e) {
+        Log.Write($"[{module}]: Unable to bytes, {e.Message}");
+        data = default;
+        return false;
+      }
+    }
   }
 }

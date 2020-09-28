@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace KN_Core {
   public class Swaps {
-    public bool Active => validator_.Allowed;
+    public bool Active => validator_.Allowed && dataLoaded_;
 
     private readonly List<SwapData> allData_;
 
@@ -30,6 +30,8 @@ namespace KN_Core {
 
     private bool swapReload_;
 
+    private readonly bool dataLoaded_;
+
     private readonly AccessValidator validator_;
 
     public Swaps(Core core) {
@@ -37,6 +39,12 @@ namespace KN_Core {
 
       validator_ = new AccessValidator("KN_Air");
       validator_.Initialize("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RyYmZseHIva2lub19kYXRhL21hc3Rlci9kYXRhMi50eHQ=");
+
+      engines_ = new List<EngineData>();
+      dataLoaded_ = LoadEngines();
+      if (!dataLoaded_) {
+        return;
+      }
 
       activeEngine_ = 0;
       defaultSoundId_ = "";
@@ -57,128 +65,29 @@ namespace KN_Core {
 
       joinTimer_ = new Timer(3.0f, true);
       joinTimer_.Callback += SendSwapData;
-
-      engines_ = new List<EngineData> {
-        new EngineData(1, false, 1600.0f, "7.0L V8 (LS7)", "Raven RV8", new CarDesc.Engine {
-          inertiaRatio = 1.0f,
-          maxTorque = 736.5f,
-          revLimiter = 9430.3f,
-          turboCharged = true,
-          turboPressure = 1.1f,
-          brakeTorqueRatio = 0.12f,
-          revLimiterStep = 450.0f,
-          useTC = false,
-          cutRPM = 300.0f,
-          idleRPM = 810.7f,
-          maxTorqueRPM = 4767.0f
-        }),
-        new EngineData(2, true, 1200.0f, "6.2L V8 (LS9)", "Spark ZR", new CarDesc.Engine {
-          inertiaRatio = 1.0f,
-          maxTorque = 437.5f,
-          revLimiter = 9000.0f,
-          turboCharged = true,
-          turboPressure = 1.4f,
-          brakeTorqueRatio = 0.12f,
-          revLimiterStep = 400.0f,
-          useTC = false,
-          cutRPM = 300.0f,
-          idleRPM = 800.0f,
-          maxTorqueRPM = 5145.0f
-        }),
-        new EngineData(3, true, 1300.0f, "5.0L V8 (COYOTE)", "Cobra GT530", new CarDesc.Engine {
-          inertiaRatio = 1.0f,
-          maxTorque = 736.5f,
-          revLimiter = 9030.1f,
-          turboCharged = true,
-          turboPressure = 0.6f,
-          brakeTorqueRatio = 0.12f,
-          revLimiterStep = 500.0f,
-          useTC = false,
-          cutRPM = 300.0f,
-          idleRPM = 1126.7f,
-          maxTorqueRPM = 5160.75f
-        }),
-        new EngineData(4, true, 1200.0f, "3.8L V6 (VR38DETT)", "Atlas GT", new CarDesc.Engine {
-          inertiaRatio = 1.0f,
-          maxTorque = 542.85f,
-          revLimiter = 8580.0f,
-          turboCharged = true,
-          turboPressure = 1.4f,
-          brakeTorqueRatio = 0.12f,
-          revLimiterStep = 500.0f,
-          useTC = false,
-          cutRPM = 300.0f,
-          idleRPM = 810.7f,
-          maxTorqueRPM = 5055.75f
-        }),
-        new EngineData(5, true, 1200.0f, "3.4L I6 (2JZ-GTE)", "Carrot II", new CarDesc.Engine {
-          inertiaRatio = 1.0f,
-          maxTorque = 307.5f,
-          revLimiter = 9500.0f,
-          turboCharged = true,
-          turboPressure = 3.5f,
-          brakeTorqueRatio = 0.12f,
-          revLimiterStep = 450.0f,
-          useTC = false,
-          cutRPM = 300.0f,
-          idleRPM = 1000.0f,
-          maxTorqueRPM = 5145.75f
-        }),
-        new EngineData(6, true, 1100.0f, "3.0L I6 (RB26DET)", "Last Prince", new CarDesc.Engine {
-          inertiaRatio = 1.1f,
-          maxTorque = 453.8f,
-          revLimiter = 9294.4f,
-          turboCharged = true,
-          turboPressure = 1.5f,
-          brakeTorqueRatio = 0.12f,
-          revLimiterStep = 500.0f,
-          useTC = false,
-          cutRPM = 300.0f,
-          idleRPM = 1200.0f,
-          maxTorqueRPM = 5131.75f
-        }),
-        new EngineData(7, true, 850.0f, "2.2L I4 (SR20VET)", "Phoenix NX", new CarDesc.Engine {
-          inertiaRatio = 1.0f,
-          maxTorque = 441.0f,
-          revLimiter = 8812.0f,
-          turboCharged = true,
-          turboPressure = 1.7f,
-          brakeTorqueRatio = 0.12f,
-          revLimiterStep = 500.0f,
-          useTC = false,
-          cutRPM = 300.0f,
-          idleRPM = 600.0f,
-          maxTorqueRPM = 4047.75f
-        }),
-        new EngineData(8, true, 800.0f, "1.3L R2 (13B)", "Falcon FC 90-s", new CarDesc.Engine {
-          inertiaRatio = 0.95f,
-          maxTorque = 367.5f,
-          revLimiter = 10000.0f,
-          turboCharged = true,
-          turboPressure = 1.5f,
-          brakeTorqueRatio = 0.2f,
-          revLimiterStep = 350.0f,
-          useTC = false,
-          cutRPM = 300.0f,
-          idleRPM = 1200.0f,
-          maxTorqueRPM = 5343.75f
-        })
-      };
     }
 
     public void OnStart() {
-      if (DataSerializer.Deserialize<SwapData>("KN_Swaps", KnConfig.BaseDir +SwapData.ConfigFile, out var data)) {
+      if (!dataLoaded_) {
+        return;
+      }
+
+      if (DataSerializer.Deserialize<SwapData>("KN_Swaps", KnConfig.BaseDir + SwapData.ConfigFile, out var data)) {
         Log.Write($"[KN_Swaps]: Swap data loaded {data.Count} items");
         allData_.AddRange(data.ConvertAll(d => (SwapData) d));
       }
     }
 
     public void OnStop() {
-      DataSerializer.Serialize("KN_Swaps", allData_.ToList<ISerializable>(), KnConfig.BaseDir +SwapData.ConfigFile);
+      if (!dataLoaded_) {
+        return;
+      }
+
+      DataSerializer.Serialize("KN_Swaps", allData_.ToList<ISerializable>(), KnConfig.BaseDir + SwapData.ConfigFile);
     }
 
     public void OnCarLoaded() {
-      if (!validator_.Allowed) {
+      if (!dataLoaded_ || !validator_.Allowed) {
         return;
       }
 
@@ -187,7 +96,7 @@ namespace KN_Core {
 
     public void Update() {
       validator_.Update();
-      if (!validator_.Allowed) {
+      if (!dataLoaded_ || !validator_.Allowed) {
         return;
       }
 
@@ -215,7 +124,7 @@ namespace KN_Core {
     }
 
     public void ReloadSound() {
-      if (!validator_.Allowed) {
+      if (!dataLoaded_ || !validator_.Allowed) {
         return;
       }
 
@@ -238,7 +147,7 @@ namespace KN_Core {
     }
 
     public void OnGui(Gui gui, ref float x, ref float y, float width) {
-      if (!validator_.Allowed) {
+      if (!dataLoaded_ || !validator_.Allowed) {
         return;
       }
 
@@ -381,6 +290,10 @@ namespace KN_Core {
     }
 
     public void OnUdpData(SmartfoxDataPackage data) {
+      if (!dataLoaded_) {
+        return;
+      }
+
       int id = data.Data.GetInt("id");
       int engineId = data.Data.GetInt("ei");
       float turbo = data.Data.GetFloat("tb");
@@ -536,7 +449,7 @@ namespace KN_Core {
 
     private EngineData GetEngine(int id) {
       if (id == 0) {
-        return new EngineData(0, true, defaultClutch_, "STOCK", defaultSoundId_, defaultEngine_);
+        return new EngineData(0, 1, true, defaultClutch_, "STOCK", defaultSoundId_, defaultEngine_);
       }
 
       foreach (var engine in engines_) {
@@ -565,6 +478,26 @@ namespace KN_Core {
       dst.cutRPM = src.cutRPM;
       dst.idleRPM = src.idleRPM;
       dst.maxTorqueRPM = src.maxTorqueRPM;
+    }
+
+    private bool LoadEngines() {
+      var data = WebDataLoader.LoadAsBytes("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2luby9yYXcvbWFzdGVyL0RhdGEva25fZGF0YTAua25k");
+      if (data == null) {
+        return false;
+      }
+
+      Log.Write("[KN_Swaps]: Engine data loaded from remote");
+
+      if (DataSerializer.Deserialize<EngineData>("KN_Swaps", data, out var engines)) {
+        engines_.AddRange(engines.ConvertAll(d => (EngineData) d));
+        Log.Write($"[KN_Swaps]: Engine data parsed, count: {engines_.Count}");
+      }
+      else {
+        Log.Write("[KN_Swaps]: Unable to parse engine data");
+        return false;
+      }
+
+      return true;
     }
   }
 }
