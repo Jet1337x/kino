@@ -189,7 +189,7 @@ namespace KN_Core {
 
       foreach (var engine in engines_) {
         bool allowed = balance_.Any(b => b.CarId == core_.PlayerCar.Id && b.Rating >= engine.Rating);
-        if (!(core_.IsCheatsEnabled && core_.IsDevToolsEnabled) && (!engine.Enabled || !allowed)) {
+        if (!core_.IsDevToolsEnabled && (!engine.Enabled || !allowed)) {
           continue;
         }
 
