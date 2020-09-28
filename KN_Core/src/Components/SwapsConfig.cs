@@ -15,7 +15,7 @@ namespace KN_Core {
       Engine = new CarDesc.Engine();
     }
 
-    public EngineData(int id,int rating, bool enabled, float clutch, string name, string soundId, CarDesc.Engine engine) {
+    public EngineData(int id, int rating, bool enabled, float clutch, string name, string soundId, CarDesc.Engine engine) {
       Id = id;
       Rating = rating;
       Enabled = enabled;
@@ -86,6 +86,21 @@ namespace KN_Core {
       EngineId = reader.ReadInt32();
       Turbo = reader.ReadSingle();
       FinalDrive = reader.ReadSingle();
+    }
+  }
+
+  public class SwapBalance : ISerializable {
+    public int CarId;
+    public int Rating;
+
+    public void Serialize(BinaryWriter writer) {
+      writer.Write(CarId);
+      writer.Write(Rating);
+    }
+
+    public void Deserialize(BinaryReader reader, int version) {
+      CarId = reader.ReadInt32();
+      Rating = reader.ReadInt32();
     }
   }
 }
