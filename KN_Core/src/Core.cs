@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using BepInEx;
@@ -185,6 +186,8 @@ namespace KN_Core {
         mod.OnStop();
       }
       KnConfig.Write();
+
+      StartUpdater();
     }
 
     public void FixedUpdate() {
@@ -501,6 +504,20 @@ namespace KN_Core {
 
       foreach (var mod in mods_) {
         mod.OnUdpData(data);
+      }
+    }
+
+    public void StartUpdater(bool outdated = false) {
+      string updater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
+
+      string args = $"{(outdated ? "0.0.0" : KnConfig.StringVersion)} {IsDevToolsEnabled}";
+      var proc = Process.Start(updater, args);
+
+      if (proc != null) {
+        proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+      }
+      else {
+        Log.Write("[KN_Core]: Unable to start updater");
       }
     }
 

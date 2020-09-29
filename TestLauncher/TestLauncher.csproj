@@ -70,6 +70,10 @@
         <Project>{757755fa-7cc9-481f-b4a1-23fc7c1bd216}</Project>
         <Name>KN_Maps</Name>
       </ProjectReference>
+      <ProjectReference Include="..\KN_Updater\KN_Updater.csproj">
+        <Project>{066b59ba-5801-4709-8d0f-c6a65afbb967}</Project>
+        <Name>KN_Updater</Name>
+      </ProjectReference>
       <ProjectReference Include="..\KN_Visuals\KN_Visuals.csproj">
         <Project>{5a2e3d60-d1d4-4cce-ab00-ce9c33a83551}</Project>
         <Name>KN_Visuals</Name>
