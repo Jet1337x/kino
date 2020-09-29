@@ -141,10 +141,7 @@ namespace KN_Core {
       mods_.Add(mod);
       mods_.Sort((m0, m1) => m0.Id.CompareTo(m1.Id));
 
-      tabs_.Clear();
-      foreach (var m in mods_) {
-        tabs_.Add(Locale.Get(m.Name));
-      }
+      UpdateLanguage();
 
       Log.Write($"[KN_Core]: Mod {Locale.Get(mod.Name)} was added");
 
@@ -449,6 +446,13 @@ namespace KN_Core {
       }
       if (ActiveCamera == null && MainCamera != null) {
         ActiveCamera = MainCamera.gameObject;
+      }
+    }
+
+    public void UpdateLanguage() {
+      tabs_.Clear();
+      foreach (var m in mods_) {
+        tabs_.Add(Locale.Get(m.Name));
       }
     }
 

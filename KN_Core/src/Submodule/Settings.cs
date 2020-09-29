@@ -148,6 +148,11 @@ namespace KN_Core {
 
       x += Gui.OffsetSmall;
 
+      if (gui.Button(ref x, ref y, width, height, $"{Locale.Get("language")}: {Locale.CurrentLocale.ToUpper()}", Skin.Button)) {
+        Locale.SelectNextLocale();
+        Core.UpdateLanguage();
+      }
+
       if (gui.Button(ref x, ref y, width, height, Locale.Get("tach"), tachEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         tachEnabled_ = !tachEnabled_;
         Core.KnConfig.Set("custom_tach", tachEnabled_);

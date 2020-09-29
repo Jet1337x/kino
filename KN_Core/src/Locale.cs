@@ -4,44 +4,57 @@ using System.Xml;
 
 namespace KN_Core {
   public static class Locale {
+    public static readonly string[] ActiveLocales = {"en", "ru", "fr", "de"};
+
+    public static string CurrentLocale { get; private set; }
+
     private static Dictionary<string, string> currentLocale_;
     private static Dictionary<string, string> defaultLocale_;
     private static Dictionary<string, Dictionary<string, string>> locales_;
 
-    private static string locale_;
-
     private static Core core_;
 
+    private static int localeIndex_;
+
     public static void Initialize(string locale, Core core) {
-      locale_ = locale;
+      CurrentLocale = locale;
       core_ = core;
       locales_ = new Dictionary<string, Dictionary<string, string>>();
 
-      LoadLocale("en");
-      LoadLocale("ru");
+      foreach (string l in ActiveLocales) {
+        LoadLocale(l);
+      }
 
       defaultLocale_ = locales_["en"];
 
       bool found = false;
       foreach (var loc in locales_) {
-        if (loc.Key == locale_) {
+        if (loc.Key == CurrentLocale) {
           currentLocale_ = loc.Value;
+          for (int i = 0; i < ActiveLocales.Length; i++) {
+            if (ActiveLocales[i] == loc.Key) {
+              localeIndex_ = i;
+            }
+          }
           found = true;
           break;
         }
       }
 
       if (!found) {
-        Log.Write($"[KN_Core]: Unable to find locale '{locale_}', init default");
+        Log.Write($"[KN_Core]: Unable to find locale '{CurrentLocale}', init default");
         currentLocale_ = locales_["en"];
-        locale_ = "en";
+        CurrentLocale = "en";
+        localeIndex_ = 0;
       }
     }
 
     private static void LoadLocale(string locale) {
       Log.Write($"[KN_Core]: Loading locale '{locale}' ...");
-
       var stream = Core.LoadCoreFile($"Locale.{locale}.xml");
+      if (stream == null) {
+        return;
+      }
 
       string id = "";
       var dictionary = new Dictionary<string, string>();
@@ -76,11 +89,18 @@ namespace KN_Core {
       locales_.Add(id, dictionary);
     }
 
+    public static void SelectNextLocale() {
+      if (++localeIndex_ >= ActiveLocales.Length) {
+        localeIndex_ = 0;
+      }
+      CurrentLocale = ActiveLocales[localeIndex_];
+      currentLocale_ = locales_[CurrentLocale];
+    }
+
     public static string Get(string id) {
       if (core_ == null || core_.DisplayTextAsId || defaultLocale_ == null) {
         return id;
       }
-
       try {
         return currentLocale_[id];
       }
