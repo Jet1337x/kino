@@ -151,6 +151,7 @@ namespace KN_Core {
       if (gui.Button(ref x, ref y, width, height, $"{Locale.Get("language")}: {Locale.CurrentLocale.ToUpper()}", Skin.Button)) {
         Locale.SelectNextLocale();
         Core.UpdateLanguage();
+        Core.KnConfig.Set("locale", Locale.CurrentLocale);
       }
 
       if (gui.Button(ref x, ref y, width, height, Locale.Get("tach"), tachEnabled_ ? Skin.ButtonActive : Skin.Button)) {
