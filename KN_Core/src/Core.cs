@@ -79,10 +79,11 @@ namespace KN_Core {
 
     public Core() {
       Changelog.Initialize();
-      badVersion_ = KnConfig.ClientVersion != GameVersion.version;
       latestVersion_ = Changelog.GetVersion();
-      ShowUpdateWarn = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
       changelog_ = Changelog.GetChangelog();
+
+      badVersion_ = KnConfig.ClientVersion != GameVersion.version;
+      ShowUpdateWarn = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
 
       shouldRequestTools_ = true;
 
@@ -389,13 +390,14 @@ namespace KN_Core {
       float y = Screen.height / 2.0f - height / 2.0f;
 
       string changelog = "";
-      foreach (string line in changelog_) {
-        height += Gui.Height * 0.75f;
-        changelog += $"- {line}\n";
+      if (changelog_ != null) {
+        changelog += "CHANGELOG:\n";
+        foreach (string line in changelog_) {
+          height += Gui.Height * 0.75f;
+          changelog += $"- {line}\n";
+        }
       }
-
-      if (gui_.Button(ref x, ref y, width, height, $"YOUR MOD IS OUTDATED, LATEST VERSION: {latestVersion_}!\n" +
-                                                   $"CHANGELOG:\n{changelog}" +
+      if (gui_.Button(ref x, ref y, width, height, $"YOUR MOD IS OUTDATED, LATEST VERSION: {latestVersion_}!\n{changelog}" +
                                                    "FOR MORE UPDATES CHECK OUR DISCORD (CLICK)",
         Skin.ButtonDummyRed)) {
         Process.Start("https://discord.gg/FkYYAKb");

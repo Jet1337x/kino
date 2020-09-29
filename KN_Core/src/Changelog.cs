@@ -18,8 +18,12 @@ namespace KN_Core {
     }
 
     public static List<string> GetChangelog() {
-      var changelog = new List<string>();
-      data_.CopyTo(changelog.ToArray(), 1);
+      if (data_ == null || data_.Count <= 1) {
+        return null;
+      }
+
+      var changelog = data_;
+      changelog.RemoveAt(0);
 
       return changelog;
     }
