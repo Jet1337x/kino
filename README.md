@@ -2,7 +2,7 @@
 #
 [![Releases](https://img.shields.io/github/v/release/trbflxr/kino?include_prereleases&label=DOWNLOAD&style=for-the-badge)](https://github.com/trbflxr/kino/releases) 
 [![KiNO Discord](https://img.shields.io/discord/716264804498538516?label=DISCORD&style=for-the-badge)](https://discord.gg/8z6HAA3)
-[![donation](https://img.shields.io/badge/paypal-donate-blue?style=for-the-badge&logo=PayPal&link=http://paypal.me/karinkiril)](http://paypal.me/karinkirill)
+[![donation](https://img.shields.io/badge/paypal-donate-blue?style=for-the-badge&link=http://paypal.me/karinkirill)](http://paypal.me/karinkirill)
 ### Required: [BepInEx mod loader](https://github.com/BepInEx/BepInEx/releases)
 ## About
 This mod consists of multiple modules such as cinematic that is mainly based around the ability to record replays and playing them back at any moment, custom lights, and livery sharing. The mod also has multiple small side features to enhance your experience.
