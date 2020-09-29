@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<locale loc="ru">
+  <key id="lights" value="СВЕТ"/>
+  <key id="visuals" value="ВИЗУАЛ"/>
+  <key id="settings" value="НАСТРОЙКИ"/>
+  <key id="maps" value="КАРТЫ"/>
+  <key id="about" value="ИНФО"/>
+
+  <key id="enabled" value="ВКЛ"/>
+  <key id="disabled" value="ОТКЛ"/>
+
+  <key id="input_locked" value="УПРАВЛЕНИЕ ЗАБЛОКИРОВАНО. ЗАКРОЙ МОД, ЧТОБЫ РАЗБЛОКИРОВАТЬ УПРАВЛЕНИЕ."/>
+  <key id="changes" value="ИЗМЕНЕНИЯ"/>
+  <key id="outdated0" value="МОД УСТАРЕЛ. СВЕЖАЯ ВЕРИЯ"/>
+  <key id="outdated1" value="ЗАХОДИ К НАМ В ДИСКОРД ЗА НОВОСТЯМИ (ТЫК)"/>
+
+  <key id="about0" value="Мод разработал trbflxr"/>
+  <key id="about1" value="С тестами помогали John Sawyer, Dimon, hippan, Sheriff"/>
+
+  <key id="lights_enable_own" value="ВКЛЮЧИТЬ СОБСТВЕННЫЙ СВЕТ"/>
+</locale>
