@@ -8,6 +8,7 @@
   <key id="about" value="INFOS"/>
 
   <!--COMMON-->
+  <key id="language" value="LANGUE"/>
   <key id="enabled" value="ACTIVÉ"/>
   <key id="disabled" value="DÉSACTIVÉ"/>
   <key id="enable" value="ACTIVER"/>

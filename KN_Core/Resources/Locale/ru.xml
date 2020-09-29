@@ -8,6 +8,7 @@
   <key id="about" value="ИНФО"/>
 
   <!--COMMON-->
+  <key id="language" value="ЯЗЫК"/>
   <key id="enabled" value="ВКД"/>
   <key id="disabled" value="ОТКЛ"/>
   <key id="enable" value="ВКЛ"/>
