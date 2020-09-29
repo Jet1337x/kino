@@ -196,7 +196,11 @@ namespace KN_Core {
       StartUpdater();
     }
 
-    public void FixedUpdate() {
+    private void Start() {
+      InvokeRepeating(nameof(KnConfig.Write), 10.0f, 60.0f);
+    }
+
+    private void FixedUpdate() {
       if (badVersion_) {
         return;
       }
