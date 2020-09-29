@@ -44,6 +44,8 @@ namespace KN_Core {
     public bool IsCheatsEnabled { get; private set; }
     public bool IsDevToolsEnabled { get; private set; }
 
+    public bool ShowUpdateWarn { get; set; }
+
     public Udp Udp { get; }
     public Settings Settings { get; }
     public KnConfig KnConfig { get; }
@@ -66,8 +68,8 @@ namespace KN_Core {
     private bool soundReloadNext_;
 
     private readonly bool badVersion_;
-    private readonly bool showUpdateWarn_;
     private readonly int latestVersion_;
+    private readonly List<string> changelog_;
 
     private CameraRotation cameraRotation_;
 
@@ -76,9 +78,11 @@ namespace KN_Core {
     private static Assembly assembly_;
 
     public Core() {
+      Changelog.Initialize();
       badVersion_ = KnConfig.ClientVersion != GameVersion.version;
-      latestVersion_ = Updater.Initialize();
-      showUpdateWarn_ = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
+      latestVersion_ = Changelog.GetVersion();
+      ShowUpdateWarn = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
+      changelog_ = Changelog.GetChangelog();
 
       shouldRequestTools_ = true;
 
@@ -315,7 +319,7 @@ namespace KN_Core {
         return;
       }
 
-      if (showUpdateWarn_) {
+      if (ShowUpdateWarn) {
         GuiUpdateWarn();
       }
 
@@ -328,7 +332,7 @@ namespace KN_Core {
       float tempX = x;
       x += Gui.Width + Gui.OffsetGuiX;
       if (gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "DISCORD", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy)) {
-        System.Diagnostics.Process.Start("https://discord.gg/jrMReAB");
+        Process.Start("https://discord.gg/jrMReAB");
       }
       x = tempX;
 
@@ -379,16 +383,22 @@ namespace KN_Core {
 
     private void GuiUpdateWarn() {
       const float width = Gui.Width * 3.0f;
-      const float height = Gui.Height * 3.0f;
+      float height = Gui.Height * 3.0f;
 
       float x = Screen.width / 2.0f - width / 2.0f;
       float y = Screen.height / 2.0f - height / 2.0f;
 
-      if (gui_.Button(ref x, ref y, width, height, "YOUR MOD IS OUTDATED!\n" +
-                                                   "PLEASE CHECK FOR UPDATES IN OUR DISCORD (CLICK)\n" +
-                                                   $"CURRENT VERSION: {KnConfig.Version}, LATEST VERSION: {latestVersion_}",
+      string changelog = "";
+      foreach (string line in changelog_) {
+        height += Gui.Height * 0.75f;
+        changelog += $"- {line}\n";
+      }
+
+      if (gui_.Button(ref x, ref y, width, height, $"YOUR MOD IS OUTDATED, LATEST VERSION: {latestVersion_}!\n" +
+                                                   $"CHANGELOG:\n{changelog}" +
+                                                   "FOR MORE UPDATES CHECK OUR DISCORD (CLICK)",
         Skin.ButtonDummyRed)) {
-        System.Diagnostics.Process.Start("https://discord.gg/yvRxHuX");
+        Process.Start("https://discord.gg/FkYYAKb");
       }
     }
 
