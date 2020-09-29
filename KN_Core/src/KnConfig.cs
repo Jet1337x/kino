@@ -69,10 +69,10 @@ namespace KN_Core {
         return (T) params_[key];
       }
       catch (ArgumentNullException) {
-        Log.Write($"Key '{key}' is null");
+        Log.Write($"[KN_Core]: Key '{key}' is null");
       }
       catch (KeyNotFoundException) {
-        Log.Write($"Key '{key}' does not exists");
+        Log.Write($"[KN_Core]: Key '{key}' does not exists");
       }
 
       return default;
@@ -83,10 +83,10 @@ namespace KN_Core {
         params_[key] = value;
       }
       catch (ArgumentNullException) {
-        Log.Write($"Key '{key}' is null");
+        Log.Write($"[KN_Core]: Key '{key}' is null");
       }
       catch (KeyNotFoundException) {
-        Log.Write($"Key '{key}' does not exists");
+        Log.Write($"[KN_Core]: Key '{key}' does not exists");
       }
     }
 
@@ -120,9 +120,10 @@ namespace KN_Core {
             writer.WriteEndElement();
           }
         }
+        Log.Write($"[KN_Core]: Config automatically saved to '{ConfigFile}'");
       }
       catch (Exception e) {
-        Log.Write("Unable to write config: " + e.Message);
+        Log.Write($"[KN_Core]: Unable to read config, {e.Message}");
       }
     }
 
@@ -147,7 +148,7 @@ namespace KN_Core {
         }
       }
       catch (Exception e) {
-        Log.Write("Unable to read config: " + e.Message);
+        Log.Write($"[KN_Core]: Unable to read config, {e.Message}");
       }
 
       Validate();
@@ -251,7 +252,7 @@ namespace KN_Core {
         }
       }
 
-      foreach (var key in toRemove) {
+      foreach (string key in toRemove) {
         params_.Remove(key);
       }
 

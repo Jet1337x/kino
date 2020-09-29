@@ -73,6 +73,8 @@ namespace KN_Core {
     private readonly int latestVersion_;
     private readonly List<string> changelog_;
 
+    private readonly Timer saveTimer_;
+
     private CameraRotation cameraRotation_;
 
     private readonly Gui gui_;
@@ -125,6 +127,9 @@ namespace KN_Core {
       Udp.ProcessPacket += HandlePacket;
 
       CarPicker.OnCarLoaded += Swaps.OnCarLoaded;
+
+      saveTimer_ = new Timer(60.0f);
+      saveTimer_.Callback += KnConfig.Write;
     }
 
     public void AddMod(BaseMod mod) {
@@ -194,10 +199,6 @@ namespace KN_Core {
       KnConfig.Write();
 
       StartUpdater();
-    }
-
-    private void Start() {
-      InvokeRepeating(nameof(KnConfig.Write), 10.0f, 60.0f);
     }
 
     private void FixedUpdate() {
@@ -302,6 +303,8 @@ namespace KN_Core {
       Swaps.Update();
 
       Udp.Update();
+
+      saveTimer_.Update();
     }
 
     public void LateUpdate() {
