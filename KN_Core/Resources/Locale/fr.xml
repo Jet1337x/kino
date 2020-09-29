@@ -1,106 +1,106 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="fr">
   <!--MODS (TABS)-->
-  <key id="lights" value="LIGHTS"/>
-  <key id="visuals" value="VISUALS"/>
-  <key id="settings" value="SETTINGS"/>
+  <key id="lights" value="PHARES"/>
+  <key id="visuals" value="KIT DÉCO"/>
+  <key id="settings" value="RÉGLAGES"/>
   <key id="maps" value="MAPS"/>
-  <key id="about" value="ABOUT"/>
+  <key id="about" value="INFOS"/>
 
   <!--COMMON-->
-  <key id="enabled" value="ENABLED"/>
-  <key id="disabled" value="DISABLED"/>
-  <key id="enable" value="ENABLE"/>
-  <key id="disable" value="DISABLE"/>
-  <key id="color" value="COLOR"/>
-  <key id="red" value="RED"/>
-  <key id="green" value="GREEN"/>
-  <key id="blue" value="BLUE"/>
-  <key id="alpha" value="ALPHA"/>
-  <key id="close" value="CLOSE"/>
+  <key id="enabled" value="ACTIVÉ"/>
+  <key id="disabled" value="DÉSACTIVÉ"/>
+  <key id="enable" value="ACTIVER"/>
+  <key id="disable" value="DÉSACTIVER"/>
+  <key id="color" value="COULEUR"/>
+  <key id="red" value="ROUGE"/>
+  <key id="green" value="VERT"/>
+  <key id="blue" value="BLEU"/>
+  <key id="alpha" value="OPACITÉ"/>
+  <key id="close" value="FERMER"/>
 
   <!--CORE-->
-  <key id="input_locked" value="CARX INPUT IS LOCKED. CLOSE MOD MENU TO UNLOCK IT."/>
+  <key id="input_locked" value="TOUCHES CARX VERROUILLÉE. FERMER MENU POUR DÉVERROUILLER."/>
   <key id="changes" value="CHANGELOG"/>
-  <key id="outdated0" value="YOUR MOD IS OUTDATED, LATEST VERSION"/>
-  <key id="outdated1" value="FOR MORE UPDATES CHECK OUR DISCORD (CLICK)"/>
+  <key id="outdated0" value="VOTRE MOD N'EST PAS A JOUR, DERNIERE VERSION"/>
+  <key id="outdated1" value="POUR PLUS D'INFORMATIONS, CONSULTEZ NOTRE DISCORD (CLIQUEZ)"/>
 
   <!--PICKERS-->
-  <key id="cp_cars" value="CARS"/>
-  <key id="cp_player" value="PLAYER CAR"/>
-  <key id="cp_title" value="COLOR PICKER"/>
-  <key id="fp_title" value="FILE PICKER"/>
-  <key id="fp_refresh" value="REFRESH"/>
+  <key id="cp_cars" value="VOITURES"/>
+  <key id="cp_player" value="VOITURE JOUEUR"/>
+  <key id="cp_title" value="PIPETTE COULEURS"/>
+  <key id="fp_title" value="FICHIER"/>
+  <key id="fp_refresh" value="RAFRAÎCHIR"/>
 
   <!--ABOUT-->
-  <key id="about0" value="Developed by trbflxr"/>
-  <key id="about1" value="Tested by John Sawyer, Dimon, hippan, Sheriff"/>
-  <key id="about2" value="If you have any questions or suggestions"/>
-  <key id="about3" value="please, contact us at"/>
-  <key id="about4" value="trbflxr#8814 or John Sawyer#6915"/>
-  <key id="about5" value="or in the mod's discord (top button)"/>
-  <key id="about6" value="Also many thanks to Cursed, MRo and diip for their support!"/>
-  <key id="about0v" value="Your CarX client version is different!"/>
-  <key id="about1v" value="Please download new version of KiNO mod"/>
-  <key id="about2v" value="from official discord (top button)"/>
-  <key id="about3v" value="or contact us at trbflxr#8814 or John Sawyer#6915"/>
-  <key id="about4v" value="Current version"/>
-  <key id="about5v" value="Target version"/>
+  <key id="about0" value="Développé par trbflxr"/>
+  <key id="about1" value="Testé par John Sawyer, Dimon, hippan, Sheriff"/>
+  <key id="about2" value="Si vous avez des questions ou des suggestions"/>
+  <key id="about3" value="s'il vous plaît, contactez-nous"/>
+  <key id="about4" value="trbflxr#8814 ou John Sawyer#6915"/>
+  <key id="about5" value="ou sur le discord du mod (boutton du haut)"/>
+  <key id="about6" value="Merci également à Cursed, MRo et diip pour leur soutien !"/>
+  <key id="about0v" value="Votre version de client CarX est différente !"/>
+  <key id="about1v" value="Veuillez télécharger la nouvelle version du mod KiNO"/>
+  <key id="about2v" value="sur le discord officiel (boutton du haut)"/>
+  <key id="about3v" value="Si besoin contacter trbflxr#8814 ou John Sawyer#6915"/>
+  <key id="about4v" value="Version actuelle"/>
+  <key id="about5v" value="Version cible"/>
 
   <!--SETTINGS-->
-  <key id="tach" value="CUSTOM TACHOMETER"/>
-  <key id="hide_points" value="HIDE POINTS"/>
-  <key id="hide_names" value="HIDE NAMES"/>
-  <key id="backfire" value="CUSTOM BACKFIRE"/>
-  <key id="white_smoke" value="FORCE WHITE SMOKE TO ALL"/>
-  <key id="sync_lights" value="SYNC LIGHTS"/>
-  <key id="disable_consoles" value="DISABLE CONSOLE COLLISIONS"/>
-  <key id="hide_consoles" value="HIDE CONSOLE PLAYERS"/>
-  <key id="log_engines" value="LOG ENGINES"/>
+  <key id="tach" value="HUD PERSONNALISÉ"/>
+  <key id="hide_points" value="MASQUER POINTS"/>
+  <key id="hide_names" value="MASQUERS PSEUDOS"/>
+  <key id="backfire" value="RETOUR FLAMMES"/>
+  <key id="white_smoke" value="FORCER FUMÉE BLANCHE À TOUS"/>
+  <key id="sync_lights" value="SYNCHRO PHARES"/>
+  <key id="disable_consoles" value="DÉSACTIVER COLLISIONS CONSOLE"/>
+  <key id="hide_consoles" value="MASQUER LES JOUEURS CONSOLE"/>
+  <key id="log_engines" value="LOG MOTEURS"/>
 
   <!--EXHAUST-->
   <key id="exh_volume" value="VOLUME"/>
-  <key id="exh_max_time" value="MAX TIME"/>
+  <key id="exh_max_time" value="TEMPS MAX"/>
 
   <!--ENGINES-->
-  <key id="swaps_engines" value="ENGINES"/>
+  <key id="swaps_engines" value="MOTEURS"/>
   <key id="swaps_turbo" value="TURBO"/>
-  <key id="swaps_fd" value="FINAL DRIVE"/>
+  <key id="swaps_fd" value="TRANSMISSION FINALE"/>
 
   <!--VISUALS-->
   <key id="zoom" value="ZOOM"/>
   <key id="shift" value="SHIFT"/>
-  <key id="save_current" value="SAVE CURRENT DESIGN"/>
-  <key id="load_design" value="LOAD DESIGN"/>
-  <key id="apply_design" value="APPLY DESIGN TO"/>
-  <key id="add_livery" value="ADD LIVERY TO"/>
-  <key id="restore_design" value="RESTORE DESIGN"/>
+  <key id="save_current" value="ENREGISTRER LE DESIGN ACTUELLE"/>
+  <key id="load_design" value="CHARGER DESIGN"/>
+  <key id="apply_design" value="APPLIQUER DESIGN SUR"/>
+  <key id="add_livery" value="APPLIQUER VINYLE SUR"/>
+  <key id="restore_design" value="RESTAURER DESIGN"/>
 
   <!--LIGHTS-->
-  <key id="lights_enable_own" value="ENABLE OWN LIGHTS"/>
-  <key id="debug_obj" value="DEBUG OBJECTS"/>
-  <key id="hl_illumination" value="HEADLIGHTS ILLUMINATION"/>
-  <key id="hide_lights_after" value="HIDE LIGHTS AFTER"/>
-  <key id="hl_left" value="LEFT HEADLIGHT"/>
-  <key id="hl_right" value="RIGHT HEADLIGHT"/>
-  <key id="hl_brightness" value="HEADLIGHTS BRIGHTNESS"/>
-  <key id="hl_angle" value="HEADLIGHTS ANGLE"/>
-  <key id="hl_pitch" value="HEADLIGHTS PITCH"/>
-  <key id="tl_left" value="LEFT TAILLIGHT"/>
-  <key id="tl_right" value="RIGHT TAILLIGHT"/>
-  <key id="tl_brightness" value="TAILLIGHT BRIGHTNESS"/>
-  <key id="tl_angle" value="TAILLIGHT ANGLE"/>
-  <key id="tl_pitch" value="TAILLIGHT PITCH"/>
-  <key id="add_lights_all" value="ADD LIGHTS TO EVERYONE"/>
-  <key id="add_lights_to" value="ADD LIGHTS TO"/>
+  <key id="lights_enable_own" value="ACTIVER MES PHARES"/>
+  <key id="debug_obj" value="REPLACER AMPOULES"/>
+  <key id="hl_illumination" value="ILLUMINATION PHARES"/>
+  <key id="hide_lights_after" value="CACHER PHARES APRÈS"/>
+  <key id="hl_left" value="PHARE AVANT GAUCHE"/>
+  <key id="hl_right" value="PHARE AVANT DROIT"/>
+  <key id="hl_brightness" value="LUMINOSITÉ PHARES"/>
+  <key id="hl_angle" value="ANGLE PHARES"/>
+  <key id="hl_pitch" value="PITCH PHARES"/>
+  <key id="tl_left" value="FEU ARRIÈRE GAUCHE"/>
+  <key id="tl_right" value="FEU ARRIÈRE DROIT"/>
+  <key id="tl_brightness" value="LUMINOSITÉ PHARES ARRIÈRE"/>
+  <key id="tl_angle" value="ANGLE PHARES ARRIÈRE"/>
+  <key id="tl_pitch" value="PITCH PHARES ARRIÈRE"/>
+  <key id="add_lights_all" value="AJOUTEZ PHARES À TOUT LE MONDE"/>
+  <key id="add_lights_to" value="AJOUTER PHARES À"/>
 
   <!--WORLD LIGHTS-->
-  <key id="fog" value="FOG"/>
-  <key id="fog_distance" value="FOG DISTANCE"/>
-  <key id="fog_volume" value="FOG VOLUME"/>
-  <key id="sl_brightness" value="SUNLIGHT BRIGHTNESS"/>
-  <key id="sky_exposure" value="SKYBOX EXPOSURE"/>
-  <key id="ambient" value="AMBIENT LIGHT"/>
-  <key id="color_temp" value="COLOR TEMPERATURE"/>
-  <key id="reset_all" value="RESET ALL"/>
+  <key id="fog" value="BROUILLARD"/>
+  <key id="fog_distance" value="DISTANCE BROUILLARD"/>
+  <key id="fog_volume" value="VOLUME BROUILLARD"/>
+  <key id="sl_brightness" value="LUMINOSITÉ SOLEIL"/>
+  <key id="sky_exposure" value="EXPOSITION SKYBOX"/>
+  <key id="ambient" value="LUMIÈRE AMBIANTE"/>
+  <key id="color_temp" value="TEMPÉRATURE COULEUR"/>
+  <key id="reset_all" value="RÉINITIALISER"/>
 </locale>
