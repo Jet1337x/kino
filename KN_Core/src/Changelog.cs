@@ -14,7 +14,8 @@ namespace KN_Core {
       if (data_ == null || data_.Count <= 0) {
         return 0;
       }
-      return Convert.ToInt32(data_[0]);
+      string version = data_[0].Replace("Version=", "");
+      return Convert.ToInt32(version);
     }
 
     public static List<string> GetChangelog() {
