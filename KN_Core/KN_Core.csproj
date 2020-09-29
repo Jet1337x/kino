@@ -136,6 +136,7 @@
         <Compile Include="src\Components\SwapsConfig.cs" />
         <Compile Include="src\Components\Tachometer.cs" />
         <Compile Include="src\ISerializable.cs" />
+        <Compile Include="src\Locale.cs" />
         <Compile Include="src\Pickers\CarPicker.cs" />
         <Compile Include="src\Pickers\ColorPicker.cs" />
         <Compile Include="src\Pickers\FilePicker.cs" />
@@ -238,6 +239,9 @@
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\kn_exhaust_default.kne" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\Locale\en.xml" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
