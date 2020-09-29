@@ -549,11 +549,12 @@ namespace KN_Core {
     public void StartUpdater(bool outdated = false) {
       string updater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
 
-      string args = $"{(outdated ? "0.0.0" : KnConfig.StringVersion)} {IsDevToolsEnabled}";
+      string args = $"{(outdated ? "0.0.0" : KnConfig.StringVersion)} {IsDevToolsEnabled && !badVersion_}";
       var proc = Process.Start(updater, args);
 
       if (proc != null) {
         proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+        Log.Write("[KN_Core]: Updater started ...");
       }
       else {
         Log.Write("[KN_Core]: Unable to start updater");
