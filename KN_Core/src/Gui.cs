@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace KN_Core {
   public class Gui {
+    public const float MinTabsWidth = 490.0f;
+
     public const float Width = 160.0f;
     public const float WidthScroll = 140.0f;
     public const float WidthSlider = 16.0f;
@@ -52,7 +54,7 @@ namespace KN_Core {
     }
 
     public void Tabs(ref float x, ref float y, string[] tabs, ref int selected) {
-      TabsMaxWidth = 0.0f;
+      TabsMaxWidth = MinTabsWidth;
       TabsMaxHeight = 0.0f;
 
       y += OffsetSmall + TabButtonHeight;

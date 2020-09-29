@@ -8,19 +8,13 @@ namespace KN_Core {
     }
 
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
-      float defaultWidth = badVersion_ ? 352.0f : 380.0f;
-
-      float tabsWidth = Core.GuiTabsWidth - Gui.OffsetGuiX * 2.0f;
-      float width = defaultWidth > tabsWidth ? defaultWidth : tabsWidth;
-      const float height = Gui.Height;
-
       x += Gui.OffsetSmall;
 
       if (badVersion_) {
-        GuiBadVersion(gui, ref x, ref y, width, height);
+        GuiBadVersion(gui, ref x, ref y, Core.GuiTabsWidth, Gui.Height);
       }
       else {
-        GuiAbout(gui, ref x, ref y, width, height);
+        GuiAbout(gui, ref x, ref y, Core.GuiTabsWidth, Gui.Height);
       }
     }
 
