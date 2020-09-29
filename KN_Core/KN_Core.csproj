@@ -239,5 +239,11 @@
     <ItemGroup>
         <EmbeddedResource Include="Resources\kn_exhaust_default.kne" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\KN_Updater\KN_Updater.csproj">
+        <Project>{066b59ba-5801-4709-8d0f-c6a65afbb967}</Project>
+        <Name>KN_Updater</Name>
+      </ProjectReference>
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -19,6 +19,9 @@ KN_Lights/obj
 KN_Maps/bin
 KN_Maps/obj
 
+KN_Updater/bin
+KN_Updater/obj
+
 Release/
 Utils/__pycache__
 
