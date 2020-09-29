@@ -55,14 +55,14 @@ namespace KN_Core {
     }
 
     private void GuiCars(Gui gui, ref float x, ref float y, float boxWidth, float width, float height) {
-      gui.Box(x, y, boxWidth, Gui.Height, "CARS", Skin.MainContainerDark);
+      gui.Box(x, y, boxWidth, Gui.Height, Locale.Get("cp_cars"), Skin.MainContainerDark);
       y += Gui.Height;
 
       gui.Box(x, y, boxWidth, carsListHeight_, Skin.MainContainer);
       y += Gui.OffsetY;
       x += Gui.OffsetGuiX;
 
-      if (gui.Button(ref x, ref y, width, height, "PLAYER CAR", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("cp_player"), Skin.Button)) {
         PickedCar = PlayerCar;
       }
 

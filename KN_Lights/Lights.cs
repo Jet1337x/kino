@@ -46,7 +46,7 @@ namespace KN_Lights {
 
     private readonly Settings settings_;
 
-    public Lights(Core core, int version, int clientVersion) : base(core, "LIGHTS", 1, version, clientVersion) {
+    public Lights(Core core, int version, int clientVersion) : base(core, "lights", 1, version, clientVersion) {
       settings_ = core.Settings;
 
       worldLights_ = new WorldLights(core);
@@ -233,7 +233,7 @@ namespace KN_Lights {
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !KnCar.IsNull(Core.PlayerCar);
 
-      if (gui.Button(ref x, ref y, width, height, "ENABLE OWN LIGHTS", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("lights_enable_own"), Skin.Button)) {
         Core.ColorPicker.Reset();
         EnableLightsOn(Core.PlayerCar);
       }
@@ -251,21 +251,21 @@ namespace KN_Lights {
 #endif
 
       bool debugObjects = activeLights_?.IsDebugObjectsEnabled ?? false;
-      if (gui.Button(ref x, ref y, width, height, "DEBUG OBJECTS", debugObjects ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("debug_obj"), debugObjects ? Skin.ButtonActive : Skin.Button)) {
         if (activeLights_ != null) {
           activeLights_.IsDebugObjectsEnabled = !activeLights_.IsDebugObjectsEnabled;
         }
       }
 
       bool hlIllumination = activeLights_?.IsLightsEnabledIl ?? false;
-      if (gui.Button(ref x, ref y, width, height, "HEADLIGHTS ILLUMINATION", hlIllumination ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("hl_illumination"), hlIllumination ? Skin.ButtonActive : Skin.Button)) {
         if (activeLights_ != null) {
           activeLights_.IsLightsEnabledIl = !activeLights_.IsLightsEnabledIl;
         }
         shouldSync_ = activeLights_ == ownLights_;
       }
 
-      if (gui.SliderH(ref x, ref y, width, ref carLightsDiscard_, 50.0f, 500.0f, $"HIDE LIGHTS AFTER: {carLightsDiscard_:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref carLightsDiscard_, 50.0f, 500.0f, $"{Locale.Get("hide_lights_after")}: {carLightsDiscard_:F1}")) {
         Core.KnConfig.Set("cl_discard_distance", carLightsDiscard_);
         shouldSync_ = activeLights_ == ownLights_;
       }
@@ -297,7 +297,7 @@ namespace KN_Lights {
       float widthLight = width / 2.0f - Gui.OffsetSmall;
 
       bool lh = activeLights_?.IsHeadLightLeftEnabled ?? false;
-      if (gui.Button(ref x, ref y, widthLight, height, "LEFT HEADLIGHT", lh ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, widthLight, height, Locale.Get("hl_left"), lh ? Skin.ButtonActive : Skin.Button)) {
         if (activeLights_ != null) {
           activeLights_.IsHeadLightLeftEnabled = !activeLights_.IsHeadLightLeftEnabled;
           shouldSync_ = activeLights_ == ownLights_;
@@ -307,7 +307,7 @@ namespace KN_Lights {
       x += widthLight + Gui.OffsetSmall * 2.0f;
 
       bool rh = activeLights_?.IsHeadLightRightEnabled ?? false;
-      if (gui.Button(ref x, ref y, widthLight, height, "RIGHT HEADLIGHT", rh ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, widthLight, height, Locale.Get("hl_right"), rh ? Skin.ButtonActive : Skin.Button)) {
         if (activeLights_ != null) {
           activeLights_.IsHeadLightRightEnabled = !activeLights_.IsHeadLightRightEnabled;
           shouldSync_ = activeLights_ == ownLights_;
@@ -315,7 +315,7 @@ namespace KN_Lights {
       }
       x = xBegin;
 
-      if (gui.Button(ref x, ref y, width, height, "COLOR", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("color"), Skin.Button)) {
         if (activeLights_ != null) {
           Core.CarPicker.IsPicking = false;
           Core.ColorPicker.Toggle(activeLights_.HeadLightsColor, false);
@@ -324,7 +324,7 @@ namespace KN_Lights {
       }
 
       float brightness = activeLights_?.HeadLightBrightness ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref brightness, 100.0f, 10000.0f, $"HEADLIGHTS BRIGHTNESS: {brightness:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref brightness, 100.0f, 10000.0f, $"{Locale.Get("hl_brightness")}: {brightness:F1}")) {
         if (activeLights_ != null) {
           activeLights_.HeadLightBrightness = brightness;
           shouldSync_ = activeLights_ == ownLights_;
@@ -332,7 +332,7 @@ namespace KN_Lights {
       }
 
       float angle = activeLights_?.HeadLightAngle ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 160.0f, $"HEADLIGHTS ANGLE: {angle:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 160.0f, $"{Locale.Get("hl_angle")}: {angle:F1}")) {
         if (activeLights_ != null) {
           activeLights_.HeadLightAngle = angle;
           shouldSync_ = activeLights_ == ownLights_;
@@ -340,7 +340,7 @@ namespace KN_Lights {
       }
 
       float hlPitch = activeLights_?.Pitch ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"HEADLIGHTS PITCH: {hlPitch:F}")) {
+      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"{Locale.Get("hl_pitch")}: {hlPitch:F}")) {
         if (activeLights_ != null) {
           activeLights_.Pitch = hlPitch;
           shouldSync_ = activeLights_ == ownLights_;
@@ -375,7 +375,7 @@ namespace KN_Lights {
       float widthLight = width / 2.0f - Gui.OffsetSmall;
 
       bool lt = activeLights_?.IsTailLightLeftEnabled ?? false;
-      if (gui.Button(ref x, ref y, widthLight, height, "LEFT TAILLIGHT", lt ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, widthLight, height, Locale.Get("tl_left"), lt ? Skin.ButtonActive : Skin.Button)) {
         if (activeLights_ != null) {
           activeLights_.IsTailLightLeftEnabled = !activeLights_.IsTailLightLeftEnabled;
           shouldSync_ = activeLights_ == ownLights_;
@@ -385,7 +385,7 @@ namespace KN_Lights {
       x += widthLight + Gui.OffsetSmall * 2.0f;
 
       bool rt = activeLights_?.IsTailLightRightEnabled ?? false;
-      if (gui.Button(ref x, ref y, widthLight, height, "RIGHT TAILLIGHT", rt ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, widthLight, height, Locale.Get("tl_right"), rt ? Skin.ButtonActive : Skin.Button)) {
         if (activeLights_ != null) {
           activeLights_.IsTailLightRightEnabled = !activeLights_.IsTailLightRightEnabled;
           shouldSync_ = activeLights_ == ownLights_;
@@ -394,7 +394,7 @@ namespace KN_Lights {
       x = xBegin;
 
       float brightness = activeLights_?.TailLightBrightness ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref brightness, 15.0f, 80.0f, $"TAILLIGHTS BRIGHTNESS: {brightness:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref brightness, 15.0f, 80.0f, $"{Locale.Get("tl_brightness")}: {brightness:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightBrightness = brightness;
           shouldSync_ = activeLights_ == ownLights_;
@@ -402,7 +402,7 @@ namespace KN_Lights {
       }
 
       float angle = activeLights_?.TailLightAngle ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 170.0f, $"TAILLIGHTS ANGLE: {angle:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref angle, 50.0f, 170.0f, $"{Locale.Get("tl_angle")}: {angle:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightAngle = angle;
           shouldSync_ = activeLights_ == ownLights_;
@@ -410,7 +410,7 @@ namespace KN_Lights {
       }
 
       float tlPitch = activeLights_?.PitchTail ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"TAILLIGHTS PITCH: {tlPitch:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"{Locale.Get("tl_pitch")}: {tlPitch:F1}")) {
         if (activeLights_ != null) {
           activeLights_.PitchTail = tlPitch;
           shouldSync_ = activeLights_ == ownLights_;
@@ -448,7 +448,7 @@ namespace KN_Lights {
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !Core.IsInGarage;
 
-      if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO EVERYONE", autoAddLights_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("add_lights_all"), autoAddLights_ ? Skin.ButtonActive : Skin.Button)) {
         autoAddLights_ = !autoAddLights_;
 
         if (autoAddLights_) {
@@ -458,13 +458,13 @@ namespace KN_Lights {
         }
       }
 
-      if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, "ADD LIGHTS TO", Skin.Button)) {
+      if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("add_lights_to"), Skin.Button)) {
         Core.CarPicker.Toggle();
         Core.ColorPicker.Reset();
       }
       GUI.enabled = guiEnabled;
 
-      gui.BeginScrollV(ref x, ref y, buttonWidth, listHeight, clListScrollH_, ref clListScroll_, $"LIGHTS {carLights_.Count}");
+      gui.BeginScrollV(ref x, ref y, buttonWidth, listHeight, clListScrollH_, ref clListScroll_, $"{Locale.Get("lights")} {carLights_.Count}");
 
       float sx = x;
       float sy = y;

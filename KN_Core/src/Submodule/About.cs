@@ -3,7 +3,7 @@ namespace KN_Core {
   public class About : BaseMod {
     private readonly bool badVersion_;
 
-    public About(Core core, int version, int clientVersion, bool badVersion) : base(core, "ABOUT", int.MaxValue, version, clientVersion) {
+    public About(Core core, int version, int clientVersion, bool badVersion) : base(core, "about", int.MaxValue, version, clientVersion) {
       badVersion_ = badVersion;
     }
 
@@ -25,45 +25,45 @@ namespace KN_Core {
     }
 
     private void GuiAbout(Gui gui, ref float x, ref float y, float width, float height) {
-      gui.Box(x, y, width, height, "Developed by trbflxr", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, Locale.Get("about0"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "Tested by John Sawyer", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, Locale.Get("about1"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "If you have any questions or suggestions", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, Locale.Get("about2"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "please, contact us at", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, Locale.Get("about3"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "trbflxr#8814 or John Sawyer#6915", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, Locale.Get("about4"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "or in the mod's discord (top button)", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, Locale.Get("about5"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "Also many thanks to Cursed, MRo and diip for their support!", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, Locale.Get("about6"), Skin.MainContainerLeft);
       y += height;
     }
 
     private void GuiBadVersion(Gui gui, ref float x, ref float y, float width, float height) {
-      gui.Box(x, y, width, height, "Your CarX client version is different!", Skin.MainContainerRed);
+      gui.Box(x, y, width, height, Locale.Get("about0v"), Skin.MainContainerRed);
       y += height;
 
-      gui.Box(x, y, width, height, "Please download new version of KiNO mod", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, Locale.Get("about1v"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "from official discord (top button)", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, Locale.Get("about2v"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, "or contact us at trbflxr#8814 or John Sawyer#6915", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, Locale.Get("about3v"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, $"Current version: {GameVersion.version}", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, $"{Locale.Get("about4v")}: {GameVersion.version}", Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, $"Target version: {KnConfig.ClientVersion}", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, $"{Locale.Get("about5v")}: {KnConfig.ClientVersion}", Skin.MainContainerLeft);
       y += height;
     }
   }

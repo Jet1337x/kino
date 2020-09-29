@@ -45,14 +45,14 @@ namespace KN_Core {
 
       float yBegin = y;
 
-      gui.Box(x, y, baseWidth + Gui.OffsetGuiX * 2.0f, Gui.Height, "FILE PICKER", Skin.MainContainerDark);
+      gui.Box(x, y, baseWidth + Gui.OffsetGuiX * 2.0f, Gui.Height, Locale.Get("fp_title"), Skin.MainContainerDark);
       y += Gui.Height;
 
       gui.Box(x, y, baseWidth + Gui.OffsetGuiX * 2.0f, filesBoxHeight_, Skin.MainContainer);
       y += Gui.OffsetY;
       x += Gui.OffsetGuiX;
 
-      if (gui.Button(ref x, ref y, baseWidth, Gui.Height, "REFRESH", Skin.Button)) {
+      if (gui.Button(ref x, ref y, baseWidth, Gui.Height, Locale.Get("fp_refresh"), Skin.Button)) {
         RefreshFiles();
       }
 

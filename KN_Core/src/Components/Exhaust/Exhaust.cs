@@ -144,7 +144,7 @@ namespace KN_Core {
       GUI.enabled = activeExhaust_ != null && !core_.IsInGarage;
 
       float volume = activeExhaust_?.Volume ?? 1.0f;
-      if (gui.SliderH(ref x, ref y, width, ref volume, 0.1f, 1.2f, $"VOLUME: {volume:F}")) {
+      if (gui.SliderH(ref x, ref y, width, ref volume, 0.1f, 1.2f, $"{Locale.Get("exh_volume")}: {volume:F}")) {
         if (activeExhaust_ != null) {
           activeExhaust_.Volume = volume;
           UpdateConfig(activeExhaust_);
@@ -152,7 +152,7 @@ namespace KN_Core {
       }
 
       float maxTime = activeExhaust_?.MaxTime ?? 1.0f;
-      if (gui.SliderH(ref x, ref y, width, ref maxTime, 0.1f, 3.0f, $"MAX TIME: {maxTime:F}")) {
+      if (gui.SliderH(ref x, ref y, width, ref maxTime, 0.1f, 3.0f, $"{Locale.Get("exh_max_time")}: {maxTime:F}")) {
         if (activeExhaust_ != null) {
           activeExhaust_.MaxTime = maxTime;
           UpdateConfig(activeExhaust_);

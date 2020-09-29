@@ -171,7 +171,7 @@ namespace KN_Core {
       bool enabled = GUI.enabled;
       GUI.enabled = allowSwap;
 
-      gui.BeginScrollV(ref x, ref y, width, listHeight, carListScrollH_, ref carListScroll_, "ENGINES");
+      gui.BeginScrollV(ref x, ref y, width, listHeight, carListScrollH_, ref carListScroll_, Locale.Get("swaps_engines"));
 
       y += Gui.OffsetSmall;
 
@@ -205,7 +205,7 @@ namespace KN_Core {
       carListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
 
       GUI.enabled = allowSwap && activeEngine_ != 0;
-      if (gui.SliderH(ref x, ref y, width, ref currentEngine_.Turbo, 0.0f, currentEngineTurboMax_, $"TURBO: {currentEngine_.Turbo:F2}")) {
+      if (gui.SliderH(ref x, ref y, width, ref currentEngine_.Turbo, 0.0f, currentEngineTurboMax_, $"{Locale.Get("swaps_turbo")}: {currentEngine_.Turbo:F2}")) {
         var desc = core_.PlayerCar.Base.GetDesc();
         desc.carXDesc.engine.turboPressure = currentEngine_.Turbo;
         core_.PlayerCar.Base.SetDesc(desc);
@@ -217,7 +217,7 @@ namespace KN_Core {
           }
         }
       }
-      if (gui.SliderH(ref x, ref y, width, ref currentEngine_.FinalDrive, 2.5f, 5.0f, $"FINAL DRIVE: {currentEngine_.FinalDrive:F2}")) {
+      if (gui.SliderH(ref x, ref y, width, ref currentEngine_.FinalDrive, 2.5f, 5.0f, $"{Locale.Get("swaps_fd")}: {currentEngine_.FinalDrive:F2}")) {
         var desc = core_.PlayerCar.Base.GetDesc();
         desc.carXDesc.gearBox.finalDrive = currentEngine_.FinalDrive;
         core_.PlayerCar.Base.SetDesc(desc);

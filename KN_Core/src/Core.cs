@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -45,6 +46,7 @@ namespace KN_Core {
     public bool IsDevToolsEnabled { get; private set; }
 
     public bool ShowUpdateWarn { get; set; }
+    public bool DisplayTextAsId { get; set; }
 
     public Udp Udp { get; }
     public Settings Settings { get; }
@@ -126,7 +128,7 @@ namespace KN_Core {
     }
 
     public void AddMod(BaseMod mod) {
-      if ((badVersion_ && mod.Name != "ABOUT") ||
+      if (badVersion_ && Locale.Get(mod.Name) != Locale.Get("about") ||
           mod.Version != KnConfig.Version ||
           mod.ClientVersion != GameVersion.version) {
         return;
@@ -141,10 +143,10 @@ namespace KN_Core {
 
       tabs_.Clear();
       foreach (var m in mods_) {
-        tabs_.Add(m.Name);
+        tabs_.Add(Locale.Get(m.Name));
       }
 
-      Log.Write($"[KN_Core]: Mod {mod.Name} was added");
+      Log.Write($"[KN_Core]: Mod {Locale.Get(mod.Name)} was added");
 
       mod.OnStart();
 
@@ -157,19 +159,21 @@ namespace KN_Core {
       }
 
       mods_.Remove(mod);
-      tabs_.Remove(mod.Name);
+      tabs_.Remove(Locale.Get(mod.Name));
 
       mod.OnStop();
 
       selectedTab_ = 0;
       selectedModId_ = mods_[selectedTab_].Id;
 
-      Log.Write($"[KN_Core]: Mod {mod.Name} was removed");
+      Log.Write($"[KN_Core]: Mod {Locale.Get(mod.Name)} was removed");
     }
 
     private void Awake() {
       KnConfig.Read();
       Skin.LoadAll();
+
+      Locale.Initialize(KnConfig.Get<string>("locale"), this);
 
       if (badVersion_) {
         return;
@@ -333,7 +337,9 @@ namespace KN_Core {
       float tempX = x;
       x += Gui.Width + Gui.OffsetGuiX;
       if (gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "DISCORD", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy)) {
-        Process.Start("https://discord.gg/jrMReAB");
+        // Process.Start("https://discord.gg/jrMReAB");
+
+        DisplayTextAsId = !DisplayTextAsId;
       }
       x = tempX;
 
@@ -362,7 +368,7 @@ namespace KN_Core {
 
       float tx = GuiXLeft;
       float ty = GuiContentBeginY + GuiTabsHeight - Gui.OffsetY;
-      gui_.Button(ref tx, ref ty, GuiTabsWidth, Gui.TabButtonHeight, "CARX INPUT IS LOCKED. CLOSE MOD MENU TO UNLOCK IT.", Skin.ButtonDummyRed);
+      gui_.Button(ref tx, ref ty, GuiTabsWidth, Gui.TabButtonHeight, Locale.Get("input_locked"), Skin.ButtonDummyRed);
 
       GuiPickers();
     }
@@ -391,14 +397,13 @@ namespace KN_Core {
 
       string changelog = "";
       if (changelog_ != null) {
-        changelog += "CHANGELOG:\n";
+        changelog += $"{Locale.Get("changes")}:\n";
         foreach (string line in changelog_) {
           height += Gui.Height * 0.75f;
           changelog += $"- {line}\n";
         }
       }
-      if (gui_.Button(ref x, ref y, width, height, $"YOUR MOD IS OUTDATED, LATEST VERSION: {latestVersion_}!\n{changelog}" +
-                                                   "FOR MORE UPDATES CHECK OUR DISCORD (CLICK)",
+      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {latestVersion_}!\n{changelog}" + Locale.Get("outdated1"),
         Skin.ButtonDummyRed)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
@@ -466,6 +471,17 @@ namespace KN_Core {
         }
       }
       return tex;
+    }
+
+    public static Stream LoadCoreFile(string name) {
+      string file = $"KN_Core.Resources.{name}";
+      try {
+        return assembly_.GetManifestResourceStream(file);
+      }
+      catch (Exception e) {
+        Log.Write($"[KN_Core]: Unable to load embedded file '{file}', {e.Message}");
+      }
+      return null;
     }
 
     private bool SetMainCamera(bool camEnabled) {

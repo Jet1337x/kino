@@ -29,7 +29,7 @@ namespace KN_Visuals {
     private Livery livery_;
 #endif
 
-    public Visuals(Core core, int version, int clientVersion) : base(core, "VISUALS", 3, version, clientVersion) { }
+    public Visuals(Core core, int version, int clientVersion) : base(core, "visuals", 3, version, clientVersion) { }
 
     public override void ResetState() {
       liveryCamEnabled_ = false;
@@ -69,20 +69,19 @@ namespace KN_Visuals {
     }
 
     private void GuiLivery(Gui gui, ref float x, ref float y, float width, float height) {
-      string text = liveryCamEnabled_ ? "DISABLE" : "ENABLE";
-      if (gui.Button(ref x, ref y, width, height, $"{text} ZOOM", liveryCamEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("zoom"), liveryCamEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         liveryCamEnabled_ = !liveryCamEnabled_;
       }
 
-      if (gui.SliderH(ref x, ref y, width, ref zoom_, 0.0f, 20.0f, $"ZOOM: {zoom_:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref zoom_, 0.0f, 20.0f, $"{Locale.Get("zoom")}: {zoom_:F1}")) {
         Core.KnConfig.Set("vinylcam_zoom", zoom_);
       }
 
-      if (gui.SliderH(ref x, ref y, width, ref shiftY_, -5.0f, 5.0f, $"SHIFT Y: {shiftY_:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref shiftY_, -5.0f, 5.0f, $"{Locale.Get("shift")} Y: {shiftY_:F1}")) {
         Core.KnConfig.Set("vinylcam_shift_y", shiftY_);
       }
 
-      if (gui.SliderH(ref x, ref y, width, ref shiftZ_, -20.0f, 20.0f, $"SHIFT Z: {shiftZ_:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref shiftZ_, -20.0f, 20.0f, $"{Locale.Get("shift")} Z: {shiftZ_:F1}")) {
         Core.KnConfig.Set("vinylcam_shift_z", shiftZ_);
       }
 
@@ -117,25 +116,25 @@ namespace KN_Visuals {
     }
 
     private void GuiVisuals(Gui gui, ref float x, ref float y, float width, float height) {
-      if (gui.Button(ref x, ref y, width, height, "SAVE CURRENT DESIGN", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("save_current"), Skin.Button)) {
         SaveCurrentVisuals();
       }
 
-      if (gui.Button(ref x, ref y, width, height, "LOAD DESIGN", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("load_design"), Skin.Button)) {
         Core.FilePicker.Toggle(KnConfig.VisualsDir);
       }
 
       bool enabled = GUI.enabled;
       GUI.enabled = carId_ != -1 && carVisuals_ != null && Core.IsInGarage;
 
-      if (gui.Button(ref x, ref y, width, height, $"APPLY DESIGN TO {carName_}", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, $"{Locale.Get("apply_design")} {carName_}", Skin.Button)) {
         selectedCarId_ = carId_;
         ApplyVisuals(selectedCarId_, true);
 
         RefreshCar();
       }
 
-      if (gui.Button(ref x, ref y, width, height, $"ADD LIVERY TO {carName_}", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, $"{Locale.Get("add_livery")} {carName_}", Skin.Button)) {
         selectedCarId_ = carId_;
         ApplyVisuals(selectedCarId_, false);
 
@@ -144,7 +143,7 @@ namespace KN_Visuals {
 
       GUI.enabled = selectedCarId_ != -1 && backupVisuals_ != null && Core.IsInGarage;
 
-      if (gui.Button(ref x, ref y, width, height, "RESTORE DESIGN", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("restore_design"), Skin.Button)) {
         if (prefs_ == null || backupVisuals_ == null || selectedCarId_ == -1) {
           return;
         }

@@ -177,6 +177,10 @@ namespace KN_Core {
             params_[key] = val;
             break;
           }
+          case "System.String": {
+            params_[key] = value;
+            break;
+          }
         }
       }
       else if (mode == ReadMode.Controls) {
@@ -215,6 +219,8 @@ namespace KN_Core {
       defaultParams_["air_step_max"] = 3.0f;
       defaultParams_["air_height_max"] = 0.5f;
       defaultParams_["air_height_min"] = 0.01f;
+
+      defaultParams_["locale"] = "en";
 
       Controls.LoadDefault();
 

@@ -41,7 +41,7 @@ namespace KN_Core {
 
       float yBegin = y;
 
-      gui.Box(x, y, boxWidth, Gui.Height, "COLOR PICKER", Skin.MainContainerDark);
+      gui.Box(x, y, boxWidth, Gui.Height, Locale.Get("cp_title"), Skin.MainContainerDark);
       y += Gui.Height;
 
       gui.Box(x, y, boxWidth, boxHeight, Skin.MainContainer);
@@ -49,28 +49,28 @@ namespace KN_Core {
       x += Gui.OffsetGuiX;
 
       float r = PickedColor.r;
-      if (gui.SliderH(ref x, ref y, width, ref r, 0.0f, 1.0f, $"RED: {r:F}")) {
+      if (gui.SliderH(ref x, ref y, width, ref r, 0.0f, 1.0f, $"{Locale.Get("red")}: {r:F}")) {
         PickedColor = new Color(r, PickedColor.g, PickedColor.b, PickedColor.a);
       }
 
       float g = PickedColor.g;
-      if (gui.SliderH(ref x, ref y, width, ref g, 0.0f, 1.0f, $"GREEN: {g:F}")) {
+      if (gui.SliderH(ref x, ref y, width, ref g, 0.0f, 1.0f, $"{Locale.Get("green")}: {g:F}")) {
         PickedColor = new Color(PickedColor.r, g, PickedColor.b, PickedColor.a);
       }
 
       float b = PickedColor.b;
-      if (gui.SliderH(ref x, ref y, width, ref b, 0.0f, 1.0f, $"BLUE: {b:F}")) {
+      if (gui.SliderH(ref x, ref y, width, ref b, 0.0f, 1.0f, $"{Locale.Get("glue")}: {b:F}")) {
         PickedColor = new Color(PickedColor.r, PickedColor.g, b, PickedColor.a);
       }
 
       if (alpha_) {
         float a = PickedColor.a;
-        if (gui.SliderH(ref x, ref y, width, ref a, 0.0f, 1.0f, $"ALPHA: {a:F}")) {
+        if (gui.SliderH(ref x, ref y, width, ref a, 0.0f, 1.0f, $"{Locale.Get("alpha")}: {a:F}")) {
           PickedColor = new Color(PickedColor.r, PickedColor.g, PickedColor.b, a);
         }
       }
 
-      if (gui.Button(ref x, ref y, width, Gui.Height, "CLOSE", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, Gui.Height, Locale.Get("close"), Skin.Button)) {
         IsPicking = false;
         alpha_ = true;
       }

@@ -94,13 +94,12 @@ namespace KN_Lights {
       bool staticSkyOk = staticSky_ != null;
       bool hdLightOk = sunLightHd_ != null;
 
-      string text = enabled_ ? "DISABLE" : "ENABLE";
-      if (gui.Button(ref x, ref y, width, height, text, enabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get(enabled_ ? "disable" : "enable"), enabled_ ? Skin.ButtonActive : Skin.Button)) {
         ToggleLights();
       }
 
       GUI.enabled = fogOk && enabled_;
-      if (gui.Button(ref x, ref y, width, height, "FOG", fogEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("fog"), fogEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         fogEnabled_ = !fogEnabled_;
         fog_.meanFreePath.Override(fogEnabled_ ? data_.FogDistance : fogDistanceDefault_);
         fog_.depthExtent.Override(fogEnabled_ ? data_.FogVolume : fogVolumeDefault_);
@@ -113,12 +112,12 @@ namespace KN_Lights {
       }
 
       GUI.enabled = fogEnabled_ && enabled_;
-      if (gui.SliderH(ref x, ref y, width, ref data_.FogDistance, 5.0f, fogDistanceDefault_, $"FOG DISTANCE: {data_.FogDistance:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref data_.FogDistance, 5.0f, fogDistanceDefault_, $"{Locale.Get("fog_distance")}: {data_.FogDistance:F1}")) {
         if (fogOk) {
           fog_.meanFreePath.Override(data_.FogDistance);
         }
       }
-      if (gui.SliderH(ref x, ref y, width, ref data_.FogVolume, 1.0f, 100.0f, $"FOG VOLUME: {data_.FogVolume:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref data_.FogVolume, 1.0f, 100.0f, $"{Locale.Get("fog_volume")}: {data_.FogVolume:F1}")) {
         if (fogOk) {
           fog_.depthExtent.Override(data_.FogVolume);
           fog_.enableVolumetricFog.Override(data_.FogVolume > 2.0f);
@@ -126,21 +125,21 @@ namespace KN_Lights {
       }
 
       GUI.enabled = sunOk && enabled_;
-      if (gui.SliderH(ref x, ref y, width, ref data_.SunBrightness, 0.0f, 50.0f, $"SUNLIGHT BRIGHTNESS: {data_.SunBrightness:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref data_.SunBrightness, 0.0f, 50.0f, $"{Locale.Get("sl_brightness")}: {data_.SunBrightness:F1}")) {
         if (sunOk) {
           sunLight_.intensity = data_.SunBrightness;
         }
       }
 
       GUI.enabled = skyOk && enabled_;
-      if (gui.SliderH(ref x, ref y, width, ref data_.SkyExposure, -5.0f, 10.0f, $"SKYBOX EXPOSURE: {data_.SkyExposure:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref data_.SkyExposure, -5.0f, 10.0f, $"{Locale.Get("sky_exposure")}: {data_.SkyExposure:F1}")) {
         if (skyOk) {
           sky_.exposure.Override(data_.SkyExposure);
         }
       }
 
       GUI.enabled = staticSkyOk && enabled_;
-      if (gui.SliderH(ref x, ref y, width, ref data_.AmbientLight, -1.0f, 5.0f, $"AMBIENT LIGHT: {data_.AmbientLight:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref data_.AmbientLight, -1.0f, 5.0f, $"{Locale.Get("ambient")}: {data_.AmbientLight:F1}")) {
         if (staticSkyOk) {
           staticSky_.exposure.Override(data_.AmbientLight);
           typeof(SkySettings).GetField("m_SkySettings", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(staticSkyBeh_, staticSky_);
@@ -148,7 +147,7 @@ namespace KN_Lights {
       }
 
       GUI.enabled = hdLightOk && enabled_;
-      if (gui.SliderH(ref x, ref y, width, ref data_.SunTemp, 1500.0f, 20000.0f, $"COLOR TEMPERATURE: {data_.SunTemp:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref data_.SunTemp, 1500.0f, 20000.0f, $"{Locale.Get("color_temp")}: {data_.SunTemp:F1}")) {
         if (hdLightOk) {
           sunLightHd_.EnableColorTemperature(true);
           sunLightHd_.SetColor(Color.white, data_.SunTemp);
@@ -156,7 +155,7 @@ namespace KN_Lights {
       }
 
       GUI.enabled = enabled_;
-      if (gui.Button(ref x, ref y, width, height, "RESET ALL", Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("reset_all"), Skin.Button)) {
         data_.FogDistance = fogDistanceDefault_;
         data_.FogVolume = fogVolumeDefault_;
         data_.SunBrightness = sunBrightnessDefault_;

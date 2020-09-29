@@ -55,7 +55,7 @@ namespace KN_Core {
 
     private bool forceWhiteSmoke_;
 
-    public Settings(Core core, int version, int clientVersion) : base(core, "SETTINGS", int.MaxValue - 1, version, clientVersion) {
+    public Settings(Core core, int version, int clientVersion) : base(core, "settings", int.MaxValue - 1, version, clientVersion) {
       exhaust_ = new Exhaust(core);
       Tachometer = new Tachometer(core);
       disableConsoles_ = new DisableConsoles(Core);
@@ -148,7 +148,7 @@ namespace KN_Core {
 
       x += Gui.OffsetSmall;
 
-      if (gui.Button(ref x, ref y, width, height, "CUSTOM TACHOMETER", tachEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("tach"), tachEnabled_ ? Skin.ButtonActive : Skin.Button)) {
         tachEnabled_ = !tachEnabled_;
         Core.KnConfig.Set("custom_tach", tachEnabled_);
         if (!tachEnabled_) {
@@ -159,11 +159,11 @@ namespace KN_Core {
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.OffsetY;
 
-      if (gui.Button(ref x, ref y, width, height, "HIDE POINTS", RPoints ? Skin.Button : Skin.ButtonActive)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("hide_points"), RPoints ? Skin.Button : Skin.ButtonActive)) {
         RPoints = !RPoints;
       }
 
-      if (gui.Button(ref x, ref y, width, height, "HIDE NAMES", HideNames ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("hide_names"), HideNames ? Skin.ButtonActive : Skin.Button)) {
         HideNames = !HideNames;
       }
 
@@ -172,7 +172,7 @@ namespace KN_Core {
 
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !Core.IsInGarage;
-      if (gui.Button(ref x, ref y, width, height, "CUSTOM BACKFIRE", BackFireEnabled ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("backfire"), BackFireEnabled ? Skin.ButtonActive : Skin.Button)) {
         BackFireEnabled = !BackFireEnabled;
         Core.KnConfig.Set("custom_backfire", BackFireEnabled);
         if (!BackFireEnabled) {
@@ -192,11 +192,11 @@ namespace KN_Core {
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.OffsetY;
 
-      if (gui.Button(ref x, ref y, width, height, "FORCE WHITE SMOKE TO ALL", forceWhiteSmoke_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("white_smoke"), forceWhiteSmoke_ ? Skin.ButtonActive : Skin.Button)) {
         forceWhiteSmoke_ = !forceWhiteSmoke_;
       }
 
-      if (gui.Button(ref x, ref y, width, height, "SYNC LIGHTS", SyncLights ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("sync_lights"), SyncLights ? Skin.ButtonActive : Skin.Button)) {
         SyncLights = !SyncLights;
       }
 
@@ -205,11 +205,11 @@ namespace KN_Core {
 
       GUI.enabled = !Core.IsCheatsEnabled;
 
-      if (gui.Button(ref x, ref y, width, height, "DISABLE CONSOLE COLLISIONS", disableConsoles_.Disabled ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("disable_consoles"), disableConsoles_.Disabled ? Skin.ButtonActive : Skin.Button)) {
         disableConsoles_.Disabled = !disableConsoles_.Disabled;
       }
 
-      if (gui.Button(ref x, ref y, width, height, "HIDE CONSOLE PLAYERS", disableConsoles_.Hidden ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, height, Locale.Get("hide_consoles"), disableConsoles_.Hidden ? Skin.ButtonActive : Skin.Button)) {
         disableConsoles_.Hidden = !disableConsoles_.Hidden;
       }
 
@@ -236,7 +236,7 @@ namespace KN_Core {
       gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
       x += Gui.OffsetGuiX;
 
-      if (gui.Button(ref x, ref y, width, Gui.Height, "LOG ENGINES", LogEngines ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.Button(ref x, ref y, width, Gui.Height, Locale.Get("log_engines"), LogEngines ? Skin.ButtonActive : Skin.Button)) {
         LogEngines = !LogEngines;
       }
 
