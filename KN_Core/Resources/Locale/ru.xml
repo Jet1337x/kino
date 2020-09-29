@@ -1,21 +1,106 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="ru">
+  <!--MODS (TABS)-->
   <key id="lights" value="СВЕТ"/>
   <key id="visuals" value="ВИЗУАЛ"/>
   <key id="settings" value="НАСТРОЙКИ"/>
   <key id="maps" value="КАРТЫ"/>
   <key id="about" value="ИНФО"/>
 
-  <key id="enabled" value="ВКЛ"/>
+  <!--COMMON-->
+  <key id="enabled" value="ВКД"/>
   <key id="disabled" value="ОТКЛ"/>
+  <key id="enable" value="ВКЛ"/>
+  <key id="disable" value="ОТКЛ"/>
+  <key id="color" value="ЦВЕТ"/>
+  <key id="red" value="КРАСНЫЙ"/>
+  <key id="green" value="ЗЕЛЕНЫЙ"/>
+  <key id="blue" value="СИНИЙ"/>
+  <key id="alpha" value="АЛЬФА"/>
+  <key id="close" value="ЗАКРЫТЬ"/>
 
+  <!--CORE-->
   <key id="input_locked" value="УПРАВЛЕНИЕ ЗАБЛОКИРОВАНО. ЗАКРОЙ МОД, ЧТОБЫ РАЗБЛОКИРОВАТЬ УПРАВЛЕНИЕ."/>
   <key id="changes" value="ИЗМЕНЕНИЯ"/>
   <key id="outdated0" value="МОД УСТАРЕЛ. СВЕЖАЯ ВЕРИЯ"/>
   <key id="outdated1" value="ЗАХОДИ К НАМ В ДИСКОРД ЗА НОВОСТЯМИ (ТЫК)"/>
 
+  <!--PICKERS-->
+  <key id="cp_cars" value="МАШИНЫ"/>
+  <key id="cp_player" value="МАШИНА ИГРОКА"/>
+  <key id="cp_title" value="ВЫБОР ЦВЕТА"/>
+  <key id="fp_title" value="ВЫБОР ФАЙЛА"/>
+  <key id="fp_refresh" value="ОБНОВИТЬ"/>
+
+  <!--ABOUT-->
   <key id="about0" value="Мод разработал trbflxr"/>
   <key id="about1" value="С тестами помогали John Sawyer, Dimon, hippan, Sheriff"/>
+  <key id="about2" value="Если у вас есть какие либо вопросы или пожелания"/>
+  <key id="about3" value="пожалуйства свяжитесь с нами"/>
+  <key id="about4" value="trbflxr#8814 или John Sawyer#6915"/>
+  <key id="about5" value="или в дискорде мода (кнопка сверху)"/>
+  <key id="about6" value="Так же большое спасибо игроками Cursed, MRo и diip за их поддержку!"/>
+  <key id="about0v" value="Ваша версия игры не соответсвует версии мода!"/>
+  <key id="about1v" value="Пожалуйста, скачайте новую версию KiNO мода"/>
+  <key id="about2v" value="из оффицального дискорда (кнопка сверху)"/>
+  <key id="about3v" value="или свяжитесь с нами trbflxr#8814 или John Sawyer#6915"/>
+  <key id="about4v" value="Ваша версия игры"/>
+  <key id="about5v" value="Целевая версия"/>
 
-  <key id="lights_enable_own" value="ВКЛЮЧИТЬ СОБСТВЕННЫЙ СВЕТ"/>
+  <!--SETTINGS-->
+  <key id="tach" value="КАСТОМНЫЙ ТАХОМЕТР"/>
+  <key id="hide_points" value="СПРЯТАТЬ ОЧКИ"/>
+  <key id="hide_names" value="СПРЯТАТЬ НИКИ"/>
+  <key id="backfire" value="КАСТОМНЫЕ ОТСТРЕЛЫ"/>
+  <key id="white_smoke" value="БЕЛЫЙ ДЫМ ДЛЯ ВСЕХ"/>
+  <key id="sync_lights" value="СИНХРОНИЗАЦИЯ СВЕТА"/>
+  <key id="disable_consoles" value="ОТКЛЮЧИТЬ КОНСОЛЬНЫЕ КОЛИЗИИ"/>
+  <key id="hide_consoles" value="СПРЯТАТЬ КОНСОЛЬНЫХ ИГРОКОВ"/>
+  <key id="log_engines" value="ЛОГ СВАПОВ"/>
+
+  <!--EXHAUST-->
+  <key id="exh_volume" value="ГРОМКОСТЬ"/>
+  <key id="exh_max_time" value="ДЛИТЕЛЬНОСТЬ"/>
+
+  <!--ENGINES-->
+  <key id="swaps_engines" value="ДВИГАТЕЛИ"/>
+  <key id="swaps_turbo" value="ТУРБИНА"/>
+  <key id="swaps_fd" value="ГЛАВНАЯ ПАРА"/>
+
+  <!--VISUALS-->
+  <key id="zoom" value="ПРИБЛИЖЕНИЕ"/>
+  <key id="shift" value="СДВИГ"/>
+  <key id="save_current" value="СОХРАНИТЬ ВЫБРАННЫЙ ДИЗАЙН"/>
+  <key id="load_design" value="ЗАГРУЗИТЬ ДИЗАЙН"/>
+  <key id="apply_design" value="ПРИМЕНИТЬ ДИЗАЙН НА"/>
+  <key id="add_livery" value="ДОБАВИТЬ ВИНИЛ НА"/>
+  <key id="restore_design" value="ВОССТАНОВИТЬ ДИЗАЙН"/>
+
+  <!--LIGHTS-->
+  <key id="lights_enable_own" value="ВКЛЮЧИТЬ СОБСТВЕННЫЕ ФАРЫ"/>
+  <key id="debug_obj" value="ДЕБАГ ОБЪЕКТЫ"/>
+  <key id="hl_illumination" value="ПОДСВЕТКА ФАР"/>
+  <key id="hide_lights_after" value="ПРЯТАТЬ ФАРЫ ЧЕРЕЗ"/>
+  <key id="hl_left" value="ЛЕВАЯ ФАРА"/>
+  <key id="hl_right" value="ПРАВАЯ ФАРА"/>
+  <key id="hl_brightness" value="ЯРКОСТЬ ФАР"/>
+  <key id="hl_angle" value="УГЛ ФАР"/>
+  <key id="hl_pitch" value="НАКЛОН ФАР"/>
+  <key id="tl_left" value="ЛЕВЫЙ ФОНАРЬ"/>
+  <key id="tl_right" value="ПРАВЫЙ ФОНАРЬ"/>
+  <key id="tl_brightness" value="ЯРКОСТЬ ФОНАРЕЙ"/>
+  <key id="tl_angle" value="УГОЛ ФОНАРЕЙ"/>
+  <key id="tl_pitch" value="НАКЛОН ФОНАРЕЙ"/>
+  <key id="add_lights_all" value="ВКЛЮЧИТЬ ФАРЫ ВСЕМ"/>
+  <key id="add_lights_to" value="ВКЛЮЧИТЬ ФАРЫ ДЛЯ"/>
+
+  <!--WORLD LIGHTS-->
+  <key id="fog" value="ТУМАН"/>
+  <key id="fog_distance" value="ДАЛЬНОСТЬ ТУМАНА"/>
+  <key id="fog_volume" value="ПЛОСТНОСТЬ ТУМАНА"/>
+  <key id="sl_brightness" value="ЯРКОСТЬ СОЛНЦА"/>
+  <key id="sky_exposure" value="ЯРКОСТЬ СКАЙБОКСА"/>
+  <key id="ambient" value="ОКРУЖАЮЩИЙ СВЕТ"/>
+  <key id="color_temp" value="ТЕМПЕРАТУРА СВЕТА"/>
+  <key id="reset_all" value="ВЕРНУТЬ СТАНДАРТНЫЕ ЗНАЧЕНИЯ"/>
 </locale>
