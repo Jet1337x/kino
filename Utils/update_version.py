@@ -22,6 +22,7 @@ def module_path(module):
     return os.path.join(current_dir, '..', module, 'Loader.cs')
 
 def replace_version(file_path):
+    print('Updating version for: ' + file_path)
     fh, abs_path = mkstemp()
     with fdopen(fh,'w') as new_file:
         with open(file_path) as old_file:
@@ -45,6 +46,7 @@ def replace_version(file_path):
     move(abs_path, file_path)
 
 def replace_config_version(file_path):
+    print('Updating version for: ' + file_path)
     fh, abs_path = mkstemp()
     with fdopen(fh,'w') as new_file:
         with open(file_path) as old_file:
@@ -72,8 +74,24 @@ def replace_config_version(file_path):
     move(abs_path, file_path)
 
 def replace_core_version(file_path):
-    with open(file_path, 'w') as file:
-        file.write(version_int)
+    print('Updating version for: ' + file_path)
+    fh, abs_path = mkstemp()
+    with fdopen(fh,'w') as new_file:
+        with open(file_path) as old_file:
+            found = False
+            for line in old_file:
+                if found:
+                    new_file.write(line)
+                else:
+                    if not found and 'Version=' in line:
+                        found = True
+                        new_file.write(re.sub('\d{3}', version_int, line))
+                    else:
+                        new_file.write(line) 
+
+    copymode(file_path, abs_path)
+    remove(file_path)
+    move(abs_path, file_path)
 
 modules = [
     module_path('KN_Cinematic'),
