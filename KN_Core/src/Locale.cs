@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace KN_Core {
   public static class Locale {
-    public static readonly string[] ActiveLocales = {"en", "ru", "fr", "de"};
+    public static readonly string[] ActiveLocales = {"en", "ru", "fr"};
 
     public static string CurrentLocale { get; private set; }
 
