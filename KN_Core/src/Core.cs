@@ -338,9 +338,7 @@ namespace KN_Core {
       float tempX = x;
       x += Gui.Width + Gui.OffsetGuiX;
       if (gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "DISCORD", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy)) {
-        // Process.Start("https://discord.gg/jrMReAB");
-
-        DisplayTextAsId = !DisplayTextAsId;
+        Process.Start("https://discord.gg/jrMReAB");
       }
       x = tempX;
 
