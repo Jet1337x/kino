@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SyncMultiplayer;
-using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace KN_Core {
   public class CarPicker {
@@ -107,7 +108,12 @@ namespace KN_Core {
             car.Loading = false;
             Cars.Add(new KnCar(car.Player.userCar));
             Log.Write($"[KN_Core]: Car loaded: {car.Player.NetworkID}");
-            OnCarLoaded?.Invoke();
+            try {
+              OnCarLoaded?.Invoke();
+            }
+            catch (Exception) {
+              // ignored
+            }
           }
         }
       }
