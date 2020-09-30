@@ -56,8 +56,9 @@ namespace KN_Core {
       }
 
       MapsDir = BaseDir + Path.DirectorySeparatorChar + "maps" + Path.DirectorySeparatorChar;
-      if (!Directory.Exists(MapsDir)) {
-        Directory.CreateDirectory(MapsDir);
+      if (Directory.Exists(MapsDir)) {
+        //todo: fixme
+        Directory.Delete(MapsDir, true);
       }
 
       Log.Write($"[KN_Core]: Base dir: '{BaseDir}'");
