@@ -58,7 +58,7 @@
   <key id="sync_lights" value="SYNCHRONIZUJ ŚWIATŁA"/>
   <key id="disable_consoles" value="WYŁĄCZ KOLIZJE Z UŻYTKOWNIKAMI KONSOL"/>
   <key id="hide_consoles" value="SCHOWAJ UŻYTKOWNIKÓW KONSOL"/>
-  <key id="log_engines" value="REJESTR SILNIKÓW "/>
+  <key id="log_engines" value="REJESTR SILNIKÓW"/>
 
   <!--EXHAUST-->
   <key id="exh_volume" value="GŁOŚNOŚĆ"/>
