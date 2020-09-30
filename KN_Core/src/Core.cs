@@ -564,7 +564,7 @@ namespace KN_Core {
     private void CheckUpdaterLocation() {
       string updater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
 
-      if (!Directory.Exists(updater)) {
+      if (!File.Exists(updater)) {
         Log.Write($"[KN_Core]: Unable to locate updater at '{updater}'");
         throw new Exception($"[KN_Core]: Unable to locate updater at '{updater}'");
       }
