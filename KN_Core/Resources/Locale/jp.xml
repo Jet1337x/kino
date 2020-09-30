@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<locale loc="jp">
+  <!--MODS (TABS)-->
+  <key id="lights" value="ライト"/>
+  <key id="visuals" value="ビジュアル"/>
+  <key id="settings" value="セッティング"/>
+  <key id="maps" value="マップ"/>
+  <key id="about" value="概要"/>
+
+  <!--COMMON-->
+  <key id="language" value="言語"/>
+  <key id="enabled" value="有効"/>
+  <key id="disabled" value="無効"/>
+  <key id="enable" value="有効"/>
+  <key id="disable" value="無効"/>
+  <key id="color" value="カラー"/>
+  <key id="red" value="レッド"/>
+  <key id="green" value="グリーン"/>
+  <key id="blue" value="ブルー"/>
+  <key id="alpha" value="アルファ"/>
+  <key id="close" value="閉じる"/>
+
+  <!--CORE-->
+  <key id="input_locked" value="CARXの操作がロックされています MODメニューを閉じるとロックが解除されます"/>
+  <key id="changes" value="変更点"/>
+  <key id="outdated0" value="あなたのMODは最新版ではありません、最新バージョン"/>
+  <key id="outdated1" value="最新情報はディスコードでチェックしてください (クリック)"/>
+
+  <!--PICKERS-->
+  <key id="cp_cars" value="カー"/>
+  <key id="cp_player" value="プレイヤーカー"/>
+  <key id="cp_title" value="カラーピッカー"/>
+  <key id="fp_title" value="ファイルピッカー"/>
+  <key id="fp_refresh" value="リフレッシュ"/>
+
+  <!--ABOUT-->
+  <key id="about0" value="開発者:trbflxr"/>
+  <key id="about1" value="テストプレイヤー John Sawyer, Dimon, hippan, Sheriff"/>
+  <key id="about2" value="もしご質問やご意見があれば"/>
+  <key id="about3" value="私たちに連絡してください"/>
+  <key id="about4" value="trbflxr#8814 or John Sawyer#6915"/>
+  <key id="about5" value="または mod のディスコード (上のボタン) にある"/>
+  <key id="about6" value="以下の方々にも感謝しています Cursed, MRo と diip "/>
+  <key id="about7" value="翻訳者 by: John Sawyer (RU), Nawax (FR), Sleepy (PL), Gingy Bread (NL), Allicy (JP)"/>
+  <key id="about0v" value="お使いのCarXクライアントのバージョンが違います"/>
+  <key id="about1v" value="KiNO modの新バージョンをダウンロードしてください。"/>
+  <key id="about2v" value="公式ディスコード（上ボタン）より"/>
+  <key id="about3v" value="または問い合わせ先 trbflxr#8814 or John Sawyer#6915"/>
+  <key id="about4v" value="現在のバージョン"/>
+  <key id="about5v" value="対象のバージョン"/>
+
+  <!--SETTINGS-->
+  <key id="tach" value="カスタムタコメーター"/>
+  <key id="hide_points" value="ポイントを隠す"/>
+  <key id="hide_names" value="名前を隠す"/>
+  <key id="backfire" value="カスタムアフターファイヤ"/>
+  <key id="white_smoke" value="全員を白煙化"/>
+  <key id="sync_lights" value="シンクライト"/>
+  <key id="disable_consoles" value="コンソールプレイヤーとの接触"/>
+  <key id="hide_consoles" value="コンソールプレイヤーを隠す"/>
+  <key id="log_engines" value="ログエンジン"/>
+
+  <!--EXHAUST-->
+  <key id="exh_volume" value="音量"/>
+  <key id="exh_max_time" value="燃焼時間"/>
+
+  <!--ENGINES-->
+  <key id="swaps_engines" value="エンジン"/>
+  <key id="swaps_turbo" value="ターボ"/>
+  <key id="swaps_fd" value="ファイナル"/>
+
+  <!--VISUALS-->
+  <key id="zoom" value="ズーム"/>
+  <key id="shift" value="カメラ位置"/>
+  <key id="save_current" value="リバリーを保存"/>
+  <key id="load_design" value="リバリーを読込"/>
+  <key id="apply_design" value="リバリーを適用"/>
+  <key id="add_livery" value="リバリーを新たに追加"/>
+  <key id="restore_design" value="デザインを元に戻す"/>
+
+  <!--LIGHTS-->
+  <key id="lights_enable_own" value="ライトを点灯"/>
+  <key id="debug_obj" value="デバッグオブジェクト"/>
+  <key id="hl_illumination" value="ヘッドライトイルミネーション"/>
+  <key id="hide_lights_after" value="HIDE LIGHTS AFTER"/>
+  <key id="hl_left" value="左ヘッドライト"/>
+  <key id="hl_right" value="右ヘッドライト"/>
+  <key id="hl_brightness" value="ヘッドライトの明るさ"/>
+  <key id="hl_angle" value="ヘッドライト角度"/>
+  <key id="hl_pitch" value="ヘッドライト距離"/>
+  <key id="tl_left" value="左テールライト"/>
+  <key id="tl_right" value="右テールライト"/>
+  <key id="tl_brightness" value="テールライトの明るさ"/>
+  <key id="tl_angle" value="テールライト角度"/>
+  <key id="tl_pitch" value="テールライト距離"/>
+  <key id="add_lights_all" value="全員にライトを追加"/>
+  <key id="add_lights_to" value="個別にライトを追加"/>
+
+  <!--WORLD LIGHTS-->
+  <key id="fog" value="霧"/>
+  <key id="fog_distance" value="霧の距離"/>
+  <key id="fog_volume" value="霧の量"/>
+  <key id="sl_brightness" value="太陽光の明るさ"/>
+  <key id="sky_exposure" value="空の明るさ"/>
+  <key id="ambient" value="環境光"/>
+  <key id="color_temp" value="色温度"/>
+  <key id="reset_all" value="全てをリセット"/>
+</locale>
