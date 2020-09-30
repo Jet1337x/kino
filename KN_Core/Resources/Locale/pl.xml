@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<locale loc="pl">
+  <!--MODS (TABS)-->
+  <key id="lights" value="LIGHTS"/>
+  <key id="visuals" value="VISUALS"/>
+  <key id="settings" value="SETTINGS"/>
+  <key id="maps" value="MAPS"/>
+  <key id="about" value="ABOUT"/>
+
+  <!--COMMON-->
+  <key id="language" value="JĘZYK"/>
+  <key id="enabled" value="WŁĄCZONE"/>
+  <key id="disabled" value="WYŁĄCZONE"/>
+  <key id="enable" value="WŁĄCZ"/>
+  <key id="disable" value="WYŁĄCZ"/>
+  <key id="color" value="KOLOR"/>
+  <key id="red" value="CZERWONY"/>
+  <key id="green" value="ZIELONY"/>
+  <key id="blue" value="NIEBIESKI"/>
+  <key id="alpha" value="ALPHA"/>
+  <key id="close" value="ZAMKNIJ"/>
+
+  <!--CORE-->
+  <key id="input_locked" value="GRA JEST ZABLOKOWANA. WYŁĄCZ MENU MODYFIKACJI BY JĄ ODBLOKOWAĆ."/>
+  <key id="changes" value="LISTA ZMIAN"/>
+  <key id="outdated0" value="TWOJA MODYFIKACJA JEST PRZESTARZAŁA, NAJNOWSZA WERSJA"/>
+  <key id="outdated1" value="PO WIĘCEJ AKTUALIZACJI SPRAWDŹ NASZEGO DISCORDA(CLICK)"/>
+
+  <!--PICKERS-->
+  <key id="cp_cars" value="SAMOCHODY"/>
+  <key id="cp_player" value="SAMOCHÓD GRACZA"/>
+  <key id="cp_title" value="WYBÓR KOLORU"/>
+  <key id="fp_title" value="WYBÓR PLIKU"/>
+  <key id="fp_refresh" value="ODŚWIEŻ"/>
+
+  <!--ABOUT-->
+  <key id="about0" value="Opracowane przez trbflxr"/>
+  <key id="about1" value="Przetestowane przez John Sawyer, Dimon, hippan, Sheriff"/>
+  <key id="about2" value="Jeśli masz jakieś pytania lub sugestie"/>
+  <key id="about3" value="proszę, skontaktuj się z nami"/>
+  <key id="about4" value="trbflxr#8814 lub John Sawyer#6915"/>
+  <key id="about5" value="lub na discordzie modyfikacji (przycisk na górze)"/>
+  <key id="about6" value="Poza tym, wielkie podziękowania dlaCursed, MRo oraz diip za ich wsparcie!"/>
+  <key id="about7" value="Modyfikacja przetłumaczona przez: John Sawyer (RU), Nawax (FR), Sleepy (PL), Gingy Bread (NL), Allicy (JP)"/>
+  <key id="about0v" value="Twoja wersja gry jest nietypowa!"/>
+  <key id="about1v" value="Proszę pobierz nową wersję modyfikacji KiNO"/>
+  <key id="about2v" value="z oficjalnego discorda(top button)"/>
+  <key id="about3v" value="lub skontaktuj sięz nami przez trbflxr#8814 lub John Sawyer#6915"/>
+  <key id="about4v" value="Obecna wersja"/>
+  <key id="about5v" value="Docelowa wersja"/>
+
+  <!--SETTINGS-->
+  <key id="tach" value="NIESTANDARDOWY OBROTOMIERZ"/>
+  <key id="hide_points" value="SCHOWAJ PUNKTY"/>
+  <key id="hide_names" value="SCHOWAJ NAZWY"/>
+  <key id="backfire" value="NIESTANDARDOWE STRZELANIE Z WYDECHU"/>
+  <key id="white_smoke" value="WYMUŚ BIAŁY DYM DLA WSZYSTKICH"/>
+  <key id="sync_lights" value="SYNCHRONIZUJ ŚWIATŁA"/>
+  <key id="disable_consoles" value="WYŁĄCZ KOLIZJE Z UŻYTKOWNIKAMI KONSOL"/>
+  <key id="hide_consoles" value="SCHOWAJ UŻYTKOWNIKÓW KONSOL"/>
+  <key id="log_engines" value="REJESTR SILNIKÓW "/>
+
+  <!--EXHAUST-->
+  <key id="exh_volume" value="GŁOŚNOŚĆ"/>
+  <key id="exh_max_time" value="CZAS"/>
+
+  <!--ENGINES-->
+  <key id="swaps_engines" value="SILNIKI"/>
+  <key id="swaps_turbo" value="TURBO"/>
+  <key id="swaps_fd" value="PRZEKŁADNIA GŁÓWNA"/>
+
+  <!--VISUALS-->
+  <key id="zoom" value="PRZYBLIŻENIE"/>
+  <key id="shift" value="PRZESUNIĘCIE"/>
+  <key id="save_current" value="ZAPISZ OBECNY DESIGN"/>
+  <key id="load_design" value="ZAŁADUJ DESIGN"/>
+  <key id="apply_design" value="NAŁÓŻ DESIGN DLA"/>
+  <key id="add_livery" value="DODAJ MALOWANIE DO"/>
+  <key id="restore_design" value="PRZYWRÓĆ DESIGN"/>
+
+  <!--LIGHTS-->
+  <key id="lights_enable_own" value="WŁĄCZ WŁASNE ŚWIATŁA"/>
+  <key id="debug_obj" value="DEBUGUJ OBIEKTY"/>
+  <key id="hl_illumination" value="OŚWIETLENIE PRZEDNICH REFLEKTORÓW"/>
+  <key id="hide_lights_after" value="SCHOWAJ ŚWIATŁA PO"/>
+  <key id="hl_left" value="LEWY PRZEDNI REFLEKTOR"/>
+  <key id="hl_right" value="PRAWY PRZEDNI REKFLEKTOR"/>
+  <key id="hl_brightness" value="JASNOŚĆ PRZEDNICH REFLEKTORÓW"/>
+  <key id="hl_angle" value="KĄT PRZEDNICH REFLEKTORÓW"/>
+  <key id="hl_pitch" value="KĄT NACHYLENIA PRZEDNICH REFLEKTORÓW"/>
+  <key id="tl_left" value="LEWY TYLNY REFLEKTOR"/>
+  <key id="tl_right" value="PRAWY TYLNY REFLEKTOR"/>
+  <key id="tl_brightness" value="JASNOŚĆ TYLNEGO REFLEKTORA"/>
+  <key id="tl_angle" value="KĄT TYLNEGO REFLEKTORA"/>
+  <key id="tl_pitch" value="KĄT NACHYLENIA TYLNEGO REFLEKTORA"/>
+  <key id="add_lights_all" value="DODAJ ŚWIATŁA DLA WSZYSTKICH"/>
+  <key id="add_lights_to" value="DODAJ ŚWIATŁA DLA"/>
+
+  <!--WORLD LIGHTS-->
+  <key id="fog" value="MGŁA"/>
+  <key id="fog_distance" value="ODLEGŁOŚĆ MGŁY"/>
+  <key id="fog_volume" value="GĘSTOŚĆ MGŁY"/>
+  <key id="sl_brightness" value="JASNOŚĆ ŚWIATŁA SŁONECZNEGO"/>
+  <key id="sky_exposure" value="EKSPOZYCJA ŚWIATŁA"/>
+  <key id="ambient" value="ŚWIATŁO OTOCZENIA"/>
+  <key id="color_temp" value="TEMPERATURA BARWOWA"/>
+  <key id="reset_all" value="ZRESETUJ WSZYSTKO"/>
+</locale>
