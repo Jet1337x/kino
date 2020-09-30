@@ -24,7 +24,7 @@
   <key id="input_locked" value="GRA JEST ZABLOKOWANA. WYŁĄCZ MENU MODYFIKACJI BY JĄ ODBLOKOWAĆ."/>
   <key id="changes" value="LISTA ZMIAN"/>
   <key id="outdated0" value="TWOJA MODYFIKACJA JEST PRZESTARZAŁA, NAJNOWSZA WERSJA"/>
-  <key id="outdated1" value="PO WIĘCEJ AKTUALIZACJI SPRAWDŹ NASZEGO DISCORDA(CLICK)"/>
+  <key id="outdated1" value="PO WIĘCEJ AKTUALIZACJI SPRAWDŹ NASZEGO DISCORDA (CLICK)"/>
 
   <!--PICKERS-->
   <key id="cp_cars" value="SAMOCHODY"/>
