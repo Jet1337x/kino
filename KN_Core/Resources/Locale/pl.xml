@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="pl" author="Sleepy">
   <!--MODS (TABS)-->
-  <key id="lights" value="LIGHTS"/>
-  <key id="visuals" value="VISUALS"/>
-  <key id="settings" value="SETTINGS"/>
-  <key id="maps" value="MAPS"/>
-  <key id="about" value="ABOUT"/>
+  <key id="lights" value="ŚWIATŁA"/>
+  <key id="visuals" value="EFEKTY WIZUALNE"/>
+  <key id="settings" value="USTAWIENIA"/>
+  <key id="maps" value="MAPY"/>
+  <key id="about" value="O NAS"/>
 
   <!--COMMON-->
   <key id="language" value="JĘZYK"/>
