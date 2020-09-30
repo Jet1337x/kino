@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<locale loc="nl">
+  <!--MODS (TABS)-->
+  <key id="lights" value="LICHTEN"/>
+  <key id="visuals" value="VISUALS"/>
+  <key id="settings" value="OPTIES"/>
+  <key id="maps" value="MAPS"/>
+  <key id="about" value="INFO"/>
+
+  <!--COMMON-->
+  <key id="language" value="TAAL"/>
+  <key id="enabled" value="AAN"/>
+  <key id="disabled" value="UIT"/>
+  <key id="enable" value="AANZETTEN"/>
+  <key id="disable" value="AFZETTEN"/>
+  <key id="color" value="KLEUR"/>
+  <key id="red" value="ROOD"/>
+  <key id="green" value="GROEN"/>
+  <key id="blue" value="BLAUW"/>
+  <key id="alpha" value="ALPHA"/>
+  <key id="close" value="SLUITEN"/>
+
+  <!--CORE-->
+  <key id="input_locked" value="CARX BESTURING IS VERGRENDELD. SLUIT MOD MENU OM VERDER TE GAAN"/>
+  <key id="changes" value="CHANGELOG"/>
+  <key id="outdated0" value="UW MOD IS OUTDATED, UPDATE NAAR DE LAATSTE VERSIE"/>
+  <key id="outdated1" value="VOOR MEER UPDATES BEKIJK ONZE DISCORD (CLICK)"/>
+
+  <!--PICKERS-->
+  <key id="cp_cars" value="AUTOS"/>
+  <key id="cp_player" value="SPELER AUTO"/>
+  <key id="cp_title" value="KLEURKIEZER"/>
+  <key id="fp_title" value="BESTAND KIEZER"/>
+  <key id="fp_refresh" value="VERVERS"/>
+
+  <!--ABOUT-->
+  <key id="about0" value="Ontworpen door trbflxr"/>
+  <key id="about1" value="Getest door John Sawyer, Dimon, hippan, Sheriff"/>
+  <key id="about2" value="Als u vragen of suggesties heeft"/>
+  <key id="about3" value="Contacteer ons dan aub op"/>
+  <key id="about4" value="trbflxr#8814 of John Sawyer#6915"/>
+  <key id="about5" value="Of in de mods discord (bovenste knop)"/>
+  <key id="about6" value="Trouwens Cursed, MRo and diip heel erg bedankt voor de hulp!"/>
+  <key id="about7" value="Mod vertaald door: John Sawyer (RU), Nawax (FR), Sleepy (PL), Gingy Bread (NL), Allicy (JP)"/>
+  <key id="about0v" value="Uw CarX client versie is anders!"/>
+  <key id="about1v" value="Aub download nieuwste versie van KiNO mod"/>
+  <key id="about2v" value="Van officiele discord (bovenste knop)"/>
+  <key id="about3v" value="Of contacteer ons op trbflxr#8814 of John Sawyer#6915"/>
+  <key id="about4v" value="Huidige versie"/>
+  <key id="about5v" value="Doelwit versie"/>
+
+  <!--SETTINGS-->
+  <key id="tach" value="CUSTOM TACHOMETER"/>
+  <key id="hide_points" value="VERSTOP PUNTEN"/>
+  <key id="hide_names" value="VERSTOP NAMEN"/>
+  <key id="backfire" value="CUSTOM BACKFIRE"/>
+  <key id="white_smoke" value="FORCE WITTE ROOK VOOR IEDEREEN"/>
+  <key id="sync_lights" value="SYNC LICHTEN"/>
+  <key id="disable_consoles" value="ZET CONSOLE BOTSINGEN"/>
+  <key id="hide_consoles" value="VERSTOP CONSOLE SPELERS"/>
+  <key id="log_engines" value="LOG MOTOREN"/>
+
+  <!--EXHAUST-->
+  <key id="exh_volume" value="VOLUME"/>
+  <key id="exh_max_time" value="MAX TIJD"/>
+
+  <!--ENGINES-->
+  <key id="swaps_engines" value="MOTOREN"/>
+  <key id="swaps_turbo" value="TURBO"/>
+  <key id="swaps_fd" value="FINAL DRIVE"/>
+
+  <!--VISUALS-->
+  <key id="zoom" value="ZOOM"/>
+  <key id="shift" value="SHIFT"/>
+  <key id="save_current" value="SLA HUIDIG ONTWERP OP"/>
+  <key id="load_design" value="LAAD ONTWERP"/>
+  <key id="apply_design" value="PAS ONTWERP TOE"/>
+  <key id="add_livery" value="PAS LIVERY TOE"/>
+  <key id="restore_design" value="HERSTEL ONTWERP"/>
+
+  <!--LIGHTS-->
+  <key id="lights_enable_own" value="ZET EIGEN LICHTEN AAN"/>
+  <key id="debug_obj" value="DEBUG OBJECTEN"/>
+  <key id="hl_illumination" value="KOPLICHT VERLIHTING"/>
+  <key id="hide_lights_after" value="VERSTOP LICHTEN NA"/>
+  <key id="hl_left" value="LINKS KOPLICHT"/>
+  <key id="hl_right" value="RECHTS KOPLICHT"/>
+  <key id="hl_brightness" value="KOPLICHT HELDERHEID"/>
+  <key id="hl_angle" value="KOPLICHT HOEK"/>
+  <key id="hl_pitch" value="KOPLICHT TILT"/>
+  <key id="tl_left" value="LINKS ACHTERLICHT"/>
+  <key id="tl_right" value="RECHTS ACHTERLICHT"/>
+  <key id="tl_brightness" value="ACHTERLICHT HELDERHEID"/>
+  <key id="tl_angle" value="ACHTERLICHT HOEK"/>
+  <key id="tl_pitch" value="ACHTERLICHT TILT"/>
+  <key id="add_lights_all" value="VOEG LICHTEN TOE AAN IEDEREEN"/>
+  <key id="add_lights_to" value="VOEG LICHTEN TOE AAN"/>
+
+  <!--WORLD LIGHTS-->
+  <key id="fog" value="MIST"/>
+  <key id="fog_distance" value="MIST AFSTAND"/>
+  <key id="fog_volume" value="MIST VOLUME"/>
+  <key id="sl_brightness" value="ZONLICHT HELDERHEID"/>
+  <key id="sky_exposure" value="SKYBOX BLOOTSTELLING"/>
+  <key id="ambient" value="OMGEVINGS BELICHTING"/>
+  <key id="color_temp" value="KLEUR TEMPERATUUR"/>
+  <key id="reset_all" value="RESET ALLES"/>
+</locale>
