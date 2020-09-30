@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<locale loc="fr">
+<locale loc="fr" author="Nawax">
   <!--MODS (TABS)-->
   <key id="lights" value="PHARES"/>
   <key id="visuals" value="KIT DÉCO"/>
@@ -41,7 +41,7 @@
   <key id="about4" value="trbflxr#8814 ou John Sawyer#6915"/>
   <key id="about5" value="ou sur le discord du mod (boutton du haut)"/>
   <key id="about6" value="Merci également à Cursed, MRo et diip pour leur soutien !"/>
-  <key id="about7" value="Mod traduit par: John Sawyer (RU), Nawax (FR)"/>
+  <key id="about7" value="Mod traduit par:"/>
   <key id="about0v" value="Votre version de client CarX est différente !"/>
   <key id="about1v" value="Veuillez télécharger la nouvelle version du mod KiNO"/>
   <key id="about2v" value="sur le discord officiel (boutton du haut)"/>

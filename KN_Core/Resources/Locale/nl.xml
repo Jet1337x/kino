@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<locale loc="nl">
+<locale loc="nl" author="Gingy Bread">
   <!--MODS (TABS)-->
   <key id="lights" value="LICHTEN"/>
   <key id="visuals" value="VISUALS"/>
@@ -41,7 +41,7 @@
   <key id="about4" value="trbflxr#8814 of John Sawyer#6915"/>
   <key id="about5" value="Of in de mods discord (bovenste knop)"/>
   <key id="about6" value="Trouwens Cursed, MRo and diip heel erg bedankt voor de hulp!"/>
-  <key id="about7" value="Mod vertaald door: John Sawyer (RU), Nawax (FR), Sleepy (PL), Gingy Bread (NL), Allicy (JP)"/>
+  <key id="about7" value="Mod vertaald door:"/>
   <key id="about0v" value="Uw CarX client versie is anders!"/>
   <key id="about1v" value="Aub download nieuwste versie van KiNO mod"/>
   <key id="about2v" value="Van officiele discord (bovenste knop)"/>

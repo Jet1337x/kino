@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<locale loc="en">
+<locale loc="en" author="">
   <!--MODS (TABS)-->
   <key id="lights" value="LIGHTS"/>
   <key id="visuals" value="VISUALS"/>
@@ -41,7 +41,7 @@
   <key id="about4" value="trbflxr#8814 or John Sawyer#6915"/>
   <key id="about5" value="or in the mod's discord (top button)"/>
   <key id="about6" value="Also many thanks to Cursed, MRo and diip for their support!"/>
-  <key id="about7" value="Mod translated by: John Sawyer (RU), Nawax (FR), Sleepy (PL), Gingy Bread (NL), Allicy (JP)"/>
+  <key id="about7" value="Mod translated by:"/>
   <key id="about0v" value="Your CarX client version is different!"/>
   <key id="about1v" value="Please download new version of KiNO mod"/>
   <key id="about2v" value="from official discord (top button)"/>

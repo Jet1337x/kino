@@ -42,6 +42,11 @@ namespace KN_Core {
 
       gui.Box(x, y, width, height, Locale.Get("about7"), Skin.MainContainerLeft);
       y += height;
+
+      foreach (string author in Locale.Authors) {
+        gui.Box(x, y, width, height, $"  - {author}", Skin.MainContainerLeft);
+        y += height;
+      }
     }
 
     private void GuiBadVersion(Gui gui, ref float x, ref float y, float width, float height) {

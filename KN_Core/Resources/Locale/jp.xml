@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<locale loc="jp">
+<locale loc="jp" author="Allicy">
   <!--MODS (TABS)-->
   <key id="lights" value="ライト"/>
   <key id="visuals" value="ビジュアル"/>
@@ -41,7 +41,7 @@
   <key id="about4" value="trbflxr#8814 or John Sawyer#6915"/>
   <key id="about5" value="または mod のディスコード (上のボタン) にある"/>
   <key id="about6" value="以下の方々にも感謝しています Cursed, MRo と diip "/>
-  <key id="about7" value="翻訳者 by: John Sawyer (RU), Nawax (FR), Sleepy (PL), Gingy Bread (NL), Allicy (JP)"/>
+  <key id="about7" value="翻訳者 by:"/>
   <key id="about0v" value="お使いのCarXクライアントのバージョンが違います"/>
   <key id="about1v" value="KiNO modの新バージョンをダウンロードしてください。"/>
   <key id="about2v" value="公式ディスコード（上ボタン）より"/>

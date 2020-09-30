@@ -4,7 +4,9 @@ using System.Xml;
 
 namespace KN_Core {
   public static class Locale {
-    public static readonly string[] ActiveLocales = {"en", "ru", "fr"};
+    public static readonly string[] ActiveLocales = {"en", "ru", "fr", "nl", "pl", "jp"};
+
+    public static List<string> Authors { get; private set; }
 
     public static string CurrentLocale { get; private set; }
 
@@ -20,6 +22,8 @@ namespace KN_Core {
       CurrentLocale = locale;
       core_ = core;
       locales_ = new Dictionary<string, Dictionary<string, string>>();
+
+      Authors = new List<string>();
 
       foreach (string l in ActiveLocales) {
         LoadLocale(l);
@@ -68,6 +72,12 @@ namespace KN_Core {
             string idAttribute = reader.GetAttribute("loc");
             if (!string.IsNullOrEmpty(idAttribute)) {
               id = idAttribute;
+
+              string author = reader.GetAttribute("author");
+              if (!string.IsNullOrEmpty(author)) {
+                Authors.Add($"{author} ({idAttribute.ToUpper()})");
+              }
+
               continue;
             }
 
