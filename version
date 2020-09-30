@@ -1,6 +1,3 @@
-Version=120
-Added mod updater and update warnings
-Added Discord button
-Added RU and FR localizations (settings tab)
-Fixed backfires sounds
-Fixed livery application
+Version=121
+Added new locales by Allicy (JP), Sleepy (PL), Gingy Bread (NL)
+Fixed compatibility with Goat's MapLoader

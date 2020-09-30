@@ -4,7 +4,7 @@ from tempfile import mkstemp
 from shutil import move, copymode
 from os import fdopen, remove
 
-version = ['1', '2', '0']
+version = ['1', '2', '1']
 client_version = ['2', '7', '1']
 
 version_int = ''.join(version)
