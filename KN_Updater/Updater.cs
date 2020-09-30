@@ -76,8 +76,14 @@ namespace KN_Updater {
               Console.WriteLine($"Processing {entry.Name} ...");
               using (var stream = entry.Open()) {
                 string path = dev ? updateDir + entry.Name : plugins + Path.DirectorySeparatorChar + entry.Name;
-                using (var fileStream = File.Open(path, FileMode.Create)) {
-                  stream.CopyTo(fileStream);
+                try {
+                  using (var fileStream = File.Open(path, FileMode.Create)) {
+                    stream.CopyTo(fileStream);
+                  }
+                }
+                catch (Exception e) {
+                  Console.WriteLine($"Unable to copy file: '{path}', {e.Message}");
+                  throw;
                 }
               }
             }
