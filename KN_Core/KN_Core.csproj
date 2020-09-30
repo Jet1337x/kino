@@ -245,6 +245,9 @@
         <EmbeddedResource Include="Resources\Locale\ru.xml" />
         <EmbeddedResource Include="Resources\Locale\fr.xml" />
         <EmbeddedResource Include="Resources\Locale\de.xml" />
+        <EmbeddedResource Include="Resources\Locale\nl.xml" />
+        <EmbeddedResource Include="Resources\Locale\pl.xml" />
+        <EmbeddedResource Include="Resources\Locale\jp.xml" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
