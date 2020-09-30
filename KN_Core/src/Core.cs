@@ -123,7 +123,7 @@ namespace KN_Core {
       Settings = new Settings(this, KnConfig.Version, KnConfig.ClientVersion);
       AddMod(Settings);
 
-      Udp = new Udp(Settings);
+      Udp = new Udp();
       Udp.ProcessPacket += HandlePacket;
 
       CarPicker.OnCarLoaded += Swaps.OnCarLoaded;
@@ -201,6 +201,15 @@ namespace KN_Core {
       StartUpdater();
     }
 
+    public void ReloadAll() {
+      Udp.ReloadClient = true;
+      Udp.ReloadSubRoom = true;
+
+      foreach (var mod in mods_) {
+        mod.OnReloadAll();
+      }
+    }
+
     private void FixedUpdate() {
       if (badVersion_) {
         return;
@@ -267,17 +276,6 @@ namespace KN_Core {
           InputManager.LockInput(null);
         }
       }
-
-#if false
-      if (Input.GetKeyDown(KeyCode.Delete)) {
-        Udp.ReloadClient = true;
-        Udp.ReloadSubRoom = true;
-
-        foreach (var mod in mods_) {
-          mod.OnReloadAll();
-        }
-      }
-#endif
 
       foreach (var mod in mods_) {
         mod.Update(selectedModId_);

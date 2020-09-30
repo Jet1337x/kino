@@ -21,11 +21,7 @@ namespace KN_Core {
     private readonly string guidString_;
     private MethodInfo sendSubRoomId_;
 
-    private readonly Settings settings_;
-
-    public Udp(Settings settings) {
-      settings_ = settings;
-
+    public Udp() {
       guidString_ = "8de61547-4c31-49cd-b8c6-7e12d6ff23bc";
     }
 
