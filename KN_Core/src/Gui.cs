@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace KN_Core {
   public class Gui {
-    public const float MinTabsWidth = 490.0f;
+    public const float MinTabsWidth = 520.0f;
 
     public const float Width = 160.0f;
     public const float WidthScroll = 140.0f;
