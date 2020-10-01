@@ -72,6 +72,7 @@ namespace KN_Core {
 
     private readonly bool badVersion_;
     private readonly int latestVersion_;
+    private readonly int latestPatch_;
     private readonly List<string> changelog_;
 
     private readonly Timer saveTimer_;
@@ -87,10 +88,12 @@ namespace KN_Core {
 
       Version.Initialize();
       latestVersion_ = Version.GetVersion();
+      latestPatch_ = Version.GetPatch();
       changelog_ = Version.GetChangelog();
 
       badVersion_ = KnConfig.ClientVersion != GameVersion.version;
       ShowUpdateWarn = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
+      scheduleUpdate_ = latestPatch_ < KnConfig.Patch;
 
       if (ShowUpdateWarn) {
         DownloadNewUpdater();
@@ -121,13 +124,13 @@ namespace KN_Core {
       ColorPicker = new ColorPicker();
       FilePicker = new FilePicker();
 
-      AddMod(new About(this, KnConfig.Version, GameVersion.version, badVersion_));
+      AddMod(new About(this, KnConfig.Version, KnConfig.Patch, GameVersion.version, badVersion_));
 
       if (badVersion_) {
         return;
       }
 
-      Settings = new Settings(this, KnConfig.Version, KnConfig.ClientVersion);
+      Settings = new Settings(this, KnConfig.Version, KnConfig.Patch, KnConfig.ClientVersion);
       AddMod(Settings);
 
       Udp = new Udp();
@@ -142,7 +145,8 @@ namespace KN_Core {
     public void AddMod(BaseMod mod) {
       if (badVersion_ && Locale.Get(mod.Name) != Locale.Get("about") ||
           mod.Version != KnConfig.Version ||
-          mod.ClientVersion != GameVersion.version) {
+          mod.ClientVersion != GameVersion.version ||
+          mod.Patch != KnConfig.Patch) {
         string modName = Locale.Get(mod.Name);
         Log.Write($"[KN_Core]: Mod {modName} outdated!");
 

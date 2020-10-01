@@ -7,13 +7,15 @@ namespace KN_Core {
     public int Id { get; }
 
     public int Version { get; }
+    public int Patch { get; }
     public int ClientVersion { get; }
 
-    public BaseMod(Core core, string name, int id, int version, int clientVersion) {
+    public BaseMod(Core core, string name, int id, int version, int patch, int clientVersion) {
       Core = core;
       Name = name;
       Id = id;
       Version = version;
+      Patch = patch;
       ClientVersion = clientVersion;
 
       Core.CarPicker.OnCarLoaded += OnCarLoaded;

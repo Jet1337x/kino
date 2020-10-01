@@ -46,7 +46,7 @@ namespace KN_Lights {
 
     private readonly Settings settings_;
 
-    public Lights(Core core, int version, int clientVersion) : base(core, "lights", 1, version, clientVersion) {
+    public Lights(Core core, int version, int patch, int clientVersion) : base(core, "lights", 1, version, patch, clientVersion) {
       settings_ = core.Settings;
 
       worldLights_ = new WorldLights(core);

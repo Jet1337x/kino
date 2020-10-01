@@ -5,6 +5,7 @@ from shutil import move, copymode
 from os import fdopen, remove
 
 version = ['1', '2', '3']
+patch = '0'
 client_version = ['2', '7', '1']
 
 version_int = ''.join(version)
@@ -27,9 +28,10 @@ def replace_version(file_path):
     with fdopen(fh,'w') as new_file:
         with open(file_path) as old_file:
             found = False
+            found_patch = False
             found_client = False
             for line in old_file:
-                if found and found_client:
+                if found and found_patch and found_client:
                     new_file.write(line)
                 else:
                     if not found and ' Version = ' in line:
@@ -38,6 +40,9 @@ def replace_version(file_path):
                     elif not found_client and ' ClientVersion = ' in line:
                         found_client = True
                         new_file.write(re.sub('\d{3}', client_version_int, line))
+                    elif not found_patch and ' Patch = ' in line:
+                        found_patch = True
+                        new_file.write(re.sub('\d{1}', patch, line))
                     else:
                         new_file.write(line)
 
@@ -51,15 +56,19 @@ def replace_config_version(file_path):
     with fdopen(fh,'w') as new_file:
         with open(file_path) as old_file:
             found_int = False
+            found_patch = False
             found_string = False
             found_client = False
             for line in old_file:
-                if found_int and found_string and found_client:
+                if found_int and found_patch and found_string and found_client:
                     new_file.write(line)
                 else:
                     if not found_int and ' Version = ' in line:
                         found_int = True
                         new_file.write(re.sub('\d{3}', version_int, line))
+                    elif not found_patch and ' Patch = ' in line:
+                        found_patch = True
+                        new_file.write(re.sub('\d{1}', patch, line))
                     elif not found_string and ' StringVersion = ' in line:
                         found_string = True
                         new_file.write(re.sub('\s*([\d.]+)', version_string, line))
@@ -79,13 +88,17 @@ def replace_core_version(file_path):
     with fdopen(fh,'w') as new_file:
         with open(file_path) as old_file:
             found = False
+            found_patch = False
             for line in old_file:
-                if found:
+                if found and found_patch:
                     new_file.write(line)
                 else:
                     if not found and 'Version=' in line:
                         found = True
                         new_file.write(re.sub('\d{3}', version_int, line))
+                    elif not found_patch and 'Patch=' in line:
+                        found_patch = True
+                        new_file.write(re.sub('\d{1}', patch, line))
                     else:
                         new_file.write(line) 
 

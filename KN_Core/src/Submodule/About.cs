@@ -3,7 +3,7 @@ namespace KN_Core {
   public class About : BaseMod {
     private readonly bool badVersion_;
 
-    public About(Core core, int version, int clientVersion, bool badVersion) : base(core, "about", int.MaxValue, version, clientVersion) {
+    public About(Core core, int version, int patch, int clientVersion, bool badVersion) : base(core, "about", int.MaxValue, version, patch, clientVersion) {
       badVersion_ = badVersion;
     }
 
