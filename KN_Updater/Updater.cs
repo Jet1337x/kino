@@ -59,6 +59,7 @@ namespace KN_Updater {
     }
 
     private static bool UnzipModFiles(byte[] bytes, string plugins, bool dev) {
+      string updater = plugins + Path.DirectorySeparatorChar + "KN_Updater.exe";
       string updateDir = "KnUpdate" + Path.DirectorySeparatorChar;
 
       if (dev) {
@@ -76,6 +77,10 @@ namespace KN_Updater {
               Console.WriteLine($"Processing {entry.Name} ...");
               using (var stream = entry.Open()) {
                 string path = dev ? updateDir + entry.Name : plugins + Path.DirectorySeparatorChar + entry.Name;
+                if (path == updater) {
+                  Console.WriteLine("Skipping updater exe file");
+                  continue;
+                }
                 try {
                   using (var fileStream = File.Open(path, FileMode.Create)) {
                     stream.CopyTo(fileStream);
