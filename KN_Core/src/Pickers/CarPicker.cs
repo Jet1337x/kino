@@ -13,6 +13,8 @@ namespace KN_Core {
 
     public List<KnCar> Cars { get; }
 
+    public int NwCarsCount => loadingCars_.Count;
+
     public delegate void CarLoadCallback();
     public event CarLoadCallback OnCarLoaded;
 
@@ -56,7 +58,7 @@ namespace KN_Core {
     }
 
     private void GuiCars(Gui gui, ref float x, ref float y, float boxWidth, float width, float height) {
-      gui.Box(x, y, boxWidth, Gui.Height, Locale.Get("cp_cars"), Skin.MainContainerDark);
+      gui.Box(x, y, boxWidth, Gui.Height, $"{Locale.Get("cp_cars")} / {loadingCars_.Count}", Skin.MainContainerDark);
       y += Gui.Height;
 
       gui.Box(x, y, boxWidth, carsListHeight_, Skin.MainContainer);
@@ -86,7 +88,7 @@ namespace KN_Core {
 
       Cars.RemoveAll(KnCar.IsNull);
 
-      loadingCars_.RemoveAll(car => car.Loaded && (car.Player == null || car.Player.userCar == null));
+      loadingCars_.RemoveAll(car => car.Player == null || car.Player.userCar == null);
 
       var nwPlayers = NetworkController.InstanceGame?.Players;
       if (nwPlayers != null) {

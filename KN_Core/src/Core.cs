@@ -354,7 +354,8 @@ namespace KN_Core {
       float x = GuiYTop;
       float y = GuiXLeft;
 
-      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "KINO v" + KnConfig.StringVersion, badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy);
+      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight,
+        $"KINO v{KnConfig.StringVersion}.{KnConfig.Patch}", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy);
       y -= Gui.TabButtonHeight + Gui.OffsetY;
 
       float tempX = x;

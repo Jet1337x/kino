@@ -108,6 +108,10 @@ namespace KN_Core {
     }
 
     public static string Get(string id) {
+      if (id.Length == 0) {
+        return id;
+      }
+
       if (core_ == null || core_.DisplayTextAsId || defaultLocale_ == null) {
         return id;
       }
