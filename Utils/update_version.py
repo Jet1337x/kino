@@ -5,7 +5,7 @@ from shutil import move, copymode
 from os import fdopen, remove
 
 version = ['1', '2', '4']
-patch = '0'
+patch = '1'
 updater = '01'
 client_version = ['2', '7', '1']
 
