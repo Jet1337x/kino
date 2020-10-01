@@ -1,2 +1,4 @@
 Version=123
 Important updater fix
+Added new locales by Allicy (JP), Sleepy (PL), Gingy Bread (NL)
+Fixed compatibility with Goat's MapLoader
