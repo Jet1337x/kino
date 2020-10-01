@@ -88,7 +88,13 @@ namespace KN_Core {
 
       Cars.RemoveAll(KnCar.IsNull);
 
-      loadingCars_.RemoveAll(car => car.Player == null || car.Player.userCar == null);
+      loadingCars_.RemoveAll(car => {
+        if (car.Loaded && (car.Player == null || car.Player.userCar == null)) {
+          Log.Write($"[KN_Core]: Removed car: '{car.Player?.FilteredNickName}' ({car.Player?.NetworkID})");
+          return true;
+        }
+        return false;
+      });
 
       var nwPlayers = NetworkController.InstanceGame?.Players;
       if (nwPlayers != null) {
@@ -96,26 +102,25 @@ namespace KN_Core {
           foreach (var player in nwPlayers) {
             if (loadingCars_.All(c => c.Player != player)) {
               loadingCars_.Add(new LoadingCar {Player = player});
-              Log.Write($"[KN_Core]: Added car to load: {player.NetworkID}");
+              Log.Write($"[KN_Core]: Added car to load: '{player.FilteredNickName}' ({player.NetworkID})");
             }
           }
         }
 
         foreach (var car in loadingCars_) {
+          if (car.Player == null) {
+            continue;
+          }
+
           if (car.Player.IsCarLoading()) {
             car.Loading = true;
           }
-          if (!car.Player.IsCarLoading() && car.Loading) {
+          else if (car.Loading) {
             car.Loaded = true;
             car.Loading = false;
             Cars.Add(new KnCar(car.Player.userCar));
-            Log.Write($"[KN_Core]: Car loaded: {car.Player.NetworkID}");
-            try {
-              OnCarLoaded?.Invoke();
-            }
-            catch (Exception) {
-              // ignored
-            }
+            Log.Write($"[KN_Core]: Car loaded: '{car.Player.FilteredNickName}' ({car.Player.NetworkID})");
+            OnCarLoaded?.Invoke();
           }
         }
       }
