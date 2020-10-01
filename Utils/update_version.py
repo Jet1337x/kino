@@ -6,7 +6,7 @@ from os import fdopen, remove
 
 version = ['1', '2', '3']
 patch = '0'
-updater = '1'
+updater = '101'
 client_version = ['2', '7', '1']
 
 version_int = ''.join(version)
@@ -19,6 +19,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 config_path = os.path.join(current_dir, '..', 'KN_Core', 'src', 'KnConfig.cs')
 version_path = os.path.join(current_dir, '..', 'version')
+updater_prog_path = os.path.join(current_dir, '..', 'KN_Updater', 'Program.cs')
 
 def module_path(module):
     return os.path.join(current_dir, '..', module, 'Loader.cs')
@@ -91,8 +92,9 @@ def replace_core_version(file_path):
             found = False
             found_patch = False
             found_updater = False
+            found_updater_prog = False
             for line in old_file:
-                if found and found_patch and found_updater:
+                if found and found_patch and found_updater and found_updater_prog:
                     new_file.write(line)
                 else:
                     if not found and 'Version=' in line:
@@ -103,7 +105,30 @@ def replace_core_version(file_path):
                         new_file.write(re.sub('\d{1}', patch, line))
                     elif not found_updater and 'Updater=' in line:
                         found_updater = True
-                        new_file.write(re.sub('\d{1}', updater, line))
+                        new_file.write(re.sub('\d{3}', updater, line))
+                    elif not found_updater_prog and ' Version = ' in line:
+                        found_updater_prog = True
+                        new_file.write(re.sub('\d{3}', updater, line))
+                    else:
+                        new_file.write(line) 
+
+    copymode(file_path, abs_path)
+    remove(file_path)
+    move(abs_path, file_path)
+
+def replace_updater_version(file_path):
+    print('Updating version for: ' + file_path)
+    fh, abs_path = mkstemp()
+    with fdopen(fh,'w') as new_file:
+        with open(file_path) as old_file:
+            found = False
+            for line in old_file:
+                if found:
+                    new_file.write(line)
+                else:
+                    if not found and ' Version = ' in line:
+                        found = True
+                        new_file.write(re.sub('\d{3}', updater, line))
                     else:
                         new_file.write(line) 
 
@@ -123,3 +148,4 @@ for m in modules:
     
 replace_config_version(config_path)
 replace_core_version(version_path)
+replace_updater_version(updater_prog_path)

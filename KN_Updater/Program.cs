@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace KN_Updater {
   internal class Program {
-    private const int Version = 1;
+    private const int Version = 101;
 
     private static string logPath_ = "";
     private static bool saveLog_ = false;
