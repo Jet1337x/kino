@@ -151,10 +151,15 @@ namespace KN_Core {
         string modName = Locale.Get(mod.Name);
         Log.Write($"[KN_Core]: Mod {modName} outdated!");
 
-        if (modName != "CHEATS" && modName != "AIR" && modName != "EXTRAS") {
-          scheduleUpdate_ = true;
-          Log.Write("[KN_Core]: Scheduling update.");
+        if ((modName == "CHEATS" ||
+             modName == "AIR" ||
+             modName == "EXTRAS")
+            && mod.Patch != KnConfig.Patch) {
+          return;
         }
+
+        scheduleUpdate_ = true;
+        Log.Write("[KN_Core]: Scheduling update.");
         return;
       }
 
