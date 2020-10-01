@@ -85,9 +85,9 @@ namespace KN_Core {
     public Core() {
       CheckUpdaterLocation();
 
-      Changelog.Initialize();
-      latestVersion_ = Changelog.GetVersion();
-      changelog_ = Changelog.GetChangelog();
+      Version.Initialize();
+      latestVersion_ = Version.GetVersion();
+      changelog_ = Version.GetChangelog();
 
       badVersion_ = KnConfig.ClientVersion != GameVersion.version;
       ShowUpdateWarn = latestVersion_ != 0 && KnConfig.Version < latestVersion_;

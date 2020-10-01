@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace KN_Core {
-  public static class Changelog {
+  public static class Version {
     private static List<string> data_;
 
     public static void Initialize() {
@@ -18,13 +18,22 @@ namespace KN_Core {
       return Convert.ToInt32(version);
     }
 
-    public static List<string> GetChangelog() {
+    public static int GetPatch() {
       if (data_ == null || data_.Count <= 1) {
+        return 0;
+      }
+      string patch = data_[1].Replace("Patch=", "");
+      return Convert.ToInt32(patch);
+    }
+
+    public static List<string> GetChangelog() {
+      if (data_ == null || data_.Count <= 2) {
         return null;
       }
 
       var changelog = data_;
       changelog.RemoveAt(0);
+      changelog.RemoveAt(1);
 
       return changelog;
     }
