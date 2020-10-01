@@ -55,6 +55,7 @@ namespace KN_Core {
     public Swaps Swaps { get; }
 
     private bool shouldRequestTools_;
+    private bool scheduleUpdate_;
 
     private string prevScene_;
     private bool prevInGarage_;
@@ -140,6 +141,8 @@ namespace KN_Core {
       if (badVersion_ && Locale.Get(mod.Name) != Locale.Get("about") ||
           mod.Version != KnConfig.Version ||
           mod.ClientVersion != GameVersion.version) {
+        Log.Write($"[KN_Core]: Mod {Locale.Get(mod.Name)} outdated!");
+        scheduleUpdate_ = true;
         return;
       }
 
@@ -551,9 +554,12 @@ namespace KN_Core {
     public void StartUpdater(bool outdated = false) {
       string updater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
 
-      string args = $"{(outdated ? "0.0.0" : KnConfig.StringVersion)} {IsDevToolsEnabled && !badVersion_}";
-      var proc = Process.Start(updater, args);
+      string version = scheduleUpdate_ || outdated ? "0.0.0" : KnConfig.StringVersion;
+      bool devMode = IsDevToolsEnabled && !badVersion_;
+      string args = $"{version} {devMode}";
 
+      Log.Write($"[KN_Core]: Starting updater, current version: {version}, dev mode: {devMode}");
+      var proc = Process.Start(updater, args);
       if (proc != null) {
         proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
         Log.Write("[KN_Core]: Updater started ...");
