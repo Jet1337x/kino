@@ -1,12 +1,14 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 
 namespace KN_Updater {
   internal class Program {
     private const int Version = 101;
 
-    private static string logPath_ = "";
-    private static bool saveLog_ = false;
+    private static string version_ = "0.0.0";
+    private static string modPath_ = "";
+    private static bool saveLog_;
 
     public static void Main(string[] args) {
       const string octokit = "KN_Updater.Data.Octokit.dll";
@@ -14,23 +16,35 @@ namespace KN_Updater {
 
       AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 
+      bool core123 = false;
       if (args.Length < 3) {
-        Console.WriteLine($"Updater version: {Version}");
-        Environment.Exit(Version);
-        return;
+        core123 = bool.TryParse(args[1], out bool dummy);
+
+        if (!core123) {
+          Console.WriteLine($"Updater version: {Version}");
+          Environment.Exit(Version);
+          return;
+        }
+        Console.WriteLine("Running on old v123 core");
       }
 
       Log.Init();
 
-      string version = args[0];
-      Log.Write($"Current version: {version}");
+      version_ = args[0];
+      Log.Write($"Current version: {version_}");
 
-      string plugins = args[1];
-      Log.Write($"Mod path: {plugins}");
+      if (core123) {
+        string exeFilePath = Assembly.GetExecutingAssembly().Location;
+        string workPath = Path.GetDirectoryName(exeFilePath);
 
-      logPath_ = plugins;
+        modPath_ = workPath;
+      }
+      else {
+        modPath_ = args[1];
+        Log.Write($"Mod path: {modPath_}");
 
-      saveLog_ = Convert.ToBoolean(args[2]);
+        saveLog_ = Convert.ToBoolean(args[2]);
+      }
 
       var updater = new Updater();
       if (!updater.Initialize()) {
@@ -39,20 +53,20 @@ namespace KN_Updater {
         return;
       }
 
-      if (!updater.IsUpdateNeeded(version)) {
+      if (!updater.IsUpdateNeeded(version_)) {
         Log.Write("No update needed. Exiting ...");
         SaveLog();
         return;
       }
 
-      updater.Run(plugins);
+      updater.Run(modPath_);
 
       SaveLog();
     }
 
     private static void SaveLog() {
       if (saveLog_) {
-        Log.Save(logPath_);
+        Log.Save(modPath_);
       }
     }
 
