@@ -19,6 +19,8 @@ namespace KN_Core {
     private const float GuiXLeft = 25.0f;
     private const float GuiYTop = 25.0f;
 
+    private static readonly string UpdaterPath = Path.GetTempPath() + Path.DirectorySeparatorChar + "KN_Updater.exe";
+
     public static Core CoreInstance { get; private set; }
 
     public float GuiContentBeginY { get; private set; }
@@ -56,6 +58,7 @@ namespace KN_Core {
 
     private bool shouldRequestTools_;
     private bool scheduleUpdate_;
+    private bool saveUpdaterLog_;
 
     private string prevScene_;
     private bool prevInGarage_;
@@ -73,6 +76,7 @@ namespace KN_Core {
     private readonly bool badVersion_;
     private readonly int latestVersion_;
     private readonly int latestPatch_;
+    private readonly int latestUpdater_;
     private readonly List<string> changelog_;
 
     private readonly Timer saveTimer_;
@@ -84,20 +88,17 @@ namespace KN_Core {
     private static Assembly assembly_;
 
     public Core() {
-      CheckUpdaterLocation();
-
       Version.Initialize();
       latestVersion_ = Version.GetVersion();
       latestPatch_ = Version.GetPatch();
+      latestUpdater_ = Version.GetUpdaterVersion();
       changelog_ = Version.GetChangelog();
 
       badVersion_ = KnConfig.ClientVersion != GameVersion.version;
       ShowUpdateWarn = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
-      scheduleUpdate_ = latestPatch_ < KnConfig.Patch;
+      scheduleUpdate_ = latestPatch_ != KnConfig.Patch;
 
-      if (ShowUpdateWarn) {
-        DownloadNewUpdater();
-      }
+      CheckForNewUpdater();
 
       shouldRequestTools_ = true;
 
@@ -194,6 +195,8 @@ namespace KN_Core {
       Skin.LoadAll();
 
       Locale.Initialize(KnConfig.Get<string>("locale"), this);
+
+      saveUpdaterLog_ = KnConfig.Get<bool>("save_updater_log");
 
       if (badVersion_) {
         return;
@@ -563,50 +566,79 @@ namespace KN_Core {
     }
 
     public void StartUpdater(bool outdated = false) {
-      string updater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
-
       if (scheduleUpdate_) {
-        DownloadNewUpdater();
+        CheckForNewUpdater();
       }
+
+      bool devMode = IsDevToolsEnabled && !badVersion_;
 
       string version = scheduleUpdate_ || outdated ? "0.0.0" : KnConfig.StringVersion;
-      bool devMode = IsDevToolsEnabled && !badVersion_;
-      string args = $"{version} {devMode}";
+      string args = $"{version} \"{(devMode ? Paths.GameRootPath + Path.DirectorySeparatorChar + "KnUpdate" : Paths.PluginPath)}\" {saveUpdaterLog_}";
 
-      Log.Write($"[KN_Core]: Starting updater, current version: {version}, dev mode: {devMode}");
-      var proc = Process.Start(updater, args);
+      Log.Write($"[KN_Updater]: Starting updater args: {args}");
+      var proc = Process.Start(UpdaterPath, args);
       if (proc != null) {
         proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-        Log.Write("[KN_Core]: Updater started ...");
+        Log.Write("[KN_Updater]: Updater started ...");
       }
       else {
-        Log.Write("[KN_Core]: Unable to start updater");
+        Log.Write("[KN_Updater]: Unable to start updater");
       }
     }
 
-    public void DownloadNewUpdater() {
+    public void CheckForNewUpdater() {
+      string oldUpdater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
+      try {
+        if (File.Exists(oldUpdater)) {
+          File.Delete(oldUpdater);
+        }
+      }
+      catch {
+        // ignored
+      }
+
+      bool shouldDownload;
+      if (File.Exists(UpdaterPath)) {
+        Log.Write("[KN_Updater]: Checking updater version ...");
+        var proc = Process.Start(UpdaterPath);
+        if (proc != null) {
+          proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+          proc.WaitForExit();
+          int version = proc.ExitCode;
+
+          shouldDownload = version != latestUpdater_;
+          Log.Write($"[KN_Updater]: Updater version: C: {version} / L: {latestUpdater_}, download: {shouldDownload}");
+        }
+        else {
+          Log.Write("[KN_Updater]: Unable to start updater");
+          shouldDownload = true;
+        }
+      }
+      else {
+        shouldDownload = true;
+      }
+
+      if (shouldDownload) {
+        DownloadNewUpdater(UpdaterPath);
+      }
+    }
+
+    private static void DownloadNewUpdater(string path) {
       var bytes = WebDataLoader.DownloadNewUpdater();
 
-      string updater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
+      if (bytes == null) {
+        return;
+      }
 
       try {
         using (var memory = new MemoryStream(bytes)) {
-          using (var fileStream = File.Open(updater, FileMode.Create)) {
+          using (var fileStream = File.Open(path, FileMode.Create)) {
             memory.CopyTo(fileStream);
           }
         }
       }
       catch (Exception e) {
-        Log.Write($"[KN_Core]: Failed to save updater to disc, {e.Message}");
-      }
-    }
-
-    private void CheckUpdaterLocation() {
-      string updater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
-
-      if (!File.Exists(updater)) {
-        Log.Write($"[KN_Core]: Unable to locate updater at '{updater}'");
-        throw new Exception($"[KN_Core]: Unable to locate updater at '{updater}'");
+        Log.Write($"[KN_Updater]: Failed to save updater to disc, {e.Message}");
       }
     }
 
