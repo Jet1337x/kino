@@ -148,6 +148,7 @@ namespace KN_Core {
 
         if (modName != "CHEATS" && modName != "AIR") {
           scheduleUpdate_ = true;
+          Log.Write("[KN_Core]: Scheduling update.");
         }
         return;
       }
