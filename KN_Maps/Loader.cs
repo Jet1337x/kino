@@ -5,7 +5,7 @@ namespace KN_Maps {
   [BepInPlugin("trbflxr.kn_maps", "KN_Maps", KnConfig.StringVersion)]
   public class Loader : BaseUnityPlugin {
     private const int Version = 124;
-    private const int Patch = 2;
+    private const int Patch = 3;
     private const int ClientVersion = 271;
 
     public Loader() {
