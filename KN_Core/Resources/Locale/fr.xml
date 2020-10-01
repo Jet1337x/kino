@@ -93,7 +93,7 @@
   <key id="tl_brightness" value="LUMINOSITÉ PHARES ARRIÈRE"/>
   <key id="tl_angle" value="ANGLE PHARES ARRIÈRE"/>
   <key id="tl_pitch" value="PITCH PHARES ARRIÈRE"/>
-  <key id="add_lights_all" value="AJOUTEZ PHARES À TOUT LE MONDE"/>
+  <key id="add_lights_all" value="PHARES À TOUT LE MONDE"/>
   <key id="add_lights_to" value="AJOUTER PHARES À"/>
 
   <!--WORLD LIGHTS-->
