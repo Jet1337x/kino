@@ -15,8 +15,8 @@ namespace KN_Core {
 
   public class KnConfig {
     public const int ClientVersion = 271;
-    public const int Version = 121;
-    public const string StringVersion = "1.2.1";
+    public const int Version = 122;
+    public const string StringVersion = "1.2.2";
 
     //cx stuff
     public const string CxUiCanvasName = "Root";
