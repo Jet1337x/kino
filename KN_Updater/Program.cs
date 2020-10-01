@@ -5,20 +5,22 @@ namespace KN_Updater {
   internal class Program {
     private const int Version = 1;
 
-    public static void Main(string[] args) {
-      Log.Init("KN_UpdaterLog.txt");
+    private static string logPath_ = "";
+    private static bool saveLog_ = false;
 
+    public static void Main(string[] args) {
       const string octokit = "KN_Updater.Data.Octokit.dll";
       Embedded.Load(octokit, "Octokit.dll");
 
       AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 
-      if (args.Length < 2) {
-        Log.Write($"Updater version: {Version}");
-        Log.Save();
+      if (args.Length < 3) {
+        Console.WriteLine($"Updater version: {Version}");
         Environment.Exit(Version);
         return;
       }
+
+      Log.Init();
 
       string version = args[0];
       Log.Write($"Current version: {version}");
@@ -26,22 +28,32 @@ namespace KN_Updater {
       string plugins = args[1];
       Log.Write($"Mod path: {plugins}");
 
+      logPath_ = plugins;
+
+      saveLog_ = Convert.ToBoolean(args[2]);
+
       var updater = new Updater();
       if (!updater.Initialize()) {
         Log.Write("Kino update failed. Exiting ...");
-        Log.Save();
+        SaveLog();
         return;
       }
 
       if (!updater.IsUpdateNeeded(version)) {
         Log.Write("No update needed. Exiting ...");
-        Log.Save();
+        SaveLog();
         return;
       }
 
       updater.Run(plugins);
 
-      Log.Save();
+      SaveLog();
+    }
+
+    private static void SaveLog() {
+      if (saveLog_) {
+        Log.Save(logPath_);
+      }
     }
 
     private static Assembly AssemblyResolve(object sender, ResolveEventArgs args) {

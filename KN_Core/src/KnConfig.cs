@@ -223,6 +223,7 @@ namespace KN_Core {
       defaultParams_["air_height_max"] = 0.5f;
       defaultParams_["air_height_min"] = 0.01f;
 
+      defaultParams_["save_updater_log"] = false;
       defaultParams_["locale"] = "en";
 
       Controls.LoadDefault();
