@@ -3,8 +3,8 @@ using System.IO;
 using System.Reflection;
 
 namespace KN_Updater {
-  internal class Program {
-    private const int Version = 101;
+  internal static class Program {
+    private const int Version = 01;
 
     private static string version_ = "0.0.0";
     private static string modPath_ = "";

@@ -6,7 +6,7 @@ from os import fdopen, remove
 
 version = ['1', '2', '4']
 patch = '0'
-updater = '101'
+updater = '01'
 client_version = ['2', '7', '1']
 
 version_int = ''.join(version)
@@ -92,9 +92,8 @@ def replace_core_version(file_path):
             found = False
             found_patch = False
             found_updater = False
-            found_updater_prog = False
             for line in old_file:
-                if found and found_patch and found_updater and found_updater_prog:
+                if found and found_patch and found_updater:
                     new_file.write(line)
                 else:
                     if not found and 'Version=' in line:
@@ -105,10 +104,7 @@ def replace_core_version(file_path):
                         new_file.write(re.sub('\d{1}', patch, line))
                     elif not found_updater and 'Updater=' in line:
                         found_updater = True
-                        new_file.write(re.sub('\d{3}', updater, line))
-                    elif not found_updater_prog and ' Version = ' in line:
-                        found_updater_prog = True
-                        new_file.write(re.sub('\d{3}', updater, line))
+                        new_file.write(re.sub('\d{2}', updater, line))
                     else:
                         new_file.write(line) 
 
@@ -128,7 +124,7 @@ def replace_updater_version(file_path):
                 else:
                     if not found and ' Version = ' in line:
                         found = True
-                        new_file.write(re.sub('\d{3}', updater, line))
+                        new_file.write(re.sub('\d{2}', updater, line))
                     else:
                         new_file.write(line) 
 
