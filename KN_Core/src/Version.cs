@@ -14,16 +14,42 @@ namespace KN_Core {
       if (data_ == null || data_.Count <= 0) {
         return 0;
       }
-      string version = data_[0].Replace("Version=", "");
-      return Convert.ToInt32(version);
+      try {
+        string version = data_[0].Replace("Version=", "");
+        return Convert.ToInt32(version);
+      }
+      catch (Exception) {
+        Log.Write("[KN_Version]: Unable to parse version");
+        return 0;
+      }
     }
 
     public static int GetPatch() {
       if (data_ == null || data_.Count <= 1) {
         return 0;
       }
-      string patch = data_[1].Replace("Patch=", "");
-      return Convert.ToInt32(patch);
+      try {
+        string patch = data_[1].Replace("Patch=", "");
+        return Convert.ToInt32(patch);
+      }
+      catch (Exception) {
+        Log.Write("[KN_Version]: Unable to parse patch version");
+        return int.MaxValue;
+      }
+    }
+
+    public static int GetUpdaterVersion() {
+      if (data_ == null || data_.Count <= 2) {
+        return 0;
+      }
+      try {
+        string version = data_[2].Replace("Updater=", "");
+        return Convert.ToInt32(version);
+      }
+      catch (Exception) {
+        Log.Write("[KN_Version]: Unable to parse updater version");
+        return int.MaxValue;
+      }
     }
 
     public static List<string> GetChangelog() {
