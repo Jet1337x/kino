@@ -1,6 +1,5 @@
-Version=123
+Version=124
 Patch=0
 Updater=101
-Important updater fix
-Added new locales by Allicy (JP), Sleepy (PL), Gingy Bread (NL)
-Fixed compatibility with Goat's MapLoader
+More updater fixes (now this scary exe is not needed in the mod folder)
+Fixed JP locale

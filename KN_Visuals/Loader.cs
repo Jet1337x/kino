@@ -4,7 +4,7 @@ using KN_Core;
 namespace KN_Visuals {
   [BepInPlugin("trbflxr.kn_visuals", "KN_Visuals", KnConfig.StringVersion)]
   public class Loader : BaseUnityPlugin {
-    private const int Version = 123;
+    private const int Version = 124;
     private const int Patch = 0;
     private const int ClientVersion = 271;
 
