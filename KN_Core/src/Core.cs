@@ -91,6 +91,8 @@ namespace KN_Core {
       badVersion_ = KnConfig.ClientVersion != GameVersion.version;
       ShowUpdateWarn = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
 
+      DownloadNewUpdater();
+
       shouldRequestTools_ = true;
 
       AccessValidator.Initialize("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2lub19kYXRhL3Jhdy9tYXN0ZXIvZGF0YS5rbmQ=");
@@ -558,6 +560,27 @@ namespace KN_Core {
       }
       else {
         Log.Write("[KN_Core]: Unable to start updater");
+      }
+    }
+
+    public void DownloadNewUpdater() {
+      if (!ShowUpdateWarn) {
+        return;
+      }
+
+      var bytes = WebDataLoader.DownloadNewUpdater();
+
+      string updater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
+
+      try {
+        using (var memory = new MemoryStream(bytes)) {
+          using (var fileStream = File.Open(updater, FileMode.Create)) {
+            memory.CopyTo(fileStream);
+          }
+        }
+      }
+      catch (Exception e) {
+        Log.Write($"[KN_Core]: Failed to save updater to disc, {e.Message}");
       }
     }
 

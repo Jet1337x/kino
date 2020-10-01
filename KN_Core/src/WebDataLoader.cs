@@ -36,5 +36,21 @@ namespace KN_Core {
         }
       }
     }
+
+    public static byte[] DownloadNewUpdater() {
+      const string updaterUrl = "https://github.com/trbflxr/kino/raw/master/Updater/KN_Updater.exe";
+
+      Log.Write($"[KN_Loader]: Downloading new updater from '{updaterUrl}'");
+
+      using (var client = new WebClient()) {
+        try {
+          return client.DownloadData(updaterUrl);
+        }
+        catch (Exception e) {
+          Log.Write($"[KN_Loader]: Failed to download new updater from, {e.Message}");
+          return null;
+        }
+      }
+    }
   }
 }
