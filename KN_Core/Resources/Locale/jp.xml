@@ -39,7 +39,7 @@
   <key id="about2" value="もしご質問やご意見があれば"/>
   <key id="about3" value="私たちに連絡してください"/>
   <key id="about4" value="trbflxr#8814 or John Sawyer#6915"/>
-  <key id="about5" value="または mod のディスコード (上のボタン) にある"/>
+  <key id="about5" value="または mod のディスコード (上のボタン) から連絡してください"/>
   <key id="about6" value="以下の方々にも感謝しています Cursed, MRo と diip "/>
   <key id="about7" value="翻訳者 by:"/>
   <key id="about0v" value="お使いのCarXクライアントのバージョンが違います"/>
@@ -55,8 +55,8 @@
   <key id="hide_names" value="名前を隠す"/>
   <key id="backfire" value="カスタムアフターファイヤ"/>
   <key id="white_smoke" value="全員を白煙化"/>
-  <key id="sync_lights" value="シンクライト"/>
-  <key id="disable_consoles" value="コンソールプレイヤーとの接触"/>
+  <key id="sync_lights" value="ライトを同期"/>
+  <key id="disable_consoles" value="コンソールプレイヤーとの接触判定"/>
   <key id="hide_consoles" value="コンソールプレイヤーを隠す"/>
   <key id="log_engines" value="ログエンジン"/>
 
@@ -74,7 +74,7 @@
   <key id="shift" value="カメラ位置"/>
   <key id="save_current" value="リバリーを保存"/>
   <key id="load_design" value="リバリーを読込"/>
-  <key id="apply_design" value="リバリーを適用"/>
+  <key id="apply_design" value="現在編集中の車にリバリーを適用"/>
   <key id="add_livery" value="リバリーを新たに追加"/>
   <key id="restore_design" value="デザインを元に戻す"/>
 
@@ -82,7 +82,7 @@
   <key id="lights_enable_own" value="ライトを点灯"/>
   <key id="debug_obj" value="デバッグオブジェクト"/>
   <key id="hl_illumination" value="ヘッドライトイルミネーション"/>
-  <key id="hide_lights_after" value="HIDE LIGHTS AFTER"/>
+  <key id="hide_lights_after" value="他プレイヤーのライトが隠れる距離"/>
   <key id="hl_left" value="左ヘッドライト"/>
   <key id="hl_right" value="右ヘッドライト"/>
   <key id="hl_brightness" value="ヘッドライトの明るさ"/>
