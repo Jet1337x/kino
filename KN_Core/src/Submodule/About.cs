@@ -10,11 +10,13 @@ namespace KN_Core {
     public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
       x += Gui.OffsetSmall;
 
+      float width = Core.GuiTabsWidth - Gui.OffsetGuiX * 2.0f;
+
       if (badVersion_) {
-        GuiBadVersion(gui, ref x, ref y, Core.GuiTabsWidth, Gui.Height);
+        GuiBadVersion(gui, ref x, ref y, width, Gui.Height);
       }
       else {
-        GuiAbout(gui, ref x, ref y, Core.GuiTabsWidth, Gui.Height);
+        GuiAbout(gui, ref x, ref y, width, Gui.Height);
       }
     }
 
