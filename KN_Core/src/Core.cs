@@ -92,7 +92,7 @@ namespace KN_Core {
       badVersion_ = KnConfig.ClientVersion != GameVersion.version;
       ShowUpdateWarn = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
 
-      DownloadNewUpdater();
+      DownloadNewUpdater(false);
 
       shouldRequestTools_ = true;
 
@@ -141,8 +141,12 @@ namespace KN_Core {
       if (badVersion_ && Locale.Get(mod.Name) != Locale.Get("about") ||
           mod.Version != KnConfig.Version ||
           mod.ClientVersion != GameVersion.version) {
-        Log.Write($"[KN_Core]: Mod {Locale.Get(mod.Name)} outdated!");
-        scheduleUpdate_ = true;
+        string modName = Locale.Get(mod.Name);
+        Log.Write($"[KN_Core]: Mod {modName} outdated!");
+
+        if (modName != "CHEATS" && modName != "AIR"){
+          scheduleUpdate_ = true;
+        }
         return;
       }
 
@@ -554,6 +558,10 @@ namespace KN_Core {
     public void StartUpdater(bool outdated = false) {
       string updater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
 
+      if (scheduleUpdate_) {
+        DownloadNewUpdater(true);
+      }
+
       string version = scheduleUpdate_ || outdated ? "0.0.0" : KnConfig.StringVersion;
       bool devMode = IsDevToolsEnabled && !badVersion_;
       string args = $"{version} {devMode}";
@@ -569,8 +577,8 @@ namespace KN_Core {
       }
     }
 
-    public void DownloadNewUpdater() {
-      if (!ShowUpdateWarn) {
+    public void DownloadNewUpdater(bool force) {
+      if (!force && !ShowUpdateWarn) {
         return;
       }
 
