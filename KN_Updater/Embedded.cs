@@ -19,7 +19,7 @@ namespace KN_Updater {
 
       using (var stream = currentAssembly.GetManifestResourceStream(embeddedResource)) {
         if (stream == null) {
-          Console.WriteLine($"'{embeddedResource}' is not found in Embedded Resources.");
+          Log.Write($"'{embeddedResource}' is not found in Embedded Resources.");
           return;
         }
 

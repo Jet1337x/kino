@@ -27,22 +27,22 @@ namespace KN_Updater {
             latestAsset_ = latest_.Assets[0];
           }
           else {
-            Console.WriteLine("Bad release, assets count is 0");
+            Log.Write("Bad release, assets count is 0");
             return false;
           }
         }
         else {
-          Console.WriteLine("Releases count is 0");
+          Log.Write("Releases count is 0");
           return false;
         }
       }
       catch (Exception e) {
-        Console.WriteLine($"Failed to load releases, {e.Message}");
+        Log.Write($"Failed to load releases, {e.Message}");
         return false;
       }
 
-      Console.WriteLine($"Remote initialized. Latest release: {latest_.TagName} ({latest_.Name}), at: {latest_.Url}");
-      Console.WriteLine($"Selected asset '{latestAsset_.Name}', download url: {latestAsset_.BrowserDownloadUrl}");
+      Log.Write($"Remote initialized. Latest release: {latest_.TagName} ({latest_.Name}), at: {latest_.Url}");
+      Log.Write($"Selected asset '{latestAsset_.Name}', download url: {latestAsset_.BrowserDownloadUrl}");
 
       LatestVersion = latest_.TagName;
 
@@ -61,7 +61,7 @@ namespace KN_Updater {
           return client.DownloadData(latestAsset_.BrowserDownloadUrl);
         }
         catch (Exception e) {
-          Console.WriteLine($"Unable to load release '{latestAsset_.Name}', from '{latestAsset_.BrowserDownloadUrl}' ({e.Message})");
+          Log.Write($"Unable to load release '{latestAsset_.Name}', from '{latestAsset_.BrowserDownloadUrl}' ({e.Message})");
           return null;
         }
       }

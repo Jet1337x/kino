@@ -16,7 +16,7 @@ namespace KN_Updater {
 
     public bool Initialize() {
       if (!remote_.Initialize()) {
-        Console.WriteLine("Failed to initialize remote ...");
+        Log.Write("Failed to initialize remote ...");
         return false;
       }
       return true;
@@ -29,66 +29,48 @@ namespace KN_Updater {
       return remote > current;
     }
 
-    public void Run(bool dev) {
-      Console.WriteLine($"Updating kino to {remote_.LatestVersion}");
+    public void Run(string modPath) {
+      Log.Write($"Updating kino to {remote_.LatestVersion}");
 
       var bytes = remote_.DownloadLatestRelease();
 
       int count = 0;
       while (true) {
         var proc = Process.GetProcessesByName(ProcName);
-        if (proc.Length == 0 || dev) {
-          string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-          string strWorkPath = Path.GetDirectoryName(strExeFilePath);
-          Console.WriteLine($"Mod path: {strWorkPath}");
-
-          if (UnzipModFiles(bytes, strWorkPath, dev)) {
-            Console.WriteLine("Kino mod update completed!");
+        if (proc.Length == 0) {
+          if (UnzipModFiles(bytes, modPath)) {
+            Log.Write("Kino mod update completed!");
           }
           break;
         }
 
         ++count;
-        Console.WriteLine($"CarX is still running ({count})");
+        Log.Write($"CarX is still running ({count})");
         Thread.Sleep(1000);
-      }
-
-      if (dev) {
-        Console.ReadKey();
       }
     }
 
-    private static bool UnzipModFiles(byte[] bytes, string plugins, bool dev) {
-      string updater = plugins + Path.DirectorySeparatorChar + "KN_Updater.exe";
-      string updateDir = "KnUpdate" + Path.DirectorySeparatorChar;
-
-      if (dev) {
-        if (!Directory.Exists(updateDir)) {
-          Directory.CreateDirectory(updateDir);
-        }
+    private static bool UnzipModFiles(byte[] bytes, string modPath) {
+      if (!Directory.Exists(modPath)) {
+        Directory.CreateDirectory(modPath);
       }
 
-      Console.WriteLine($"Unzipping mod ({bytes.Length} bytes) ...");
+      Log.Write($"Unzipping mod ({bytes.Length} bytes) ...");
 
       try {
         using (var memory = new MemoryStream(bytes)) {
           using (var zip = new ZipArchive(memory, ZipArchiveMode.Read)) {
             foreach (var entry in zip.Entries) {
-              Console.WriteLine($"Processing {entry.Name} ...");
+              Log.Write($"Processing {entry.Name} ...");
               using (var stream = entry.Open()) {
-                string path = dev ? updateDir + entry.Name : plugins + Path.DirectorySeparatorChar + entry.Name;
-                if (path == updater) {
-                  Console.WriteLine("Skipping updater exe file");
-                  continue;
-                }
+                string path = modPath + Path.DirectorySeparatorChar + entry.Name;
                 try {
                   using (var fileStream = File.Open(path, FileMode.Create)) {
                     stream.CopyTo(fileStream);
                   }
                 }
                 catch (Exception e) {
-                  Console.WriteLine($"Unable to copy file: '{path}', {e.Message}");
-                  throw;
+                  Log.Write($"Unable to copy file: '{path}', {e.Message}");
                 }
               }
             }
@@ -96,7 +78,7 @@ namespace KN_Updater {
         }
       }
       catch (Exception e) {
-        Console.WriteLine($"Failed to unzip mod, {e.Message}");
+        Log.Write($"Failed to unzip mod, {e.Message}");
         return false;
       }
       return true;

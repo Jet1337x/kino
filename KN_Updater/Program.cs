@@ -3,37 +3,45 @@ using System.Reflection;
 
 namespace KN_Updater {
   internal class Program {
+    private const int Version = 1;
+
     public static void Main(string[] args) {
+      Log.Init("KN_UpdaterLog.txt");
+
       const string octokit = "KN_Updater.Data.Octokit.dll";
       Embedded.Load(octokit, "Octokit.dll");
 
       AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 
       if (args.Length < 2) {
-        Console.WriteLine("Unable to get current version, bad argc");
+        Log.Write($"Updater version: {Version}");
+        Log.Save();
+        Environment.Exit(Version);
         return;
       }
 
       string version = args[0];
-      Console.WriteLine($"Current version: {version}");
+      Log.Write($"Current version: {version}");
 
-      bool devMode = Convert.ToBoolean(args[1]);
-      if (devMode) {
-        Console.WriteLine("DEV MODE");
-      }
+      string plugins = args[1];
+      Log.Write($"Mod path: {plugins}");
 
       var updater = new Updater();
       if (!updater.Initialize()) {
-        Console.WriteLine("Kino update failed. Exiting ...");
+        Log.Write("Kino update failed. Exiting ...");
+        Log.Save();
         return;
       }
 
       if (!updater.IsUpdateNeeded(version)) {
-        Console.WriteLine("No update needed. Exiting ...");
+        Log.Write("No update needed. Exiting ...");
+        Log.Save();
         return;
       }
 
-      updater.Run(devMode);
+      updater.Run(plugins);
+
+      Log.Save();
     }
 
     private static Assembly AssemblyResolve(object sender, ResolveEventArgs args) {
