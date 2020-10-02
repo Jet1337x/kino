@@ -26,7 +26,7 @@ namespace KN_Core {
 
     public static int GetPatch() {
       if (data_ == null || data_.Count <= 1) {
-        return 0;
+        return int.MaxValue;
       }
       try {
         string patch = data_[1].Replace("Patch=", "");
@@ -40,7 +40,7 @@ namespace KN_Core {
 
     public static int GetUpdaterVersion() {
       if (data_ == null || data_.Count <= 2) {
-        return 0;
+        return int.MaxValue;
       }
       try {
         string version = data_[2].Replace("Updater=", "");
