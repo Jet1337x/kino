@@ -10,10 +10,10 @@ using Object = UnityEngine.Object;
 
 namespace KN_Core {
   public class Core : ICore {
-    private const int Version = 126;
-    private const int Patch = 0;
+    private const int Version = 125;
+    private const int Patch = 1;
     private const int ClientVersion = 272;
-    private const string StringVersion = "1.2.6";
+    private const string StringVersion = "1.2.5";
 
     private const float SoundReloadDistance = 70.0f;
 
