@@ -89,10 +89,6 @@ namespace KN_Core {
 
             try {
               dictionary.Add(key, value);
-
-              if (id == "en") {
-                Log.Write($"[KN_Core::Locale]: Added key: id: {key}, text: {value}");
-              }
             }
             catch (Exception e) {
               Log.Write($"[KN_Core::Locale]: Failed to add locale entry: {key} -> {value}, {e.Message}");
