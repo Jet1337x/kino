@@ -253,7 +253,7 @@ namespace KN_Visuals {
 
       using (var stream = new MemoryStream()) {
         using (var writer = new BinaryWriter(stream)) {
-          writer.Write(ModLoader.ModVersion);
+          writer.Write(Version);
           writer.Write(name);
           writer.Write(buffer.Length);
           writer.Write(id);
