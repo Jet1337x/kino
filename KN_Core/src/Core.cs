@@ -109,8 +109,6 @@ namespace KN_Core {
 
       AccessValidator.Initialize("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2lub19kYXRhL3Jhdy9tYXN0ZXIvZGF0YS5rbmQ=");
 
-      KillFlyMod();
-
       CoreInstance = this;
 
       Patcher.Hook();

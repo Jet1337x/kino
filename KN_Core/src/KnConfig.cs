@@ -16,7 +16,7 @@ namespace KN_Core {
   public class KnConfig {
     public const int ClientVersion = 272;
     public const int Version = 125;
-    public const int Patch = 0;
+    public const int Patch = 1;
     public const string StringVersion = "1.2.5";
 
     //cx stuff
