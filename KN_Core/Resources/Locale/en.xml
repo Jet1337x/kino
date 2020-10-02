@@ -6,6 +6,7 @@
   <key id="settings" value="SETTINGS"/>
   <key id="maps" value="MAPS"/>
   <key id="about" value="ABOUT"/>
+  <key id="extras" value="EXTRAS"/>
 
   <!--COMMON-->
   <key id="language" value="LANGUAGE"/>
