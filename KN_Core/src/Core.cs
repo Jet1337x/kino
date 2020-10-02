@@ -99,7 +99,7 @@ namespace KN_Core {
       ColorPicker = new ColorPicker();
       FilePicker = new FilePicker();
 
-      AddMod(new About(this, Version, Patch, ClientVersion, badVersion_));
+      AddMod(new About(this, loader_.LatestVersion, loader_.LatestPatch, GameVersion.version, badVersion_));
 
       if (badVersion_) {
         return;
@@ -125,10 +125,10 @@ namespace KN_Core {
         return;
       }
 
+      // locale is still loading if about or settings added
       string modName = Locale.Get(mod.Name);
       bool skipMod = false;
-      if (badVersion_ && modName != Locale.Get("about") ||
-          mod.Version != loader_.LatestVersion ||
+      if (mod.Version != loader_.LatestVersion ||
           mod.ClientVersion != GameVersion.version ||
           mod.Patch != loader_.LatestPatch) {
         Log.Write($"[KN_Core]: Mod {modName} outdated!");

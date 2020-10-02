@@ -1,6 +1,5 @@
 using BepInEx;
 using KN_Core;
-using KN_Loader;
 
 namespace KN_Maps {
   [BepInPlugin("trbflxr.kn_maps", "KN_Maps", StringVersion)]
