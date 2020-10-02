@@ -1,25 +1,23 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using BepInEx;
-using BepInEx.Bootstrap;
 using FMODUnity;
 using GameInput;
+using KN_Loader;
 using SyncMultiplayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace KN_Core {
-  [BepInPlugin("trbflxr.kn_0core", "KN_Core", KnConfig.StringVersion)]
-  public class Core : BaseUnityPlugin {
+  public class Core : ICore {
+    private const int Version = 125;
+    private const int Patch = 1;
+    private const int ClientVersion = 272;
+
     private const float SoundReloadDistance = 70.0f;
 
     private const float GuiXLeft = 25.0f;
     private const float GuiYTop = 25.0f;
-
-    private static readonly string UpdaterPath = Path.GetTempPath() + Path.DirectorySeparatorChar + "KN_Updater.exe";
 
     public static Core CoreInstance { get; private set; }
 
@@ -47,7 +45,6 @@ namespace KN_Core {
     public bool IsCheatsEnabled { get; private set; }
     public bool IsDevToolsEnabled { get; private set; }
 
-    public bool ShowUpdateWarn { get; set; }
     public bool DisplayTextAsId { get; set; }
 
     public Udp Udp { get; }
@@ -57,8 +54,6 @@ namespace KN_Core {
     public Swaps Swaps { get; }
 
     private bool shouldRequestTools_;
-    private bool scheduleUpdate_;
-    private bool saveUpdaterLog_;
 
     private string prevScene_;
     private bool prevInGarage_;
@@ -73,11 +68,8 @@ namespace KN_Core {
     private bool soundReload_;
     private bool soundReloadNext_;
 
+    private readonly ModLoader loader_;
     private readonly bool badVersion_;
-    private readonly int latestVersion_;
-    private readonly int latestPatch_;
-    private readonly int latestUpdater_;
-    private readonly List<string> changelog_;
 
     private readonly Timer saveTimer_;
 
@@ -85,39 +77,17 @@ namespace KN_Core {
 
     private readonly Gui gui_;
 
-    private static Assembly assembly_;
+    public Core(ModLoader loader) {
+      loader_ = loader;
+      badVersion_ = loader_.BadVersion;
 
-    public Core() {
-      Version.Initialize();
-      latestVersion_ = Version.GetVersion();
-      latestPatch_ = Version.GetPatch();
-      latestUpdater_ = Version.GetUpdaterVersion();
-      changelog_ = Version.GetChangelog();
-
-      badVersion_ = KnConfig.ClientVersion != GameVersion.version;
-      ShowUpdateWarn = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
-      scheduleUpdate_ = latestPatch_ != KnConfig.Patch;
-
-      Log.Write($"[KN_Core]: Core status version: {KnConfig.Version} / {latestVersion_}, " +
-                $"patch: {KnConfig.Patch} / {latestPatch_}, " +
-                $"updater: {latestUpdater_}, " +
-                $"(bv: {badVersion_}, uw: {ShowUpdateWarn}, update: {scheduleUpdate_})");
-
-      CheckForNewUpdater();
+      Embedded.Initialize();
 
       shouldRequestTools_ = true;
 
       AccessValidator.Initialize("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2lub19kYXRhL3Jhdy9tYXN0ZXIvZGF0YS5rbmQ=");
 
-      CoreInstance = this;
-
-      Patcher.Hook();
-
-      assembly_ = Assembly.GetExecutingAssembly();
-
       KnConfig = new KnConfig();
-
-      Swaps = new Swaps(this);
 
       gui_ = new Gui();
 
@@ -128,40 +98,47 @@ namespace KN_Core {
       ColorPicker = new ColorPicker();
       FilePicker = new FilePicker();
 
-      AddMod(new About(this, KnConfig.Version, KnConfig.Patch, GameVersion.version, badVersion_));
+      AddMod(new About(this, ModLoader.ModVersion, ModLoader.Patch, GameVersion.version, badVersion_));
 
       if (badVersion_) {
         return;
       }
 
-      Settings = new Settings(this, KnConfig.Version, KnConfig.Patch, KnConfig.ClientVersion);
+      Settings = new Settings(this, ModLoader.ModVersion, ModLoader.Patch, ModLoader.ClientVersion);
       AddMod(Settings);
+
+      Swaps = new Swaps(this);
+      CarPicker.OnCarLoaded += Swaps.OnCarLoaded;
 
       Udp = new Udp();
       Udp.ProcessPacket += HandlePacket;
 
-      CarPicker.OnCarLoaded += Swaps.OnCarLoaded;
-
       saveTimer_ = new Timer(60.0f);
       saveTimer_.Callback += KnConfig.Write;
+
+      CoreInstance = this;
     }
 
     public void AddMod(BaseMod mod) {
+      if (mod == null) {
+        return;
+      }
+
+      string modName = Locale.Get(mod.Name);
       bool skipMod = false;
-      if (badVersion_ && Locale.Get(mod.Name) != Locale.Get("about") ||
-          mod.Version != KnConfig.Version ||
+      if (badVersion_ && modName != Locale.Get("about") ||
+          mod.Version != ModLoader.ModVersion ||
           mod.ClientVersion != GameVersion.version ||
-          mod.Patch != KnConfig.Patch) {
-        string modName = Locale.Get(mod.Name);
+          mod.Patch != ModLoader.Patch) {
         Log.Write($"[KN_Core]: Mod {modName} outdated!");
 
         if (modName != "CHEATS" && modName != "AIR") {
-          scheduleUpdate_ = true;
+          loader_.ForceUpdate = true;
           Log.Write("[KN_Core]: Scheduling update.");
           return;
         }
 
-        if (mod.Version == KnConfig.Version && mod.ClientVersion == GameVersion.version) {
+        if (mod.Version == ModLoader.ModVersion && mod.ClientVersion == GameVersion.version) {
           skipMod = true;
         }
       }
@@ -178,6 +155,7 @@ namespace KN_Core {
       }
 
       mods_.Add(mod);
+      CarPicker.OnCarLoaded += mod.OnCarLoaded;
       mods_.Sort((m0, m1) => m0.Id.CompareTo(m1.Id));
 
       UpdateLanguage();
@@ -195,58 +173,49 @@ namespace KN_Core {
       }
 
       mods_.Remove(mod);
-      tabs_.Remove(Locale.Get(mod.Name));
+      CarPicker.OnCarLoaded -= mod.OnCarLoaded;
+      UpdateLanguage();
 
       mod.OnStop();
 
       selectedTab_ = 0;
       selectedModId_ = mods_[selectedTab_].Id;
 
-      Log.Write($"[KN_Core]: Mod {Locale.Get(mod.Name)} was removed");
+      Log.Write($"[KN_Core]: Mod {mod.Name} was removed");
     }
 
-    private void Awake() {
+    public void OnInit() {
       KnConfig.Read();
       Skin.LoadAll();
 
-      Locale.Initialize(KnConfig.Get<string>("locale"), this);
+      Locale.Initialize(KnConfig.Get<string>("locale"));
+      UpdateLanguage();
 
-      saveUpdaterLog_ = KnConfig.Get<bool>("save_updater_log");
+      loader_.SaveUpdateLog = KnConfig.Get<bool>("save_updater_log");
 
       if (badVersion_) {
         return;
       }
 
-      Swaps.OnStart();
+      Swaps.OnInit();
 
-      Settings.Awake();
+      Settings.OnInit();
     }
 
-    private void OnDestroy() {
+    public void OnDeinit() {
       if (badVersion_) {
         return;
       }
 
-      Swaps.OnStop();
+      Swaps.OnDeinit();
 
       foreach (var mod in mods_) {
         mod.OnStop();
       }
       KnConfig.Write();
-
-      StartUpdater();
     }
 
-    public void ReloadAll() {
-      Udp.ReloadClient = true;
-      Udp.ReloadSubRoom = true;
-
-      foreach (var mod in mods_) {
-        mod.OnReloadAll();
-      }
-    }
-
-    private void FixedUpdate() {
+    public void FixedUpdate() {
       if (badVersion_) {
         return;
       }
@@ -256,7 +225,7 @@ namespace KN_Core {
       }
     }
 
-    private void Update() {
+    public void Update() {
       AccessValidator.Update();
 
       if (shouldRequestTools_) {
@@ -265,7 +234,9 @@ namespace KN_Core {
           shouldRequestTools_ = false;
         }
         if (status == AccessValidator.Status.Granted) {
+          // to write update log
           IsDevToolsEnabled = true;
+          loader_.DevMode = true;
         }
       }
 
@@ -292,7 +263,7 @@ namespace KN_Core {
       }
 
       if (IsInGarage && cameraRotation_ == null) {
-        cameraRotation_ = FindObjectOfType<CameraRotation>();
+        cameraRotation_ = Object.FindObjectOfType<CameraRotation>();
       }
 
       bool captureInput = mods_[selectedTab_].WantsCaptureInput();
@@ -303,12 +274,12 @@ namespace KN_Core {
       }
 
       if (IsGuiEnabled && captureInput) {
-        if (InputManager.GetLockedInputObject() != this) {
-          InputManager.LockInput(this);
+        if (InputManager.GetLockedInputObject() != loader_) {
+          InputManager.LockInput(loader_);
         }
       }
       else {
-        if (InputManager.GetLockedInputObject() == this) {
+        if (InputManager.GetLockedInputObject() == loader_) {
           InputManager.LockInput(null);
         }
       }
@@ -353,7 +324,7 @@ namespace KN_Core {
       HideNames();
     }
 
-    public void OnGUI() {
+    public void OnGui() {
       if (!badVersion_) {
         Settings.Tachometer.OnGui(mods_[selectedTab_].WantsHideUi());
       }
@@ -362,7 +333,7 @@ namespace KN_Core {
         return;
       }
 
-      if (ShowUpdateWarn) {
+      if (loader_.ShowUpdateWarn) {
         GuiUpdateWarn();
       }
 
@@ -370,7 +341,7 @@ namespace KN_Core {
       float y = GuiXLeft;
 
       bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight,
-        $"KINO v{KnConfig.StringVersion}.{KnConfig.Patch}", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy);
+        $"KINO v{ModLoader.StringVersion}.{ModLoader.Patch}", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy);
       y -= Gui.TabButtonHeight + Gui.OffsetY;
 
       float tempX = x;
@@ -433,16 +404,25 @@ namespace KN_Core {
       float y = Screen.height / 2.0f - height / 2.0f;
 
       string changelog = "";
-      if (changelog_ != null) {
+      if (loader_.Changelog != null) {
         changelog += $"{Locale.Get("changes")}:\n";
-        foreach (string line in changelog_) {
+        foreach (string line in loader_.Changelog) {
           height += Gui.Height * 0.75f;
           changelog += $"- {line}\n";
         }
       }
-      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {latestVersion_}!\n{changelog}" + Locale.Get("outdated1"),
+      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersion}!\n{changelog}" + Locale.Get("outdated1"),
         Skin.ButtonDummyRed)) {
         Process.Start("https://discord.gg/FkYYAKb");
+      }
+    }
+
+    public void ReloadAll() {
+      Udp.ReloadClient = true;
+      Udp.ReloadSubRoom = true;
+
+      foreach (var mod in mods_) {
+        mod.OnReloadAll();
       }
     }
 
@@ -496,38 +476,6 @@ namespace KN_Core {
       }
     }
 
-    //load texture from KN_Core.dll
-    public static Texture2D LoadCoreTexture(string name) {
-      return LoadTexture(assembly_, "KN_Core", name);
-    }
-
-    public static Texture2D LoadTexture(Assembly assembly, string ns, string name) {
-      var tex = new Texture2D(4, 4);
-      using (var stream = assembly.GetManifestResourceStream(ns + ".Resources." + name)) {
-        using (var memoryStream = new MemoryStream()) {
-          if (stream != null) {
-            stream.CopyTo(memoryStream);
-            tex.LoadImage(memoryStream.ToArray());
-          }
-          else {
-            tex = Texture2D.grayTexture;
-          }
-        }
-      }
-      return tex;
-    }
-
-    public static Stream LoadCoreFile(string name) {
-      string file = $"KN_Core.Resources.{name}";
-      try {
-        return assembly_.GetManifestResourceStream(file);
-      }
-      catch (Exception e) {
-        Log.Write($"[KN_Core]: Unable to load embedded file '{file}', {e.Message}");
-      }
-      return null;
-    }
-
     private bool SetMainCamera(bool camEnabled) {
       MainCamera = GameObject.FindGameObjectWithTag(KnConfig.CxMainCameraTag);
       if (MainCamera != null) {
@@ -536,29 +484,6 @@ namespace KN_Core {
         return true;
       }
       return false;
-    }
-
-    public static Color32 DecodeColor(int color) {
-      return new Color32 {
-        a = (byte) ((color >> 24) & 0xff),
-        r = (byte) ((color >> 16) & 0xff),
-        g = (byte) ((color >> 8) & 0xff),
-        b = (byte) (color & 0xff)
-      };
-    }
-
-    public static int EncodeColor(Color32 color) {
-      return (color.a & 0xff) << 24 | (color.r & 0xff) << 16 | (color.g & 0xff) << 8 | (color.b & 0xff);
-    }
-
-    public static Texture2D CreateTexture(Color color) {
-      var texture = new Texture2D(1, 1, TextureFormat.ARGB32, false) {
-        wrapMode = TextureWrapMode.Clamp
-      };
-      texture.SetPixel(0, 0, color);
-      texture.Apply();
-
-      return texture;
     }
 
     private void HandlePacket(SmartfoxDataPackage data) {
@@ -576,94 +501,6 @@ namespace KN_Core {
 
       foreach (var mod in mods_) {
         mod.OnUdpData(data);
-      }
-    }
-
-    public void StartUpdater(bool outdated = false) {
-      if (scheduleUpdate_) {
-        CheckForNewUpdater();
-      }
-
-      bool devMode = IsDevToolsEnabled && !badVersion_;
-
-      string version = scheduleUpdate_ || outdated ? "0.0.0" : KnConfig.StringVersion;
-      string args = $"{version} \"{(devMode ? Paths.GameRootPath + Path.DirectorySeparatorChar + "KnUpdate" : Paths.PluginPath)}\" {saveUpdaterLog_}";
-
-      Log.Write($"[KN_Updater]: Starting updater args: {args}");
-      var proc = Process.Start(UpdaterPath, args);
-      if (proc != null) {
-        proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-        Log.Write("[KN_Updater]: Updater started ...");
-      }
-      else {
-        Log.Write("[KN_Updater]: Unable to start updater");
-      }
-    }
-
-    public void CheckForNewUpdater() {
-      string oldUpdater = Paths.PluginPath + Path.DirectorySeparatorChar + "KN_Updater.exe";
-      try {
-        if (File.Exists(oldUpdater)) {
-          File.Delete(oldUpdater);
-        }
-      }
-      catch {
-        // ignored
-      }
-
-      bool shouldDownload;
-      if (File.Exists(UpdaterPath)) {
-        Log.Write("[KN_Updater]: Checking updater version ...");
-        var proc = Process.Start(UpdaterPath);
-        if (proc != null) {
-          proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-          proc.WaitForExit();
-          int version = proc.ExitCode;
-
-          shouldDownload = version != latestUpdater_;
-          Log.Write($"[KN_Updater]: Updater version: C: {version} / L: {latestUpdater_}, download: {shouldDownload}");
-        }
-        else {
-          Log.Write("[KN_Updater]: Unable to start updater");
-          shouldDownload = true;
-        }
-      }
-      else {
-        shouldDownload = true;
-      }
-
-      if (shouldDownload) {
-        DownloadNewUpdater(UpdaterPath);
-      }
-    }
-
-    private static void DownloadNewUpdater(string path) {
-      var bytes = WebDataLoader.DownloadNewUpdater();
-
-      if (bytes == null) {
-        return;
-      }
-
-      try {
-        using (var memory = new MemoryStream(bytes)) {
-          using (var fileStream = File.Open(path, FileMode.Create)) {
-            memory.CopyTo(fileStream);
-          }
-        }
-      }
-      catch (Exception e) {
-        Log.Write($"[KN_Updater]: Failed to save updater to disc, {e.Message}");
-      }
-    }
-
-    private void KillFlyMod() {
-      const string flyModGuid = "fly.mod.goat";
-
-      if (Chainloader.PluginInfos.ContainsKey(flyModGuid)) {
-        var flyMod = Chainloader.PluginInfos[flyModGuid];
-        if (flyMod != null) {
-          flyMod.Instance.enabled = false;
-        }
       }
     }
   }

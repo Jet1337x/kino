@@ -2,6 +2,7 @@ using System.IO;
 using CarModelSystem;
 using CarX;
 using KN_Core;
+using KN_Loader;
 using SyncMultiplayer;
 using UnityEngine;
 
@@ -445,10 +446,10 @@ namespace KN_Lights {
 
     private void InitializeDebug() {
       var matWhite = new UnityEngine.Material(Shader.Find("HDRP/Lit"));
-      matWhite.SetTexture(BaseColorMap, Core.CreateTexture(Color.white));
+      matWhite.SetTexture(BaseColorMap, KnUtils.CreateTexture(Color.white));
 
       var matRed = new UnityEngine.Material(Shader.Find("HDRP/Lit"));
-      matRed.SetTexture(BaseColorMap, Core.CreateTexture(Color.red));
+      matRed.SetTexture(BaseColorMap, KnUtils.CreateTexture(Color.red));
 
       if (hlLCapsule_ != null) {
         Object.Destroy(hlLCapsule_);
@@ -550,7 +551,37 @@ namespace KN_Lights {
     public void ModifyFrom(SmartfoxDataPackage data) {
       IsNwCar = true;
 
-      hlColor_ = Core.DecodeColor(data.Data.GetInt("color"));
+      hlColor_ = KnUtils.DecodeColor(data.Data.GetInt("color"));
+      pitch_ = data.Data.GetFloat("pitch");
+      pitchTail_ = data.Data.GetFloat("pitchTail");
+      hlBrightness_ = data.Data.GetFloat("hlBrightness");
+      hlAngle_ = data.Data.GetFloat("hlAngle");
+      tlBrightness_ = data.Data.GetFloat("tlBrightness");
+      tlAngle_ = data.Data.GetFloat("tlAngle");
+
+      hlLEnabled_ = data.Data.GetBool("hlLEnabled");
+      hlREnabled_ = data.Data.GetBool("hlREnabled");
+
+      float x = data.Data.GetFloat("hlOffsetX");
+      float y = data.Data.GetFloat("hlOffsetY");
+      float z = data.Data.GetFloat("hlOffsetZ");
+      HeadlightOffset = new Vector3(x, y, z);
+
+      tlLEnabled_ = data.Data.GetBool("tlLEnabled");
+      tlREnabled_ = data.Data.GetBool("tlREnabled");
+      x = data.Data.GetFloat("tlOffsetX");
+      y = data.Data.GetFloat("tlOffsetY");
+      z = data.Data.GetFloat("tlOffsetZ");
+      TailLightOffset = new Vector3(x, y, z);
+    }
+
+    public void FromNwData(SmartfoxDataPackage data, int id, string name) {
+      CarId = id;
+      IsNetworkCar = true;
+      UserName = name;
+      IsNwCar = true;
+
+      hlColor_ = KnUtils.DecodeColor(data.Data.GetInt("color"));
       pitch_ = data.Data.GetFloat("pitch");
       pitchTail_ = data.Data.GetFloat("pitchTail");
       hlBrightness_ = data.Data.GetFloat("hlBrightness");
@@ -578,7 +609,7 @@ namespace KN_Lights {
       writer.Write(CarId);
       writer.Write(IsNetworkCar);
       writer.Write(UserName);
-      writer.Write(Core.EncodeColor(hlColor_));
+      writer.Write(KnUtils.EncodeColor(hlColor_));
       writer.Write(pitch_);
       writer.Write(pitchTail_);
       writer.Write(hlBrightness_);
@@ -596,41 +627,11 @@ namespace KN_Lights {
       WriteVec3(writer, TailLightOffset);
     }
 
-    public void FromNwData(SmartfoxDataPackage data, int id, string name) {
-      CarId = id;
-      IsNetworkCar = true;
-      UserName = name;
-      IsNwCar = true;
-
-      hlColor_ = Core.DecodeColor(data.Data.GetInt("color"));
-      pitch_ = data.Data.GetFloat("pitch");
-      pitchTail_ = data.Data.GetFloat("pitchTail");
-      hlBrightness_ = data.Data.GetFloat("hlBrightness");
-      hlAngle_ = data.Data.GetFloat("hlAngle");
-      tlBrightness_ = data.Data.GetFloat("tlBrightness");
-      tlAngle_ = data.Data.GetFloat("tlAngle");
-
-      hlLEnabled_ = data.Data.GetBool("hlLEnabled");
-      hlREnabled_ = data.Data.GetBool("hlREnabled");
-
-      float x = data.Data.GetFloat("hlOffsetX");
-      float y = data.Data.GetFloat("hlOffsetY");
-      float z = data.Data.GetFloat("hlOffsetZ");
-      HeadlightOffset = new Vector3(x, y, z);
-
-      tlLEnabled_ = data.Data.GetBool("tlLEnabled");
-      tlREnabled_ = data.Data.GetBool("tlREnabled");
-      x = data.Data.GetFloat("tlOffsetX");
-      y = data.Data.GetFloat("tlOffsetY");
-      z = data.Data.GetFloat("tlOffsetZ");
-      TailLightOffset = new Vector3(x, y, z);
-    }
-
     public void Deserialize(BinaryReader reader, int version) {
       CarId = reader.ReadInt32();
       IsNetworkCar = reader.ReadBoolean();
       UserName = reader.ReadString();
-      hlColor_ = Core.DecodeColor(reader.ReadInt32());
+      hlColor_ = KnUtils.DecodeColor(reader.ReadInt32());
       pitch_ = reader.ReadSingle();
       pitchTail_ = reader.ReadSingle();
       hlBrightness_ = reader.ReadSingle();

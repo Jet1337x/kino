@@ -2,8 +2,11 @@ using System;
 using System.IO;
 using SyncMultiplayer;
 using KN_Core;
+using KN_Loader;
 using UnityEngine;
+#if TEST_MOVE
 using VinylSystem;
+#endif
 using Object = UnityEngine.Object;
 
 namespace KN_Visuals {
@@ -250,7 +253,7 @@ namespace KN_Visuals {
 
       using (var stream = new MemoryStream()) {
         using (var writer = new BinaryWriter(stream)) {
-          writer.Write(KnConfig.Version);
+          writer.Write(ModLoader.ModVersion);
           writer.Write(name);
           writer.Write(buffer.Length);
           writer.Write(id);

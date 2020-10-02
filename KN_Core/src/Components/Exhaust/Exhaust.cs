@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using KN_Loader;
 using UnityEngine;
 
 namespace KN_Core {
@@ -105,11 +106,11 @@ namespace KN_Core {
           int id = exhaustConfigsDev_.FindIndex(ed => ed.CarId == e.Car.Id);
           if (id != -1) {
             exhaustConfigsDev_[id] = new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume);
-            Log.Write($"[TF_Core]: Exhaust dev tools | Override config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
+            Log.Write($"[KN_Core::Exhaust]: Exhaust dev tools | Override config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
             return;
           }
           exhaustConfigsDev_.Add(new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume));
-          Log.Write($"[TF_Core]: Exhaust dev tools | Added config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
+          Log.Write($"[KN_Core::Exhaust]: Exhaust dev tools | Added config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
         }
 #else
         if (KnCar.IsNull(e.Car)) {
@@ -132,7 +133,7 @@ namespace KN_Core {
 
       if (exhaustsToRemove_.Count > 0) {
         foreach (var e in exhaustsToRemove_) {
-          Log.Write($"[TF_Core]: Removed exhaust for car '{e.Car.Name}'");
+          Log.Write($"[KN_Core::Exhaust]: Removed exhaust for car '{e.Car.Name}'");
           exhausts_.Remove(e);
         }
         exhaustsToRemove_.Clear();
@@ -198,10 +199,10 @@ namespace KN_Core {
     }
 
     private void UpdateConfig(ExhaustData data) {
-      Log.Write($"[TF_Core]: Conf size: {exhaustConfig_.Count} / Car data id: {data.Car.Id}");
+      Log.Write($"[KN_Core::Exhaust]: Conf size: {exhaustConfig_.Count} / Car data id: {data.Car.Id}");
       int id = exhaustConfig_.FindIndex(ed => ed.CarId == data.Car.Id);
       if (id != -1) {
-        Log.Write($"[TF_Core]: Override exhaust for car '{data.Car.Name}'");
+        Log.Write($"[KN_Core::Exhaust]: Override exhaust for car '{data.Car.Name}'");
         exhaustConfig_[id] = new ExhaustFifeData(data.Car.Id, data.MaxTime, data.FlamesTrigger, data.Volume);
       }
       else {

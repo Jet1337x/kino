@@ -1,4 +1,5 @@
 using KN_Core;
+using KN_Loader;
 
 namespace KN_Maps {
   public class Maps : BaseMod {
@@ -21,7 +22,7 @@ namespace KN_Maps {
       fly_.OnStop();
     }
 
-    protected override void OnCarLoaded() {
+    public override void OnCarLoaded() {
       fly_.OnCarLoaded();
     }
 

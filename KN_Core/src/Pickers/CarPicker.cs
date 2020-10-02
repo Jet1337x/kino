@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using KN_Loader;
 using SyncMultiplayer;
 using Object = UnityEngine.Object;
 
@@ -90,7 +90,7 @@ namespace KN_Core {
 
       loadingCars_.RemoveAll(car => {
         if (car.Loaded && (car.Player == null || car.Player.userCar == null)) {
-          Log.Write($"[KN_Core]: Removed car: '{car.Player?.FilteredNickName}' ({car.Player?.NetworkID})");
+          Log.Write($"[KN_Core::CarPicker]: Removed car: '{car.Player?.FilteredNickName}' ({car.Player?.NetworkID})");
           return true;
         }
         return false;
@@ -102,7 +102,7 @@ namespace KN_Core {
           foreach (var player in nwPlayers) {
             if (loadingCars_.All(c => c.Player != player)) {
               loadingCars_.Add(new LoadingCar {Player = player});
-              Log.Write($"[KN_Core]: Added car to load: '{player.FilteredNickName}' ({player.NetworkID})");
+              Log.Write($"[KN_Core::CarPicker]: Added car to load: '{player.FilteredNickName}' ({player.NetworkID})");
             }
           }
         }
@@ -119,7 +119,7 @@ namespace KN_Core {
             car.Loaded = true;
             car.Loading = false;
             Cars.Add(new KnCar(car.Player.userCar));
-            Log.Write($"[KN_Core]: Car loaded: '{car.Player.FilteredNickName}' ({car.Player.NetworkID})");
+            Log.Write($"[KN_Core::CarPicker]: Car loaded: '{car.Player.FilteredNickName}' ({car.Player.NetworkID})");
             OnCarLoaded?.Invoke();
           }
         }

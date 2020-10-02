@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using KN_Loader;
 
 namespace KN_Core {
   public static class Locale {
@@ -10,17 +11,16 @@ namespace KN_Core {
 
     public static string CurrentLocale { get; private set; }
 
+    public static bool DisplayTextAsId { get; set; }
+
     private static Dictionary<string, string> currentLocale_;
     private static Dictionary<string, string> defaultLocale_;
     private static Dictionary<string, Dictionary<string, string>> locales_;
 
-    private static Core core_;
-
     private static int localeIndex_;
 
-    public static void Initialize(string locale, Core core) {
+    public static void Initialize(string locale) {
       CurrentLocale = locale;
-      core_ = core;
       locales_ = new Dictionary<string, Dictionary<string, string>>();
 
       Authors = new List<string>();
@@ -46,7 +46,7 @@ namespace KN_Core {
       }
 
       if (!found) {
-        Log.Write($"[KN_Core]: Unable to find locale '{CurrentLocale}', init default");
+        Log.Write($"[KN_Core::Locale]: Unable to find locale '{CurrentLocale}', init default");
         currentLocale_ = locales_["en"];
         CurrentLocale = "en";
         localeIndex_ = 0;
@@ -54,8 +54,8 @@ namespace KN_Core {
     }
 
     private static void LoadLocale(string locale) {
-      Log.Write($"[KN_Core]: Loading locale '{locale}' ...");
-      var stream = Core.LoadCoreFile($"Locale.{locale}.xml");
+      Log.Write($"[KN_Core::Locale]: Loading locale '{locale}' ...");
+      var stream = Embedded.LoadEmbeddedFile($"Locale.{locale}.xml");
       if (stream == null) {
         return;
       }
@@ -89,9 +89,13 @@ namespace KN_Core {
 
             try {
               dictionary.Add(key, value);
+
+              if (id == "en") {
+                Log.Write($"[KN_Core::Locale]: Added key: id: {key}, text: {value}");
+              }
             }
             catch (Exception e) {
-              Log.Write($"[KN_Core]: Failed to add locale entry: {key} -> {value}, {e.Message}");
+              Log.Write($"[KN_Core::Locale]: Failed to add locale entry: {key} -> {value}, {e.Message}");
             }
           }
         }
@@ -108,11 +112,7 @@ namespace KN_Core {
     }
 
     public static string Get(string id) {
-      if (id.Length == 0) {
-        return id;
-      }
-
-      if (core_ == null || core_.DisplayTextAsId || defaultLocale_ == null) {
+      if (DisplayTextAsId || id.Length == 0 || defaultLocale_ == null) {
         return id;
       }
       try {

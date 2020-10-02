@@ -17,8 +17,6 @@ namespace KN_Core {
       Version = version;
       Patch = patch;
       ClientVersion = clientVersion;
-
-      Core.CarPicker.OnCarLoaded += OnCarLoaded;
     }
 
     public virtual void OnStart() { }
@@ -49,6 +47,6 @@ namespace KN_Core {
 
     public virtual void OnUdpData(SmartfoxDataPackage data) { }
 
-    protected virtual void OnCarLoaded() { }
+    public virtual void OnCarLoaded() { }
   }
 }

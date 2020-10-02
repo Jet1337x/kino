@@ -17,14 +17,15 @@ client_version_int = ''.join(client_version)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-config_path = os.path.join(current_dir, '..', 'KN_Core', 'src', 'KnConfig.cs')
+loader_path = os.path.join(current_dir, '..', 'KN_Loader', 'ModLoader.cs')
+core_path = os.path.join(current_dir, '..', 'KN_Core', 'src', 'Core.cs')
 version_path = os.path.join(current_dir, '..', 'version')
 updater_prog_path = os.path.join(current_dir, '..', 'KN_Updater', 'Program.cs')
 
 def module_path(module):
     return os.path.join(current_dir, '..', module, 'Loader.cs')
 
-def replace_version(file_path):
+def replace_mod_version(file_path):
     print('Updating version for: ' + file_path)
     fh, abs_path = mkstemp()
     with fdopen(fh,'w') as new_file:
@@ -52,7 +53,7 @@ def replace_version(file_path):
     remove(file_path)
     move(abs_path, file_path)
 
-def replace_config_version(file_path):
+def replace_loader_version(file_path):
     print('Updating version for: ' + file_path)
     fh, abs_path = mkstemp()
     with fdopen(fh,'w') as new_file:
@@ -84,7 +85,7 @@ def replace_config_version(file_path):
     remove(file_path)
     move(abs_path, file_path)
 
-def replace_core_version(file_path):
+def replace_version(file_path):
     print('Updating version for: ' + file_path)
     fh, abs_path = mkstemp()
     with fdopen(fh,'w') as new_file:
@@ -133,6 +134,7 @@ def replace_updater_version(file_path):
     move(abs_path, file_path)
 
 modules = [
+    core_path,
     module_path('KN_Cinematic'),
     module_path('KN_Lights'),
     module_path('KN_Maps'),
@@ -140,8 +142,8 @@ modules = [
 ]
 
 for m in modules:    
-    replace_version(m)
+    replace_mod_version(m)
     
-replace_config_version(config_path)
-replace_core_version(version_path)
+replace_loader_version(loader_path)
+replace_version(version_path)
 replace_updater_version(updater_prog_path)

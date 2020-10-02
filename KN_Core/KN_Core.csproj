@@ -41,23 +41,14 @@
       <OutputPath>bin\Release_DevTools\</OutputPath>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="0Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\0Harmony.dll</HintPath>
-        </Reference>
         <Reference Include="Assembly-CSharp, Version=13.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\Assembly-CSharp-firstpass.dll</HintPath>
         </Reference>
-        <Reference Include="BepInEx, Version=5.0.1.0, Culture=neutral, PublicKeyToken=null">
+        <Reference Include="BepInEx, Version=5.3.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\BepInEx\BepInEx.dll</HintPath>
-        </Reference>
-        <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\BepInEx.Harmony.dll</HintPath>
-        </Reference>
-        <Reference Include="BepInEx.Preloader, Version=5.0.1.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\BepInEx.Preloader.dll</HintPath>
         </Reference>
         <Reference Include="CarSystems.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\CarSystems.Runtime.dll</HintPath>
@@ -67,24 +58,6 @@
         </Reference>
         <Reference Include="CarX.Plugins.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\CarX.Plugins.Core.dll</HintPath>
-        </Reference>
-        <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.dll</HintPath>
-        </Reference>
-        <Reference Include="Mono.Cecil.Mdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.Mdb.dll</HintPath>
-        </Reference>
-        <Reference Include="Mono.Cecil.Pdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.Pdb.dll</HintPath>
-        </Reference>
-        <Reference Include="Mono.Cecil.Rocks, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.Rocks.dll</HintPath>
-        </Reference>
-        <Reference Include="MonoMod.RuntimeDetour, Version=19.11.5.1, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\MonoMod.RuntimeDetour.dll</HintPath>
-        </Reference>
-        <Reference Include="MonoMod.Utils, Version=19.11.5.1, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\MonoMod.Utils.dll</HintPath>
         </Reference>
         <Reference Include="SmartFox2X, Version=1.7.8.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\SmartFox2X.dll</HintPath>
@@ -111,12 +84,6 @@
         <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.ParticleSystemModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\Unity\UnityEngine.PhysicsModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.SharedInternalsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\Unity\UnityEngine.SharedInternalsModule.dll</HintPath>
-        </Reference>
         <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.TextRenderingModule.dll</HintPath>
         </Reference>
@@ -135,27 +102,25 @@
         <Compile Include="src\Components\Swaps.cs" />
         <Compile Include="src\Components\SwapsConfig.cs" />
         <Compile Include="src\Components\Tachometer.cs" />
+        <Compile Include="src\Controls.cs" />
+        <Compile Include="src\Embedded.cs" />
+        <Compile Include="src\Gui.cs" />
         <Compile Include="src\ISerializable.cs" />
+        <Compile Include="src\KnConfig.cs" />
+        <Compile Include="src\Loader.cs" />
         <Compile Include="src\Locale.cs" />
         <Compile Include="src\Pickers\CarPicker.cs" />
         <Compile Include="src\Pickers\ColorPicker.cs" />
         <Compile Include="src\Pickers\FilePicker.cs" />
+        <Compile Include="src\Skin.cs" />
         <Compile Include="src\Timer.cs" />
         <Compile Include="src\Udp.cs" />
-        <Compile Include="src\KnConfig.cs" />
-        <Compile Include="src\Controls.cs" />
         <Compile Include="src\Core.cs" />
-        <Compile Include="src\Gui.cs" />
-        <Compile Include="src\Log.cs" />
         <Compile Include="src\Movement.cs" />
-        <Compile Include="src\Patcher.cs" />
-        <Compile Include="src\Skin.cs" />
         <Compile Include="src\Submodule\About.cs" />
         <Compile Include="src\Submodule\Settings.cs" />
         <Compile Include="src\KnCar.cs" />
         <Compile Include="src\KnUtils.cs" />
-        <Compile Include="src\Version.cs" />
-        <Compile Include="src\WebDataLoader.cs" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\CameraActive.png" />
@@ -247,6 +212,12 @@
         <EmbeddedResource Include="Resources\Locale\nl.xml" />
         <EmbeddedResource Include="Resources\Locale\pl.xml" />
         <EmbeddedResource Include="Resources\Locale\jp.xml" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\KN_Loader\KN_Loader.csproj">
+        <Project>{ecb0dab8-34f5-4eb6-bcdc-67c7212a89ec}</Project>
+        <Name>KN_Loader</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

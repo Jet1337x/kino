@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using BepInEx;
+using KN_Loader;
 using UnityEngine;
 
 namespace KN_Core {
@@ -14,11 +16,6 @@ namespace KN_Core {
   }
 
   public class KnConfig {
-    public const int ClientVersion = 272;
-    public const int Version = 125;
-    public const int Patch = 1;
-    public const string StringVersion = "1.2.5";
-
     //cx stuff
     public const string CxUiCanvasName = "Root";
     public const string CxMainCameraTag = "MainCamera";
@@ -32,7 +29,7 @@ namespace KN_Core {
     public static string VisualsDir { get; private set; }
     public static string MapsDir { get; private set; }
 
-    private readonly Dictionary<string, object> params_;
+    private Dictionary<string, object> params_;
     private readonly Dictionary<string, object> defaultParams_;
 
     private bool initialized_;
@@ -62,7 +59,7 @@ namespace KN_Core {
         Directory.Delete(MapsDir, true);
       }
 
-      Log.Write($"[KN_Core]: Base dir: '{BaseDir}'");
+      Log.Write($"[KN_Core::Config]: Base dir: '{BaseDir}'");
       LoadDefault();
     }
 
@@ -71,10 +68,10 @@ namespace KN_Core {
         return (T) params_[key];
       }
       catch (ArgumentNullException) {
-        Log.Write($"[KN_Core]: Key '{key}' is null");
+        Log.Write($"[KN_Core::Config]: Key '{key}' is null");
       }
       catch (KeyNotFoundException) {
-        Log.Write($"[KN_Core]: Key '{key}' does not exists");
+        Log.Write($"[KN_Core::Config]: Key '{key}' does not exists");
       }
 
       return default;
@@ -85,10 +82,10 @@ namespace KN_Core {
         params_[key] = value;
       }
       catch (ArgumentNullException) {
-        Log.Write($"[KN_Core]: Key '{key}' is null");
+        Log.Write($"[KN_Core::Config]: Key '{key}' is null");
       }
       catch (KeyNotFoundException) {
-        Log.Write($"[KN_Core]: Key '{key}' does not exists");
+        Log.Write($"[KN_Core::Config]: Key '{key}' does not exists");
       }
     }
 
@@ -96,6 +93,8 @@ namespace KN_Core {
       if (!initialized_) {
         return;
       }
+
+      Log.Write($"[KN_Core::Config]: Saving config to '{ConfigFile}'");
 
       try {
         var settings = new XmlWriterSettings {Indent = true, IndentChars = "  ", Encoding = Encoding.UTF8};
@@ -122,14 +121,16 @@ namespace KN_Core {
             writer.WriteEndElement();
           }
         }
-        Log.Write($"[KN_Core]: Config automatically saved to '{ConfigFile}'");
+        Log.Write($"[KN_Core::Config]: Config automatically saved to '{ConfigFile}'");
       }
       catch (Exception e) {
-        Log.Write($"[KN_Core]: Unable to read config, {e.Message}");
+        Log.Write($"[KN_Core::Config]: Unable to read config, {e.Message}");
       }
     }
 
     public void Read() {
+      Log.Write($"[KN_Core::Config]: Loading config from '{ConfigFile}'");
+
       try {
         var readMode = ReadMode.None;
 
@@ -150,7 +151,7 @@ namespace KN_Core {
         }
       }
       catch (Exception e) {
-        Log.Write($"[KN_Core]: Unable to read config, {e.Message}");
+        Log.Write($"[KN_Core::Config]: Unable to read config, {e.Message}");
       }
 
       Validate();
@@ -232,6 +233,8 @@ namespace KN_Core {
     }
 
     private void Validate() {
+      Log.Write("[KN_Core::Config]: Validating config ...");
+
       foreach (var p in defaultParams_) {
         if (!params_.ContainsKey(p.Key)) {
           params_[p.Key] = p.Value;
@@ -245,19 +248,18 @@ namespace KN_Core {
         else if (p.Key == "air_height_min") {
           params_[p.Key] = Mathf.Clamp((float) p.Value, 0.01f, 0.1f);
         }
-      }
-
-      //remove old values
-      var toRemove = new List<string>();
-      foreach (var p in params_) {
-        if (!defaultParams_.ContainsKey(p.Key)) {
-          toRemove.Add(p.Key);
+        else if (p.Key == "cl_discard_distance") {
+          params_[p.Key] = Mathf.Clamp((float) p.Value, 50.0f, 500.0f);
         }
       }
 
-      foreach (string key in toRemove) {
-        params_.Remove(key);
-      }
+      params_ = params_.Where(p => {
+        if (defaultParams_.ContainsKey(p.Key)) {
+          return true;
+        }
+        Log.Write($"[KN_Core::Config]: Removed entry '{p.Key}' -> '{p.Value}'");
+        return false;
+      }).ToDictionary(p => p.Key, p => p.Value);
 
       Controls.Validate();
     }

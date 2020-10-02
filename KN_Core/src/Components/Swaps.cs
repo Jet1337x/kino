@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CarX;
+using KN_Loader;
 using SyncMultiplayer;
 using UnityEngine;
 
@@ -69,18 +70,18 @@ namespace KN_Core {
       joinTimer_.Callback += SendSwapData;
     }
 
-    public void OnStart() {
+    public void OnInit() {
       if (!dataLoaded_) {
         return;
       }
 
       if (DataSerializer.Deserialize<SwapData>("KN_Swaps", KnConfig.BaseDir + SwapData.ConfigFile, out var data)) {
-        Log.Write($"[KN_Swaps]: Swap data loaded {data.Count} items");
+        Log.Write($"[KN_Core::Swaps]: Swap data loaded {data.Count} items");
         allData_.AddRange(data.ConvertAll(d => (SwapData) d));
       }
     }
 
-    public void OnStop() {
+    public void OnDeinit() {
       if (!dataLoaded_) {
         return;
       }
@@ -250,7 +251,7 @@ namespace KN_Core {
       var defaultEngine = GetEngine(engineId);
       if (defaultEngine == null) {
         if (!silent) {
-          Log.Write($"[KN_Swaps]: Unable to find engine '{engineId}'");
+          Log.Write($"[KN_Core::Swaps]: Unable to find engine '{engineId}'");
         }
         return false;
       }
@@ -262,7 +263,7 @@ namespace KN_Core {
 
           bool allowed = balance_.Any(b => b.CarId == core_.PlayerCar.Id && b.Rating >= defaultEngine.Rating);
           if (!(core_.IsCheatsEnabled && core_.IsDevToolsEnabled) && !allowed) {
-            Log.Write($"[KN_Swaps]: Engine '{engineId}' disabled for car '{swap.CarId}'");
+            Log.Write($"[KN_Core::Swaps]: Engine '{engineId}' disabled for car '{swap.CarId}'");
             data.EngineId = 0;
             data.FinalDrive = defaultFinalDrive_;
             currentEngine_.EngineId = 0;
@@ -274,7 +275,7 @@ namespace KN_Core {
             data.Turbo = swap.Turbo;
             data.FinalDrive = swap.FinalDrive;
             if (!silent) {
-              Log.Write($"[KN_Swaps]: Found engine '{engineId}' in config, turbo: {swap.Turbo}, finalDrive: {swap.FinalDrive}");
+              Log.Write($"[KN_Core::Swaps]: Found engine '{engineId}' in config, turbo: {swap.Turbo}, finalDrive: {swap.FinalDrive}");
             }
           }
           else {
@@ -302,7 +303,7 @@ namespace KN_Core {
 
       if (!found) {
         if (!silent) {
-          Log.Write($"[KN_Swaps]: Created config for engine '{engineId}'");
+          Log.Write($"[KN_Core::Swaps]: Created config for engine '{engineId}'");
         }
         data.Turbo = defaultEngine.Engine.turboPressure;
         data.FinalDrive = car.carX.finaldrive;
@@ -334,7 +335,7 @@ namespace KN_Core {
       }
 
       if (core_.Settings.LogEngines) {
-        Log.Write($"[KN_Swaps]: Applying engine '{engineId}' on '{id}', turbo: {turbo}, finalDrive: {finalDrive}");
+        Log.Write($"[KN_Core::Swaps]: Applying engine '{engineId}' on '{id}', turbo: {turbo}, finalDrive: {finalDrive}");
       }
 
       foreach (var player in NetworkController.InstanceGame.Players) {
@@ -392,7 +393,7 @@ namespace KN_Core {
         car.SetDesc(d);
 
         if (!silent) {
-          Log.Write($"[KN_Swaps]: Stock engine applied on '{data.CarId}' ({id})");
+          Log.Write($"[KN_Core::Swaps]: Stock engine applied on '{data.CarId}' ({id})");
         }
 
         ApplySoundOn(car, data.EngineId, silent);
@@ -402,7 +403,7 @@ namespace KN_Core {
       var defaultEngine = GetEngine(data.EngineId);
       if (defaultEngine == null) {
         if (!silent) {
-          Log.Write($"[KN_Swaps]: Unable to apply engine '{data.EngineId}' ({id})");
+          Log.Write($"[KN_Core::Swaps]: Unable to apply engine '{data.EngineId}' ({id})");
         }
         currentEngine_.EngineId = 0;
         activeEngine_ = 0;
@@ -420,7 +421,7 @@ namespace KN_Core {
 
       if (!Verify(engine, defaultEngine.Engine, defaultEngine.Rating)) {
         if (!silent) {
-          Log.Write($"[KN_Swaps]: Engine verification failed '{data.EngineId}', applying default ({id})");
+          Log.Write($"[KN_Core::Swaps]: Engine verification failed '{data.EngineId}', applying default ({id})");
         }
         return false;
       }
@@ -430,7 +431,7 @@ namespace KN_Core {
       car.SetDesc(desc);
 
       if (!silent) {
-        Log.Write($"[KN_Swaps]: Engine '{defaultEngine.Name}' applied on '{car.metaInfo.id}' ({id})");
+        Log.Write($"[KN_Core::Swaps]: Engine '{defaultEngine.Name}' applied on '{car.metaInfo.id}' ({id})");
       }
 
       ApplySoundOn(car, data.EngineId, silent);
@@ -442,7 +443,7 @@ namespace KN_Core {
       var engine = GetEngine(engineId);
       if (engine == null) {
         if (!silent) {
-          Log.Write($"[KN_Swaps]: Unable to apply sound of engine '{engineId}'");
+          Log.Write($"[KN_Core::Swaps]: Unable to apply sound of engine '{engineId}'");
         }
         return;
       }
@@ -477,7 +478,7 @@ namespace KN_Core {
       }
 
       if (!silent && found) {
-        Log.Write($"[KN_Swaps]: Engine sound applied on '{car.metaInfo.id}'");
+        Log.Write($"[KN_Core::Swaps]: Engine sound applied on '{car.metaInfo.id}'");
       }
     }
 
@@ -492,7 +493,7 @@ namespace KN_Core {
         }
       }
 
-      Log.Write($"[KN_Swaps]: Unable to find engine '{id}'");
+      Log.Write($"[KN_Core::Swaps]: Unable to find engine '{id}'");
       return null;
     }
 
@@ -525,14 +526,14 @@ namespace KN_Core {
         return false;
       }
 
-      Log.Write("[KN_Swaps]: Engine data loaded from remote");
+      Log.Write("[KN_Core::Swaps]: Engine data loaded from remote");
 
       if (DataSerializer.Deserialize<EngineData>("KN_Swaps", data, out var engines)) {
         engines_.AddRange(engines.ConvertAll(d => (EngineData) d));
-        Log.Write($"[KN_Swaps]: Engine data parsed, count: {engines_.Count}");
+        Log.Write($"[KN_Core::Swaps]: Engine data parsed, count: {engines_.Count}");
       }
       else {
-        Log.Write("[KN_Swaps]: Unable to parse engine data");
+        Log.Write("[KN_Core::Swaps]: Unable to parse engine data");
         return false;
       }
 
@@ -545,14 +546,14 @@ namespace KN_Core {
         return false;
       }
 
-      Log.Write("[KN_Swaps]: Balance data loaded from remote");
+      Log.Write("[KN_Core::Swaps]: Balance data loaded from remote");
 
       if (DataSerializer.Deserialize<SwapBalance>("KN_Swaps", data, out var balance)) {
         balance_.AddRange(balance.ConvertAll(d => (SwapBalance) d));
-        Log.Write($"[KN_Swaps]: Balance data parsed, count: {balance_.Count}");
+        Log.Write($"[KN_Core::Swaps]: Balance data parsed, count: {balance_.Count}");
       }
       else {
-        Log.Write("[KN_Swaps]: Unable to parse balance data");
+        Log.Write("[KN_Core::Swaps]: Unable to parse balance data");
         return false;
       }
 

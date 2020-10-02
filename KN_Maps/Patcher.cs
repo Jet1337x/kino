@@ -1,4 +1,3 @@
-using BepInEx.Harmony;
 using HarmonyLib;
 
 namespace KN_Maps {
@@ -7,8 +6,8 @@ namespace KN_Maps {
 
     public static void Hook() {
       Valid = true;
-      //todo: fixme
-      HarmonyWrapper.PatchAll();
+      var harmony = new Harmony("trbflxr.kn_maps.patch");
+      harmony.PatchAll();
     }
 
     [HarmonyPrefix]

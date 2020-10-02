@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
+using KN_Loader;
 using UnityEngine;
 
 namespace KN_Core {
   public static class Controls {
     private static Dictionary<string, object[]> buttons_ = new Dictionary<string, object[]>();
-    private static Dictionary<string, object[]> defaultButtons_ = new Dictionary<string, object[]>();
+    private static readonly Dictionary<string, object[]> defaultButtons_ = new Dictionary<string, object[]>();
 
     private static string cKey_ = string.Empty;
     private static readonly List<object> cValue_ = new List<object>();
@@ -19,10 +21,10 @@ namespace KN_Core {
         }
       }
       catch (ArgumentNullException) {
-        Log.Write($"Action '{name}' is null");
+        Log.Write($"[KN_Core::Controls]: Action '{name}' is null");
       }
       catch (KeyNotFoundException) {
-        Log.Write($"Action '{name}' does not exists");
+        Log.Write($"[KN_Core::Controls]: Action '{name}' does not exists");
       }
 
       return false;
@@ -36,10 +38,10 @@ namespace KN_Core {
         }
       }
       catch (ArgumentNullException) {
-        Log.Write($"Action '{name}' is null");
+        Log.Write($"[KN_Core::Controls]: Action '{name}' is null");
       }
       catch (KeyNotFoundException) {
-        Log.Write($"Action '{name}' does not exists");
+        Log.Write($"[KN_Core::Controls]: Action '{name}' does not exists");
       }
 
       return false;
@@ -80,6 +82,8 @@ namespace KN_Core {
     }
 
     public static void Save(XmlWriter writer) {
+      Log.Write("[KN_Core::Controls]: Saving controls ...");
+
       writer.WriteStartElement("controls");
 
       //buttons
@@ -147,6 +151,8 @@ namespace KN_Core {
     }
 
     public static void Validate() {
+      Log.Write("[KN_Core::Controls]: Validating controls ...");
+
       buttons_[cKey_] = cValue_.ToArray();
       cValue_.Clear();
 
@@ -156,16 +162,7 @@ namespace KN_Core {
         }
       }
 
-      var toRemove = new List<string>();
-      foreach (var p in buttons_) {
-        if (!defaultButtons_.ContainsKey(p.Key)) {
-          toRemove.Add(p.Key);
-        }
-      }
-
-      foreach (var key in toRemove) {
-        buttons_.Remove(key);
-      }
+      buttons_ = buttons_.Where(p => defaultButtons_.ContainsKey(p.Key)).ToDictionary(p => p.Key, p => p.Value);
     }
 
     private static bool IsPressed(IEnumerable<object> buttons) {

@@ -1,4 +1,7 @@
 using System.Reflection;
+using BepInEx.Bootstrap;
+using KN_Loader;
+using UnityEngine;
 
 namespace KN_Core {
   public static class KnUtils {
@@ -51,6 +54,40 @@ namespace KN_Core {
         Log.Write($"[KN_Utils]: (GetMethod) Method '{methodName}' not found in type hierarchy.");
       }
       return mi;
+    }
+
+    public static Texture2D CreateTexture(Color color) {
+      var texture = new Texture2D(1, 1, TextureFormat.ARGB32, false) {
+        wrapMode = TextureWrapMode.Clamp
+      };
+      texture.SetPixel(0, 0, color);
+      texture.Apply();
+
+      return texture;
+    }
+
+    public static Color32 DecodeColor(int color) {
+      return new Color32 {
+        a = (byte) ((color >> 24) & 0xff),
+        r = (byte) ((color >> 16) & 0xff),
+        g = (byte) ((color >> 8) & 0xff),
+        b = (byte) (color & 0xff)
+      };
+    }
+
+    public static int EncodeColor(Color32 color) {
+      return (color.a & 0xff) << 24 | (color.r & 0xff) << 16 | (color.g & 0xff) << 8 | (color.b & 0xff);
+    }
+
+    private static void KillFlyMod() {
+      const string flyModGuid = "fly.mod.goat";
+
+      if (Chainloader.PluginInfos.ContainsKey(flyModGuid)) {
+        var flyMod = Chainloader.PluginInfos[flyModGuid];
+        if (flyMod != null) {
+          flyMod.Instance.enabled = false;
+        }
+      }
     }
   }
 }

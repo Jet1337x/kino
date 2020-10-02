@@ -213,9 +213,9 @@ namespace KN_Core {
     }
 
     private static void LoadButtonTex(out Texture2D normal, out Texture2D hover, out Texture2D active, out GUISkin skin, out GUISkin skinActive, string name) {
-      normal = Core.LoadCoreTexture(name + "Normal.png");
-      hover = Core.LoadCoreTexture(name + "Hover.png");
-      active = Core.LoadCoreTexture(name + "Active.png");
+      normal = Embedded.LoadEmbeddedTexture(name + "Normal.png");
+      hover = Embedded.LoadEmbeddedTexture(name + "Hover.png");
+      active = Embedded.LoadEmbeddedTexture(name + "Active.png");
 
       skin = ScriptableObject.CreateInstance<GUISkin>();
       skin.button.normal.background = normal;
@@ -232,15 +232,15 @@ namespace KN_Core {
       var color = new Color32(0x30, 0x30, 0x30, 0xff);
       var colorActive = new Color32(0xee, 0xee, 0xee, 0xff);
 
-      texButtonN_ = Core.LoadCoreTexture("ButtonNormal.png");
-      texButtonH_ = Core.LoadCoreTexture("ButtonHover.png");
-      texButtonA_ = Core.LoadCoreTexture("ButtonActive.png");
-      texButtonAT_ = Core.LoadCoreTexture("Main.png");
-      texButtonAD_ = Core.LoadCoreTexture("ButtonActiveDark.png");
-      texButtonD_ = Core.LoadCoreTexture("ButtonDisabled.png");
-      texRedButtonN_ = Core.LoadCoreTexture("RedButtonNormal.png");
-      texRedButtonH_ = Core.LoadCoreTexture("RedButtonHover.png");
-      texRedButtonA_ = Core.LoadCoreTexture("RedButtonActive.png");
+      texButtonN_ = Embedded.LoadEmbeddedTexture("ButtonNormal.png");
+      texButtonH_ = Embedded.LoadEmbeddedTexture("ButtonHover.png");
+      texButtonA_ = Embedded.LoadEmbeddedTexture("ButtonActive.png");
+      texButtonAT_ = Embedded.LoadEmbeddedTexture("Main.png");
+      texButtonAD_ = Embedded.LoadEmbeddedTexture("ButtonActiveDark.png");
+      texButtonD_ = Embedded.LoadEmbeddedTexture("ButtonDisabled.png");
+      texRedButtonN_ = Embedded.LoadEmbeddedTexture("RedButtonNormal.png");
+      texRedButtonH_ = Embedded.LoadEmbeddedTexture("RedButtonHover.png");
+      texRedButtonA_ = Embedded.LoadEmbeddedTexture("RedButtonActive.png");
 
       Button = ScriptableObject.CreateInstance<GUISkin>();
       Button.button.normal.textColor = color;
@@ -341,9 +341,9 @@ namespace KN_Core {
     }
 
     private static void MakeSliderStyle() {
-      texSliderN_ = Core.LoadCoreTexture("SliderThumbNormal.png");
-      texSliderH_ = Core.LoadCoreTexture("SliderThumbHover.png");
-      texSliderBG_ = Core.LoadCoreTexture("SliderBG.png");
+      texSliderN_ = Embedded.LoadEmbeddedTexture("SliderThumbNormal.png");
+      texSliderH_ = Embedded.LoadEmbeddedTexture("SliderThumbHover.png");
+      texSliderBG_ = Embedded.LoadEmbeddedTexture("SliderBG.png");
 
       Slider = ScriptableObject.CreateInstance<GUISkin>();
       Slider.horizontalSlider.normal.background = texSliderBG_;
@@ -382,7 +382,7 @@ namespace KN_Core {
     }
 
     private static void MakeMainContainerStyle() {
-      texMain_ = Core.LoadCoreTexture("Main.png");
+      texMain_ = Embedded.LoadEmbeddedTexture("Main.png");
       MainContainer = ScriptableObject.CreateInstance<GUISkin>();
       MainContainer.box.normal.background = texMain_;
       MainContainer.box.normal.textColor = TextColor;
@@ -403,14 +403,14 @@ namespace KN_Core {
       MainContainerRed.box.font = FontLight;
       MainContainerRed.box.padding = new RectOffset(5, 5, 0, 0);
 
-      texMainDark_ = Core.LoadCoreTexture("MainDark.png");
+      texMainDark_ = Embedded.LoadEmbeddedTexture("MainDark.png");
       MainContainerDark = ScriptableObject.CreateInstance<GUISkin>();
       MainContainerDark.box.normal.background = texMainDark_;
       MainContainerDark.box.normal.textColor = TextColor;
       MainContainerDark.box.alignment = TextAnchor.MiddleCenter;
       MainContainerDark.box.font = FontLight;
 
-      texOutlineDark_ = Core.LoadCoreTexture("OutlineDark.png");
+      texOutlineDark_ = Embedded.LoadEmbeddedTexture("OutlineDark.png");
       texOutlineDark_.filterMode = FilterMode.Point;
       OutlineDark = ScriptableObject.CreateInstance<GUISkin>();
       OutlineDark.box.normal.background = texOutlineDark_;
@@ -443,9 +443,9 @@ namespace KN_Core {
     }
 
     private static void MakeTimelineSlider() {
-      texTimelineLow_ = Core.LoadCoreTexture("TimelineSliderLow.png");
-      texTimelineMid_ = Core.LoadCoreTexture("TimelineSliderMid.png");
-      texTimelineHigh_ = Core.LoadCoreTexture("TimelineSliderHigh.png");
+      texTimelineLow_ = Embedded.LoadEmbeddedTexture("TimelineSliderLow.png");
+      texTimelineMid_ = Embedded.LoadEmbeddedTexture("TimelineSliderMid.png");
+      texTimelineHigh_ = Embedded.LoadEmbeddedTexture("TimelineSliderHigh.png");
 
       TimelineSliderMid = ScriptableObject.CreateInstance<GUISkin>();
       TimelineSliderMid.horizontalSlider.normal.background = texSliderBG_;
@@ -462,7 +462,7 @@ namespace KN_Core {
       TimelineSliderMid.label.alignment = TextAnchor.MiddleCenter;
       TimelineSliderMid.label.font = FontLight;
 
-      var bgTex = Core.CreateTexture(Color.clear);
+      var bgTex = KnUtils.CreateTexture(Color.clear);
 
       //low bound
       TimelineSliderLow = ScriptableObject.CreateInstance<GUISkin>();
@@ -490,7 +490,7 @@ namespace KN_Core {
     }
 
     private static void MakeTachStyle() {
-      texTachBg_ = Core.LoadCoreTexture("TachBg.png");
+      texTachBg_ = Embedded.LoadEmbeddedTexture("TachBg.png");
 
       TachBg = ScriptableObject.CreateInstance<GUISkin>();
       TachBg.box.normal.background = texTachBg_;
@@ -515,7 +515,7 @@ namespace KN_Core {
       TachFillRed = ScriptableObject.CreateInstance<GUISkin>();
       TachFillRed.box.normal.background = texRedButtonH_;
 
-      texTachOutline_ = Core.LoadCoreTexture("TachoOutline.png");
+      texTachOutline_ = Embedded.LoadEmbeddedTexture("TachoOutline.png");
       texTachOutline_.filterMode = FilterMode.Point;
       TachOutline = ScriptableObject.CreateInstance<GUISkin>();
       TachOutline.box.normal.background = texTachOutline_;

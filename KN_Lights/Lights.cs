@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using KN_Core;
+using KN_Loader;
 using SyncMultiplayer;
 using UnityEngine;
 
@@ -64,7 +65,7 @@ namespace KN_Lights {
     public override void OnStart() {
       var assembly = Assembly.GetExecutingAssembly();
 
-      LightMask = Core.LoadTexture(assembly, "KN_Lights", "HeadLightMask.png");
+      LightMask = Embedded.LoadEmbeddedTexture(assembly, "KN_Lights.Resources.HeadLightMask.png");
 
       LoadDefaultLights(assembly);
 #if KN_DEV_TOOLS
@@ -97,7 +98,7 @@ namespace KN_Lights {
       worldLights_.OnStop();
     }
 
-    protected override void OnCarLoaded() {
+    public override void OnCarLoaded() {
       AutoAddLights(false);
       shouldSync_ = true;
     }
@@ -649,13 +650,16 @@ namespace KN_Lights {
     }
 
     private void LoadDefaultLights(Assembly assembly) {
-      using (var stream = assembly.GetManifestResourceStream("KN_Lights.Resources." + LightsConfigDefault)) {
-        if (DataSerializer.Deserialize<CarLights>("KN_Lights", stream, out var lights)) {
-          lightsConfigDefault_ = new LightsConfig(lights.ConvertAll(l => (CarLights) l));
+      var stream = Embedded.LoadEmbeddedFile(assembly, $"KN_Lights.Resources.{LightsConfigDefault}");
+      if (stream != null) {
+        using (stream) {
+          if (DataSerializer.Deserialize<CarLights>("KN_Lights", stream, out var lights)) {
+            lightsConfigDefault_ = new LightsConfig(lights.ConvertAll(l => (CarLights) l));
 #if false
           foreach (var l in lightsConfigDefault_.Lights) { }
           LightsConfigSerializer.Serialize(lightsConfigDefault_, "dump.knl");
 #endif
+          }
         }
       }
     }
@@ -676,7 +680,7 @@ namespace KN_Lights {
       data.Add("1", (byte) 25);
       data.Add("type", Udp.TypeLights);
       data.Add("id", id);
-      data.Add("color", Core.EncodeColor(ownLights_.HeadLightsColor));
+      data.Add("color", KnUtils.EncodeColor(ownLights_.HeadLightsColor));
       data.Add("pitch", ownLights_.Pitch);
       data.Add("pitchTail", ownLights_.PitchTail);
       data.Add("hlBrightness", ownLights_.HeadLightBrightness);

@@ -1,3 +1,5 @@
+using KN_Loader;
+
 namespace KN_Core {
 
   public class About : BaseMod {
@@ -67,7 +69,7 @@ namespace KN_Core {
       gui.Box(x, y, width, height, $"{Locale.Get("about4v")}: {GameVersion.version}", Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, $"{Locale.Get("about5v")}: {KnConfig.ClientVersion}", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, $"{Locale.Get("about5v")}: {ModLoader.ClientVersion}", Skin.MainContainerLeft);
       y += height;
     }
   }

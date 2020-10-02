@@ -1,8 +1,9 @@
 using BepInEx;
 using KN_Core;
+using KN_Loader;
 
 namespace KN_Maps {
-  [BepInPlugin("trbflxr.kn_maps", "KN_Maps", KnConfig.StringVersion)]
+  [BepInPlugin("trbflxr.kn_maps", "KN_Maps", ModLoader.StringVersion)]
   public class Loader : BaseUnityPlugin {
     private const int Version = 125;
     private const int Patch = 1;

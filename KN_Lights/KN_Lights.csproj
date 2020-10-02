@@ -41,47 +41,17 @@
       <OutputPath>bin\Release_DevTools\</OutputPath>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="0Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\0Harmony.dll</HintPath>
-        </Reference>
         <Reference Include="Assembly-CSharp, Version=13.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\Assembly-CSharp.dll</HintPath>
         </Reference>
-        <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\CarX\Assembly-CSharp-firstpass.dll</HintPath>
-        </Reference>
-        <Reference Include="BepInEx, Version=5.0.1.0, Culture=neutral, PublicKeyToken=null">
+        <Reference Include="BepInEx, Version=5.3.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\BepInEx\BepInEx.dll</HintPath>
-        </Reference>
-        <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\BepInEx.Harmony.dll</HintPath>
-        </Reference>
-        <Reference Include="BepInEx.Preloader, Version=5.0.1.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\BepInEx.Preloader.dll</HintPath>
         </Reference>
         <Reference Include="CarSystems.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\CarSystems.Runtime.dll</HintPath>
         </Reference>
         <Reference Include="CarX.Plugins.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\CarX.Plugins.Core.dll</HintPath>
-        </Reference>
-        <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.dll</HintPath>
-        </Reference>
-        <Reference Include="Mono.Cecil.Mdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.Mdb.dll</HintPath>
-        </Reference>
-        <Reference Include="Mono.Cecil.Pdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.Pdb.dll</HintPath>
-        </Reference>
-        <Reference Include="Mono.Cecil.Rocks, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-          <HintPath>..\Dependencies\BepInEx\Mono.Cecil.Rocks.dll</HintPath>
-        </Reference>
-        <Reference Include="MonoMod.RuntimeDetour, Version=19.11.5.1, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\MonoMod.RuntimeDetour.dll</HintPath>
-        </Reference>
-        <Reference Include="MonoMod.Utils, Version=19.11.5.1, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\MonoMod.Utils.dll</HintPath>
         </Reference>
         <Reference Include="SmartFox2X, Version=1.7.8.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\SmartFox2X.dll</HintPath>
@@ -102,29 +72,8 @@
         <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\Unity\UnityEngine.ImageConversionModule.dll</HintPath>
-        </Reference>
         <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\Unity\UnityEngine.IMGUIModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\Unity\UnityEngine.InputLegacyModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\Unity\UnityEngine.ParticleSystemModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\Unity\UnityEngine.PhysicsModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.SharedInternalsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\Unity\UnityEngine.SharedInternalsModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\Unity\UnityEngine.TextRenderingModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\Unity\UnityEngine.UIModule.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
@@ -140,6 +89,10 @@
       <ProjectReference Include="..\KN_Core\KN_Core.csproj">
         <Project>{3e3223ac-c054-4a3d-9233-da24acad7c16}</Project>
         <Name>KN_Core</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\KN_Loader\KN_Loader.csproj">
+        <Project>{ecb0dab8-34f5-4eb6-bcdc-67c7212a89ec}</Project>
+        <Name>KN_Loader</Name>
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>

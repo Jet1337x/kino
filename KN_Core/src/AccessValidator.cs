@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BepInEx.Bootstrap;
 using GameOverlay;
+using KN_Loader;
 
 namespace KN_Core {
 
@@ -46,7 +47,7 @@ namespace KN_Core {
       foreach (var d in data_) {
         if (d.Sid == sid_) {
           bool granted = (rights & d.Rights) != 0;
-          Log.Write(granted ? $"[KN_AccessValidator]: You allowed to use '{module}'!" : $"[KN_AccessValidator]: You not allowed to use '{module}'!");
+          Log.Write(granted ? $"[KN_Core::AccessValidator]: You allowed to use '{module}'!" : $"[KN_AccessValidator]: You not allowed to use '{module}'!");
           if (granted) {
             return Status.Granted;
           }
@@ -95,10 +96,10 @@ namespace KN_Core {
             }
           }
         }
-        Console.WriteLine($"[KN_AccessValidator]: Rights data successfully loaded, size: {data.Count}");
+        Console.WriteLine($"[KN_Core::AccessValidator]: Rights data successfully loaded, size: {data.Count}");
       }
       catch (Exception e) {
-        Console.WriteLine($"[KN_AccessValidator]: Unable to load rights data from remote, {e.Message}");
+        Console.WriteLine($"[KN_Core::AccessValidator]: Unable to load rights data from remote, {e.Message}");
         return null;
       }
       return data;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using KN_Loader;
 
 namespace KN_Core {
   public interface ISerializable {
@@ -13,7 +14,7 @@ namespace KN_Core {
       try {
         using (var memoryStream = new MemoryStream()) {
           using (var writer = new BinaryWriter(memoryStream)) {
-            writer.Write(KnConfig.Version);
+            writer.Write(ModLoader.ModVersion);
             writer.Write(data.Count);
             foreach (var d in data) {
               d.Serialize(writer);
@@ -23,10 +24,10 @@ namespace KN_Core {
             }
           }
         }
-        Log.Write($"[{module}]: Data successfully written to '{file}'");
+        Log.Write($"[{module}::Serialize]: Data successfully written to '{file}'");
       }
       catch (Exception e) {
-        Log.Write($"[{module}]: Unable to write file '{file}', {e.Message}");
+        Log.Write($"[{module}::Serialize]: Unable to write file '{file}', {e.Message}");
         return false;
       }
       return true;
@@ -44,10 +45,10 @@ namespace KN_Core {
             data.Add(d);
           }
         }
-        Log.Write($"[{module}]: Data loaded ({data.Count} items)");
+        Log.Write($"[{module}::Deserialize]: Data loaded ({data.Count} items)");
       }
       catch (Exception e) {
-        Log.Write($"[{module}]: Unable to read stream, {e.Message}");
+        Log.Write($"[{module}::Deserialize]: Unable to read stream, {e.Message}");
         data = default;
         return false;
       }
@@ -62,7 +63,7 @@ namespace KN_Core {
         }
       }
       catch (Exception e) {
-        Log.Write($"[{module}]: Unable to read file '{file}', {e.Message}");
+        Log.Write($"[{module}::Deserialize]: Unable to read file '{file}', {e.Message}");
         data = default;
         return false;
       }
@@ -76,7 +77,7 @@ namespace KN_Core {
         }
       }
       catch (Exception e) {
-        Log.Write($"[{module}]: Unable to bytes, {e.Message}");
+        Log.Write($"[{module}::Deserialize]: Unable to bytes, {e.Message}");
         data = default;
         return false;
       }

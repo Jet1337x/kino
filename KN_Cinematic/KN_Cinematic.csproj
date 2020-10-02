@@ -47,9 +47,6 @@
         <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\Assembly-CSharp-firstpass.dll</HintPath>
         </Reference>
-        <Reference Include="BepInEx, Version=5.0.1.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\Dependencies\BepInEx\BepInEx.dll</HintPath>
-        </Reference>
         <Reference Include="CarX.Plugins.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\Dependencies\CarX\CarX.Plugins.Core.dll</HintPath>
         </Reference>

@@ -1,3 +1,4 @@
+KN_Loader.dll
 KN_Core.dll
 KN_Visuals.dll
 KN_Lights.dll

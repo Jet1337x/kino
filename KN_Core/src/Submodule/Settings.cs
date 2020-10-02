@@ -61,7 +61,7 @@ namespace KN_Core {
       disableConsoles_ = new DisableConsoles(Core);
     }
 
-    public void Awake() {
+    public void OnInit() {
       RPoints = Core.KnConfig.Get<bool>("r_points");
       HideNames = Core.KnConfig.Get<bool>("hide_names");
       BackFireEnabled = Core.KnConfig.Get<bool>("custom_backfire");
@@ -89,7 +89,7 @@ namespace KN_Core {
       exhaust_.Initialize();
     }
 
-    protected override void OnCarLoaded() {
+    public override void OnCarLoaded() {
       exhaust_.Initialize();
 
       disableConsoles_.OnCarLoaded();
