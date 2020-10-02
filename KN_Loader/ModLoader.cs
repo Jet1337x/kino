@@ -56,7 +56,7 @@ namespace KN_Loader {
     }
 
     private void OnDestroy() {
-      Updater.StartUpdater(LatestUpdater, ForceUpdate, DevMode);
+      Updater.StartUpdater(LatestUpdater, ForceUpdate, DevMode, false);
 
       Core?.OnDeinit();
     }

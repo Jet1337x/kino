@@ -7,8 +7,8 @@ namespace KN_Loader {
   public static class Updater {
     private static readonly string UpdaterPath = Path.GetTempPath() + Path.DirectorySeparatorChar + "KN_Updater.exe";
 
-    public static void StartUpdater(int latestUpdater, bool forceUpdate, bool dev) {
-      if (forceUpdate) {
+    public static void StartUpdater(int latestUpdater, bool forceUpdate, bool dev, bool checkUpdater) {
+      if (forceUpdate && !checkUpdater) {
         CheckForNewUpdater(latestUpdater);
       }
 
