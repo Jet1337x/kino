@@ -10,9 +10,10 @@ using Object = UnityEngine.Object;
 
 namespace KN_Core {
   public class Core : ICore {
-    private const int Version = 125;
-    private const int Patch = 1;
+    private const int Version = 126;
+    private const int Patch = 0;
     private const int ClientVersion = 272;
+    private const string StringVersion = "1.2.6";
 
     private const float SoundReloadDistance = 70.0f;
 
@@ -79,7 +80,7 @@ namespace KN_Core {
 
     public Core(ModLoader loader) {
       loader_ = loader;
-      badVersion_ = loader_.BadVersion;
+      badVersion_ = loader_.BadVersion || loader_.LatestVersion != Version || ClientVersion != GameVersion.version;
 
       Embedded.Initialize();
 
@@ -98,13 +99,13 @@ namespace KN_Core {
       ColorPicker = new ColorPicker();
       FilePicker = new FilePicker();
 
-      AddMod(new About(this, ModLoader.ModVersion, ModLoader.Patch, GameVersion.version, badVersion_));
+      AddMod(new About(this, Version, Patch, ClientVersion, badVersion_));
 
       if (badVersion_) {
         return;
       }
 
-      Settings = new Settings(this, ModLoader.ModVersion, ModLoader.Patch, ModLoader.ClientVersion);
+      Settings = new Settings(this, Version, Patch, ClientVersion);
       AddMod(Settings);
 
       Swaps = new Swaps(this);
@@ -127,18 +128,18 @@ namespace KN_Core {
       string modName = Locale.Get(mod.Name);
       bool skipMod = false;
       if (badVersion_ && modName != Locale.Get("about") ||
-          mod.Version != ModLoader.ModVersion ||
+          mod.Version != loader_.LatestVersion ||
           mod.ClientVersion != GameVersion.version ||
-          mod.Patch != ModLoader.Patch) {
+          mod.Patch != loader_.LatestPatch) {
         Log.Write($"[KN_Core]: Mod {modName} outdated!");
 
-        if (modName != "CHEATS" && modName != "AIR") {
+        if (modName != "CHEATS" && modName != "AIR" && modName != Locale.Get("extras")) {
           loader_.ForceUpdate = true;
           Log.Write("[KN_Core]: Scheduling update.");
           return;
         }
 
-        if (mod.Version == ModLoader.ModVersion && mod.ClientVersion == GameVersion.version) {
+        if (mod.Version == loader_.LatestVersion && mod.ClientVersion == GameVersion.version) {
           skipMod = true;
         }
       }
@@ -341,7 +342,7 @@ namespace KN_Core {
       float y = GuiXLeft;
 
       bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight,
-        $"KINO v{ModLoader.StringVersion}.{ModLoader.Patch}", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy);
+        $"KINO v{StringVersion}.{Patch}", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy);
       y -= Gui.TabButtonHeight + Gui.OffsetY;
 
       float tempX = x;
@@ -411,8 +412,7 @@ namespace KN_Core {
           changelog += $"- {line}\n";
         }
       }
-      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersion}!\n{changelog}" + Locale.Get("outdated1"),
-        Skin.ButtonDummyRed)) {
+      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersion}!\n{changelog}" + Locale.Get("outdated1"), Skin.ButtonDummyRed)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
     }
