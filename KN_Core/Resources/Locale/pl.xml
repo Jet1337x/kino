@@ -2,7 +2,7 @@
 <locale loc="pl" author="Sleepy">
   <!--MODS (TABS)-->
   <key id="lights" value="ŚWIATŁA"/>
-  <key id="visuals" value="EFEKTY WIZUALNE"/>
+  <key id="visuals" value="WIZUALNE"/>
   <key id="settings" value="USTAWIENIA"/>
   <key id="maps" value="MAPY"/>
   <key id="about" value="O NAS"/>
