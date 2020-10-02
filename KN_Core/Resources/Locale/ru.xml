@@ -6,6 +6,7 @@
   <key id="settings" value="НАСТРОЙКИ"/>
   <key id="maps" value="КАРТЫ"/>
   <key id="about" value="ИНФО"/>
+  <key id="extras" value="ЭКСТА"/>
 
   <!--COMMON-->
   <key id="language" value="ЯЗЫК"/>
@@ -43,11 +44,12 @@
   <key id="about6" value="Так же большое спасибо игрокам Cursed, MRo и diip за их поддержку!"/>
   <key id="about7" value="Мод перевели:"/>
   <key id="about0v" value="Ваша версия игры не соответсвует версии мода!"/>
-  <key id="about1v" value="Пожалуйста, скачайте новую версию KiNO мода"/>
-  <key id="about2v" value="из оффицального дискорда (кнопка сверху)"/>
-  <key id="about3v" value="или свяжитесь с нами trbflxr#8814 или John Sawyer#6915"/>
-  <key id="about4v" value="Ваша версия игры"/>
-  <key id="about5v" value="Целевая версия"/>
+  <key id="about1v" value="Перезапустите игру для автоматического обновления."/>
+  <key id="about2v" value="Если вы все еще видите это сообщение после перезапуска,"/>
+  <key id="about3v" value="то скачайте и вручную установите последнюю версию мода"/>
+  <key id="about4v" value="из оффицального дискорда (кнопка сверху)"/>
+  <key id="about5v" value="Ваша версия игры"/>
+  <key id="about6v" value="Целевая версия"/>
 
   <!--SETTINGS-->
   <key id="tach" value="КАСТОМНЫЙ ТАХОМЕТР"/>

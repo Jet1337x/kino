@@ -6,6 +6,7 @@
   <key id="settings" value="RÉGLAGES"/>
   <key id="maps" value="MAPS"/>
   <key id="about" value="INFOS"/>
+  <key id="extras" value="EXTRAS"/>
 
   <!--COMMON-->
   <key id="language" value="LANGUE"/>
@@ -42,12 +43,13 @@
   <key id="about5" value="ou sur le discord du mod (boutton du haut)"/>
   <key id="about6" value="Merci également à Cursed, MRo et diip pour leur soutien !"/>
   <key id="about7" value="Mod traduit par:"/>
-  <key id="about0v" value="Votre version de client CarX est différente !"/>
-  <key id="about1v" value="Veuillez télécharger la nouvelle version du mod KiNO"/>
-  <key id="about2v" value="sur le discord officiel (boutton du haut)"/>
-  <key id="about3v" value="Si besoin contacter trbflxr#8814 ou John Sawyer#6915"/>
-  <key id="about4v" value="Version actuelle"/>
-  <key id="about5v" value="Version cible"/>
+  <key id="about0v" value="Votre version client ou mod CarX sont différente !"/>
+  <key id="about1v" value="Redémarrez le jeu pour que le mod se mette à jour automatiquement."/>
+  <key id="about2v" value="Si vous voyez toujours ce message après le redémarrage,"/>
+  <key id="about3v" value="télécharger et installer manuellement la dernière version du mod"/>
+  <key id="about4v" value="via notre discord (bouton du haut)"/>
+  <key id="about5v" value="Version actuelle"/>
+  <key id="about6v" value="Version cible"/>
 
   <!--SETTINGS-->
   <key id="tach" value="HUD PERSONNALISÉ"/>
