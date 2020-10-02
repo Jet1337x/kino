@@ -4,10 +4,10 @@ from tempfile import mkstemp
 from shutil import move, copymode
 from os import fdopen, remove
 
-version = ['1', '2', '4']
-patch = '4'
+version = ['1', '2', '5']
+patch = '0'
 updater = '01'
-client_version = ['2', '7', '1']
+client_version = ['2', '7', '2']
 
 version_int = ''.join(version)
 version_string = '{0}.{1}.{2}'.format(version[0], version[1], version[2])

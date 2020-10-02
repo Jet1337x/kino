@@ -7,6 +7,7 @@ namespace KN_Maps {
 
     public static void Hook() {
       Valid = true;
+      //todo: fixme
       HarmonyWrapper.PatchAll();
     }
 

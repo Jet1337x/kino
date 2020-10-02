@@ -1,5 +1,4 @@
-Version=124
-Patch=4
+Version=125
+Patch=0
 Updater=01
-Now this scary KN_Updater.exe is not needed in the mod folder)
-Fixed JP locale
+Updated to work with CarX 2.7.2
