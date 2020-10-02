@@ -144,6 +144,7 @@ namespace KN_Core {
     }
 
     public void AddMod(BaseMod mod) {
+      bool skipMod = false;
       if (badVersion_ && Locale.Get(mod.Name) != Locale.Get("about") ||
           mod.Version != KnConfig.Version ||
           mod.ClientVersion != GameVersion.version ||
@@ -151,15 +152,21 @@ namespace KN_Core {
         string modName = Locale.Get(mod.Name);
         Log.Write($"[KN_Core]: Mod {modName} outdated!");
 
-        if ((modName == "CHEATS" ||
-             modName == "AIR" ||
-             modName == "EXTRAS")
-            && mod.Patch != KnConfig.Patch) {
+        if (modName != "CHEATS" && modName != "AIR" && modName != "EXTRAS") {
+          scheduleUpdate_ = true;
+          Log.Write("[KN_Core]: Scheduling update.");
           return;
         }
 
-        scheduleUpdate_ = true;
-        Log.Write("[KN_Core]: Scheduling update.");
+        if (mod.Version == KnConfig.Version && mod.ClientVersion == GameVersion.version) {
+          skipMod = true;
+        }
+      }
+      else {
+        skipMod = true;
+      }
+
+      if (!skipMod) {
         return;
       }
 
