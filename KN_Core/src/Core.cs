@@ -98,13 +98,18 @@ namespace KN_Core {
       ShowUpdateWarn = latestVersion_ != 0 && KnConfig.Version < latestVersion_;
       scheduleUpdate_ = latestPatch_ != KnConfig.Patch;
 
+      Log.Write($"[KN_Core]: Core status version: {KnConfig.Version} / {latestVersion_}, " +
+                $"patch: {KnConfig.Patch} / {latestPatch_}, " +
+                $"updater: {latestUpdater_}, " +
+                $"(bv: {badVersion_}, uw: {ShowUpdateWarn}, update: {scheduleUpdate_})");
+
       CheckForNewUpdater();
 
       shouldRequestTools_ = true;
 
       AccessValidator.Initialize("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2lub19kYXRhL3Jhdy9tYXN0ZXIvZGF0YS5rbmQ=");
 
-      //KillFlyMod();
+      KillFlyMod();
 
       CoreInstance = this;
 
@@ -152,7 +157,7 @@ namespace KN_Core {
         string modName = Locale.Get(mod.Name);
         Log.Write($"[KN_Core]: Mod {modName} outdated!");
 
-        if (modName != "CHEATS" && modName != "AIR" && modName != "EXTRAS") {
+        if (modName != "CHEATS" && modName != "AIR") {
           scheduleUpdate_ = true;
           Log.Write("[KN_Core]: Scheduling update.");
           return;
