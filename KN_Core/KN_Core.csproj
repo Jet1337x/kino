@@ -212,6 +212,7 @@
         <EmbeddedResource Include="Resources\Locale\nl.xml" />
         <EmbeddedResource Include="Resources\Locale\pl.xml" />
         <EmbeddedResource Include="Resources\Locale\jp.xml" />
+        <EmbeddedResource Include="Resources\Locale\ita.xml" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\KN_Loader\KN_Loader.csproj">

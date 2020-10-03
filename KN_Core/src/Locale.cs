@@ -5,7 +5,7 @@ using KN_Loader;
 
 namespace KN_Core {
   public static class Locale {
-    public static readonly string[] ActiveLocales = {"en", "ru", "fr", "nl", "pl", "jp"};
+    public static readonly string[] ActiveLocales = {"en", "ru", "fr", "nl", "pl", "jp", "ita"};
 
     public static List<string> Authors { get; private set; }
 
