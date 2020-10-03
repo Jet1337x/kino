@@ -35,7 +35,7 @@ namespace KN_Loader {
 
       BadVersion = ClientVersion != GameVersion.version;
       ShowUpdateWarn = LatestVersion != 0 && ModVersion != LatestVersion;
-      ForceUpdate = LatestPatch != Patch || BadVersion;
+      ForceUpdate = LatestPatch != Patch || BadVersion || ShowUpdateWarn;
 
       Log.Write($"[KN_Loader]: Core status version: {ModVersion} / {LatestVersion}, patch: {Patch} / {LatestPatch}, " +
                 $"updater: {LatestUpdater}, update: {ForceUpdate}");
