@@ -58,8 +58,9 @@ namespace KN_Loader {
       }
 
       var changelog = data_;
-      changelog.RemoveAt(0);
-      changelog.RemoveAt(1);
+      changelog.RemoveAt(0); // version
+      changelog.RemoveAt(1); // patch
+      changelog.RemoveAt(2); // updater
 
       return changelog;
     }
