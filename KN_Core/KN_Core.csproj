@@ -215,6 +215,9 @@
         <EmbeddedResource Include="Resources\Locale\ita.xml" />
     </ItemGroup>
     <ItemGroup>
+        <EmbeddedResource Include="Resources\supporters.xml" />
+    </ItemGroup>
+    <ItemGroup>
       <ProjectReference Include="..\KN_Loader\KN_Loader.csproj">
         <Project>{ecb0dab8-34f5-4eb6-bcdc-67c7212a89ec}</Project>
         <Name>KN_Loader</Name>

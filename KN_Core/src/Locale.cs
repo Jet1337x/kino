@@ -8,6 +8,7 @@ namespace KN_Core {
     public static readonly string[] ActiveLocales = {"en", "ru", "fr", "nl", "pl", "jp", "ita"};
 
     public static List<string> Authors { get; private set; }
+    public static List<string> Supporters { get; private set; }
 
     public static string CurrentLocale { get; private set; }
 
@@ -24,10 +25,13 @@ namespace KN_Core {
       locales_ = new Dictionary<string, Dictionary<string, string>>();
 
       Authors = new List<string>();
+      Supporters = new List<string>();
 
       foreach (string l in ActiveLocales) {
         LoadLocale(l);
       }
+
+      LoadSupporters();
 
       defaultLocale_ = locales_["en"];
 
@@ -124,6 +128,30 @@ namespace KN_Core {
         // ignored
       }
       return id;
+    }
+
+    private static void LoadSupporters() {
+      var stream = Embedded.LoadEmbeddedFile("supporters.xml");
+      if (stream == null) {
+        return;
+      }
+
+      using (var reader = XmlReader.Create(stream)) {
+        while (reader.Read()) {
+          if (reader.NodeType == XmlNodeType.Element) {
+            if (!reader.HasAttributes) {
+              continue;
+            }
+
+            string name = reader.GetAttribute("name");
+            if (string.IsNullOrEmpty(name)) {
+              continue;
+            }
+
+            Supporters.Add(name);
+          }
+        }
+      }
     }
   }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using KN_Loader;
 
 namespace KN_Core {
@@ -41,10 +42,15 @@ namespace KN_Core {
       gui.Box(x, y, width, height, Locale.Get("about5"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, Locale.Get("about6"), Skin.MainContainerLeft);
-      y += height;
+      string supporters = Locale.Supporters.Aggregate("", (current, s) => current + $"{s}, ");
+      if (!string.IsNullOrEmpty(supporters)) {
+        supporters = supporters.Substring(0, supporters.Length - 2);
 
-      gui.Box(x, y, width, height, Locale.Get("about7"), Skin.MainContainerLeft);
+        gui.Box(x, y, width, height, $"{Locale.Get("about6")} {supporters} {Locale.Get("about7")}", Skin.MainContainerLeft);
+        y += height;
+      }
+
+      gui.Box(x, y, width, height, Locale.Get("about8"), Skin.MainContainerLeft);
       y += height;
 
       foreach (string author in Locale.Authors) {
