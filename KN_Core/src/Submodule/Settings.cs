@@ -167,10 +167,12 @@ namespace KN_Core {
 
       if (gui.Button(ref x, ref y, width, height, Locale.Get("hide_points"), RPoints ? Skin.Button : Skin.ButtonActive)) {
         RPoints = !RPoints;
+        Core.KnConfig.Set("r_points", RPoints);
       }
 
       if (gui.Button(ref x, ref y, width, height, Locale.Get("hide_names"), HideNames ? Skin.ButtonActive : Skin.Button)) {
         HideNames = !HideNames;
+        Core.KnConfig.Set("hide_names", HideNames);
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
@@ -200,6 +202,7 @@ namespace KN_Core {
 
       if (gui.Button(ref x, ref y, width, height, Locale.Get("white_smoke"), forceWhiteSmoke_ ? Skin.ButtonActive : Skin.Button)) {
         forceWhiteSmoke_ = !forceWhiteSmoke_;
+        Core.KnConfig.Set("force_white_smoke", forceWhiteSmoke_);
       }
 
       if (gui.Button(ref x, ref y, width, height, Locale.Get("sync_lights"), SyncLights ? Skin.ButtonActive : Skin.Button)) {
@@ -213,10 +216,12 @@ namespace KN_Core {
 
       if (gui.Button(ref x, ref y, width, height, Locale.Get("disable_consoles"), disableConsoles_.Disabled ? Skin.ButtonActive : Skin.Button)) {
         disableConsoles_.Disabled = !disableConsoles_.Disabled;
+        Core.KnConfig.Set("trash_autodisable", disableConsoles_.Disabled);
       }
 
       if (gui.Button(ref x, ref y, width, height, Locale.Get("hide_consoles"), disableConsoles_.Hidden ? Skin.ButtonActive : Skin.Button)) {
         disableConsoles_.Hidden = !disableConsoles_.Hidden;
+        Core.KnConfig.Set("trash_autohide", disableConsoles_.Hidden);
       }
 
       if (Core.Swaps.Active) {
