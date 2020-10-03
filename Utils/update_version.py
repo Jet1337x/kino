@@ -4,8 +4,8 @@ from tempfile import mkstemp
 from shutil import move, copymode
 from os import fdopen, remove
 
-version = ['1', '2', '5']
-patch = '1'
+version = ['1', '2', '6']
+patch = '0'
 updater = '02'
 client_version = ['2', '7', '2']
 

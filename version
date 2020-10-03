@@ -1,4 +1,7 @@
-Version=125
-Patch=1
+Version=126
+Patch=0
 Updater=02
-Fixed compatibility with CarX 2.7.2
+Added new module - KN_Loader
+Fixed EN, RU and FR localizations
+Fixed car loading events
+Fixed mod updater
