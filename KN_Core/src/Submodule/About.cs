@@ -66,7 +66,7 @@ namespace KN_Core {
       gui.Box(x, y, width, height, Locale.Get("about3v"), Skin.MainContainerLeft);
       y += height;
 
-      gui.Box(x, y, width, height, $"{Locale.Get("about4v")}: {GameVersion.version}", Skin.MainContainerLeft);
+      gui.Box(x, y, width, height, $"{Locale.Get("about4v")}", Skin.MainContainerLeft);
       y += height;
 
       gui.Box(x, y, width, height, $"{Locale.Get("about5v")}: {ModLoader.ClientVersion}", Skin.MainContainerLeft);
