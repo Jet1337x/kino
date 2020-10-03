@@ -13,7 +13,9 @@ in_path = os.path.join(current_dir, '..', 'TestLauncher', 'bin', config)
 
 
 for root, dirs, files in os.walk(in_path):
-    modules = get_dlls.get_dlls()
+    to_copy = os.path.join(current_dir, 'to_copy.txt')
+
+    modules = get_dlls.get_dlls(to_copy)
     for file in files:
         if any(file in s for s in modules):
             print(os.path.join(root, file))
