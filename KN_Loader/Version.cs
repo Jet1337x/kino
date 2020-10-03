@@ -4,6 +4,14 @@ using System.Linq;
 
 namespace KN_Loader {
   public static class Version {
+    private enum Line {
+      Version = 0,
+      Patch = 1,
+      Updater = 2,
+
+      Size
+    }
+
     private static List<string> data_;
 
     public static void Initialize() {
@@ -11,11 +19,11 @@ namespace KN_Loader {
     }
 
     public static int GetVersion() {
-      if (data_ == null || data_.Count <= 0) {
+      if (data_ == null || data_.Count <= (int) Line.Version) {
         return 0;
       }
       try {
-        string version = data_[0].Replace("Version=", "");
+        string version = data_[(int) Line.Version].Replace("Version=", "");
         return Convert.ToInt32(version);
       }
       catch (Exception) {
@@ -25,11 +33,11 @@ namespace KN_Loader {
     }
 
     public static int GetPatch() {
-      if (data_ == null || data_.Count <= 1) {
+      if (data_ == null || data_.Count <= (int) Line.Patch) {
         return int.MaxValue;
       }
       try {
-        string patch = data_[1].Replace("Patch=", "");
+        string patch = data_[(int) Line.Patch].Replace("Patch=", "");
         return Convert.ToInt32(patch);
       }
       catch (Exception) {
@@ -39,11 +47,11 @@ namespace KN_Loader {
     }
 
     public static int GetUpdaterVersion() {
-      if (data_ == null || data_.Count <= 2) {
+      if (data_ == null || data_.Count <= (int) Line.Updater) {
         return int.MaxValue;
       }
       try {
-        string version = data_[2].Replace("Updater=", "");
+        string version = data_[(int) Line.Updater].Replace("Updater=", "");
         return Convert.ToInt32(version);
       }
       catch (Exception) {
@@ -53,14 +61,14 @@ namespace KN_Loader {
     }
 
     public static List<string> GetChangelog() {
-      if (data_ == null || data_.Count <= 2) {
+      if (data_ == null || data_.Count <= (int) Line.Size) {
         return null;
       }
 
       var changelog = data_;
       changelog.RemoveAt(0); // version
-      changelog.RemoveAt(1); // patch
-      changelog.RemoveAt(2); // updater
+      changelog.RemoveAt(0); // patch
+      changelog.RemoveAt(0); // updater
 
       return changelog;
     }
