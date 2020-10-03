@@ -11,18 +11,29 @@ client_version = ['2', '7', '2']
 
 version_int = ''.join(version)
 version_string = '{0}.{1}.{2}'.format(version[0], version[1], version[2])
+version_string_long = '{0}.{1}.{2}.{3}'.format(version[0], version[1], version[2], patch)
 
 client_version_int = ''.join(client_version)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
+# modules
 loader_path = os.path.join(current_dir, '..', 'KN_Loader', 'ModLoader.cs')
 core_path = os.path.join(current_dir, '..', 'KN_Core', 'src', 'Core.cs')
 version_path = os.path.join(current_dir, '..', 'version')
 updater_path = os.path.join(current_dir, '..', 'KN_Updater', 'Program.cs')
 
+# assemblies
+loader_assembly_path = os.path.join(current_dir, '..', 'KN_Loader', 'Properties', 'AssemblyInfo.cs')
+core_assembly_path = os.path.join(current_dir, '..', 'KN_Core', 'Properties', 'AssemblyInfo.cs')
+
+
 def module_path(module):
     return os.path.join(current_dir, '..', module, 'Loader.cs')
+    
+    
+def module_assembly_path(module):
+    return os.path.join(current_dir, '..', module, 'Properties', 'AssemblyInfo.cs')
 
 
 def replace_mod_version(file_path):
@@ -107,6 +118,31 @@ def replace_updater_version(file_path):
     remove(file_path)
     move(abs_path, file_path)
 
+
+def replace_assembly_version(file_path):
+    print('Updating version for: ' + file_path)
+    fh, abs_path = mkstemp()
+    with fdopen(fh,'w') as new_file:
+        with open(file_path) as old_file:
+            found = False
+            found_file = False
+            for line in old_file:
+                if found and found_file:
+                    new_file.write(line)
+                else:
+                    if not found and 'assembly: AssemblyVersion' in line and '//' not in line:
+                        found = True
+                        new_file.write(re.sub('\s*([\d.]+)', version_string_long, line))
+                    elif not found_file and 'assembly: AssemblyFileVersion' in line and '//' not in line:
+                        found_file = True
+                        new_file.write(re.sub('\s*([\d.]+)', version_string_long, line))
+                    else:
+                        new_file.write(line) 
+
+    copymode(file_path, abs_path)
+    remove(file_path)
+    move(abs_path, file_path)
+
 modules = [
     core_path,
     loader_path,
@@ -115,8 +151,19 @@ modules = [
     module_path('KN_Visuals')
 ]
 
+assemblies = [
+    core_assembly_path,
+    loader_assembly_path,
+    module_assembly_path('KN_Lights'),
+    module_assembly_path('KN_Maps'),
+    module_assembly_path('KN_Visuals')
+]
+
 for m in modules:    
     replace_mod_version(m)
+
+for a in assemblies:    
+    replace_assembly_version(a)
 
 replace_version(version_path)
 replace_updater_version(updater_path)
