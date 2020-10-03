@@ -71,6 +71,7 @@ namespace KN_Core {
 
     private readonly ModLoader loader_;
     private readonly bool badVersion_;
+    private readonly bool newPatch_;
 
     private readonly Timer saveTimer_;
 
@@ -81,6 +82,7 @@ namespace KN_Core {
     public Core(ModLoader loader) {
       loader_ = loader;
       badVersion_ = loader_.BadVersion || loader_.LatestVersion != Version || ClientVersion != GameVersion.version;
+      newPatch_ = loader_.NewPatch || loader_.LatestPatch != Patch && loader_.LatestVersion == Version;
 
       Embedded.Initialize();
 
@@ -334,7 +336,7 @@ namespace KN_Core {
         return;
       }
 
-      if (loader_.ShowUpdateWarn) {
+      if (loader_.ShowUpdateWarn || newPatch_) {
         GuiUpdateWarn();
       }
 
@@ -412,7 +414,7 @@ namespace KN_Core {
           changelog += $"- {line}\n";
         }
       }
-      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersion}!\n{changelog}" + Locale.Get("outdated1"), Skin.ButtonDummyRed)) {
+      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersionString}!\n{changelog}" + Locale.Get("outdated1"), Skin.ButtonDummyRed)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
     }

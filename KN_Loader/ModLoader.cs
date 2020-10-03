@@ -13,12 +13,14 @@ namespace KN_Loader {
 
     public ICore Core { get; private set; }
 
+    public bool NewPatch { get; }
     public bool BadVersion { get; }
     public int LatestVersion { get; }
     public int LatestPatch { get; }
     public int LatestUpdater { get; }
     public List<string> Changelog { get; }
 
+    public string LatestVersionString { get; }
 
     public bool SaveUpdateLog { get; set; }
     public bool ForceUpdate { get; set; }
@@ -36,6 +38,16 @@ namespace KN_Loader {
       BadVersion = ClientVersion != GameVersion.version;
       ShowUpdateWarn = LatestVersion != 0 && ModVersion != LatestVersion;
       ForceUpdate = LatestPatch != Patch || BadVersion || ShowUpdateWarn;
+      NewPatch = LatestPatch != Patch && ModVersion == LatestVersion;
+
+      LatestVersionString = $"{LatestVersion}.{LatestPatch}";
+      if (LatestVersionString.Length > 4) {
+        LatestVersionString = LatestVersionString.Insert(1, ".");
+        LatestVersionString = LatestVersionString.Insert(3, ".");
+      }
+      else {
+        LatestVersionString = "unknown";
+      }
 
       Log.Write($"[KN_Loader]: Core status version: {ModVersion} / {LatestVersion}, patch: {Patch} / {LatestPatch}, " +
                 $"updater: {LatestUpdater}, update: {ForceUpdate}");
