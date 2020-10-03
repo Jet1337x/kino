@@ -414,7 +414,9 @@ namespace KN_Core {
           changelog += $"- {line}\n";
         }
       }
-      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersionString}!\n{changelog}" + Locale.Get("outdated1"), Skin.ButtonDummyRed)) {
+      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersionString}!\n" +
+                                                   $"{Locale.Get("outdated1")}\n" +
+                                                   $"{changelog}" + Locale.Get("outdated2"), Skin.ButtonDummyRed)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
     }

@@ -25,7 +25,8 @@
   <key id="input_locked" value="TOUCHES CARX VERROUILLÉE. FERMER MENU POUR DÉVERROUILLER."/>
   <key id="changes" value="CHANGELOG"/>
   <key id="outdated0" value="VOTRE MOD N'EST PAS A JOUR, DERNIERE VERSION"/>
-  <key id="outdated1" value="POUR PLUS D'INFORMATIONS, CONSULTEZ NOTRE DISCORD (CLIQUEZ)"/>
+  <key id="outdated1" value="REDÉMARREZ LE JEU POUR QUE LE MOD SE METTE À JOUR AUTOMATIQUEMENT."/>
+  <key id="outdated2" value="POUR PLUS D'INFORMATIONS, CONSULTEZ NOTRE DISCORD (CLIQUEZ)"/>
 
   <!--PICKERS-->
   <key id="cp_cars" value="VOITURES"/>

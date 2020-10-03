@@ -24,7 +24,8 @@
   <key id="input_locked" value="CARXの操作がロックされています MODメニューを閉じるとロックが解除されます"/>
   <key id="changes" value="変更点"/>
   <key id="outdated0" value="あなたのMODは最新版ではありません、最新バージョン"/>
-  <key id="outdated1" value="最新情報はディスコードでチェックしてください (クリック)"/>
+  <key id="outdated1" value="MODが自動的に更新されるようゲームを再起動してください。"/>
+  <key id="outdated2" value="最新情報はディスコードでチェックしてください (クリック)"/>
 
   <!--PICKERS-->
   <key id="cp_cars" value="カー"/>

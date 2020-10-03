@@ -25,7 +25,8 @@
   <key id="input_locked" value="GLI INPUT DI GIOCO SONO BLOCCATI. CHIUDI IL MENU DELLA MOD PER SBLOCCARLO."/>
   <key id="changes" value="CRONOLOGIA MODIFICHE"/>
   <key id="outdated0" value="LA TUA MOD È OBSOLETA, ULTIMA VERSIONE"/>
-  <key id="outdated1" value="PER ULTERIORI AGGIORNAMENTI VISITA IL NOSTRO DISCORD (CLICCA)"/>
+  <key id="outdated1" value="RIAVVIA IL GIOCO PER FAR AGGIORNARE LA MOD AUTOMATICAMENTE."/>
+  <key id="outdated2" value="PER ULTERIORI AGGIORNAMENTI VISITA IL NOSTRO DISCORD (CLICCA)"/>
 
   <!--PICKERS-->
   <key id="cp_cars" value="AUTO"/>

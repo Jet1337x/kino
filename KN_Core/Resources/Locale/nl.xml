@@ -24,7 +24,8 @@
   <key id="input_locked" value="CARX BESTURING IS VERGRENDELD. SLUIT MOD MENU OM VERDER TE GAAN"/>
   <key id="changes" value="CHANGELOG"/>
   <key id="outdated0" value="UW MOD IS OUTDATED, UPDATE NAAR DE LAATSTE VERSIE"/>
-  <key id="outdated1" value="VOOR MEER UPDATES BEKIJK ONZE DISCORD (CLICK)"/>
+  <key id="outdated1" value="HERSTART HET SPEL ZODAT DE MOD ZICH AUTOMATISCH KAN UPDATEN."/>
+  <key id="outdated2" value="VOOR MEER UPDATES BEKIJK ONZE DISCORD (CLICK)"/>
 
   <!--PICKERS-->
   <key id="cp_cars" value="AUTOS"/>

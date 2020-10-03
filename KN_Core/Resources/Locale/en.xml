@@ -25,7 +25,8 @@
   <key id="input_locked" value="CARX INPUT IS LOCKED. CLOSE MOD MENU TO UNLOCK IT."/>
   <key id="changes" value="CHANGELOG"/>
   <key id="outdated0" value="YOUR MOD IS OUTDATED, LATEST VERSION"/>
-  <key id="outdated1" value="FOR MORE UPDATES CHECK OUR DISCORD (CLICK)"/>
+  <key id="outdated1" value="RESTART THE GAME FOR THE MOD TO UPDATE AUTOMATICALLY."/>
+  <key id="outdated2" value="FOR MORE UPDATES CHECK OUR DISCORD (CLICK)"/>
 
   <!--PICKERS-->
   <key id="cp_cars" value="CARS"/>
