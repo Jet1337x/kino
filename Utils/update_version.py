@@ -38,7 +38,7 @@ def replace_mod_version(file_path):
                 if found and found_patch and found_client and found_string:
                     new_file.write(line)
                 else:
-                    if not found and ' Version = ' in line:
+                    if not found and (' Version = ' in line or ' ModVersion = ' in line):
                         found = True
                         new_file.write(re.sub('\d{3}', version_int, line))
                     elif not found_client and ' ClientVersion = ' in line:
