@@ -49,8 +49,13 @@ namespace KN_Maps {
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !cheatsEnabled_ && ModelValidator.modelName != "";
 
-      gui.SliderH(ref x, ref y, width, ref speed_, 1.0f, 100.0f, $"FLY SPEED: {speed_:F1}");
-      gui.SliderH(ref x, ref y, width, ref speedMultiplier_, 1.0f, 10.0f, $"FLY SPEED MULTIPLIER {speedMultiplier_:F1}");
+      if (gui.SliderH(ref x, ref y, width, ref speed_, 1.0f, 100.0f, $"FLY SPEED: {speed_:F1}")) {
+        core_.KnConfig.Set("speed", speed_);
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref speedMultiplier_, 1.0f, 10.0f, $"FLY SPEED MULTIPLIER {speedMultiplier_:F1}")) {
+        core_.KnConfig.Set("speed_multiplier", speedMultiplier_);
+      }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.OffsetY;
