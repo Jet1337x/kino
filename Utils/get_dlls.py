@@ -1,11 +1,5 @@
-import os
-
-
-def get_dlls():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    to_copy = os.path.join(current_dir, 'to_copy.txt')
-
-    with open(to_copy, 'r') as f:
+def get_dlls(to_copy_path):
+    with open(to_copy_path, 'r') as f:
         to_copy_dlls_raw = f.readlines()
 
     to_copy_dlls = []

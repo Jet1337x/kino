@@ -1,45 +1,13 @@
-import os
-import re
-from tempfile import mkstemp
-from shutil import move, copymode
-from os import fdopen, remove
-
-version = ['1', '2', '6']
-patch = '2'
-updater = '02'
-client_version = ['2', '7', '2']
-
-version_int = ''.join(version)
-version_string = '{0}.{1}.{2}'.format(version[0], version[1], version[2])
-version_string_long = '{0}.{1}.{2}.{3}'.format(version[0], version[1], version[2], patch)
-
-client_version_int = ''.join(client_version)
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# modules
-loader_path = os.path.join(current_dir, '..', 'KN_Loader', 'ModLoader.cs')
-core_path = os.path.join(current_dir, '..', 'KN_Core', 'src', 'Core.cs')
-version_path = os.path.join(current_dir, '..', 'version')
-updater_path = os.path.join(current_dir, '..', 'KN_Updater', 'Program.cs')
-
-# assemblies
-loader_assembly_path = os.path.join(current_dir, '..', 'KN_Loader', 'Properties', 'AssemblyInfo.cs')
-core_assembly_path = os.path.join(current_dir, '..', 'KN_Core', 'Properties', 'AssemblyInfo.cs')
-
-
-def module_path(module):
-    return os.path.join(current_dir, '..', module, 'Loader.cs')
-    
-    
-def module_assembly_path(module):
-    return os.path.join(current_dir, '..', module, 'Properties', 'AssemblyInfo.cs')
-
-
 def replace_mod_version(file_path):
+    import re
+    from tempfile import mkstemp
+    from shutil import move, copymode
+    from os import fdopen, remove
+    import version
+
     print('Updating version for: ' + file_path)
     fh, abs_path = mkstemp()
-    with fdopen(fh,'w') as new_file:
+    with fdopen(fh, 'w') as new_file:
         with open(file_path) as old_file:
             found = False
             found_patch = False
@@ -51,16 +19,16 @@ def replace_mod_version(file_path):
                 else:
                     if not found and (' Version = ' in line or ' ModVersion = ' in line):
                         found = True
-                        new_file.write(re.sub('\d{3}', version_int, line))
+                        new_file.write(re.sub('\d{3}', version.version_int, line))
                     elif not found_client and ' ClientVersion = ' in line:
                         found_client = True
-                        new_file.write(re.sub('\d{3}', client_version_int, line))
+                        new_file.write(re.sub('\d{3}', version.client_version_int, line))
                     elif not found_patch and ' Patch = ' in line:
                         found_patch = True
-                        new_file.write(re.sub('\d{1}', patch, line))
+                        new_file.write(re.sub('\d{1}', version.patch, line))
                     elif not found_string and ' StringVersion = ' in line:
                         found_string = True
-                        new_file.write(re.sub('\s*([\d.]+)', version_string, line))
+                        new_file.write(re.sub('\s*([\d.]+)', version.version_string, line))
                     else:
                         new_file.write(line)
 
@@ -70,9 +38,15 @@ def replace_mod_version(file_path):
 
 
 def replace_version(file_path):
+    import re
+    from tempfile import mkstemp
+    from shutil import move, copymode
+    from os import fdopen, remove
+    import version
+
     print('Updating version for: ' + file_path)
     fh, abs_path = mkstemp()
-    with fdopen(fh,'w') as new_file:
+    with fdopen(fh, 'w') as new_file:
         with open(file_path) as old_file:
             found = False
             found_patch = False
@@ -83,15 +57,15 @@ def replace_version(file_path):
                 else:
                     if not found and 'Version=' in line:
                         found = True
-                        new_file.write(re.sub('\d{3}', version_int, line))
+                        new_file.write(re.sub('\d{3}', version.version_int, line))
                     elif not found_patch and 'Patch=' in line:
                         found_patch = True
-                        new_file.write(re.sub('\d{1}', patch, line))
+                        new_file.write(re.sub('\d{1}', version.patch, line))
                     elif not found_updater and 'Updater=' in line:
                         found_updater = True
-                        new_file.write(re.sub('\d{2}', updater, line))
+                        new_file.write(re.sub('\d{2}', version.updater, line))
                     else:
-                        new_file.write(line) 
+                        new_file.write(line)
 
     copymode(file_path, abs_path)
     remove(file_path)
@@ -99,9 +73,15 @@ def replace_version(file_path):
 
 
 def replace_updater_version(file_path):
+    import re
+    from tempfile import mkstemp
+    from shutil import move, copymode
+    from os import fdopen, remove
+    import version
+
     print('Updating version for: ' + file_path)
     fh, abs_path = mkstemp()
-    with fdopen(fh,'w') as new_file:
+    with fdopen(fh, 'w') as new_file:
         with open(file_path) as old_file:
             found = False
             for line in old_file:
@@ -110,9 +90,9 @@ def replace_updater_version(file_path):
                 else:
                     if not found and ' Version = ' in line:
                         found = True
-                        new_file.write(re.sub('\d{2}', updater, line))
+                        new_file.write(re.sub('\d{2}', version.updater, line))
                     else:
-                        new_file.write(line) 
+                        new_file.write(line)
 
     copymode(file_path, abs_path)
     remove(file_path)
@@ -120,9 +100,15 @@ def replace_updater_version(file_path):
 
 
 def replace_assembly_version(file_path):
+    import re
+    from tempfile import mkstemp
+    from shutil import move, copymode
+    from os import fdopen, remove
+    import version
+
     print('Updating version for: ' + file_path)
     fh, abs_path = mkstemp()
-    with fdopen(fh,'w') as new_file:
+    with fdopen(fh, 'w') as new_file:
         with open(file_path) as old_file:
             found = False
             found_file = False
@@ -132,38 +118,48 @@ def replace_assembly_version(file_path):
                 else:
                     if not found and 'assembly: AssemblyVersion' in line and '//' not in line:
                         found = True
-                        new_file.write(re.sub('\s*([\d.]+)', version_string_long, line))
+                        new_file.write(re.sub('\s*([\d.]+)', version.version_string_long, line))
                     elif not found_file and 'assembly: AssemblyFileVersion' in line and '//' not in line:
                         found_file = True
-                        new_file.write(re.sub('\s*([\d.]+)', version_string_long, line))
+                        new_file.write(re.sub('\s*([\d.]+)', version.version_string_long, line))
                     else:
-                        new_file.write(line) 
+                        new_file.write(line)
 
     copymode(file_path, abs_path)
     remove(file_path)
     move(abs_path, file_path)
 
-modules = [
-    core_path,
-    loader_path,
-    module_path('KN_Lights'),
-    module_path('KN_Maps'),
-    module_path('KN_Visuals')
-]
 
-assemblies = [
-    core_assembly_path,
-    loader_assembly_path,
-    module_assembly_path('KN_Lights'),
-    module_assembly_path('KN_Maps'),
-    module_assembly_path('KN_Visuals')
-]
+def main():
+    import os
 
-for m in modules:    
-    replace_mod_version(m)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
 
-for a in assemblies:    
-    replace_assembly_version(a)
+    modules = [
+        os.path.join(current_dir, '..', 'KN_Core', 'src', 'Core.cs'),
+        os.path.join(current_dir, '..', 'KN_Loader', 'ModLoader.cs'),
+        os.path.join(current_dir, '..', 'KN_Lights', 'Loader.cs'),
+        os.path.join(current_dir, '..', 'KN_Maps', 'Loader.cs'),
+        os.path.join(current_dir, '..', 'KN_Visuals', 'Loader.cs')
+    ]
 
-replace_version(version_path)
-replace_updater_version(updater_path)
+    assemblies = [
+        os.path.join(current_dir, '..', 'KN_Loader', 'Properties', 'AssemblyInfo.cs'),
+        os.path.join(current_dir, '..', 'KN_Core', 'Properties', 'AssemblyInfo.cs'),
+        os.path.join(current_dir, '..', 'KN_Lights', 'Properties', 'AssemblyInfo.cs'),
+        os.path.join(current_dir, '..', 'KN_Maps', 'Properties', 'AssemblyInfo.cs'),
+        os.path.join(current_dir, '..', 'KN_Visuals', 'Properties', 'AssemblyInfo.cs')
+    ]
+
+    for m in modules:
+        replace_mod_version(m)
+
+    for a in assemblies:
+        replace_assembly_version(a)
+
+    replace_version(os.path.join(current_dir, '..', 'version'))
+    replace_updater_version(os.path.join(current_dir, '..', 'KN_Updater', 'Program.cs'))
+
+
+if __name__ == "__main__":
+    main()
