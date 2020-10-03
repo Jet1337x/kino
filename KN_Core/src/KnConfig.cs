@@ -218,6 +218,9 @@ namespace KN_Core {
       defaultParams_["force_white_smoke"] = false;
       defaultParams_["subscribe"] = true;
 
+      defaultParams_["use_tag"] = true;
+      defaultParams_["tag_front"] = true;
+
       // air
       defaultParams_["air_use_controlKey"] = true;
       defaultParams_["air_step_max"] = 3.0f;
