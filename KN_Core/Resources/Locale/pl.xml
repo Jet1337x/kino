@@ -42,12 +42,13 @@
   <key id="about5" value="lub na discordzie modyfikacji (przycisk na górze)"/>
   <key id="about6" value="Poza tym, wielkie podziękowania dlaCursed, MRo oraz diip za ich wsparcie!"/>
   <key id="about7" value="Modyfikacja przetłumaczona przez:"/>
-  <key id="about0v" value="Twoja wersja gry jest nietypowa!"/>
-  <key id="about1v" value="Proszę pobierz nową wersję modyfikacji KiNO"/>
-  <key id="about2v" value="z oficjalnego discorda(top button)"/>
-  <key id="about3v" value="lub skontaktuj sięz nami przez trbflxr#8814 lub John Sawyer#6915"/>
-  <key id="about4v" value="Obecna wersja"/>
-  <key id="about5v" value="Docelowa wersja"/>
+  <key id="about0v" value="Twoja wersja CarX jest nieznana"/>
+  <key id="about1v" value="Zrestartuj grę żeby automatycznie zaaktualizować modyfikacje."/>
+  <key id="about2v" value="Jeśli nadal widzisz tę wiadomość to"/>
+  <key id="about3v" value="Pobierz i manualnie zainstaluj najnowszą wersję modyfikacji"/>
+  <key id="about4v" value="z naszego discorda (przycisk na górze)"/>
+  <key id="about5v" value="Obecna wersja"/>
+  <key id="about6v" value="Docelowa wersja"/>
 
   <!--SETTINGS-->
   <key id="tach" value="NIESTANDARDOWY OBROTOMIERZ"/>

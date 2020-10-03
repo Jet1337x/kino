@@ -43,11 +43,12 @@
   <key id="about6" value="Trouwens Cursed, MRo and diip heel erg bedankt voor de hulp!"/>
   <key id="about7" value="Mod vertaald door:"/>
   <key id="about0v" value="Uw CarX client versie is anders!"/>
-  <key id="about1v" value="Aub download nieuwste versie van KiNO mod"/>
-  <key id="about2v" value="Van officiele discord (bovenste knop)"/>
-  <key id="about3v" value="Of contacteer ons op trbflxr#8814 of John Sawyer#6915"/>
-  <key id="about4v" value="Huidige versie"/>
-  <key id="about5v" value="Doelwit versie"/>
+  <key id="about1v" value="Herstart het spel zodat de mod zich automatisch kan updaten."/>
+  <key id="about2v" value="Als u did bericht nog steeds ziet na het heropstarten"/>
+  <key id="about3v" value="download en installeer de laatste versie van de mod manueel"/>
+  <key id="about4v" value="vanuit onze discord (bovenste knop)"/>
+  <key id="about5v" value="Huidige versie"/>
+  <key id="about6v" value="Doelwit versie"/>
 
   <!--SETTINGS-->
   <key id="tach" value="CUSTOM TACHOMETER"/>
