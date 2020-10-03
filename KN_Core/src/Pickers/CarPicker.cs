@@ -101,7 +101,7 @@ namespace KN_Core {
         if (loadingCars_.Count != nwPlayers.Count) {
           foreach (var player in nwPlayers) {
             if (loadingCars_.All(c => c.Player != player)) {
-              loadingCars_.Add(new LoadingCar {Player = player});
+              loadingCars_.Add(new LoadingCar {Player = player, Loading = true});
               Log.Write($"[KN_Core::CarPicker]: Added car to load: '{player.FilteredNickName}' ({player.NetworkID})");
             }
           }
@@ -115,9 +115,13 @@ namespace KN_Core {
           if (car.Player.IsCarLoading()) {
             car.Loading = true;
           }
-          else if (car.Loading) {
+          else if (car.Loading && !car.Player.ugcCarReadyForConstruction) {
             car.Loaded = true;
             car.Loading = false;
+            if (car.Player.userCar == null) {
+              continue;
+            }
+
             Cars.Add(new KnCar(car.Player.userCar));
             Log.Write($"[KN_Core::CarPicker]: Car loaded: '{car.Player.FilteredNickName}' ({car.Player.NetworkID})");
             OnCarLoaded?.Invoke();
