@@ -6,7 +6,7 @@ namespace KN_Loader {
   public class ModLoader : BaseUnityPlugin {
     public const int ClientVersion = 272;
     public const int ModVersion = 126;
-    public const int Patch = 1;
+    public const int Patch = 2;
     public const string StringVersion = "1.2.6";
 
     public static ModLoader Instance { get; private set; }

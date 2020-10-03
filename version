@@ -1,7 +1,8 @@
 Version=126
-Patch=1
+Patch=2
 Updater=02
 Added new module - KN_Loader
+Added Italian locale by Ybubu
 Fixed EN, RU and FR localizations
 Fixed car loading events
 Fixed mod updater
