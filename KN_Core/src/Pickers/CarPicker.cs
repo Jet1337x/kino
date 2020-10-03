@@ -88,34 +88,31 @@ namespace KN_Core {
 
       Cars.RemoveAll(KnCar.IsNull);
 
-      loadingCars_.RemoveAll(car => {
-        if (car.Loaded && (car.Player == null || car.Player.userCar == null)) {
-          Log.Write($"[KN_Core::CarPicker]: Removed car: '{car.Player?.FilteredNickName}' ({car.Player?.NetworkID})");
-          return true;
-        }
-        return false;
-      });
-
       var nwPlayers = NetworkController.InstanceGame?.Players;
       if (nwPlayers != null) {
+        loadingCars_.RemoveAll(car => {
+          bool found = nwPlayers.Any(nwPlayer => nwPlayer == car.Player);
+          if (!found || car.Loaded && car.Player == null) {
+            Log.Write($"[KN_Core::CarPicker]: Car '{car.Player?.FilteredNickName}' ({car.Player?.NetworkID}) REMOVED");
+            return true;
+          }
+          return false;
+        });
+
         if (loadingCars_.Count != nwPlayers.Count) {
           foreach (var player in nwPlayers) {
             if (loadingCars_.All(c => c.Player != player)) {
               loadingCars_.Add(new LoadingCar {Player = player, Loading = true});
-              Log.Write($"[KN_Core::CarPicker]: Added car to load: '{player.FilteredNickName}' ({player.NetworkID})");
+              Log.Write($"[KN_Core::CarPicker]: Car '{player.FilteredNickName}' ({player.NetworkID}) ADDED TO LOAD");
             }
           }
         }
 
         foreach (var car in loadingCars_) {
-          if (car.Player == null) {
-            continue;
-          }
-
           if (car.Player.IsCarLoading()) {
             car.Loading = true;
           }
-          else if (car.Loading && !car.Player.ugcCarReadyForConstruction) {
+          else if (car.Loading) {
             car.Loaded = true;
             car.Loading = false;
             if (car.Player.userCar == null) {
@@ -123,7 +120,7 @@ namespace KN_Core {
             }
 
             Cars.Add(new KnCar(car.Player.userCar));
-            Log.Write($"[KN_Core::CarPicker]: Car loaded: '{car.Player.FilteredNickName}' ({car.Player.NetworkID})");
+            Log.Write($"[KN_Core::CarPicker]: Car '{car.Player.FilteredNickName}' ({car.Player.NetworkID}) LOADED");
             OnCarLoaded?.Invoke();
           }
         }
