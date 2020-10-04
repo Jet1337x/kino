@@ -183,11 +183,11 @@ namespace KN_Core {
         IsCheatsEnabled = false;
       }
 
-      mods_.Remove(mod);
-      CarPicker.OnCarLoaded -= mod.OnCarLoaded;
-      UpdateLanguage();
-
       mod.OnStop();
+      CarPicker.OnCarLoaded -= mod.OnCarLoaded;
+
+      mods_.Remove(mod);
+      UpdateLanguage();
 
       selectedTab_ = 0;
       selectedModId_ = mods_[selectedTab_].Id;
