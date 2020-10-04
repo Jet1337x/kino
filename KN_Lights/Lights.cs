@@ -98,7 +98,7 @@ namespace KN_Lights {
       worldLights_.OnStop();
     }
 
-    public override void OnCarLoaded() {
+    public override void OnCarLoaded(KnCar car) {
       AutoAddLights(false);
       shouldSync_ = true;
     }

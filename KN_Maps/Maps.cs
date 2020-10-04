@@ -22,7 +22,7 @@ namespace KN_Maps {
       fly_.OnStop();
     }
 
-    public override void OnCarLoaded() {
+    public override void OnCarLoaded(KnCar car) {
       fly_.OnCarLoaded();
     }
 

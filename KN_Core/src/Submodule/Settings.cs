@@ -89,14 +89,14 @@ namespace KN_Core {
       exhaust_.Initialize();
     }
 
-    public override void OnCarLoaded() {
+    public override void OnCarLoaded(KnCar car) {
       exhaust_.Initialize();
 
       disableConsoles_.OnCarLoaded();
 
       if (forceWhiteSmoke_) {
-        foreach (var car in Core.Cars) {
-          car.Base.SetSmokeColor(Color.white);
+        foreach (var c in Core.Cars) {
+          c.Base.SetSmokeColor(Color.white);
         }
       }
     }
