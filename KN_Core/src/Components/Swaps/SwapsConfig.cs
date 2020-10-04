@@ -36,7 +36,7 @@ namespace KN_Core {
       writer.Write(Engine.maxTorqueRPM);
     }
 
-    public void Deserialize(BinaryReader reader, int version) {
+    public bool Deserialize(BinaryReader reader, int version) {
       Id = reader.ReadInt32();
       Rating = reader.ReadInt32();
       Enabled = reader.ReadBoolean();
@@ -54,6 +54,8 @@ namespace KN_Core {
       Engine.cutRPM = reader.ReadSingle();
       Engine.idleRPM = reader.ReadSingle();
       Engine.maxTorqueRPM = reader.ReadSingle();
+
+      return true;
     }
   }
 
@@ -66,14 +68,17 @@ namespace KN_Core {
       writer.Write(Rating);
     }
 
-    public void Deserialize(BinaryReader reader, int version) {
+    public bool Deserialize(BinaryReader reader, int version) {
       CarId = reader.ReadInt32();
       Rating = reader.ReadInt32();
+
+      return true;
     }
   }
 
   public class SwapData : ISerializable {
     public const string ConfigFile = "kn_swapdata.knd";
+    public const int MinVersion = 272;
 
     public class Engine {
       public int EngineId;
@@ -113,7 +118,11 @@ namespace KN_Core {
       }
     }
 
-    public void Deserialize(BinaryReader reader, int version) {
+    public bool Deserialize(BinaryReader reader, int version) {
+      if (version < MinVersion) {
+        return false;
+      }
+
       CarId = reader.ReadInt32();
       CurrentEngine = reader.ReadInt32();
       int size = reader.ReadInt32();
@@ -124,6 +133,7 @@ namespace KN_Core {
           FinalDrive = reader.ReadSingle()
         });
       }
+      return true;
     }
   }
 }

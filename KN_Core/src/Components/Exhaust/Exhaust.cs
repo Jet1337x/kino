@@ -63,10 +63,10 @@ namespace KN_Core {
     }
 
     public void OnStop() {
-      DataSerializer.Serialize("KN_Exhaust", exhaustConfig_.ToList<ISerializable>(), KnConfig.BaseDir + ExhaustConfigFile);
+      DataSerializer.Serialize("KN_Exhaust", exhaustConfig_.ToList<ISerializable>(), KnConfig.BaseDir + ExhaustConfigFile, Core.Version);
 
 #if KN_DEV_TOOLS
-      DataSerializer.Serialize("KN_Exhaust", exhaustConfigsDev_.ToList<ISerializable>(), KnConfig.BaseDir + ExhaustConfigDefaultFile);
+      DataSerializer.Serialize("KN_Exhaust", exhaustConfigsDev_.ToList<ISerializable>(), KnConfig.BaseDir + ExhaustConfigDefaultFile, Core.Version);
 #endif
     }
 

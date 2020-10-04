@@ -31,11 +31,13 @@ namespace KN_Core {
       writer.Write(Volume);
     }
 
-    public void Deserialize(BinaryReader reader, int version) {
+    public bool Deserialize(BinaryReader reader, int version) {
       CarId = reader.ReadInt32();
       MaxTime = reader.ReadSingle();
       FlamesTrigger = reader.ReadSingle();
       Volume = reader.ReadSingle();
+
+      return true;
     }
   }
 

@@ -56,7 +56,7 @@ namespace KN_Lights {
     }
 
     public void OnStop() {
-      DataSerializer.Serialize("KN_Lights", allData_.ToList<ISerializable>(), KnConfig.BaseDir + WorldLightsData.ConfigFile);
+      DataSerializer.Serialize("KN_Lights", allData_.ToList<ISerializable>(), KnConfig.BaseDir + WorldLightsData.ConfigFile, Loader.Version);
     }
 
     public void Update() {
