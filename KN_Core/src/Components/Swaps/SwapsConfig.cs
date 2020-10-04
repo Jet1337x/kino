@@ -1,28 +1,19 @@
+using System.Collections.Generic;
 using System.IO;
 using CarX;
 
 namespace KN_Core {
   public class EngineData : ISerializable {
-    public int Id;
-    public int Rating;
-    public bool Enabled;
-    public float ClutchTorque;
-    public string Name;
-    public string SoundId;
-    public readonly CarDesc.Engine Engine;
+    public int Id { get; private set; }
+    public int Rating { get; private set; }
+    public bool Enabled { get; private set; }
+    public float ClutchTorque { get; private set; }
+    public string Name { get; private set; }
+    public string SoundId { get; private set; }
+    public CarDesc.Engine Engine { get; }
 
     public EngineData() {
       Engine = new CarDesc.Engine();
-    }
-
-    public EngineData(int id, int rating, bool enabled, float clutch, string name, string soundId, CarDesc.Engine engine) {
-      Id = id;
-      Rating = rating;
-      Enabled = enabled;
-      ClutchTorque = clutch;
-      Name = name;
-      SoundId = soundId;
-      Engine = engine;
     }
 
     public void Serialize(BinaryWriter writer) {
@@ -66,32 +57,9 @@ namespace KN_Core {
     }
   }
 
-  public class SwapData : ISerializable {
-    public const string ConfigFile = "kn_swapdata.knd";
-
-    public int CarId;
-    public int EngineId;
-    public float Turbo;
-    public float FinalDrive;
-
-    public void Serialize(BinaryWriter writer) {
-      writer.Write(CarId);
-      writer.Write(EngineId);
-      writer.Write(Turbo);
-      writer.Write(FinalDrive);
-    }
-
-    public void Deserialize(BinaryReader reader, int version) {
-      CarId = reader.ReadInt32();
-      EngineId = reader.ReadInt32();
-      Turbo = reader.ReadSingle();
-      FinalDrive = reader.ReadSingle();
-    }
-  }
-
   public class SwapBalance : ISerializable {
-    public int CarId;
-    public int Rating;
+    public int CarId { get; private set; }
+    public int Rating { get; private set; }
 
     public void Serialize(BinaryWriter writer) {
       writer.Write(CarId);
@@ -101,6 +69,61 @@ namespace KN_Core {
     public void Deserialize(BinaryReader reader, int version) {
       CarId = reader.ReadInt32();
       Rating = reader.ReadInt32();
+    }
+  }
+
+  public class SwapData : ISerializable {
+    public const string ConfigFile = "kn_swapdata.knd";
+
+    public class Engine {
+      public int EngineId;
+      public float Turbo;
+      public float FinalDrive;
+    }
+
+    public int CarId { get; private set; }
+    public int CurrentEngine { get; private set; }
+    public List<Engine> Engines { get; }
+
+    public SwapData() {
+      Engines = new List<Engine>();
+      CurrentEngine = -1;
+    }
+
+    public SwapData(int carId, int engineId, float turbo, float finalDrive) {
+      CarId = carId;
+      CurrentEngine = 0;
+      Engines = new List<Engine> {
+        new Engine {
+          EngineId = engineId,
+          Turbo = turbo,
+          FinalDrive = finalDrive
+        }
+      };
+    }
+
+    public void Serialize(BinaryWriter writer) {
+      writer.Write(CarId);
+      writer.Write(CurrentEngine);
+      writer.Write(Engines.Count);
+      foreach (var engine in Engines) {
+        writer.Write(engine.EngineId);
+        writer.Write(engine.Turbo);
+        writer.Write(engine.FinalDrive);
+      }
+    }
+
+    public void Deserialize(BinaryReader reader, int version) {
+      CarId = reader.ReadInt32();
+      CurrentEngine = reader.ReadInt32();
+      int size = reader.ReadInt32();
+      for (int i = 0; i < size; ++i) {
+        Engines.Add(new Engine {
+          EngineId = reader.ReadInt32(),
+          Turbo = reader.ReadSingle(),
+          FinalDrive = reader.ReadSingle()
+        });
+      }
     }
   }
 }
