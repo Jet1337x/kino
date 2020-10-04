@@ -44,6 +44,7 @@ namespace KN_Core {
     public bool IsGuiEnabled { get; set; }
 
     public bool IsCheatsEnabled { get; private set; }
+    public bool IsExtrasEnabled { get; private set; }
     public bool IsDevToolsEnabled { get; private set; }
 
     public bool DisplayTextAsId { get; set; }
@@ -153,8 +154,15 @@ namespace KN_Core {
         return;
       }
 
-      if (mod.Name == "CHEATS") {
-        IsCheatsEnabled = true;
+      switch (mod.Name) {
+        case "CHEATS": {
+          IsCheatsEnabled = true;
+          break;
+        }
+        case "extras": {
+          IsExtrasEnabled = true;
+          break;
+        }
       }
 
       mods_.Add(mod);

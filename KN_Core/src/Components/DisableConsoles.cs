@@ -26,26 +26,26 @@ namespace KN_Core {
 
       disabledCars_ = new List<KnCar>(16);
 
-      updateCarsTimer_ = new Timer(10.0f);
+      updateCarsTimer_ = new Timer(5.0f);
       updateCarsTimer_.Callback += OnCarLoaded;
     }
 
     public void OnStart() {
-      if (!core_.IsCheatsEnabled) {
+      if (!core_.IsCheatsEnabled && !core_.IsExtrasEnabled) {
         Disabled = core_.KnConfig.Get<bool>("trash_autodisable");
         Hidden = core_.KnConfig.Get<bool>("trash_autohide");
       }
     }
 
     public void OnStop() {
-      if (!core_.IsCheatsEnabled) {
+      if (!core_.IsCheatsEnabled && !core_.IsExtrasEnabled) {
         core_.KnConfig.Set("trash_autodisable", Disabled);
         core_.KnConfig.Set("trash_autohide", Hidden);
       }
     }
 
     public void Update() {
-      if (core_.IsCheatsEnabled) {
+      if (core_.IsCheatsEnabled && !core_.IsExtrasEnabled) {
         return;
       }
 
@@ -69,12 +69,12 @@ namespace KN_Core {
     }
 
     public void OnCarLoaded() {
-      if (!core_.IsCheatsEnabled) {
+      if (!core_.IsCheatsEnabled && !core_.IsExtrasEnabled) {
         disabledCars_.RemoveAll(KnCar.IsNull);
 
         if (Disabled) {
           foreach (var car in core_.Cars) {
-            if (car != core_.PlayerCar && car.Base.networkPlayer != null && car.Base.networkPlayer.PlayerId.platform != UserPlatform.Id.Steam) {
+            if (car.IsConsole) {
               if (!disabledCars_.Contains(car)) {
                 disabledCars_.Add(car);
                 collisionManager_?.MovePlayerToColliderGroup("none", car.Base.networkPlayer);

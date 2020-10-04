@@ -212,7 +212,7 @@ namespace KN_Core {
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.OffsetY;
 
-      GUI.enabled = !Core.IsCheatsEnabled;
+      GUI.enabled = !Core.IsCheatsEnabled && !Core.IsExtrasEnabled;
 
       if (gui.Button(ref x, ref y, width, height, Locale.Get("disable_consoles"), disableConsoles_.Disabled ? Skin.ButtonActive : Skin.Button)) {
         disableConsoles_.Disabled = !disableConsoles_.Disabled;
