@@ -82,8 +82,11 @@ namespace KN_Core {
 
     public Core(ModLoader loader) {
       loader_ = loader;
+
+#if !KN_DEV_TOOLS
       badVersion_ = loader_.BadVersion || loader_.LatestVersion != Version || ClientVersion != GameVersion.version;
       newPatch_ = loader_.NewPatch || loader_.LatestPatch != Patch && loader_.LatestVersion == Version;
+#endif
 
       Embedded.Initialize();
 
@@ -128,6 +131,7 @@ namespace KN_Core {
         return;
       }
 
+#if !KN_DEV_TOOLS
       // locale is still loading if about or settings added
       string modName = Locale.Get(mod.Name);
       bool skipMod = false;
@@ -153,6 +157,7 @@ namespace KN_Core {
       if (!skipMod) {
         return;
       }
+#endif
 
       switch (mod.Name) {
         case "CHEATS": {

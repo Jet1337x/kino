@@ -124,13 +124,9 @@ namespace KN_Core {
           exhaust_.Initialize();
         }
 
-#if KN_DEV_TOOLS
-        exhaust_.Update();
-#else
         if (!Core.IsInGarage) {
           exhaust_.Update();
         }
-#endif
       }
       if (tachEnabled_) {
         if (rootCanvas_ != null) {
