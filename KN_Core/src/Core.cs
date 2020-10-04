@@ -37,7 +37,9 @@ namespace KN_Core {
     public FilePicker FilePicker { get; }
 
     public bool IsInGarage { get; private set; }
+    public bool IsInLobby { get; private set; }
     public bool IsInGarageChanged { get; private set; }
+    public bool IsInLobbyChanged { get; private set; }
     public bool IsSceneChanged { get; private set; }
     public bool IsCarChanged { get; private set; }
 
@@ -59,6 +61,7 @@ namespace KN_Core {
 
     private string prevScene_;
     private bool prevInGarage_;
+    private bool prevInLobby_;
     private int carId_ = -1;
 
     private readonly List<BaseMod> mods_;
@@ -277,6 +280,10 @@ namespace KN_Core {
         IsCarChanged = PlayerCar.Id != carId_;
         carId_ = PlayerCar.Id;
       }
+
+      IsInLobby = NetworkController.IsActive;
+      IsInLobbyChanged = prevInLobby_ && !IsInLobby || !prevInLobby_ && IsInLobby;
+      prevInLobby_ = IsInLobby;
 
       if (IsInGarage && cameraRotation_ == null) {
         cameraRotation_ = Object.FindObjectOfType<CameraRotation>();
