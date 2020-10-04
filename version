@@ -1,5 +1,5 @@
-Version=127
-Patch=0
+Version=126
+Patch=2
 Updater=02
 Added new module - KN_Loader
 Added Italian locale by Ybubu
