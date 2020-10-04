@@ -38,10 +38,12 @@ namespace KN_Core {
 
     public bool IsInGarage { get; private set; }
     public bool IsInLobby { get; private set; }
+    public bool IsCarFlipped { get; private set; }
     public bool IsInGarageChanged { get; private set; }
     public bool IsInLobbyChanged { get; private set; }
     public bool IsSceneChanged { get; private set; }
     public bool IsCarChanged { get; private set; }
+    public bool IsCarFlippedChanged { get; private set; }
 
     public bool IsGuiEnabled { get; set; }
 
@@ -62,6 +64,7 @@ namespace KN_Core {
     private string prevScene_;
     private bool prevInGarage_;
     private bool prevInLobby_;
+    private bool prevFlipped_;
     private int carId_ = -1;
 
     private readonly List<BaseMod> mods_;
@@ -285,6 +288,10 @@ namespace KN_Core {
       IsInLobbyChanged = prevInLobby_ && !IsInLobby || !prevInLobby_ && IsInLobby;
       prevInLobby_ = IsInLobby;
 
+      IsCarFlipped = PlayerCar?.Base.flipped ?? false;
+      IsCarFlippedChanged = prevFlipped_ && !IsCarFlipped || !prevFlipped_ && IsCarFlipped;
+      prevFlipped_ = IsCarFlipped;
+
       if (IsInGarage && cameraRotation_ == null) {
         cameraRotation_ = Object.FindObjectOfType<CameraRotation>();
       }
@@ -326,6 +333,10 @@ namespace KN_Core {
           soundReload_ = false;
           soundReloadNext_ = true;
         }
+      }
+
+      if (IsCarFlippedChanged) {
+        soundReloadNext_ = true;
       }
 
       Swaps.Update();
