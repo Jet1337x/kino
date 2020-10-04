@@ -79,6 +79,8 @@ namespace KN_Core {
       if (!Active) {
         return;
       }
+
+      SendSwapData();
     }
 
     public void Update() {
@@ -127,7 +129,7 @@ namespace KN_Core {
 
       var currentEngine = currentSwap_?.GetCurrentEngine();
       if (currentEngine != null && currentEngine.EngineId != 0 && !KnCar.IsNull(core_.PlayerCar)) {
-        SetSoundSound(core_.PlayerCar.Base, currentSound_);
+        SetSoundSound(core_.PlayerCar.Base, currentSound_, true);
       }
     }
 
@@ -319,18 +321,20 @@ namespace KN_Core {
       CopyEngine(newEngine, desc.carXDesc.engine);
       car.SetDesc(desc);
 
-      SetSoundSound(car, engine.SoundId);
-      currentSound_ = engine.SoundId;
-      currentEngineTurboMax_ = engine.Engine.turboPressure;
+      SetSoundSound(car, engine.SoundId, self);
 
-      Log.Write($"[KN_Core::Swaps]: Engine '{engine.Name}' ({engine.Id}) was set to '{car.metaInfo.id}' ({nwId}, self: {self})");
+      if (self) {
+        currentSound_ = engine.SoundId;
+        currentEngineTurboMax_ = engine.Engine.turboPressure;
+        Log.Write($"[KN_Core::Swaps]: Engine '{engine.Name}' ({engine.Id}) was set to '{car.metaInfo.id}' ({nwId})");
 
-      SendSwapData();
+        SendSwapData();
+      }
 
       return true;
     }
 
-    private void SetSoundSound(RaceCar car, string soundId) {
+    private void SetSoundSound(RaceCar car, string soundId, bool self) {
       for (int i = 0; i < car.transform.childCount; ++i) {
         var child = car.transform.GetChild(i);
         if (child.name == "Engine") {
@@ -352,7 +356,9 @@ namespace KN_Core {
               raceCar.metaInfo.name = oldName;
               KnUtils.SetField(engineSound, "m_raceCar", raceCar);
 
-              Log.Write($"[KN_Core::Swaps]: Engine sound sound is set to '{car.metaInfo.id}'");
+              if (self) {
+                Log.Write($"[KN_Core::Swaps]: Engine sound sound is set to '{car.metaInfo.id}'");
+              }
             }
           }
           break;
@@ -412,7 +418,7 @@ namespace KN_Core {
 
       Log.Write($"[KN_Core::Swaps]: Stock engine was set to '{car.metaInfo.id}' ({nwId}, self: {self})");
 
-      SetSoundSound(car, defaultSoundId_);
+      SetSoundSound(car, defaultSoundId_, self);
       currentSound_ = defaultSoundId_;
       currentEngineTurboMax_ = 0.0f;
     }
