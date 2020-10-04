@@ -31,6 +31,12 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_DevTools|AnyCPU' ">
+      <OutputPath>bin\Release_DevTools\</OutputPath>
+      <DefineConstants>TRACE</DefineConstants>
+      <Optimize>true</Optimize>
+      <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
     <PropertyGroup>
         <ApplicationIcon>Data\Icon.ico</ApplicationIcon>
     </PropertyGroup>
