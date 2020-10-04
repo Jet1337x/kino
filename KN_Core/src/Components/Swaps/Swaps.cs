@@ -9,7 +9,7 @@ namespace KN_Core {
   public class Swaps {
     public bool Active => swapsEnabled_ && dataLoaded_;
     private readonly List<EngineData> engines_;
-    private readonly List<SwapBalance> balance_;
+    private readonly List<EngineBalance> balance_;
 
     private float carListScrollH_;
     private Vector2 carListScroll_;
@@ -27,11 +27,15 @@ namespace KN_Core {
       shouldRequestSwaps_ = true;
 
       engines_ = new List<EngineData>();
-      balance_ = new List<SwapBalance>();
+      balance_ = new List<EngineBalance>();
       dataLoaded_ = SwapsLoader.LoadData(ref engines_, ref balance_);
       if (!dataLoaded_) {
         return;
       }
+
+      Log.Write($"[KN_Core::Swaps]: Swaps data successfully loaded from remote, engines: {engines_.Count}, balance: {balance_.Count}");
+
+
     }
 
     public void OnInit() {
@@ -40,7 +44,7 @@ namespace KN_Core {
       }
 
       if (DataSerializer.Deserialize<SwapData>("KN_Swaps", KnConfig.BaseDir + SwapData.ConfigFile, out var data)) {
-        Log.Write($"[KN_Core::Swaps]: Swap data loaded {data.Count} items");
+        Log.Write($"[KN_Core::Swaps]: User swap data loaded, items: {data.Count}");
         // allData_.AddRange(data.ConvertAll(d => (SwapData) d));
       }
     }

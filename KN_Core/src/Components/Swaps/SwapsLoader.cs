@@ -3,7 +3,7 @@ using KN_Loader;
 
 namespace KN_Core {
   public static class SwapsLoader {
-    public static bool LoadData(ref List<EngineData> engines, ref List<SwapBalance> balance) {
+    public static bool LoadData(ref List<EngineData> engines, ref List<EngineBalance> balance) {
       return LoadEngines(ref engines) && LoadBalance(ref balance);
     }
 
@@ -27,7 +27,7 @@ namespace KN_Core {
       return true;
     }
 
-    private static bool LoadBalance(ref List<SwapBalance> balance) {
+    private static bool LoadBalance(ref List<EngineBalance> balance) {
       var data = WebDataLoader.LoadAsBytes("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2lub19kYXRhL3Jhdy9tYXN0ZXIva25fZGF0YTEua25k");
       if (data == null) {
         return false;
@@ -35,8 +35,8 @@ namespace KN_Core {
 
       Log.Write("[KN_Core::SwapsLoader]: Balance data loaded from remote");
 
-      if (DataSerializer.Deserialize<SwapBalance>("KN_Swaps", data, out var balanceOut)) {
-        balance.AddRange(balanceOut.ConvertAll(d => (SwapBalance) d));
+      if (DataSerializer.Deserialize<EngineBalance>("KN_Swaps", data, out var balanceOut)) {
+        balance.AddRange(balanceOut.ConvertAll(d => (EngineBalance) d));
         Log.Write($"[KN_Core::SwapsLoader]: Balance data parsed, count: {balance.Count}");
       }
       else {

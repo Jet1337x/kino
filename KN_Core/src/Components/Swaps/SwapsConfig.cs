@@ -57,7 +57,7 @@ namespace KN_Core {
     }
   }
 
-  public class SwapBalance : ISerializable {
+  public class EngineBalance : ISerializable {
     public int CarId { get; private set; }
     public int Rating { get; private set; }
 
