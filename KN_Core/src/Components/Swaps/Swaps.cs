@@ -14,6 +14,7 @@ namespace KN_Core {
     private readonly List<SwapData> allData_;
 
     private SwapData currentSwap_;
+    private string currentSound_;
 
     private string defaultSoundId_;
     private float defaultFinalDrive_;
@@ -106,6 +107,10 @@ namespace KN_Core {
         return;
       }
 
+      var currentEngine = currentSwap_?.GetCurrentEngine();
+      if (currentEngine != null && currentEngine.EngineId != 0) {
+        SetSoundSound(core_.PlayerCar.Base, currentSound_);
+      }
     }
 
     public void OnGui(Gui gui, ref float x, ref float y, float width) {
@@ -268,6 +273,7 @@ namespace KN_Core {
       car.SetDesc(desc);
 
       SetSoundSound(car, engine.SoundId);
+      currentSound_ = engine.SoundId;
 
       Log.Write($"[KN_Core::Swaps]: Engine '{engine.Name}' ({engine.Id}) was set to '{car.metaInfo.id}' ({nwId}, self: {self})");
 
@@ -357,6 +363,7 @@ namespace KN_Core {
       Log.Write($"[KN_Core::Swaps]: Stock engine was set to '{car.metaInfo.id}' ({nwId}, self: {self})");
 
       SetSoundSound(car, defaultSoundId_);
+      currentSound_ = defaultSoundId_;
     }
 
     private EngineData GetEngine(int id) {
