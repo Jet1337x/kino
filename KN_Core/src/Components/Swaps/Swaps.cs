@@ -30,9 +30,6 @@ namespace KN_Core {
 
     private readonly Core core_;
 
-
-    private bool test_;
-
     public Swaps(Core core) {
       core_ = core;
 
@@ -353,6 +350,9 @@ namespace KN_Core {
       var desc = car.GetDesc();
       CopyEngine(defaultEngine_, desc.carXDesc.engine);
       car.SetDesc(desc);
+
+      car.carX.clutchMaxTorque = defaultClutch_;
+      car.carX.finaldrive = defaultFinalDrive_;
 
       Log.Write($"[KN_Core::Swaps]: Stock engine was set to '{car.metaInfo.id}' ({nwId}, self: {self})");
 
