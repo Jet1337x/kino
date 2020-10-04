@@ -31,6 +31,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_DevTools|AnyCPU' ">
+    <OutputPath>bin\Release_DevTools\</OutputPath>
+    <DefineConstants>TRACE;KN_DEV_TOOLS</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=13.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Dependencies\CarX\Assembly-CSharp.dll</HintPath>

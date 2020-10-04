@@ -63,13 +63,13 @@ Global
 		{066B59BA-5801-4709-8D0F-C6A65AFBB967}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{066B59BA-5801-4709-8D0F-C6A65AFBB967}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{066B59BA-5801-4709-8D0F-C6A65AFBB967}.Release|Any CPU.Build.0 = Release|Any CPU
-		{066B59BA-5801-4709-8D0F-C6A65AFBB967}.Release_DevTools|Any CPU.ActiveCfg = Debug|Any CPU
-		{066B59BA-5801-4709-8D0F-C6A65AFBB967}.Release_DevTools|Any CPU.Build.0 = Debug|Any CPU
+		{066B59BA-5801-4709-8D0F-C6A65AFBB967}.Release_DevTools|Any CPU.ActiveCfg = Release_DevTools|Any CPU
+		{066B59BA-5801-4709-8D0F-C6A65AFBB967}.Release_DevTools|Any CPU.Build.0 = Release_DevTools|Any CPU
 		{ECB0DAB8-34F5-4EB6-BCDC-67C7212A89EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ECB0DAB8-34F5-4EB6-BCDC-67C7212A89EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECB0DAB8-34F5-4EB6-BCDC-67C7212A89EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECB0DAB8-34F5-4EB6-BCDC-67C7212A89EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ECB0DAB8-34F5-4EB6-BCDC-67C7212A89EC}.Release_DevTools|Any CPU.ActiveCfg = Debug|Any CPU
-		{ECB0DAB8-34F5-4EB6-BCDC-67C7212A89EC}.Release_DevTools|Any CPU.Build.0 = Debug|Any CPU
+		{ECB0DAB8-34F5-4EB6-BCDC-67C7212A89EC}.Release_DevTools|Any CPU.ActiveCfg = Release_DevTools|Any CPU
+		{ECB0DAB8-34F5-4EB6-BCDC-67C7212A89EC}.Release_DevTools|Any CPU.Build.0 = Release_DevTools|Any CPU
 	EndGlobalSection
 EndGlobal
