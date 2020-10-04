@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CarX;
+using KN_Loader;
 
 namespace KN_Core {
   public class EngineData : ISerializable {
@@ -78,7 +80,7 @@ namespace KN_Core {
 
   public class SwapData : ISerializable {
     public const string ConfigFile = "kn_swapdata.knd";
-    public const int MinVersion = 272;
+    public const int MinVersion = 127;
 
     public class Engine {
       public int EngineId;
@@ -95,16 +97,61 @@ namespace KN_Core {
       CurrentEngine = -1;
     }
 
-    public SwapData(int carId, int engineId, float turbo, float finalDrive) {
+    public SwapData(int carId) {
       CarId = carId;
-      CurrentEngine = 0;
-      Engines = new List<Engine> {
-        new Engine {
-          EngineId = engineId,
-          Turbo = turbo,
-          FinalDrive = finalDrive
+      CurrentEngine = -1;
+      Engines = new List<Engine>();
+    }
+
+    public void AddEngine(Engine engine) {
+      if (engine == null) {
+        return;
+      }
+
+      for (int i = 0; i < Engines.Count; ++i) {
+        if (Engines[i].EngineId == engine.EngineId) {
+          CurrentEngine = i;
+          Engines[i].Turbo = engine.Turbo;
+          Engines[i].FinalDrive = engine.FinalDrive;
+          return;
         }
-      };
+      }
+
+      Engines.Add(engine);
+      CurrentEngine = Engines.IndexOf(engine);
+      Log.Write($"[KN_Core::SwapsConfig]: Added new engine '{engine.EngineId}', size: {Engines.Count}");
+    }
+
+    public void RemoveEngine(Engine engine) {
+      if (engine == null) {
+        return;
+      }
+
+      Engines.Remove(engine);
+      CurrentEngine = -1;
+      Log.Write($"[KN_Core::SwapsConfig]: Engine '{engine.EngineId}' was removed, size: {Engines.Count}");
+    }
+
+    public Engine GetCurrentEngine() {
+      if (Engines == null || CurrentEngine < 0 || CurrentEngine > Engines.Count) {
+        return null;
+      }
+      return Engines[CurrentEngine];
+    }
+
+    public bool SetCurrentEngine(int engineId) {
+      if (engineId <= 0) {
+        CurrentEngine = -1;
+        return false;
+      }
+
+      for (int i = 0; i < Engines.Count; ++i) {
+        if (Engines[i].EngineId == engineId) {
+          CurrentEngine = i;
+          return true;
+        }
+      }
+      return false;
     }
 
     public void Serialize(BinaryWriter writer) {
