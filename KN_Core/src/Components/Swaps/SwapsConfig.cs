@@ -17,6 +17,16 @@ namespace KN_Core {
       Engine = new CarDesc.Engine();
     }
 
+    public EngineData(int id, int rating, bool enabled, float clutch, string name, string soundId, CarDesc.Engine engine) {
+      Id = id;
+      Rating = rating;
+      Enabled = enabled;
+      ClutchTorque = clutch;
+      Name = name;
+      SoundId = soundId;
+      Engine = engine;
+    }
+
     public void Serialize(BinaryWriter writer) {
       writer.Write(Id);
       writer.Write(Rating);
@@ -61,8 +71,8 @@ namespace KN_Core {
   }
 
   public class EngineBalance : ISerializable {
-    public int CarId { get; private set; }
-    public int Rating { get; private set; }
+    public int CarId { get; set; }
+    public int Rating { get; set; }
 
     public void Serialize(BinaryWriter writer) {
       writer.Write(CarId);
