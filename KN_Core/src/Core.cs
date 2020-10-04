@@ -344,7 +344,7 @@ namespace KN_Core {
         return;
       }
 
-      if (loader_.ShowUpdateWarn || newPatch_) {
+      if (badVersion_ || loader_.ShowUpdateWarn || newPatch_) {
         GuiUpdateWarn();
       }
 
