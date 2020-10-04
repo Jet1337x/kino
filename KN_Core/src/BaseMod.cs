@@ -47,6 +47,6 @@ namespace KN_Core {
 
     public virtual void OnUdpData(SmartfoxDataPackage data) { }
 
-    public virtual void OnCarLoaded() { }
+    public virtual void OnCarLoaded(KnCar car) { }
   }
 }

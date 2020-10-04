@@ -88,17 +88,17 @@ namespace KN_Lights {
     }
 
     public override void OnStop() {
-      if (!DataSerializer.Serialize("KN_Lights", lightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsConfigFile)) { }
-      if (!DataSerializer.Serialize("KN_Lights", nwLightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + NwLightsConfigFile)) { }
+      if (!DataSerializer.Serialize("KN_Lights", lightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsConfigFile, Loader.Version)) { }
+      if (!DataSerializer.Serialize("KN_Lights", nwLightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + NwLightsConfigFile, Loader.Version)) { }
 
 #if KN_DEV_TOOLS
-      if (!DataSerializer.Serialize("KN_Lights", carLightsDev_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsDevConfigFile)) { }
+      if (!DataSerializer.Serialize("KN_Lights", carLightsDev_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsDevConfigFile, Loader.Version)) { }
 #endif
 
       worldLights_.OnStop();
     }
 
-    public override void OnCarLoaded() {
+    public override void OnCarLoaded(KnCar car) {
       AutoAddLights(false);
       shouldSync_ = true;
     }

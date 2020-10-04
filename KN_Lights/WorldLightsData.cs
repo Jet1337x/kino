@@ -30,7 +30,7 @@ namespace KN_Lights {
       writer.Write(Map);
     }
 
-    public void Deserialize(BinaryReader reader, int version) {
+    public bool Deserialize(BinaryReader reader, int version) {
       FogDistance = reader.ReadSingle();
       FogVolume = reader.ReadSingle();
       SunBrightness = reader.ReadSingle();
@@ -38,6 +38,8 @@ namespace KN_Lights {
       AmbientLight = reader.ReadSingle();
       SunTemp = reader.ReadSingle();
       Map = reader.ReadString();
+
+      return true;
     }
   }
 }

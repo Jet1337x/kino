@@ -6,15 +6,15 @@ using KN_Loader;
 namespace KN_Core {
   public interface ISerializable {
     void Serialize(BinaryWriter writer);
-    void Deserialize(BinaryReader reader, int version);
+    bool Deserialize(BinaryReader reader, int version);
   }
 
   public static class DataSerializer {
-    public static bool Serialize(string module, IList<ISerializable> data, string file) {
+    public static bool Serialize(string module, IList<ISerializable> data, string file, int version) {
       try {
         using (var memoryStream = new MemoryStream()) {
           using (var writer = new BinaryWriter(memoryStream)) {
-            writer.Write(ModLoader.ModVersion);
+            writer.Write(version);
             writer.Write(data.Count);
             foreach (var d in data) {
               d.Serialize(writer);
@@ -41,8 +41,9 @@ namespace KN_Core {
           int size = reader.ReadInt32();
           for (int i = 0; i < size; i++) {
             var d = new T();
-            d.Deserialize(reader, version);
-            data.Add(d);
+            if (d.Deserialize(reader, version)) {
+              data.Add(d);
+            }
           }
         }
         Log.Write($"[{module}::Deserialize]: Data loaded ({data.Count} items)");

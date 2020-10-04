@@ -15,7 +15,7 @@ namespace KN_Core {
 
     public int NwCarsCount => loadingCars_.Count;
 
-    public delegate void CarLoadCallback();
+    public delegate void CarLoadCallback(KnCar car);
     public event CarLoadCallback OnCarLoaded;
 
     private float carsListHeight_;
@@ -119,9 +119,10 @@ namespace KN_Core {
               continue;
             }
 
-            Cars.Add(new KnCar(car.Player.userCar));
+            var newCar = new KnCar(car.Player.userCar);
+            Cars.Add(newCar);
             Log.Write($"[KN_Core::CarPicker]: Car '{car.Player.FilteredNickName}' ({car.Player.NetworkID}) LOADED");
-            OnCarLoaded?.Invoke();
+            OnCarLoaded?.Invoke(newCar);
           }
         }
       }

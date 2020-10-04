@@ -627,7 +627,7 @@ namespace KN_Lights {
       WriteVec3(writer, TailLightOffset);
     }
 
-    public void Deserialize(BinaryReader reader, int version) {
+    public bool Deserialize(BinaryReader reader, int version) {
       CarId = reader.ReadInt32();
       IsNetworkCar = reader.ReadBoolean();
       UserName = reader.ReadString();
@@ -647,6 +647,8 @@ namespace KN_Lights {
       tlLEnabled_ = reader.ReadBoolean();
       tlREnabled_ = reader.ReadBoolean();
       TailLightOffset = ReadVec3(reader);
+
+      return true;
     }
 
     private static void WriteVec3(BinaryWriter writer, Vector3 vec) {

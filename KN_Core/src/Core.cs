@@ -10,10 +10,10 @@ using Object = UnityEngine.Object;
 
 namespace KN_Core {
   public class Core : ICore {
-    private const int Version = 126;
-    private const int Patch = 2;
-    private const int ClientVersion = 272;
-    private const string StringVersion = "1.2.6";
+    public const int Version = 127;
+    public const int Patch = 0;
+    public const int ClientVersion = 272;
+    public const string StringVersion = "1.2.7";
 
     private const float SoundReloadDistance = 70.0f;
 
@@ -37,9 +37,13 @@ namespace KN_Core {
     public FilePicker FilePicker { get; }
 
     public bool IsInGarage { get; private set; }
+    public bool IsInLobby { get; private set; }
+    public bool IsCarFlipped { get; private set; }
     public bool IsInGarageChanged { get; private set; }
+    public bool IsInLobbyChanged { get; private set; }
     public bool IsSceneChanged { get; private set; }
     public bool IsCarChanged { get; private set; }
+    public bool IsCarFlippedChanged { get; private set; }
 
     public bool IsGuiEnabled { get; set; }
 
@@ -59,6 +63,8 @@ namespace KN_Core {
 
     private string prevScene_;
     private bool prevInGarage_;
+    private bool prevInLobby_;
+    private bool prevFlipped_;
     private int carId_ = -1;
 
     private readonly List<BaseMod> mods_;
@@ -278,6 +284,14 @@ namespace KN_Core {
         carId_ = PlayerCar.Id;
       }
 
+      IsInLobby = NetworkController.IsActive;
+      IsInLobbyChanged = prevInLobby_ && !IsInLobby || !prevInLobby_ && IsInLobby;
+      prevInLobby_ = IsInLobby;
+
+      IsCarFlipped = PlayerCar?.Base.flipped ?? false;
+      IsCarFlippedChanged = prevFlipped_ && !IsCarFlipped || !prevFlipped_ && IsCarFlipped;
+      prevFlipped_ = IsCarFlipped;
+
       if (IsInGarage && cameraRotation_ == null) {
         cameraRotation_ = Object.FindObjectOfType<CameraRotation>();
       }
@@ -319,6 +333,10 @@ namespace KN_Core {
           soundReload_ = false;
           soundReloadNext_ = true;
         }
+      }
+
+      if (IsCarFlippedChanged) {
+        soundReloadNext_ = true;
       }
 
       Swaps.Update();

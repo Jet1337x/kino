@@ -99,8 +99,9 @@
         <Compile Include="src\Components\Exhaust\Exhaust.cs" />
         <Compile Include="src\Components\Exhaust\ExhaustData.cs" />
         <Compile Include="src\Components\Suspension.cs" />
-        <Compile Include="src\Components\Swaps.cs" />
-        <Compile Include="src\Components\SwapsConfig.cs" />
+        <Compile Include="src\Components\Swaps\Swaps.cs" />
+        <Compile Include="src\Components\Swaps\SwapsConfig.cs" />
+        <Compile Include="src\Components\Swaps\SwapsLoader.cs" />
         <Compile Include="src\Components\Tachometer.cs" />
         <Compile Include="src\Controls.cs" />
         <Compile Include="src\Embedded.cs" />
