@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using CarX;
 using KN_Loader;
 
@@ -181,6 +180,39 @@ namespace KN_Core {
         });
       }
       return true;
+    }
+  }
+
+  public class NetworkSwap {
+    public int NwId { get; }
+    public RaceCar Car { get; }
+    public float Clutch { get; }
+    public float FinalDrive { get; }
+    public string SoundId { get; }
+    public CarDesc.Engine Engine { get; }
+
+    public SwapData.Engine Swap;
+    public EngineData EngineData;
+
+    public bool Reload;
+    public bool ReloadNext;
+
+    public NetworkSwap(RaceCar car) {
+      NwId = car.networkPlayer.NetworkID;
+      Car = car;
+
+      var desc = Car.GetDesc();
+      Engine = new CarDesc.Engine();
+      Swaps.CopyEngine(desc.carXDesc.engine, Engine);
+
+      Clutch = car.carX.clutchMaxTorque;
+      FinalDrive = car.carX.finaldrive;
+      SoundId = car.metaInfo.name;
+    }
+
+    public void SetData(SwapData.Engine swap, EngineData engineData) {
+      Swap = swap;
+      EngineData = engineData;
     }
   }
 }
