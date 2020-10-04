@@ -109,4 +109,9 @@
   <key id="ambient" value="AMBIENT LIGHT"/>
   <key id="color_temp" value="COLOR TEMPERATURE"/>
   <key id="reset_all" value="RESET ALL"/>
+
+  <!--EXTRAS-->
+  <key id="reload_tag" value="RELOAD TAG"/>
+  <key id="use_tag" value="ADD NAME TAG"/>
+  <key id="tag_front" value="NAME TAG AT FRONT"/>
 </locale>
