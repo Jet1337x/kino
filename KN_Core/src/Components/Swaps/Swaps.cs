@@ -16,6 +16,7 @@ namespace KN_Core {
     private bool swapReload_;
     private SwapData currentSwap_;
     private string currentSound_;
+    private float currentEngineTurboMax_;
 
     private string defaultSoundId_;
     private float defaultFinalDrive_;
@@ -177,31 +178,30 @@ namespace KN_Core {
       }
       carListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
 
-      // GUI.enabled = allowSwap && engineId != 0;
-      // if (gui.SliderH(ref x, ref y, width, ref currentEngine_.Turbo, 0.0f, currentEngineTurboMax_, $"{Locale.Get("swaps_turbo")}: {currentEngine_.Turbo:F2}")) {
-      //   var desc = core_.PlayerCar.Base.GetDesc();
-      //   desc.carXDesc.engine.turboPressure = currentEngine_.Turbo;
-      //   core_.PlayerCar.Base.SetDesc(desc);
-      //
-      //   foreach (var swap in allData_) {
-      //     if (swap.CarId == currentEngine_.CarId && swap.EngineId == currentEngine_.EngineId) {
-      //       swap.Turbo = currentEngine_.Turbo;
-      //       break;
-      //     }
-      //   }
-      // }
-      // if (gui.SliderH(ref x, ref y, width, ref currentEngine_.FinalDrive, 2.5f, 5.0f, $"{Locale.Get("swaps_fd")}: {currentEngine_.FinalDrive:F2}")) {
-      //   var desc = core_.PlayerCar.Base.GetDesc();
-      //   desc.carXDesc.gearBox.finalDrive = currentEngine_.FinalDrive;
-      //   core_.PlayerCar.Base.SetDesc(desc);
-      //
-      //   foreach (var swap in allData_) {
-      //     if (swap.CarId == currentEngine_.CarId && swap.EngineId == currentEngine_.EngineId) {
-      //       swap.FinalDrive = currentEngine_.FinalDrive;
-      //       break;
-      //     }
-      //   }
-      // }
+      var ce = currentSwap_?.GetCurrentEngine();
+      GUI.enabled = allowSwap && engineId != 0;
+
+      float turbo = ce?.Turbo ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref turbo, 0.0f, currentEngineTurboMax_, $"{Locale.Get("swaps_turbo")}: {turbo:F2}")) {
+        var desc = core_.PlayerCar.Base.GetDesc();
+        desc.carXDesc.engine.turboPressure = turbo;
+        core_.PlayerCar.Base.SetDesc(desc);
+
+        if (ce != null) {
+          ce.Turbo = turbo;
+        }
+      }
+
+      float finalDrive = ce?.FinalDrive ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref finalDrive, 2.5f, 5.0f, $"{Locale.Get("swaps_fd")}: {finalDrive:F2}")) {
+        var desc = core_.PlayerCar.Base.GetDesc();
+        desc.carXDesc.gearBox.finalDrive = finalDrive;
+        core_.PlayerCar.Base.SetDesc(desc);
+
+        if (ce != null) {
+          ce.FinalDrive = finalDrive;
+        }
+      }
       GUI.enabled = enabled;
     }
 
@@ -321,6 +321,7 @@ namespace KN_Core {
 
       SetSoundSound(car, engine.SoundId);
       currentSound_ = engine.SoundId;
+      currentEngineTurboMax_ = engine.Engine.turboPressure;
 
       Log.Write($"[KN_Core::Swaps]: Engine '{engine.Name}' ({engine.Id}) was set to '{car.metaInfo.id}' ({nwId}, self: {self})");
 
@@ -413,6 +414,7 @@ namespace KN_Core {
 
       SetSoundSound(car, defaultSoundId_);
       currentSound_ = defaultSoundId_;
+      currentEngineTurboMax_ = 0.0f;
     }
 
     private EngineData GetEngine(int id) {
