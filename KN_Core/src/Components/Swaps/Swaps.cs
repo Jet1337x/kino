@@ -11,6 +11,10 @@ namespace KN_Core {
     private readonly List<EngineData> engines_;
     private readonly List<EngineBalance> balance_;
 
+    private readonly List<SwapData> allData_;
+
+    private SwapData currentEngine_;
+
     private float carListScrollH_;
     private Vector2 carListScroll_;
 
@@ -35,7 +39,8 @@ namespace KN_Core {
 
       Log.Write($"[KN_Core::Swaps]: Swaps data successfully loaded from remote, engines: {engines_.Count}, balance: {balance_.Count}");
 
-
+      allData_ = new List<SwapData>();
+      currentEngine_ = new SwapData();
     }
 
     public void OnInit() {
@@ -45,7 +50,7 @@ namespace KN_Core {
 
       if (DataSerializer.Deserialize<SwapData>("KN_Swaps", KnConfig.BaseDir + SwapData.ConfigFile, out var data)) {
         Log.Write($"[KN_Core::Swaps]: User swap data loaded, items: {data.Count}");
-        // allData_.AddRange(data.ConvertAll(d => (SwapData) d));
+        allData_.AddRange(data.ConvertAll(d => (SwapData) d));
       }
     }
 
@@ -54,7 +59,7 @@ namespace KN_Core {
         return;
       }
 
-      // DataSerializer.Serialize("KN_Swaps", allData_.ToList<ISerializable>(), KnConfig.BaseDir + SwapData.ConfigFile);
+      DataSerializer.Serialize("KN_Swaps", allData_.ToList<ISerializable>(), KnConfig.BaseDir + SwapData.ConfigFile, Core.Version);
     }
 
     public void OnCarLoaded() {
@@ -110,22 +115,24 @@ namespace KN_Core {
       bool scrollVisible = carListScrollH_ > listHeight;
       float w = scrollVisible ? width - (offset + Gui.OffsetSmall * 3.0f) : width - Gui.OffsetSmall * 3.0f;
 
-      // if (gui.Button(ref sx, ref sy, w, height, "STOCK", activeEngine_ == 0 ? Skin.ButtonActive : Skin.Button)) {
-      //   if (activeEngine_ != 0) {
-      //     SetStockEngine();
-      //   }
-      // }
-      //
-      // foreach (var engine in engines_) {
-      //   if (gui.Button(ref sx, ref sy, w, height, engine.Name, activeEngine_ == engine.Id ? Skin.ButtonActive : Skin.Button)) {
-      //     if (activeEngine_ != engine.Id) {
-      //       activeEngine_ = engine.Id;
-      //       if (!SetEngine(core_.PlayerCar.Base, activeEngine_)) {
-      //         SetStockEngine();
-      //       }
-      //     }
-      //   }
-      // }
+      int engineId = currentEngine_.CurrentEngine != -1 ? currentEngine_.Engines[currentEngine_.CurrentEngine].EngineId : 0;
+      if (gui.Button(ref sx, ref sy, w, height, "STOCK", engineId == 0 ? Skin.ButtonActive : Skin.Button)) {
+        if (engineId != 0) { }
+      }
+
+      bool carOk = !KnCar.IsNull(core_.PlayerCar);
+      foreach (var engine in engines_) {
+        bool allowed = carOk && balance_.Any(balance => balance.CarId == core_.PlayerCar.Id && balance.Rating >= engine.Rating);
+        if (!core_.IsDevToolsEnabled && (!engine.Enabled || !allowed)) {
+          continue;
+        }
+
+        if (gui.Button(ref sx, ref sy, w, height, engine.Name, engineId == engine.Id ? Skin.ButtonActive : Skin.Button)) {
+          if (engineId != engine.Id) { }
+        }
+
+
+      }
       carListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
 
       // GUI.enabled = allowSwap && activeEngine_ != 0;
