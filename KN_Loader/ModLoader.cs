@@ -35,10 +35,12 @@ namespace KN_Loader {
       LatestUpdater = Version.GetUpdaterVersion();
       Changelog = Version.GetChangelog();
 
+#if !KN_DEV_TOOLS
       BadVersion = ClientVersion != GameVersion.version;
       ShowUpdateWarn = LatestVersion != 0 && ModVersion != LatestVersion;
       ForceUpdate = LatestPatch != Patch || BadVersion || ShowUpdateWarn;
       NewPatch = LatestPatch != Patch && ModVersion == LatestVersion;
+#endif
 
       LatestVersionString = $"{LatestVersion}.{LatestPatch}";
       if (LatestVersionString.Length > 4) {

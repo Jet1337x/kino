@@ -15,7 +15,11 @@ namespace KN_Loader {
     private static List<string> data_;
 
     public static void Initialize() {
+#if KN_DEV_TOOLS
+      data_ = WebDataLoader.LoadAsList("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RyYmZseHIva2lub19kYXRhL21hc3Rlci9kZXZfdmVyc2lvbg==").ToList();
+#else
       data_ = WebDataLoader.LoadAsList("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RyYmZseHIva2luby9tYXN0ZXIvdmVyc2lvbg==").ToList();
+#endif
     }
 
     public static int GetVersion() {

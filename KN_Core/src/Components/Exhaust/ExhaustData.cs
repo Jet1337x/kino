@@ -65,10 +65,8 @@ namespace KN_Core {
     private float time_;
     private float time1_;
 
-#if !KN_DEV_TOOLS
     private float prevRevs_;
     private bool engineLoad_;
-#endif
     private bool firstPop_;
 
     public ExhaustData(Exhaust exhaust, CarPopExhaust script) {
@@ -148,15 +146,7 @@ namespace KN_Core {
         return;
       }
 
-#if KN_DEV_TOOLS
-      const float norm = 2.0f;
 
-      if (Input.GetKeyDown(KeyCode.PageUp)) {
-        active_ = true;
-        timeout_ = false;
-        Car.CarX.rpm = 6000.0f;
-      }
-#else
       float t = (Car.CarX.engineRevLimiter - Exhaust.RpmLowBound) / (Exhaust.RpmHighBound - Exhaust.RpmLowBound);
       float norm = MaxTime * t;
 
@@ -181,7 +171,6 @@ namespace KN_Core {
           }
         }
       }
-#endif
 
       ToggleLights(active_);
       if (active_ && !timeout_) {
