@@ -157,9 +157,23 @@ namespace KN_Core {
       }
     }
 
-    public void OnGui(Gui gui, ref float x, ref float y, float width) {
-      if (!Active) {
+    public void OnGui(Gui gui, ref float x, ref float y, float width, float yBegin) {
+      if (!Active || KnCar.IsNull(core_.PlayerCar)) {
         return;
+      }
+
+      float tempX = x;
+      float tempY = y;
+
+      x += width;
+      y = yBegin;
+
+      x += Gui.OffsetGuiX;
+      gui.Line(x, y, 1.0f, core_.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
+      x += Gui.OffsetGuiX;
+
+      if (gui.Button(ref x, ref y, width, Gui.Height, Locale.Get("log_engines"), core_.Settings.LogEngines ? Skin.ButtonActive : Skin.Button)) {
+        core_.Settings.LogEngines = !core_.Settings.LogEngines;
       }
 
       const float listHeight = 220.0f;
@@ -231,6 +245,9 @@ namespace KN_Core {
         }
       }
       GUI.enabled = enabled;
+
+      x = tempX;
+      y = tempY;
     }
 
     public void OnUdpData(SmartfoxDataPackage data) {

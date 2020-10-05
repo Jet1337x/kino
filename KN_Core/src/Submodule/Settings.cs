@@ -41,7 +41,7 @@ namespace KN_Core {
       }
     }
 
-    public bool LogEngines { get; private set; }
+    public bool LogEngines { get; set; }
 
     private readonly DisableConsoles disableConsoles_;
     public bool ConsolesDisabled => disableConsoles_.Disabled;
@@ -222,35 +222,10 @@ namespace KN_Core {
 
       if (Core.Swaps.Active) {
         GUI.enabled = guiEnabled;
-        GuiSwaps(gui, ref x, ref y, width, yBegin);
+        Core.Swaps.OnGui(gui, ref x, ref y, width, yBegin);
       }
 
       GUI.enabled = guiEnabled;
-    }
-
-    private void GuiSwaps(Gui gui, ref float x, ref float y, float width, float yBegin) {
-      if (KnCar.IsNull(Core.PlayerCar)) {
-        return;
-      }
-
-      float tempX = x;
-      float tempY = y;
-
-      x += width;
-      y = yBegin;
-
-      x += Gui.OffsetGuiX;
-      gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
-      x += Gui.OffsetGuiX;
-
-      if (gui.Button(ref x, ref y, width, Gui.Height, Locale.Get("log_engines"), LogEngines ? Skin.ButtonActive : Skin.Button)) {
-        LogEngines = !LogEngines;
-      }
-
-      Core.Swaps.OnGui(gui, ref x, ref y, width);
-
-      x = tempX;
-      y = tempY;
     }
 
     public void ReloadSound() {
