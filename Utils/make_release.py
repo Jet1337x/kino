@@ -1,6 +1,6 @@
 import os
 import get_dlls
-import update_version
+import version
 from zipfile import ZipFile
 from datetime import datetime
 
@@ -14,7 +14,7 @@ print('Input path: ' + in_path)
 if not os.path.exists(out_path):
     os.mkdir(out_path)
 
-zip_name = 'release_' + update_version.version_string + '.zip'
+zip_name = 'release_' + version.version_string + '.zip'
 zip_path = os.path.join(out_path, zip_name)
 
 print('Zip path: ' + zip_path)
@@ -22,7 +22,9 @@ print('Zip path: ' + zip_path)
 zip_archive = ZipFile(zip_path, 'w')
 
 for root, dirs, files in os.walk(in_path):
-    modules = get_dlls.get_dlls()
+    to_copy = os.path.join(current_dir, 'to_copy.txt')
+
+    modules = get_dlls.get_dlls(to_copy)
     for file in files:
         if any(file in s for s in modules):
             dll_path = os.path.join(root, file)
