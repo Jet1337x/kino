@@ -220,9 +220,20 @@ namespace KN_Core {
         Core.KnConfig.Set("trash_autohide", disableConsoles_.Hidden);
       }
 
-      if (Core.Swaps.Active) {
+      // right
+      if (Core.Swaps.Active && !Core.IsExtrasEnabled) {
         GUI.enabled = guiEnabled;
-        Core.Swaps.OnGui(gui, ref x, ref y, width, yBegin);
+
+        float tempX = x;
+        float tempY = y;
+
+        x += width;
+        y = yBegin;
+
+        Core.Swaps.OnGui(gui, ref x, ref y, width);
+
+        x = tempX;
+        y = tempY;
       }
 
       GUI.enabled = guiEnabled;

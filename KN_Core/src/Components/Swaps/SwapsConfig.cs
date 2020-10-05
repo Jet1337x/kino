@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CarX;
 using KN_Loader;
 
@@ -141,6 +142,13 @@ namespace KN_Core {
       Log.Write($"[KN_Core::SwapsConfig]: Engine '{engine.EngineId}' was removed, size: {Engines.Count}");
     }
 
+    public Engine Get(int engineId) {
+      if (engineId <= 0) {
+        return null;
+      }
+      return Engines.FirstOrDefault(engine => engine.EngineId == engineId);
+    }
+
     public Engine GetCurrentEngine() {
       if (Engines == null || CurrentEngine < 0 || CurrentEngine > Engines.Count) {
         return null;
@@ -194,6 +202,8 @@ namespace KN_Core {
   }
 
   public class NetworkSwap {
+    public const float JoinDelay = 5.0f;
+
     public int NwId { get; }
     public RaceCar Car { get; }
     public float Clutch { get; }
@@ -206,6 +216,9 @@ namespace KN_Core {
 
     public bool Reload;
     public bool ReloadNext;
+
+    public bool ShouldSent = true;
+    public float SentTimer = 0.0f;
 
     public NetworkSwap(RaceCar car) {
       NwId = car.networkPlayer.NetworkID;

@@ -81,7 +81,8 @@ namespace KN_Core {
         return;
       }
 
-      networkSwaps_.Add(new NetworkSwap(car.Base));
+      var nwSwap = new NetworkSwap(car.Base);
+      networkSwaps_.Add(nwSwap);
 
       if (core_.CarPicker.Cars.Count <= 1) {
         FindEngineAndSwap();
@@ -123,6 +124,15 @@ namespace KN_Core {
       }
 
       foreach (var swap in networkSwaps_) {
+        if (swap.ShouldSent && swap.Car != null) {
+          swap.SentTimer += Time.deltaTime;
+          if (swap.SentTimer >= NetworkSwap.JoinDelay) {
+            swap.SentTimer = 0.0f;
+            swap.ShouldSent = false;
+            SendSwapData();
+          }
+        }
+
         if (swap.ReloadNext) {
           swap.ReloadNext = false;
           SetEngine(swap.Car, swap.Swap, swap.EngineData, swap.NwId, false, core_.Settings.LogEngines);
@@ -157,16 +167,10 @@ namespace KN_Core {
       }
     }
 
-    public void OnGui(Gui gui, ref float x, ref float y, float width, float yBegin) {
+    public void OnGui(Gui gui, ref float x, ref float y, float width) {
       if (!Active || KnCar.IsNull(core_.PlayerCar)) {
         return;
       }
-
-      float tempX = x;
-      float tempY = y;
-
-      x += width;
-      y = yBegin;
 
       x += Gui.OffsetGuiX;
       gui.Line(x, y, 1.0f, core_.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
@@ -198,9 +202,7 @@ namespace KN_Core {
       int engineId = currentEngine?.EngineId ?? 0;
       if (gui.Button(ref sx, ref sy, w, height, "STOCK", engineId == 0 ? Skin.ButtonActive : Skin.Button)) {
         if (engineId != 0) {
-          SetStockEngine(core_.PlayerCar.Base, -1, true);
-          currentSwap_?.SetCurrentEngine(-1);
-          SendSwapData();
+          SwapEngineTo(null);
         }
       }
 
@@ -213,8 +215,7 @@ namespace KN_Core {
 
         if (gui.Button(ref sx, ref sy, w, height, engine.Name, engineId == engine.Id ? Skin.ButtonActive : Skin.Button)) {
           if (engineId != engine.Id) {
-            SwapEngineTo(currentEngine, engine, engine.Id);
-            SendSwapData();
+            SwapEngineTo(engine);
           }
         }
       }
@@ -245,9 +246,6 @@ namespace KN_Core {
         }
       }
       GUI.enabled = enabled;
-
-      x = tempX;
-      y = tempY;
     }
 
     public void OnUdpData(SmartfoxDataPackage data) {
@@ -315,12 +313,11 @@ namespace KN_Core {
           var toSwap = swap.GetCurrentEngine();
           if (toSwap != null) {
             var engine = GetEngine(toSwap.EngineId);
+            currentSwap_ = swap;
             if (!SetEngine(core_.PlayerCar.Base, toSwap, engine, -1, true, true)) {
               swap.RemoveEngine(toSwap);
             }
           }
-
-          currentSwap_ = swap;
           found = true;
           break;
         }
@@ -364,6 +361,7 @@ namespace KN_Core {
       if (self) {
         currentSound_ = engine.SoundId;
         currentEngineTurboMax_ = engine.Engine.turboPressure;
+        currentSwap_.SetCurrentEngine(engine.Id);
         SendSwapData();
       }
 
@@ -397,7 +395,7 @@ namespace KN_Core {
               KnUtils.SetField(engineSound, "m_raceCar", raceCar);
 
               if (log) {
-                Log.Write($"[KN_Core::Swaps]: Engine sound sound is set to '{car.metaInfo.id}'");
+                Log.Write($"[KN_Core::Swaps]: Engine sound is set to '{car.metaInfo.id}'");
               }
             }
           }
@@ -411,28 +409,18 @@ namespace KN_Core {
       return swap.Turbo <= engine.Engine.turboPressure && allowed || core_.IsCheatsEnabled && core_.IsDevToolsEnabled;
     }
 
-    private void SwapEngineTo(SwapData.Engine currentEngine, EngineData engine, int engineId) {
-      if (currentEngine != null) {
-        if (engineId > 0 && SetEngine(core_.PlayerCar.Base, currentEngine, engine, -1, true, true)) {
-          if (!currentSwap_.SetCurrentEngine(engineId)) {
-            AddNewEngineToCurrent(engine);
-          }
-        }
-        else {
-          currentSwap_.RemoveEngine(currentEngine);
-        }
+    private void SwapEngineTo(EngineData engine) {
+      if (engine == null) {
+        SetStockEngine(core_.PlayerCar.Base, -1, true);
+        currentSwap_?.SetCurrentEngine(-1);
+        SendSwapData();
+        return;
       }
-      else if (currentSwap_ != null) {
-        if (!currentSwap_.SetCurrentEngine(engineId)) {
-          var newEngine = AddNewEngineToCurrent(engine);
 
-          if (!SetEngine(core_.PlayerCar.Base, newEngine, engine, -1, true, true)) {
-            currentSwap_.RemoveEngine(newEngine);
-          }
-        }
-        else {
-          var current = currentSwap_.GetCurrentEngine();
-          SetEngine(core_.PlayerCar.Base, current, engine, -1, true, true);
+      if (currentSwap_ != null) {
+        var swap = currentSwap_.Get(engine.Id) ?? AddNewEngineToCurrent(engine);
+        if (engine.Id > 0 && !SetEngine(core_.PlayerCar.Base, swap, engine, -1, true, true)) {
+          currentSwap_.RemoveEngine(swap);
         }
       }
     }
