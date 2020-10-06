@@ -219,6 +219,19 @@ namespace KN_Core {
       }
     }
 
+    public void SwitchTab(int modId) {
+      for (int i = 0; i < mods_.Count; ++i) {
+        if (mods_[i].Id == modId) {
+          selectedTabPrev_ = selectedTab_;
+          selectedTab_ = i;
+          gui_.SelectedTab = i;
+
+          HandleTabSelection();
+          return;
+        }
+      }
+    }
+
     public void OnInit() {
       KnConfig.Read();
       Skin.LoadAll();
