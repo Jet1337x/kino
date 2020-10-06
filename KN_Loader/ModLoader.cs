@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using BepInEx;
 
 namespace KN_Loader {
-  [BepInPlugin("trbflxr.0kn_loader", "KN_Loader", StringVersion)]
+  [BepInPlugin("1trbflxr.0kn_loader", "KN_Loader", StringVersion)]
   public class ModLoader : BaseUnityPlugin {
     public const int ClientVersion = 272;
     public const int ModVersion = 127;
