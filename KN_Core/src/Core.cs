@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using FMODUnity;
 using GameInput;
 using KN_Loader;
@@ -59,6 +60,8 @@ namespace KN_Core {
 
     public Swaps Swaps { get; }
 
+    private List<string> skipPatch_;
+
     private bool shouldRequestTools_;
 
     private string prevScene_;
@@ -99,6 +102,8 @@ namespace KN_Core {
       shouldRequestTools_ = true;
 
       AccessValidator.Initialize("aHR0cHM6Ly9naXRodWIuY29tL3RyYmZseHIva2lub19kYXRhL3Jhdy9tYXN0ZXIvZGF0YS5rbmQ=");
+
+      skipPatch_ = new List<string>();
 
       KnConfig = new KnConfig();
 
@@ -146,11 +151,13 @@ namespace KN_Core {
           mod.Patch != loader_.LatestPatch) {
         Log.Write($"[KN_Core]: Mod {modName} outdated!");
 
-        if (modName != "CHEATS" && modName != "AIR" && modName != Locale.Get("extras")) {
+        bool skipPatch = skipPatch_.Any(m => m == modName);
+        if (!skipPatch) {
           loader_.ForceUpdate = true;
           Log.Write("[KN_Core]: Scheduling update.");
           return;
         }
+        Log.Write($"[KN_Core]: Skipping patch check for '{modName}'");
 
         if (mod.Version == loader_.LatestVersion && mod.ClientVersion == GameVersion.version) {
           skipMod = true;
@@ -204,6 +211,12 @@ namespace KN_Core {
       selectedModId_ = mods_[selectedTab_].Id;
 
       Log.Write($"[KN_Core]: Mod {mod.Name} was removed");
+    }
+
+    public void SkipPatch(string modName) {
+      if (skipPatch_.All(m => m != modName)) {
+        skipPatch_.Add(modName);
+      }
     }
 
     public void OnInit() {
