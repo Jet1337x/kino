@@ -6,7 +6,6 @@
   <key id="settings" value="НАСТРОЙКИ"/>
   <key id="maps" value="КАРТЫ"/>
   <key id="about" value="ИНФО"/>
-  <key id="extras" value="ЭКСТА"/>
 
   <!--COMMON-->
   <key id="language" value="ЯЗЫК"/>
