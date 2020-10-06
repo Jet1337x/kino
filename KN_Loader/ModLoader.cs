@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BepInEx;
 using UnityEngine;
 
@@ -36,9 +37,8 @@ namespace KN_Loader {
     private float updateTimer_;
 
     public ModLoader() {
-      InitVersion();
-
 #if !KN_DEV_TOOLS
+      InitVersion();
       CheckVersion();
 #endif
 
@@ -85,8 +85,11 @@ namespace KN_Loader {
         updateTimer_ = 0.0f;
         ForceCheck = false;
 
-        InitVersion();
-        CheckVersion();
+        Log.Write("[KN_Loader]: Checking mod version ...");
+        new Task(() => {
+          InitVersion();
+          CheckVersion();
+        }).Start();
       }
 
       Core?.Update();
