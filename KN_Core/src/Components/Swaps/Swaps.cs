@@ -172,10 +172,6 @@ namespace KN_Core {
         return;
       }
 
-      x += Gui.OffsetGuiX;
-      gui.Line(x, y, 1.0f, core_.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
-      x += Gui.OffsetGuiX;
-
       if (gui.Button(ref x, ref y, width, Gui.Height, Locale.Get("log_engines"), core_.Settings.LogEngines ? Skin.ButtonActive : Skin.Button)) {
         core_.Settings.LogEngines = !core_.Settings.LogEngines;
       }

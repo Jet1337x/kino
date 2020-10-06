@@ -230,6 +230,10 @@ namespace KN_Core {
         x += width;
         y = yBegin;
 
+        x += Gui.OffsetGuiX;
+        gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
+        x += Gui.OffsetGuiX;
+
         Core.Swaps.OnGui(gui, ref x, ref y, width);
 
         x = tempX;
