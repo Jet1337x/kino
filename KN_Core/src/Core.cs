@@ -60,7 +60,7 @@ namespace KN_Core {
 
     public Swaps Swaps { get; }
 
-    private List<string> skipPatch_;
+    private readonly List<string> skipPatch_;
 
     private bool shouldRequestTools_;
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BepInEx;
+using UnityEngine;
 
 namespace KN_Loader {
   [BepInPlugin("1trbflxr.0kn_loader", "KN_Loader", StringVersion)]
@@ -9,16 +10,18 @@ namespace KN_Loader {
     public const int Patch = 1;
     public const string StringVersion = "1.2.7";
 
+    private const float UpdateCheckTime = 600.0f;
+
     public static ModLoader Instance { get; private set; }
 
     public ICore Core { get; private set; }
 
-    public bool NewPatch { get; }
-    public bool BadVersion { get; }
-    public int LatestVersion { get; }
-    public int LatestPatch { get; }
-    public int LatestUpdater { get; }
-    public List<string> Changelog { get; }
+    public bool NewPatch { get; private set; }
+    public bool BadVersion { get; private set; }
+    public int LatestVersion { get; private set; }
+    public int LatestPatch { get; private set; }
+    public int LatestUpdater { get; private set; }
+    public List<string> Changelog { get; private set; }
 
     public string LatestVersionString { get; }
 
@@ -26,20 +29,17 @@ namespace KN_Loader {
     public bool ForceUpdate { get; set; }
     public bool DevMode { get; set; }
 
+    public bool ForceCheck { get; set; }
+
     public bool ShowUpdateWarn { get; set; }
 
+    private float updateTimer_;
+
     public ModLoader() {
-      Version.Initialize();
-      LatestVersion = Version.GetVersion();
-      LatestPatch = Version.GetPatch();
-      LatestUpdater = Version.GetUpdaterVersion();
-      Changelog = Version.GetChangelog();
+      InitVersion();
 
 #if !KN_DEV_TOOLS
-      BadVersion = ClientVersion != GameVersion.version;
-      ShowUpdateWarn = LatestVersion != 0 && ModVersion != LatestVersion;
-      ForceUpdate = LatestPatch != Patch || BadVersion || ShowUpdateWarn;
-      NewPatch = LatestPatch != Patch && ModVersion == LatestVersion;
+      CheckVersion();
 #endif
 
       LatestVersionString = $"{LatestVersion}.{LatestPatch}";
@@ -80,6 +80,15 @@ namespace KN_Loader {
     }
 
     private void Update() {
+      updateTimer_ += Time.deltaTime;
+      if (updateTimer_ >= UpdateCheckTime || ForceCheck) {
+        updateTimer_ = 0.0f;
+        ForceCheck = false;
+
+        InitVersion();
+        CheckVersion();
+      }
+
       Core?.Update();
     }
 
@@ -89,6 +98,21 @@ namespace KN_Loader {
 
     private void OnGUI() {
       Core?.OnGui();
+    }
+
+    private void InitVersion() {
+      Version.Initialize();
+      LatestVersion = Version.GetVersion();
+      LatestPatch = Version.GetPatch();
+      LatestUpdater = Version.GetUpdaterVersion();
+      Changelog = Version.GetChangelog();
+    }
+
+    private void CheckVersion() {
+      BadVersion = ClientVersion != GameVersion.version;
+      ShowUpdateWarn = LatestVersion != 0 && ModVersion != LatestVersion;
+      ForceUpdate = LatestPatch != Patch || BadVersion || ShowUpdateWarn;
+      NewPatch = LatestPatch != Patch && ModVersion == LatestVersion;
     }
   }
 }
