@@ -27,6 +27,7 @@ KN_Updater/obj
 
 Release/
 Utils/__pycache__
+Utils/confuser/out
 
 kn_config.knl
 kn_lights.knl

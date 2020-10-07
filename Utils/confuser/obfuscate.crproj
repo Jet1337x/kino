@@ -1,0 +1,18 @@
+<project outputDir="../../../Utils/confuser/out" baseDir="../../TestLauncher/bin/Release" xmlns="http://confuser.codeplex.com">
+  <module path="KN_Core.dll">
+    <rule pattern="true" preset="aggressive" inherit="false">
+      <protection id="rename" action="remove" />
+    </rule>
+  </module>
+  <module path="KN_Lights.dll">
+    <rule pattern="true" preset="aggressive" inherit="false" />
+  </module>
+  <module path="KN_Loader.dll">
+    <rule pattern="true" preset="aggressive" inherit="false">
+      <protection id="rename" action="remove" />
+    </rule>
+  </module>
+  <module path="KN_Visuals.dll">
+    <rule pattern="true" preset="aggressive" inherit="false" />
+  </module>
+</project>
