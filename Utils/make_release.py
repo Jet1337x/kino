@@ -21,7 +21,7 @@ print('Zip path: ' + zip_path)
 
 zip_archive = ZipFile(zip_path, 'w')
 
-obfuscate.obfuscate('confuser/obfuscate.crproj')
+obfuscate.obfuscate(current_dir, 'confuser/obfuscate.crproj')
 
 for root, dirs, files in os.walk(in_path):
     to_copy = os.path.join(current_dir, 'to_copy.txt')

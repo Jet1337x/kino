@@ -1,5 +1,5 @@
-def obfuscate(project_path):
+def obfuscate(utils_path, project_path):
     import subprocess
 
     print('Running obfuscator ...')
-    subprocess.run(f'confuser/Confuser.CLI.exe {project_path} -n')
+    subprocess.run(f'{utils_path}/confuser/Confuser.CLI.exe {project_path} -n')
