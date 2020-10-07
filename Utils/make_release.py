@@ -1,6 +1,6 @@
-import subprocess
 import os
 import get_dlls
+import obfuscate
 import version
 from zipfile import ZipFile
 
@@ -21,7 +21,7 @@ print('Zip path: ' + zip_path)
 
 zip_archive = ZipFile(zip_path, 'w')
 
-subprocess.run('confuser/Confuser.CLI.exe confuser/obfuscate.crproj -n')
+obfuscate.obfuscate('confuser/obfuscate.crproj')
 
 for root, dirs, files in os.walk(in_path):
     to_copy = os.path.join(current_dir, 'to_copy.txt')
