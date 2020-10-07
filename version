@@ -1,6 +1,6 @@
-Version=127
-Patch=1
+Version=128
+Patch=0
 Updater=02
-Added update / patch message
+Added framework methods
+Added code obfuscator
 Improved overall stability
-Fixed sound reloading for exhaust and engines

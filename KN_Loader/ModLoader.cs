@@ -7,9 +7,9 @@ namespace KN_Loader {
   [BepInPlugin("1trbflxr.0kn_loader", "KN_Loader", StringVersion)]
   public class ModLoader : BaseUnityPlugin {
     public const int ClientVersion = 272;
-    public const int ModVersion = 127;
-    public const int Patch = 1;
-    public const string StringVersion = "1.2.7";
+    public const int ModVersion = 128;
+    public const int Patch = 0;
+    public const string StringVersion = "1.2.8";
 
     private const float UpdateCheckTime = 600.0f;
 
