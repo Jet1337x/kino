@@ -19,6 +19,7 @@
   <key id="blue" value="BLUE"/>
   <key id="alpha" value="ALPHA"/>
   <key id="close" value="CLOSE"/>
+  <key id="reload" value="RELOAD"/>
 
   <!--CORE-->
   <key id="input_locked" value="CARX INPUT IS LOCKED. CLOSE MOD MENU TO UNLOCK IT."/>

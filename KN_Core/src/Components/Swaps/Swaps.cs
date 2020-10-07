@@ -176,6 +176,10 @@ namespace KN_Core {
         core_.Settings.LogEngines = !core_.Settings.LogEngines;
       }
 
+      if (gui.Button(ref x, ref y, width, Gui.Height, Locale.Get("reload"), Skin.Button)) {
+        FindEngineAndSwap();
+      }
+
       const float listHeight = 220.0f;
       const float height = Gui.Height;
 
