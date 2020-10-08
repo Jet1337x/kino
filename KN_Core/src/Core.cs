@@ -516,7 +516,9 @@ namespace KN_Core {
       }
 
       foreach (var car in CarPicker.Cars) {
-        car.Base.SetVisibleUIName(!Settings.HideNames);
+        if (!KnCar.IsNull(car)) {
+          car.Base.SetVisibleUIName(!Settings.HideNames);
+        }
       }
     }
 
