@@ -207,7 +207,7 @@
         <EmbeddedResource Include="Resources\kn_exhaust_default.kne" />
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Resources\GUI\test.png" />
+        <EmbeddedResource Include="Resources\GUI\base.png" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\Locale\en.xml" />
