@@ -1,7 +1,7 @@
-version = ['1', '2', '8']
+version = ['1', '2', '9']
 patch = '0'
 updater = '02'
-client_version = ['2', '7', '2']
+client_version = ['2', '7', '3']
 
 version_int = ''.join(version)
 version_string = '{0}.{1}.{2}'.format(version[0], version[1], version[2])
