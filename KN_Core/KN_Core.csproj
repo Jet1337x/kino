@@ -208,6 +208,7 @@
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\GUI\base.png" />
+        <EmbeddedResource Include="Resources\GUI\outline.png" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\Locale\en.xml" />
