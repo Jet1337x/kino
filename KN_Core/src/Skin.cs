@@ -1,6 +1,74 @@
 using UnityEngine;
 
 namespace KN_Core {
+  public class KnSkin {
+    public enum Type {
+      Button,
+      Box
+    }
+
+    public class SkinState {
+      public Color32 ElementColor { get; }
+      public Color32 TextColor { get; }
+
+      public SkinState(Color32 textColor, Color32 elementColor) {
+        TextColor = textColor;
+        ElementColor = elementColor;
+      }
+    }
+
+    public GUISkin Skin { get; }
+
+    private readonly SkinState normal_;
+    private readonly SkinState hover_;
+    private readonly SkinState active_;
+
+    private readonly string texturePath_;
+
+    private Texture2D textureNormal_;
+    private Texture2D textureHover_;
+    private Texture2D textureActive_;
+
+    private readonly Type type_;
+    private readonly TextAnchor alignment_;
+    private readonly Font font_;
+
+    public KnSkin(SkinState normal, SkinState hover, SkinState active, Type type, string texturePath, TextAnchor alignment, Font font) {
+      Skin = ScriptableObject.CreateInstance<GUISkin>();
+
+      normal_ = normal;
+      hover_ = hover;
+      active_ = active;
+
+      type_ = type;
+      texturePath_ = texturePath;
+      alignment_ = alignment;
+      font_ = font;
+
+      switch (type_) {
+        case Type.Button: {
+          MakeButton();
+          break;
+        }
+      }
+    }
+
+    private void MakeButton() {
+      textureNormal_ = Embedded.LoadEmbeddedTexture(texturePath_, normal_.ElementColor);
+      textureHover_ = Embedded.LoadEmbeddedTexture(texturePath_, hover_.ElementColor);
+      textureActive_ = Embedded.LoadEmbeddedTexture(texturePath_, active_.ElementColor);
+
+      Skin.button.normal.textColor = normal_.TextColor;
+      Skin.button.normal.background = textureNormal_;
+      Skin.button.hover.textColor = hover_.TextColor;
+      Skin.button.hover.background = textureHover_;
+      Skin.button.active.textColor = active_.TextColor;
+      Skin.button.active.background = textureActive_;
+      Skin.button.alignment = alignment_;
+      Skin.button.font = font_;
+    }
+  }
+
   public static class Skin {
     public static GUISkin MainContainer;
     public static GUISkin MainContainerLeft;
@@ -162,6 +230,8 @@ namespace KN_Core {
     public static Font FontTach;
     public static Font FontGear;
 
+    public static KnSkin TestSkin;
+
     private static bool initialized_;
 
     public static void LoadAll() {
@@ -184,6 +254,15 @@ namespace KN_Core {
       FontLight = Font.CreateDynamicFontFromOSFont("Consolas", 12);
       FontTach = Font.CreateDynamicFontFromOSFont("Consolas Bold", 16);
       FontGear = Font.CreateDynamicFontFromOSFont("Consolas Bold", 32);
+
+      TestSkin = new KnSkin(new KnSkin.SkinState(new Color32(0xff, 0x30, 0x30, 0xff), new Color32(0x10, 0x00, 0xff, 0xff)),
+        new KnSkin.SkinState(new Color32(0xff, 0x30, 0x30, 0xff), new Color32(0x10, 0xff, 0xff, 0xff)),
+        new KnSkin.SkinState(new Color32(0xff, 0x30, 0x30, 0xff), new Color32(0x10, 0xff, 0xff, 0xff)),
+        KnSkin.Type.Button,
+        "GUI/test.png",
+        TextAnchor.MiddleCenter,
+        FontLight
+      );
 
       LoadButtonTex(out texCamN_, out texCamH_, out texCamA_, out IconCam, out IconCamActive, "Camera");
       LoadButtonTex(out texAnimN_, out texAnimH_, out texAnimA_, out IconAnim, out IconAnimActive, "Animation");

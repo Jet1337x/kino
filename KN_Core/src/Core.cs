@@ -393,6 +393,8 @@ namespace KN_Core {
         return;
       }
 
+      gui_.TestButton(1000.0f, 500.0f, Skin.TestSkin);
+
       if (badVersion_ || newPatch_ || loader_.ShowUpdateWarn || loader_.NewPatch) {
         GuiUpdateWarn();
       }

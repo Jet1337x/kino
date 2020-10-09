@@ -37,6 +37,21 @@ namespace KN_Core {
     public float TabsMaxWidth { get; private set; }
     public float TabsMaxHeight { get; private set; }
 
+    public bool TestButton(float x, float y, KnSkin skin) {
+      var oldColor = GUI.color;
+      var old = GUI.skin;
+
+      GUI.skin = skin.Skin;
+      GUI.color = Skin.ElementAlpha;
+
+      bool result = GUI.Button(new Rect(x, y, 160.0f, 50.0f), "TEST BUTTON");
+
+      GUI.color = oldColor;
+      GUI.skin = old;
+
+      return result;
+    }
+
     public void Box(float x, float y, float width, float height, string text, GUISkin skin) {
       EnsureTabsSize(x, y, width, height);
 
