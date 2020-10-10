@@ -409,25 +409,8 @@ namespace KN_Core {
       float x = GuiYTop;
       float y = GuiXLeft;
 
-      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight,
-        $"KINO v{StringVersion}.{Patch}", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy);
-      y -= Gui.TabButtonHeight + Gui.OffsetY;
-
-      float tempX = x;
-      x += Gui.Width + Gui.OffsetGuiX;
-      if (gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "DISCORD", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy)) {
-        Process.Start("https://discord.gg/jrMReAB");
-      }
-      x = tempX;
-
       prevSelectedMod_ = selectedMod_;
       gui_.Tabs(ref x, ref y, tabs_.ToArray(), ref selectedMod_);
-
-      if (forceSwitchTab) {
-        gui_.SelectedTab = tabs_.Count - 1;
-        selectedMod_ = tabs_.Count - 1;
-        prevSelectedMod_ = 0;
-      }
 
       HandleTabSelection();
 
@@ -505,6 +488,10 @@ namespace KN_Core {
       float x = DummyGuiX;
       float y = GuiContentBeginY + DummyHeight;
       gui_.TextButton(ref x, ref y, DummyWidth + Gui.ModIconSize, Gui.Height, Locale.Get("input_locked"), Skin.WarningSkin.Normal);
+
+      if (gui_.TextButton(ref x, ref y, "TEST", Skin.ButtonSkin.Normal)) {
+        FilePicker.PickIn(KnConfig.VisualsDir);
+      }
     }
 
     private void GuiPickers() {
@@ -537,9 +524,9 @@ namespace KN_Core {
           changelog += $"- {line}\n";
         }
       }
-      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersionString}!\n" +
+      if (gui_.TextButton(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersionString}!\n" +
                                                    $"{Locale.Get("outdated1")}\n" +
-                                                   $"{changelog}" + Locale.Get("outdated2"), Skin.ButtonDummyRed)) {
+                                                   $"{changelog}" + Locale.Get("outdated2"), Skin.ButtonSkin.Normal)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
     }

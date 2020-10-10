@@ -264,27 +264,6 @@ namespace KN_Core {
       return ScrollViewButton(ref x, ref y, WidthScroll, Height, text, out delete, skin, deleteSkin);
     }
 
-    public bool Button(ref float x, ref float y, float width, float height, string text, GUISkin skin) {
-      EnsureTabsSize(x, y, width, height);
-
-      var oldColor = GUI.color;
-      var old = GUI.skin;
-      GUI.skin = skin;
-
-      GUI.color = Skin.ElementAlpha;
-      bool result = GUI.Button(new Rect(x, y, width, height), text);
-      y += height + OffsetY;
-
-      GUI.color = oldColor;
-      GUI.skin = old;
-
-      return result;
-    }
-
-    public bool Button(ref float x, ref float y, string text, GUISkin skin) {
-      return Button(ref x, ref y, Width, Height, text, skin);
-    }
-
     public void Label(ref float x, ref float y, float width, float height, string text) {
       var oldColor = GUI.color;
       var old = GUI.skin;

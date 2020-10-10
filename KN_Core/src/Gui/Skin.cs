@@ -8,9 +8,6 @@ namespace KN_Core {
     public static GUISkin MainContainerRed;
     private static Texture2D texMain_;
 
-    public static GUISkin MainContainerDark;
-    private static Texture2D texMainDark_;
-
     public static GUISkin OutlineDark;
     private static Texture2D texOutlineDark_;
 
@@ -23,13 +20,8 @@ namespace KN_Core {
     public static GUISkin TachFillRed;
     public static GUISkin TachOutline;
 
-    public static GUISkin Button;
-    public static GUISkin ButtonActive;
     public static GUISkin ButtonTab;
     public static GUISkin ButtonActiveTab;
-    public static GUISkin ButtonDisabled;
-    public static GUISkin ButtonDummy;
-    public static GUISkin ButtonDummyRed;
     private static Texture2D texButtonN_;
     private static Texture2D texButtonH_;
     private static Texture2D texButtonA_;
@@ -82,6 +74,7 @@ namespace KN_Core {
     public static KnSkin ScrollSkin;
     public static KnSkin BackgroundSkin;
     public static KnSkin BoxLeftSkin;
+    public static KnSkin BoxSkin;
 
     public static KnSkin ModTabSkin;
     public static KnSkin WarningSkin;
@@ -167,6 +160,12 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         "GUI.base.png", TextAnchor.MiddleLeft, FontLight);
 
+      BoxSkin = new KnSkin(KnSkin.Type.Box,
+        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
+        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
+        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
+        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+
       ModTabSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
@@ -214,36 +213,6 @@ namespace KN_Core {
       texRedButtonH_ = Embedded.LoadEmbeddedTexture("RedButtonHover.png");
       texRedButtonA_ = Embedded.LoadEmbeddedTexture("RedButtonActive.png");
 
-      Button = ScriptableObject.CreateInstance<GUISkin>();
-      Button.button.normal.textColor = color;
-      Button.button.normal.background = texButtonN_;
-      Button.button.hover.textColor = color;
-      Button.button.hover.background = texButtonH_;
-      Button.button.active.textColor = color;
-      Button.button.active.background = texButtonA_;
-      Button.button.alignment = TextAnchor.MiddleCenter;
-      Button.button.font = FontLight;
-
-      ButtonDummy = ScriptableObject.CreateInstance<GUISkin>();
-      ButtonDummy.button.normal.textColor = color;
-      ButtonDummy.button.normal.background = texButtonN_;
-      ButtonDummy.button.hover.textColor = color;
-      ButtonDummy.button.hover.background = texButtonN_;
-      ButtonDummy.button.active.textColor = color;
-      ButtonDummy.button.active.background = texButtonN_;
-      ButtonDummy.button.alignment = TextAnchor.MiddleCenter;
-      ButtonDummy.button.font = FontLight;
-
-      ButtonDummyRed = ScriptableObject.CreateInstance<GUISkin>();
-      ButtonDummyRed.button.normal.textColor = TextColorInv;
-      ButtonDummyRed.button.normal.background = texRedButtonN_;
-      ButtonDummyRed.button.hover.textColor = TextColorInv;
-      ButtonDummyRed.button.hover.background = texRedButtonN_;
-      ButtonDummyRed.button.active.textColor = TextColorInv;
-      ButtonDummyRed.button.active.background = texRedButtonN_;
-      ButtonDummyRed.button.alignment = TextAnchor.MiddleCenter;
-      ButtonDummyRed.button.font = FontTabs;
-
       ButtonTab = ScriptableObject.CreateInstance<GUISkin>();
       ButtonTab.button.normal.textColor = color;
       ButtonTab.button.normal.background = texButtonN_;
@@ -255,16 +224,6 @@ namespace KN_Core {
       ButtonTab.button.font = FontTabs;
       ButtonTab.button.padding.top = -2;
 
-      ButtonActive = ScriptableObject.CreateInstance<GUISkin>();
-      ButtonActive.button.normal.background = texButtonAD_;
-      ButtonActive.button.normal.textColor = colorActive;
-      ButtonActive.button.hover.background = texButtonAD_;
-      ButtonActive.button.hover.textColor = colorActive;
-      ButtonActive.button.active.background = texButtonAD_;
-      ButtonActive.button.active.textColor = colorActive;
-      ButtonActive.button.alignment = TextAnchor.MiddleCenter;
-      ButtonActive.button.font = FontLight;
-
       ButtonActiveTab = ScriptableObject.CreateInstance<GUISkin>();
       ButtonActiveTab.button.normal.background = texButtonAT_;
       ButtonActiveTab.button.normal.textColor = TextColor;
@@ -274,16 +233,6 @@ namespace KN_Core {
       ButtonActiveTab.button.active.textColor = TextColor;
       ButtonActiveTab.button.alignment = TextAnchor.MiddleCenter;
       ButtonActiveTab.button.font = FontTabs;
-
-      ButtonDisabled = ScriptableObject.CreateInstance<GUISkin>();
-      ButtonDisabled.button.normal.background = texButtonD_;
-      ButtonDisabled.button.normal.textColor = TextColorInv;
-      ButtonDisabled.button.hover.background = texButtonD_;
-      ButtonDisabled.button.hover.textColor = TextColorInv;
-      ButtonDisabled.button.active.background = texButtonD_;
-      ButtonDisabled.button.active.textColor = TextColorInv;
-      ButtonDisabled.button.alignment = TextAnchor.MiddleCenter;
-      ButtonDisabled.button.font = FontLight;
 
       RedSkin = ScriptableObject.CreateInstance<GUISkin>();
       RedSkin.button.normal.background = texRedButtonN_;
@@ -334,12 +283,12 @@ namespace KN_Core {
       MainContainerRed.box.font = FontLight;
       MainContainerRed.box.padding = new RectOffset(5, 5, 0, 0);
 
-      texMainDark_ = Embedded.LoadEmbeddedTexture("MainDark.png");
-      MainContainerDark = ScriptableObject.CreateInstance<GUISkin>();
-      MainContainerDark.box.normal.background = texMainDark_;
-      MainContainerDark.box.normal.textColor = TextColor;
-      MainContainerDark.box.alignment = TextAnchor.MiddleCenter;
-      MainContainerDark.box.font = FontLight;
+      // texMainDark_ = Embedded.LoadEmbeddedTexture("MainDark.png");
+      // MainContainerDark = ScriptableObject.CreateInstance<GUISkin>();
+      // MainContainerDark.box.normal.background = texMainDark_;
+      // MainContainerDark.box.normal.textColor = TextColor;
+      // MainContainerDark.box.alignment = TextAnchor.MiddleCenter;
+      // MainContainerDark.box.font = FontLight;
 
       texOutlineDark_ = Embedded.LoadEmbeddedTexture("OutlineDark.png");
       texOutlineDark_.filterMode = FilterMode.Point;
@@ -353,7 +302,7 @@ namespace KN_Core {
 
     private static void MakeTextFieldStyle() {
       TextField = ScriptableObject.CreateInstance<GUISkin>();
-      TextField.textField.normal.background = texMainDark_; //white
+      // TextField.textField.normal.background = texMainDark_; //white
       TextField.textField.normal.textColor = TextColor;
       TextField.textField.alignment = TextAnchor.MiddleCenter;
       TextField.textField.fixedHeight = Gui.Height;
@@ -379,9 +328,9 @@ namespace KN_Core {
       texTimelineHigh_ = Embedded.LoadEmbeddedTexture("TimelineSliderHigh.png");
 
       TimelineSliderMid = ScriptableObject.CreateInstance<GUISkin>();
-      TimelineSliderMid.horizontalSlider.normal.background = texMainDark_; //white
-      TimelineSliderMid.horizontalSlider.hover.background = texMainDark_; //white
-      TimelineSliderMid.horizontalSlider.active.background = texMainDark_; //white
+      // TimelineSliderMid.horizontalSlider.normal.background = texMainDark_; //white
+      // TimelineSliderMid.horizontalSlider.hover.background = texMainDark_; //white
+      // TimelineSliderMid.horizontalSlider.active.background = texMainDark_; //white
       TimelineSliderMid.horizontalSlider.fixedHeight = Gui.Height;
       TimelineSliderMid.horizontalSliderThumb.normal.background = texTimelineMid_;
       TimelineSliderMid.horizontalSliderThumb.hover.background = texTimelineMid_;
@@ -441,7 +390,7 @@ namespace KN_Core {
       TachRedBg.box.normal.background = texRedButtonA_;
 
       TachFill = ScriptableObject.CreateInstance<GUISkin>();
-      TachFill.box.normal.background = texMainDark_; //white
+      // TachFill.box.normal.background = texMainDark_; //white
 
       TachFillRed = ScriptableObject.CreateInstance<GUISkin>();
       TachFillRed.box.normal.background = texRedButtonH_;

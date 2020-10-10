@@ -45,14 +45,14 @@ namespace KN_Core {
 
       float yBegin = y;
 
-      gui.Box(x, y, baseWidth + Gui.OffsetGuiX * 2.0f, Gui.Height, Locale.Get("fp_title"), Skin.MainContainerDark);
+      gui.Box(x, y, baseWidth + Gui.OffsetGuiX * 2.0f, Gui.Height, Locale.Get("fp_title"), Skin.BoxSkin.Normal);
       y += Gui.Height;
 
       gui.Box(x, y, baseWidth + Gui.OffsetGuiX * 2.0f, filesBoxHeight_, Skin.MainContainer);
       y += Gui.OffsetY;
       x += Gui.OffsetGuiX;
 
-      if (gui.Button(ref x, ref y, baseWidth, Gui.Height, Locale.Get("fp_refresh"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, baseWidth, Gui.Height, Locale.Get("fp_refresh"), Skin.ButtonSkin.Normal)) {
         RefreshFiles();
       }
 
@@ -65,7 +65,7 @@ namespace KN_Core {
       foreach (string f in files_) {
         string file = Path.GetFileName(f);
         sy += Gui.OffsetY;
-        if (gui.Button(ref sx, ref sy, width, Gui.Height, $"{file}", Skin.Button)) {
+        if (gui.TextButton(ref sx, ref sy, width, Gui.Height, $"{file}", Skin.ButtonSkin.Normal)) {
           PickedFile = f;
         }
         sy -= Gui.OffsetY;

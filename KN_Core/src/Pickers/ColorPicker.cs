@@ -41,7 +41,7 @@ namespace KN_Core {
 
       float yBegin = y;
 
-      gui.Box(x, y, boxWidth, Gui.Height, Locale.Get("cp_title"), Skin.MainContainerDark);
+      gui.Box(x, y, boxWidth, Gui.Height, Locale.Get("cp_title"), Skin.BoxSkin.Normal);
       y += Gui.Height;
 
       gui.Box(x, y, boxWidth, boxHeight, Skin.MainContainer);
@@ -70,7 +70,7 @@ namespace KN_Core {
         }
       }
 
-      if (gui.Button(ref x, ref y, width, Gui.Height, Locale.Get("close"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, Gui.Height, Locale.Get("close"), Skin.ButtonSkin.Normal)) {
         IsPicking = false;
         alpha_ = true;
       }

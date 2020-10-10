@@ -58,14 +58,14 @@ namespace KN_Core {
     }
 
     private void GuiCars(Gui gui, ref float x, ref float y, float boxWidth, float width, float height) {
-      gui.Box(x, y, boxWidth, Gui.Height, $"{Locale.Get("cp_cars")} / {loadingCars_.Count}", Skin.MainContainerDark);
+      gui.Box(x, y, boxWidth, Gui.Height, $"{Locale.Get("cp_cars")} / {loadingCars_.Count}", Skin.BoxSkin.Normal);
       y += Gui.Height;
 
       gui.Box(x, y, boxWidth, carsListHeight_, Skin.MainContainer);
       y += Gui.OffsetY;
       x += Gui.OffsetGuiX;
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("cp_player"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("cp_player"), Skin.ButtonSkin.Normal)) {
         PickedCar = PlayerCar;
       }
 
@@ -74,7 +74,7 @@ namespace KN_Core {
         y += Gui.OffsetY;
 
         foreach (var c in Cars) {
-          if (gui.Button(ref x, ref y, width, height, c.Name, Skin.Button)) {
+          if (gui.TextButton(ref x, ref y, width, height, c.Name, Skin.ButtonSkin.Normal)) {
             PickedCar = c;
           }
         }
