@@ -456,11 +456,16 @@ namespace KN_Core {
       gui_.Box1(x, y, Gui.ModIconSize, 400.0f, Skin.ModPanelSkin.Normal);
 
       for (int i = 0; i < mods_.Count; i++) {
-        if (gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, mods_[i].Icon.Normal)) {
+        // mod icon background
+        if (gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, selectedMod_ == i ? Skin.ModPanelBackSkin.Active : Skin.ModPanelBackSkin.Normal)) {
           prevSelectedMod_ = selectedMod_;
           selectedMod_ = i;
           selectedModId_ = mods_[i].Id;
         }
+
+        // actual mod icon
+        gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, selectedMod_ == i ? mods_[i].Icon.Active : mods_[i].Icon.Normal);
+
         y += Gui.ModIconSize;
       }
 

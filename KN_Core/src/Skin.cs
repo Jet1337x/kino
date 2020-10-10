@@ -330,8 +330,8 @@ namespace KN_Core {
 
       ModPanelBackSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x00, 0x00, 0x00, 0x00)),
-        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0x33)),
-        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff)),
+        new KnSkin.SkinState(new Color32(0x50, 0x50, 0x50, 0xff)),
+        new KnSkin.SkinState(new Color32(0x65, 0x65, 0x65, 0xff)),
         "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
 
       LoadButtonTex(out texCamN_, out texCamH_, out texCamA_, out IconCam, out IconCamActive, "Camera");
