@@ -63,6 +63,11 @@ namespace KN_Core {
         gui.Box1(x, y, width, height, $"  - {author}", Skin.BoxLeftSkin.Normal);
         y += height;
       }
+
+      if (y < Core.DummyHeight) {
+        float h = Core.DummyHeight - y + Gui.ModTabHeight + Core.DummyGuiY;
+        gui.Box1(x, y, width, h, Skin.BoxLeftSkin.Normal);
+      }
     }
 
     private void GuiBadVersion(Gui gui, ref float x, ref float y, float width, float height) {
@@ -86,6 +91,11 @@ namespace KN_Core {
 
       gui.Box1(x, y, width, height, $"{Locale.Get("about6v")}: {ModLoader.ClientVersion}", Skin.BoxLeftSkin.Normal);
       y += height;
+
+      if (y < Core.DummyHeight) {
+        float h = Core.DummyHeight - y + Gui.ModTabHeight + Core.DummyGuiY;
+        gui.Box1(x, y, width, h, Skin.BoxLeftSkin.Normal);
+      }
     }
   }
 }

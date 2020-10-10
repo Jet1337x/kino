@@ -453,7 +453,7 @@ namespace KN_Core {
       GuiContentBeginY = yy;
 
       GuiModPanel(ref xx, ref yy);
-      GuiModContent(ref xx, ref yy);
+      GuiModContent(ref xx);
       GuiInputLocked();
     }
 
@@ -492,9 +492,11 @@ namespace KN_Core {
       gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, Skin.DiscordSkin.Normal);
     }
 
-    private void GuiModContent(ref float x, ref float y) {
+    private void GuiModContent(ref float x) {
       x += Gui.ModIconSize;
-      y = GuiYTop;
+      float y = GuiYTop;
+
+      gui_.Box1(x, y, DummyWidth, DummyHeight + Gui.ModTabHeight, Skin.BackgroundSkin.Normal);
 
       mods_[selectedMod_].OnGUI(gui_, ref x, ref y);
     }
