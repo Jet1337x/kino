@@ -57,6 +57,7 @@ namespace KN_Core {
 
     public Settings(Core core, int version, int patch, int clientVersion) : base(core, "settings", int.MaxValue - 1, version, patch, clientVersion) {
       SetIcon(Skin.GearSkin);
+      AddTab("settings", OnGui);
 
       exhaust_ = new Exhaust(core);
       Tachometer = new Tachometer(core);
@@ -138,7 +139,7 @@ namespace KN_Core {
       Tachometer.Update();
     }
 
-    public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
+    private bool OnGui(Gui gui, float x, float y) {
       const float width = Gui.Width * 2.0f;
       const float height = Gui.Height;
 
@@ -243,6 +244,8 @@ namespace KN_Core {
       }
 
       GUI.enabled = guiEnabled;
+
+      return false;
     }
 
     public void ReloadSound() {

@@ -21,6 +21,10 @@ namespace KN_Core {
     private const float GuiXLeft = 25.0f;
     private const float GuiYTop = 25.0f;
 
+    //todo: calculate
+    public readonly float DummyHeight = 400.0f;
+    public readonly float DummyWidth = 500.0f;
+
     public static Core CoreInstance { get; private set; }
 
     public float GuiContentBeginY { get; private set; }
@@ -426,7 +430,7 @@ namespace KN_Core {
 
       GuiContentBeginY = y;
 
-      mods_[selectedMod_].OnGUI(selectedModId_, gui_, ref x, ref y);
+      // mods_[selectedMod_].OnGUI(selectedModId_, gui_, ref x, ref y);
 
       gui_.EndTabs(ref x, ref y);
       GuiTabsHeight = gui_.TabsMaxHeight;
@@ -457,11 +461,9 @@ namespace KN_Core {
     }
 
     private void GuiModPanel(ref float x, ref float y) {
-      const float height = 400.0f;
-
       float ty = y;
 
-      gui_.Box1(x, y, Gui.ModIconSize, height, Skin.ModPanelSkin.Normal);
+      gui_.Box1(x, y, Gui.ModIconSize, DummyHeight, Skin.ModPanelSkin.Normal);
 
       for (int i = 0; i < mods_.Count; i++) {
         // mod icon background
@@ -469,6 +471,7 @@ namespace KN_Core {
           prevSelectedMod_ = selectedMod_;
           selectedMod_ = i;
           selectedModId_ = mods_[i].Id;
+          break;
         }
 
         // actual mod icon
@@ -479,14 +482,19 @@ namespace KN_Core {
       }
 
       // bottom-most discord button
-      y = height - Gui.ModIconSize + ty;
+      y = DummyHeight - Gui.ModIconSize + ty;
       if (gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, Skin.ModPanelBackSkin.Normal)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
       gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, Skin.DiscordSkin.Normal);
     }
 
-    private void GuiModContent(ref float x, ref float y) { }
+    private void GuiModContent(ref float x, ref float y) {
+      x += Gui.ModIconSize;
+      y = GuiYTop;
+
+      mods_[selectedMod_].OnGUI(gui_, ref x, ref y);
+    }
 
     private void GuiPickers() {
       float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;

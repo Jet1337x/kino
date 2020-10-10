@@ -6,7 +6,7 @@ namespace KN_Core {
     public const float MinTabsWidth = 520.0f;
 
     public const float ModIconSize = 60.0f;
-    public const float ModTabHeight = 30.0f;
+    public const float ModTabHeight = 27.0f;
 
     public const float Offset = 10.0f;
     public const float OffsetSmall = 5.0f;
@@ -48,7 +48,20 @@ namespace KN_Core {
       GUI.skin = skin;
 
       bool res = GUI.Button(new Rect(x, y, width, height), text);
-      y += height + OffsetY;
+      y += height + Offset;
+
+      GUI.skin = old;
+
+      return res;
+    }
+
+    public bool TabButton(ref float x, ref float y, float width, float height, string text, GUISkin skin) {
+      var old = GUI.skin;
+
+      GUI.skin = skin;
+
+      bool res = GUI.Button(new Rect(x, y, width, height), text);
+      x += width;
 
       GUI.skin = old;
 

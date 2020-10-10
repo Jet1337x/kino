@@ -8,11 +8,12 @@ namespace KN_Core {
 
     public About(Core core, int version, int patch, int clientVersion, bool badVersion) : base(core, "about", int.MaxValue, version, patch, clientVersion) {
       SetIcon(Skin.PlusSkin);
+      AddTab("about", OnGui);
 
       badVersion_ = badVersion;
     }
 
-    public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
+    private bool OnGui(Gui gui, float x, float y) {
       x += Gui.OffsetSmall;
 
       float width = Core.GuiTabsWidth - Gui.OffsetGuiX * 2.0f;
@@ -23,6 +24,8 @@ namespace KN_Core {
       else {
         GuiAbout(gui, ref x, ref y, width, Gui.Height);
       }
+
+      return false;
     }
 
     private void GuiAbout(Gui gui, ref float x, ref float y, float width, float height) {
