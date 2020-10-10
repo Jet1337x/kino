@@ -2,7 +2,8 @@ using UnityEngine;
 
 namespace KN_Core {
   public class Gui {
-    public const float MinModWidth = 520.0f;
+    public const float MinModWidth = 470.0f;
+    public const float MinModHeight = 300.0f;
 
     public const float ModIconSize = 50.0f;
     public const float ModTabHeight = 25.0f;
@@ -15,12 +16,48 @@ namespace KN_Core {
 
     public const float Width = 160.0f;
     public const float WidthScroll = 140.0f;
-    public const float HeightTimeline = 10.0f;
     public const float IconSize = 40.0f;
+
+    public float MaxContentWidth { get; private set; }
+    public float MaxContentHeight { get; private set; }
 
     private float scrollX_;
     private float scrollY_;
     private float scrollVisibleHeight_;
+
+    private bool begin_;
+
+    private float x_;
+    private float y_;
+
+    private float width_;
+    private float height_;
+
+    public Gui() {
+      ResetSize();
+    }
+
+    public void ResetSize() {
+      MaxContentWidth = MinModWidth + ModIconSize;
+      MaxContentHeight = MinModHeight + ModTabHeight;
+    }
+
+    public void Begin(float x, float y) {
+      begin_ = true;
+
+      x_ = x;
+      y_ = y;
+
+      width_ = MinModWidth + ModIconSize;
+      height_ = MinModHeight + ModTabHeight;
+    }
+
+    public void End() {
+      begin_ = false;
+
+      MaxContentWidth = width_ - (x_ + ModIconSize);
+      MaxContentHeight = height_ - (y_ + ModTabHeight);
+    }
 
     public bool BaseButton(ref float x, ref float y, float width, float height, string text, GUISkin skin) {
       var old = GUI.skin;
@@ -30,6 +67,7 @@ namespace KN_Core {
       y += height + Offset;
       GUI.skin = old;
 
+      EnsureContentSize(x, y, width);
       return res;
     }
 
@@ -41,6 +79,7 @@ namespace KN_Core {
       x += width;
       GUI.skin = old;
 
+      EnsureContentSize(x, y, 0.0f);
       return res;
     }
 
@@ -51,6 +90,7 @@ namespace KN_Core {
       bool res = GUI.Button(new Rect(x, y, width, height), "");
       GUI.skin = old;
 
+      EnsureContentSize(x, y, width);
       return res;
     }
 
@@ -66,12 +106,27 @@ namespace KN_Core {
       return BaseButton(ref x, ref y, width, height, text, skin);
     }
 
+    public void BoxAutoWidth(float x, float y, float width, float height, string text, GUISkin skin) {
+      var old = GUI.skin;
+
+      float textWidth = TextWidth(text, skin.box.font);
+      float w = width > 0.0f ? width : textWidth;
+
+      GUI.skin = skin;
+      GUI.Box(new Rect(x, y, w, height), text);
+      GUI.skin = old;
+
+      EnsureContentSize(x, y, textWidth);
+    }
+
     public void Box(float x, float y, float width, float height, string text, GUISkin skin) {
       var old = GUI.skin;
 
       GUI.skin = skin;
       GUI.Box(new Rect(x, y, width, height), text);
       GUI.skin = old;
+
+      EnsureContentSize(x, y, width);
     }
 
     public void Box(float x, float y, float width, float height, GUISkin skin) {
@@ -99,6 +154,8 @@ namespace KN_Core {
       y += Height + Offset;
 
       GUI.skin = old;
+
+      EnsureContentSize(x, y, width);
 
       if (Mathf.Abs(value - result) < 0.0001f) {
         return false;
@@ -133,6 +190,8 @@ namespace KN_Core {
       GUI.skin = old;
 
       x += ScrollBarWidth;
+
+      EnsureContentSize(x, y, width);
     }
 
     public void BeginScrollV(ref float x, ref float y, float visibleHeight, float contentHeight, ref Vector2 scrollPos, string caption) {
@@ -177,15 +236,28 @@ namespace KN_Core {
       return ScrollViewButton(ref x, ref y, WidthScroll, Height, text, out delete, skin, deleteSkin);
     }
 
-    // private void EnsureTabsSize(float x, float y, float width, float height) {
-    //   float currWidth = x - tabsX_ + width;
-    //   float currHeight = y - tabsY_ + height;
-    //   if (TabsMaxWidth < currWidth) {
-    //     TabsMaxWidth = currWidth;
-    //   }
-    //   if (TabsMaxHeight < currHeight) {
-    //     TabsMaxHeight = currHeight;
-    //   }
-    // }
+    private void EnsureContentSize(float x, float y, float width) {
+      if (!begin_) {
+        return;
+      }
+
+      float elementX = x + width;
+      if (width_ < elementX) {
+        width_ = elementX;
+      }
+
+      if (height_ < y) {
+        height_ = y;
+      }
+    }
+
+    private static int TextWidth(string text, Font font) {
+      int width = 0;
+      foreach (char c in text) {
+        font.GetCharacterInfo(c, out var characterInfo, font.fontSize);
+        width += characterInfo.advance;
+      }
+      return width + (int) (OffsetSmall * 1.5f);
+    }
   }
 }

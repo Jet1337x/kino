@@ -21,15 +21,9 @@ namespace KN_Core {
 
     private const float SoundReloadDistance = 70.0f;
 
-    //todo: calculate
-    public readonly float DummyHeight = 400.0f;
-    public readonly float DummyWidth = 500.0f;
-
     public static Core CoreInstance { get; private set; }
 
     public float GuiContentBeginY { get; private set; }
-    public float GuiTabsHeight { get; private set; }
-    public float GuiTabsWidth { get; private set; }
 
     public GameObject MainCamera { get; private set; }
     public GameObject ActiveCamera { get; set; }
@@ -386,18 +380,19 @@ namespace KN_Core {
       float x = GuiStartX;
       float y = GuiStartY;
 
+      HandleModSelection();
+
+      gui_.Begin(x, y);
+
       GuiVersion(ref x, ref y);
       GuiContentBeginY = y;
 
       prevSelectedMod_ = selectedMod_;
       GuiModPanel(ref x, ref y);
 
-      HandleModSelection();
-
       GuiModContent(ref x);
 
-      // GuiTabsHeight = gui_.TabsMaxHeight;
-      // GuiTabsWidth = gui_.TabsMaxWidth;
+      gui_.End();
 
       GuiInputLocked();
 
@@ -417,7 +412,7 @@ namespace KN_Core {
     private void GuiModPanel(ref float x, ref float y) {
       float ty = y;
 
-      gui_.Box(x, y, Gui.ModIconSize, DummyHeight, Skin.ModPanelSkin.Normal);
+      gui_.Box(x, y, Gui.ModIconSize, gui_.MaxContentHeight, Skin.ModPanelSkin.Normal);
 
       for (int i = 0; i < mods_.Count; i++) {
         // mod icon background
@@ -436,7 +431,7 @@ namespace KN_Core {
       }
 
       // bottom-most discord button
-      y = DummyHeight - Gui.ModIconSize + ty;
+      y = gui_.MaxContentHeight - Gui.ModIconSize + ty;
       if (gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, Skin.ModPanelBackSkin.Normal)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
@@ -447,33 +442,31 @@ namespace KN_Core {
       x += Gui.ModIconSize;
       float y = GuiStartY;
 
-      gui_.Box(x, y, DummyWidth, DummyHeight + Gui.ModTabHeight, Skin.BackgroundSkin.Normal);
+      gui_.Box(x, y + Gui.ModTabHeight, gui_.MaxContentWidth, gui_.MaxContentHeight, Skin.BackgroundSkin.Normal);
 
-      mods_[selectedMod_].OnGUI(gui_, ref x, ref y);
+      mods_[selectedMod_].OnGui(gui_, ref x, ref y);
     }
 
     private void GuiInputLocked() {
       float x = GuiStartX;
-      float y = GuiContentBeginY + DummyHeight;
-      gui_.TextButton(ref x, ref y, DummyWidth + Gui.ModIconSize, Gui.Height, Locale.Get("input_locked"), Skin.WarningSkin.Normal);
-
-      if (gui_.TextButton(ref x, ref y, "TEST", Skin.ButtonSkin.Normal)) {
-        FilePicker.PickIn(KnConfig.VisualsDir);
-      }
+      float y = GuiContentBeginY + gui_.MaxContentHeight;
+      gui_.TextButton(ref x, ref y, gui_.MaxContentWidth + Gui.ModIconSize, Gui.Height, Locale.Get("input_locked"), Skin.WarningSkin.Normal);
     }
 
     private void GuiPickers() {
-      float tx = GuiStartX + GuiTabsWidth + Gui.Offset;
-      float ty = GuiContentBeginY - Gui.Offset;
+      float x = GuiStartX + gui_.MaxContentWidth + Gui.ModIconSize + Gui.Offset;
+      float y = GuiStartY;
 
       if (CarPicker.IsPicking) {
-        CarPicker.OnGui(gui_, ref tx, ref ty);
+        CarPicker.OnGui(gui_, ref x, ref y);
+        x += Gui.Offset;
       }
       if (ColorPicker.IsPicking) {
-        ColorPicker.OnGui(gui_, ref tx, ref ty);
+        ColorPicker.OnGui(gui_, ref x, ref y);
+        x += Gui.Offset;
       }
       if (FilePicker.IsPicking) {
-        FilePicker.OnGui(gui_, ref tx, ref ty);
+        FilePicker.OnGui(gui_, ref x, ref y);
       }
     }
 
@@ -522,6 +515,8 @@ namespace KN_Core {
 
     private void HandleModSelection() {
       if (selectedMod_ != prevSelectedMod_) {
+        gui_.ResetSize();
+
         CarPicker.Reset();
         ColorPicker.Reset();
         FilePicker.Reset();

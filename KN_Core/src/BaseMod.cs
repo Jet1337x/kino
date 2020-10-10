@@ -46,15 +46,15 @@ namespace KN_Core {
     public virtual void OnStart() { }
     public virtual void OnStop() { }
 
-    public void OnGUI(Gui gui, ref float x, ref float y) {
+    public void OnGui(Gui gui, ref float x, ref float y) {
       if (tabs_.Count <= 0) {
-        Log.Write("[KN_Core::BaseMod]: Unable to draw mod gui. Tabs are empty.");
+        Log.Write($"[KN_Core::BaseMod]: Unable to draw mod '{Name}' gui. Tabs are empty.");
         return;
       }
 
       // tabs bar
       float tx = x;
-      float tabWidth = Core.DummyWidth / tabs_.Count;
+      float tabWidth = gui.MaxContentWidth / tabs_.Count;
       for (int i = 0; i < tabs_.Count; ++i) {
         if (gui.TabButton(ref x, ref y, tabWidth, Gui.ModTabHeight, Locale.Get(tabs_[i].Name), i == SelectedTab ? Skin.ModTabSkin.Active : Skin.ModTabSkin.Normal)) {
           PrevSelectedTab = SelectedTab;
