@@ -83,6 +83,9 @@ namespace KN_Core {
     public static KnSkin GearSkin;
     public static KnSkin DiscordSkin;
 
+    public static KnSkin ButtonSkin;
+    public static KnSkin BoxLeftSkin;
+
     public static KnSkin ModTabSkin;
     public static KnSkin WarningSkin;
 
@@ -148,6 +151,18 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
         "GUI.discord.png", TextAnchor.MiddleCenter, FontLight);
+
+      ButtonSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x80, 0x80, 0x80, 0xff)),
+        new KnSkin.SkinState(new Color32(0x43, 0x43, 0x43, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
+        new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
+        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+
+      BoxLeftSkin = new KnSkin(KnSkin.Type.Box,
+        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0x80), new Color32(0x15, 0x15, 0x15, 0xff)),
+        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0x80), new Color32(0x15, 0x15, 0x15, 0xff)),
+        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0x80), new Color32(0x15, 0x15, 0x15, 0xff)),
+        "GUI.base.png", TextAnchor.MiddleLeft, FontLight);
 
       ModTabSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),

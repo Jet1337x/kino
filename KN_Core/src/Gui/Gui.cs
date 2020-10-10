@@ -7,7 +7,7 @@ namespace KN_Core {
 
     public const float ModIconSize = 50.0f;
     public const float ModTabHeight = 25.0f;
-    public const float ButtonHeight = 20.0f;
+    public const float Height = 20.0f;
 
     public const float Offset = 10.0f;
     public const float OffsetSmall = 5.0f;
@@ -15,7 +15,6 @@ namespace KN_Core {
     public const float Width = 160.0f;
     public const float WidthScroll = 140.0f;
     public const float WidthSlider = 16.0f;
-    public const float Height = 20.0f;
     public const float HeightTimeline = 10.0f;
     public const float SmallSize = Height;
     public const float IconSize = 40.0f;

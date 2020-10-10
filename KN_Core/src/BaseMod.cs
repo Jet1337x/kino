@@ -52,7 +52,6 @@ namespace KN_Core {
         return;
       }
 
-
       // tabs bar
       float tx = x;
       float tabWidth = Core.DummyWidth / tabs_.Count;
@@ -63,7 +62,7 @@ namespace KN_Core {
           break;
         }
       }
-      x = tx;
+      x = tx + Gui.Offset;
       y += Gui.ModTabHeight + Gui.Offset;
 
       // tab gui

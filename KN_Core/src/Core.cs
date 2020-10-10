@@ -502,7 +502,7 @@ namespace KN_Core {
     private void GuiInputLocked() {
       float x = DummyGuiX;
       float y = GuiContentBeginY + DummyHeight;
-      gui_.TextButton(ref x, ref y, DummyWidth + Gui.ModIconSize, Gui.ButtonHeight, Locale.Get("input_locked"), Skin.WarningSkin.Normal);
+      gui_.TextButton(ref x, ref y, DummyWidth + Gui.ModIconSize, Gui.Height, Locale.Get("input_locked"), Skin.WarningSkin.Normal);
     }
 
     private void GuiPickers() {
