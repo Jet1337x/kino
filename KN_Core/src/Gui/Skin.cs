@@ -42,7 +42,6 @@ namespace KN_Core {
     private static Texture2D texRedButtonH_;
     private static Texture2D texRedButtonA_;
 
-    public static GUISkin ScrollView;
     public static GUISkin TextField;
     public static GUISkin Label;
 
@@ -80,6 +79,7 @@ namespace KN_Core {
 
     public static KnSkin ButtonSkin;
     public static KnSkin SliderSkin;
+    public static KnSkin ScrollSkin;
     public static KnSkin BackgroundSkin;
     public static KnSkin BoxLeftSkin;
 
@@ -181,13 +181,18 @@ namespace KN_Core {
 
       SliderSkin = new KnSkin(KnSkin.Type.Slider,
         new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0x15, 0x15, 0x15, 0xff)),
-        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x15, 0x15, 0x15, 0xff)),
-        new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff), new Color32(0x15, 0x15, 0x15, 0xff)),
+        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff)),
+        new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff)),
+        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+
+      ScrollSkin = new KnSkin(KnSkin.Type.Scroll,
+        new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0xde, 0xde, 0xde, 0xff)),
+        new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff)),
+        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xff)),
         "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
 
       MakeMainContainerStyle();
       MakeButtonsStyle();
-      MakeScrollViewStyle();
       MakeTextFieldStyle();
       MakeTimelineSlider();
       MakeTachStyle();
@@ -305,26 +310,6 @@ namespace KN_Core {
       RedSkin.label.normal.textColor = TextColor;
       RedSkin.label.alignment = TextAnchor.MiddleCenter;
       RedSkin.label.font = FontLight;
-    }
-
-    private static void MakeScrollViewStyle() {
-      ScrollView = ScriptableObject.CreateInstance<GUISkin>();
-      ScrollView.scrollView.normal.background = texMainDark_; //white
-
-      ScrollView.verticalScrollbar.normal.background = texMainDark_;
-      ScrollView.verticalScrollbar.stretchHeight = false;
-      ScrollView.verticalScrollbar.stretchWidth = false;
-      ScrollView.verticalScrollbar.fixedWidth = Gui.ScrollBarWidth;
-
-      ScrollView.verticalScrollbarThumb.normal.background = texMainDark_; //white
-      ScrollView.verticalScrollbarThumb.stretchHeight = false;
-      ScrollView.verticalScrollbarThumb.stretchWidth = false;
-      ScrollView.verticalScrollbarThumb.stretchWidth = false;
-
-      ScrollView.box.normal.textColor = TextColor;
-      ScrollView.box.alignment = TextAnchor.MiddleCenter;
-      ScrollView.box.normal.background = texMainDark_;
-      ScrollView.box.font = FontLight;
     }
 
     private static void MakeMainContainerStyle() {

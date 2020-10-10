@@ -219,7 +219,7 @@ namespace KN_Core {
           }
         }
       }
-      carListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
+      carListScrollH_ = gui.EndScrollV(ref x, ref y, sy);
 
       var ce = currentSwap_?.GetCurrentEngine();
       GUI.enabled = allowSwap && engineId != 0;

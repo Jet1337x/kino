@@ -67,6 +67,8 @@ namespace KN_Core {
 
       // tab gui
       tabs_[SelectedTab].OnGui(gui, x, y);
+
+      x += Gui.Offset;
     }
 
     public virtual void Update(int id) { }

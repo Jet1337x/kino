@@ -5,7 +5,8 @@ namespace KN_Core {
     public enum Type {
       Button,
       Box,
-      Slider
+      Slider,
+      Scroll
     }
 
     public class SkinState {
@@ -67,6 +68,10 @@ namespace KN_Core {
         }
         case Type.Slider: {
           MakeSlider();
+          break;
+        }
+        case Type.Scroll: {
+          MakeScroll();
           break;
         }
       }
@@ -142,6 +147,29 @@ namespace KN_Core {
       Normal.label.normal.textColor = normal_.TextColor;
       Normal.label.alignment = alignment_;
       Normal.label.font = font_;
+    }
+
+    private void MakeScroll() {
+      normal_.Load(texturePath_);
+      hover_.Load(texturePath_);
+      active_.Load(texturePath_);
+
+      Normal.scrollView.normal.background = normal_.Texture;
+
+      Normal.verticalScrollbar.normal.background = hover_.Texture;
+      Normal.verticalScrollbar.stretchHeight = false;
+      Normal.verticalScrollbar.stretchWidth = false;
+      Normal.verticalScrollbar.fixedWidth = Gui.ScrollBarWidth;
+
+      Normal.verticalScrollbarThumb.normal.background = active_.Texture;
+      Normal.verticalScrollbarThumb.stretchHeight = false;
+      Normal.verticalScrollbarThumb.stretchWidth = false;
+      Normal.verticalScrollbarThumb.stretchWidth = false;
+
+      Normal.box.normal.textColor = normal_.TextColor;
+      Normal.box.alignment = alignment_;
+      Normal.box.normal.background = hover_.Texture;
+      Normal.box.font = font_;
     }
   }
 }

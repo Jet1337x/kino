@@ -8,24 +8,24 @@ namespace KN_Core {
     public const float ModIconSize = 50.0f;
     public const float ModTabHeight = 25.0f;
     public const float Height = 20.0f;
+    public const float ScrollBarWidth = 8.0f;
     public const float WidthSlider = 16.0f;
 
     public const float Offset = 10.0f;
     public const float OffsetSmall = 5.0f;
+
 
     public const float Width = 160.0f;
     public const float WidthScroll = 140.0f;
     public const float HeightTimeline = 10.0f;
     public const float SmallSize = Height;
     public const float IconSize = 40.0f;
-    public const float ScrollBarWidth = 8.0f;
 
     public const float TabButtonWidth = 80.0f;
     public const float TabButtonHeight = 23.0f;
 
     public const float OffsetY = 10.0f;
     public const float OffsetGuiX = 10.0f;
-    public const float OffsetScrollArea = 8.0f;
 
     public int SelectedTab { get; set; }
 
@@ -136,6 +136,39 @@ namespace KN_Core {
       return SliderH(ref x, ref y, width, ref value, low, high, text, Skin.SliderSkin.Normal);
     }
 
+    public void BeginScrollV(ref float x, ref float y, float width, float visibleHeight, float contentHeight, ref Vector2 scrollPos, string caption) {
+      var old = GUI.skin;
+      GUI.skin = Skin.ScrollSkin.Normal;
+
+      GUI.Box(new Rect(x, y, width, Height), caption);
+      y += Height;
+
+      scrollVisibleHeight_ = visibleHeight;
+      scrollX_ = x;
+      scrollY_ = y;
+
+      scrollPos = GUI.BeginScrollView(new Rect(scrollX_, scrollY_, width, visibleHeight), scrollPos,
+        new Rect(scrollX_, scrollY_, width, contentHeight), false, false);
+
+      GUI.skin = old;
+
+      x += ScrollBarWidth;
+    }
+
+    public void BeginScrollV(ref float x, ref float y, float visibleHeight, float contentHeight, ref Vector2 scrollPos, string caption) {
+      BeginScrollV(ref x, ref y, Width, visibleHeight, contentHeight, ref scrollPos, caption);
+    }
+
+    public float EndScrollV(ref float x, ref float y, float contentY) {
+      y += scrollVisibleHeight_ + OffsetSmall;
+      GUI.EndScrollView();
+
+      x -= Offset;
+
+      //content height
+      return contentY - scrollY_;
+    }
+
     // old ----------------------------
     public void Tabs(ref float x, ref float y, string[] tabs, ref int selected) {
       TabsMaxWidth = MinTabsWidth;
@@ -198,44 +231,6 @@ namespace KN_Core {
       }
 
       x -= OffsetGuiX;
-    }
-
-    public void BeginScrollV(ref float x, ref float y, float width, float visibleHeight, float contentHeight, ref Vector2 scrollPos, string caption) {
-      EnsureTabsSize(x, y, width, visibleHeight + Height);
-
-      var oldColor = GUI.color;
-      var old = GUI.skin;
-      GUI.skin = Skin.ScrollView;
-      GUI.color = Skin.ContainerAlpha;
-      GUI.Box(new Rect(x, y, width, Height), caption);
-      y += Height;
-
-      scrollVisibleHeight_ = visibleHeight;
-      scrollX_ = x;
-      scrollY_ = y;
-
-      GUI.color = Skin.ContainerAlphaLow;
-      scrollPos = GUI.BeginScrollView(new Rect(scrollX_, scrollY_, width, visibleHeight), scrollPos,
-        new Rect(scrollX_, scrollY_, width, contentHeight), false, false);
-
-      GUI.color = oldColor;
-      GUI.skin = old;
-
-      x += OffsetScrollArea;
-    }
-
-    public void BeginScrollV(ref float x, ref float y, float visibleHeight, float contentHeight, ref Vector2 scrollPos, string caption) {
-      BeginScrollV(ref x, ref y, Width, visibleHeight, contentHeight, ref scrollPos, caption);
-    }
-
-    public float EndScrollV(ref float x, ref float y, float contentX, float contentY) {
-      y += scrollVisibleHeight_ + OffsetSmall;
-      GUI.EndScrollView();
-
-      x -= OffsetGuiX;
-
-      //content height
-      return contentY - scrollY_;
     }
 
     public bool ScrollViewButton(ref float x, ref float y, float width, float height, string text, out bool delete, GUISkin skin, GUISkin deleteSkin) {

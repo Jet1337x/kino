@@ -71,7 +71,7 @@ namespace KN_Core {
         sy -= Gui.OffsetY;
       }
       sy += Gui.OffsetY;
-      filesListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
+      filesListScrollH_ = gui.EndScrollV(ref x, ref y, sy);
 
       filesBoxHeight_ = listHeight + Gui.Height * 2.0f + Gui.OffsetY * 3.0f;
       x += baseWidth + Gui.OffsetGuiX;
