@@ -284,8 +284,10 @@ namespace KN_Core {
 
     public static KnSkin GearSkin;
     public static KnSkin PlusSkin;
+
     public static KnSkin ModPanelSkin;
     public static KnSkin ModPanelBackSkin;
+    public static KnSkin DiscordSkin;
 
     private static bool initialized_;
 
@@ -327,9 +329,9 @@ namespace KN_Core {
         "GUI.plus.png", TextAnchor.MiddleCenter, FontLight);
 
       ModPanelSkin = new KnSkin(KnSkin.Type.Box,
-        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff),new Color32(0x90, 0x90, 0x90, 0xff)),
-        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff),new Color32(0x90, 0x90, 0x90, 0xff)),
-        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff),new Color32(0x90, 0x90, 0x90, 0xff)),
+        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
+        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
+        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         "GUI.base.png", TextAnchor.MiddleLeft, FontVersion);
 
       ModPanelBackSkin = new KnSkin(KnSkin.Type.Button,
@@ -337,6 +339,12 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0x50, 0x50, 0x50, 0xff)),
         new KnSkin.SkinState(new Color32(0x65, 0x65, 0x65, 0xff)),
         "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+
+      DiscordSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
+        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
+        "GUI.discord.png", TextAnchor.MiddleCenter, FontLight);
 
       LoadButtonTex(out texCamN_, out texCamH_, out texCamA_, out IconCam, out IconCamActive, "Camera");
       LoadButtonTex(out texAnimN_, out texAnimH_, out texAnimA_, out IconAnim, out IconAnimActive, "Animation");

@@ -457,10 +457,11 @@ namespace KN_Core {
     }
 
     private void GuiModPanel(ref float x, ref float y) {
-      float tx = x;
+      const float height = 400.0f;
+
       float ty = y;
 
-      gui_.Box1(x, y, Gui.ModIconSize, 400.0f, Skin.ModPanelSkin.Normal);
+      gui_.Box1(x, y, Gui.ModIconSize, height, Skin.ModPanelSkin.Normal);
 
       for (int i = 0; i < mods_.Count; i++) {
         // mod icon background
@@ -476,13 +477,12 @@ namespace KN_Core {
         y += Gui.ModIconSize;
       }
 
-      // float xx = 1000.0f;
-      // float yy = 600.0f;
-      //
-      // gui_.TextButton(ref xx, ref yy, "TEST BUTTON", Skin.TestSkin.Normal);
-      // gui_.ImageButton(ref xx, ref yy, 60.0f, 60.0f, Skin.GearSkin.Normal);
-      // gui_.ImageButton(ref xx, ref yy, 60.0f, 60.0f, Skin.PlusSkin.Normal);
-
+      // bottom-most discord button
+      y = height - Gui.ModIconSize + ty;
+      if (gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, Skin.ModPanelBackSkin.Normal)) {
+        Process.Start("https://discord.gg/FkYYAKb");
+      }
+      gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, Skin.DiscordSkin.Normal);
     }
 
     private void GuiModContent(ref float x, ref float y) { }
