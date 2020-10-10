@@ -245,6 +245,8 @@ namespace KN_Core {
     public static Font FontGear;
 
     public static KnSkin TestSkin;
+    public static KnSkin GearSkin;
+    public static KnSkin PlusSkin;
 
     private static bool initialized_;
 
@@ -273,7 +275,19 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0x30, 0x30, 0x30, 0xff), new Color32(0x5d, 0x8f, 0xc6, 0xff)),
         new KnSkin.SkinState(new Color32(0x30, 0x30, 0x30, 0xff), new Color32(0x64, 0x9a, 0xd6, 0xff)),
         new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0x31, 0x57, 0x81, 0xff)),
-        "GUI/base.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+
+      GearSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0x30, 0x30, 0x30, 0xff), new Color32(0x5d, 0x0f, 0xc6, 0xff)),
+        new KnSkin.SkinState(new Color32(0x30, 0x30, 0x30, 0xff), new Color32(0x64, 0xff, 0xd6, 0xff)),
+        new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0x31, 0xff, 0xff, 0xff)),
+        "GUI.gear.png", TextAnchor.MiddleCenter, FontLight);
+
+      PlusSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0x30, 0x30, 0x30, 0xff), new Color32(0xff, 0xff, 0xc6, 0xff)),
+        new KnSkin.SkinState(new Color32(0x30, 0x30, 0x30, 0xff), new Color32(0x64, 0xff, 0xee, 0xff)),
+        new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
+        "GUI.plus.png", TextAnchor.MiddleCenter, FontLight);
 
       LoadButtonTex(out texCamN_, out texCamH_, out texCamA_, out IconCam, out IconCamActive, "Camera");
       LoadButtonTex(out texAnimN_, out texAnimH_, out texAnimA_, out IconAnim, out IconAnimActive, "Animation");

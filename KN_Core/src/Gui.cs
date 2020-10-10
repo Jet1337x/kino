@@ -37,19 +37,36 @@ namespace KN_Core {
     public float TabsMaxWidth { get; private set; }
     public float TabsMaxHeight { get; private set; }
 
-    public bool TestButton(float x, float y, GUISkin skin) {
+    public bool BaseButton(ref float x, ref float y, float width, float height, string text, GUISkin skin) {
       var oldColor = GUI.color;
       var old = GUI.skin;
 
       GUI.skin = skin;
       GUI.color = Skin.ElementAlpha;
 
-      bool result = GUI.Button(new Rect(x, y, 160.0f, 50.0f), "TEST BUTTON");
+      bool res = GUI.Button(new Rect(x, y, width, height), text);
+      y += height + OffsetY;
 
       GUI.color = oldColor;
       GUI.skin = old;
 
-      return result;
+      return res;
+    }
+
+    public bool ImageButton(ref float x, ref float y, GUISkin skin) {
+      return ImageButton(ref x, ref y, IconSize, IconSize, skin);
+    }
+
+    public bool ImageButton(ref float x, ref float y, float width, float height, GUISkin skin) {
+      return BaseButton(ref x, ref y, width, height, "", skin);
+    }
+
+    public bool TextButton(ref float x, ref float y, string text, GUISkin skin) {
+      return BaseButton(ref x, ref y, Width, Height, text, skin);
+    }
+
+    public bool TextButton(ref float x, ref float y, float width, float height, string text, GUISkin skin) {
+      return BaseButton(ref x, ref y, width, height, text, skin);
     }
 
     public void Box(float x, float y, float width, float height, string text, GUISkin skin) {
@@ -309,26 +326,6 @@ namespace KN_Core {
 
     public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text) {
       return SliderH(ref x, ref y, width, ref value, low, high, text, Skin.Slider);
-    }
-
-    public bool ImageButton(ref float x, ref float y, float width, float height, GUISkin skin) {
-      EnsureTabsSize(x, y, width, height);
-
-      var oldColor = GUI.color;
-      var old = GUI.skin;
-      GUI.skin = skin;
-
-      GUI.color = Skin.ElementAlpha;
-      bool res = GUI.Button(new Rect(x, y, width, height), "");
-      y += height + OffsetY;
-
-      GUI.color = oldColor;
-      GUI.skin = old;
-      return res;
-    }
-
-    public bool ImageButton(ref float x, ref float y, GUISkin skin) {
-      return ImageButton(ref x, ref y, IconSize, IconSize, skin);
     }
 
     private void EnsureTabsSize(float x, float y, float width, float height) {

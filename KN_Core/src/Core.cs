@@ -393,8 +393,12 @@ namespace KN_Core {
         return;
       }
 
-      gui_.TestButton(1000.0f, 500.0f, Skin.TestSkin.Normal);
-      gui_.TestButton(1000.0f, 700.0f, Skin.TestSkin.Active);
+      float xx = 1000.0f;
+      float yy = 600.0f;
+
+      gui_.TextButton(ref xx, ref yy, "TEST BUTTON", Skin.TestSkin.Normal);
+      gui_.ImageButton(ref xx, ref yy, 60.0f, 60.0f, Skin.GearSkin.Normal);
+      gui_.ImageButton(ref xx, ref yy, 60.0f, 60.0f, Skin.PlusSkin.Normal);
 
       if (badVersion_ || newPatch_ || loader_.ShowUpdateWarn || loader_.NewPatch) {
         GuiUpdateWarn();
