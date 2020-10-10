@@ -459,14 +459,14 @@ namespace KN_Core {
 
     private void GuiVersion(ref float x, ref float y) {
       string versionText = $"Kino\nv{StringVersion}.{Patch}";
-      gui_.Box1(x, y, Gui.ModIconSize, Gui.ModTabHeight, versionText, Skin.ModPanelSkin.Normal);
+      gui_.Box(x, y, Gui.ModIconSize, Gui.ModTabHeight, versionText, Skin.ModPanelSkin.Normal);
       y += Gui.ModTabHeight;
     }
 
     private void GuiModPanel(ref float x, ref float y) {
       float ty = y;
 
-      gui_.Box1(x, y, Gui.ModIconSize, DummyHeight, Skin.ModPanelSkin.Normal);
+      gui_.Box(x, y, Gui.ModIconSize, DummyHeight, Skin.ModPanelSkin.Normal);
 
       for (int i = 0; i < mods_.Count; i++) {
         // mod icon background
@@ -496,7 +496,7 @@ namespace KN_Core {
       x += Gui.ModIconSize;
       float y = GuiYTop;
 
-      gui_.Box1(x, y, DummyWidth, DummyHeight + Gui.ModTabHeight, Skin.BackgroundSkin.Normal);
+      gui_.Box(x, y, DummyWidth, DummyHeight + Gui.ModTabHeight, Skin.BackgroundSkin.Normal);
 
       mods_[selectedMod_].OnGUI(gui_, ref x, ref y);
     }

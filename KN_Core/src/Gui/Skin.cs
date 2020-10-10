@@ -42,11 +42,6 @@ namespace KN_Core {
     private static Texture2D texRedButtonH_;
     private static Texture2D texRedButtonA_;
 
-    public static GUISkin Slider;
-    private static Texture2D texSliderN_;
-    private static Texture2D texSliderH_;
-    private static Texture2D texSliderBG_;
-
     public static GUISkin ScrollView;
     public static GUISkin TextField;
     public static GUISkin Label;
@@ -84,6 +79,7 @@ namespace KN_Core {
     public static KnSkin DiscordSkin;
 
     public static KnSkin ButtonSkin;
+    public static KnSkin SliderSkin;
     public static KnSkin BackgroundSkin;
     public static KnSkin BoxLeftSkin;
 
@@ -183,9 +179,14 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
         "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
 
+      SliderSkin = new KnSkin(KnSkin.Type.Slider,
+        new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0x15, 0x15, 0x15, 0xff)),
+        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x15, 0x15, 0x15, 0xff)),
+        new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff), new Color32(0x15, 0x15, 0x15, 0xff)),
+        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+
       MakeMainContainerStyle();
       MakeButtonsStyle();
-      MakeSliderStyle();
       MakeScrollViewStyle();
       MakeTextFieldStyle();
       MakeTimelineSlider();
@@ -306,37 +307,16 @@ namespace KN_Core {
       RedSkin.label.font = FontLight;
     }
 
-    private static void MakeSliderStyle() {
-      texSliderN_ = Embedded.LoadEmbeddedTexture("SliderThumbNormal.png");
-      texSliderH_ = Embedded.LoadEmbeddedTexture("SliderThumbHover.png");
-      texSliderBG_ = Embedded.LoadEmbeddedTexture("SliderBG.png");
-
-      Slider = ScriptableObject.CreateInstance<GUISkin>();
-      Slider.horizontalSlider.normal.background = texSliderBG_;
-      Slider.horizontalSlider.hover.background = texSliderBG_;
-      Slider.horizontalSlider.active.background = texSliderBG_;
-      Slider.horizontalSlider.fixedHeight = Gui.Height;
-      Slider.horizontalSliderThumb.normal.background = texSliderN_;
-      Slider.horizontalSliderThumb.hover.background = texSliderH_;
-      Slider.horizontalSliderThumb.active.background = texSliderH_;
-      Slider.horizontalSliderThumb.fixedWidth = Gui.WidthSlider;
-      Slider.horizontalSliderThumb.fixedHeight = Gui.Height;
-
-      Slider.label.normal.textColor = TextColor;
-      Slider.label.alignment = TextAnchor.MiddleCenter;
-      Slider.label.font = FontLight;
-    }
-
     private static void MakeScrollViewStyle() {
       ScrollView = ScriptableObject.CreateInstance<GUISkin>();
-      ScrollView.scrollView.normal.background = texSliderBG_;
+      ScrollView.scrollView.normal.background = texMainDark_; //white
 
       ScrollView.verticalScrollbar.normal.background = texMainDark_;
       ScrollView.verticalScrollbar.stretchHeight = false;
       ScrollView.verticalScrollbar.stretchWidth = false;
       ScrollView.verticalScrollbar.fixedWidth = Gui.ScrollBarWidth;
 
-      ScrollView.verticalScrollbarThumb.normal.background = texSliderH_;
+      ScrollView.verticalScrollbarThumb.normal.background = texMainDark_; //white
       ScrollView.verticalScrollbarThumb.stretchHeight = false;
       ScrollView.verticalScrollbarThumb.stretchWidth = false;
       ScrollView.verticalScrollbarThumb.stretchWidth = false;
@@ -388,7 +368,7 @@ namespace KN_Core {
 
     private static void MakeTextFieldStyle() {
       TextField = ScriptableObject.CreateInstance<GUISkin>();
-      TextField.textField.normal.background = texSliderBG_;
+      TextField.textField.normal.background = texMainDark_; //white
       TextField.textField.normal.textColor = TextColor;
       TextField.textField.alignment = TextAnchor.MiddleCenter;
       TextField.textField.fixedHeight = Gui.Height;
@@ -414,9 +394,9 @@ namespace KN_Core {
       texTimelineHigh_ = Embedded.LoadEmbeddedTexture("TimelineSliderHigh.png");
 
       TimelineSliderMid = ScriptableObject.CreateInstance<GUISkin>();
-      TimelineSliderMid.horizontalSlider.normal.background = texSliderBG_;
-      TimelineSliderMid.horizontalSlider.hover.background = texSliderBG_;
-      TimelineSliderMid.horizontalSlider.active.background = texSliderBG_;
+      TimelineSliderMid.horizontalSlider.normal.background = texMainDark_; //white
+      TimelineSliderMid.horizontalSlider.hover.background = texMainDark_; //white
+      TimelineSliderMid.horizontalSlider.active.background = texMainDark_; //white
       TimelineSliderMid.horizontalSlider.fixedHeight = Gui.Height;
       TimelineSliderMid.horizontalSliderThumb.normal.background = texTimelineMid_;
       TimelineSliderMid.horizontalSliderThumb.hover.background = texTimelineMid_;
@@ -476,7 +456,7 @@ namespace KN_Core {
       TachRedBg.box.normal.background = texRedButtonA_;
 
       TachFill = ScriptableObject.CreateInstance<GUISkin>();
-      TachFill.box.normal.background = texSliderBG_;
+      TachFill.box.normal.background = texMainDark_; //white
 
       TachFillRed = ScriptableObject.CreateInstance<GUISkin>();
       TachFillRed.box.normal.background = texRedButtonH_;

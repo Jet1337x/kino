@@ -172,11 +172,11 @@ namespace KN_Core {
         return;
       }
 
-      if (gui.Button(ref x, ref y, width, Gui.Height, Locale.Get("log_engines"), core_.Settings.LogEngines ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, Gui.Height, Locale.Get("log_engines"), core_.Settings.LogEngines ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         core_.Settings.LogEngines = !core_.Settings.LogEngines;
       }
 
-      if (gui.Button(ref x, ref y, width, Gui.Height, Locale.Get("reload"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, Gui.Height, Locale.Get("reload"), Skin.ButtonSkin.Normal)) {
         FindEngineAndSwap();
       }
 
@@ -200,7 +200,7 @@ namespace KN_Core {
 
       var currentEngine = currentSwap_?.GetCurrentEngine();
       int engineId = currentEngine?.EngineId ?? 0;
-      if (gui.Button(ref sx, ref sy, w, height, "STOCK", engineId == 0 ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref sx, ref sy, w, height, "STOCK", engineId == 0 ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (engineId != 0) {
           SwapEngineTo(null);
         }
@@ -213,7 +213,7 @@ namespace KN_Core {
           continue;
         }
 
-        if (gui.Button(ref sx, ref sy, w, height, engine.Name, engineId == engine.Id ? Skin.ButtonActive : Skin.Button)) {
+        if (gui.TextButton(ref sx, ref sy, w, height, engine.Name, engineId == engine.Id ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
           if (engineId != engine.Id) {
             SwapEngineTo(engine);
           }

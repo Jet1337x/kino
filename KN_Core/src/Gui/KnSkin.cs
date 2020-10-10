@@ -4,7 +4,8 @@ namespace KN_Core {
   public class KnSkin {
     public enum Type {
       Button,
-      Box
+      Box,
+      Slider
     }
 
     public class SkinState {
@@ -64,6 +65,10 @@ namespace KN_Core {
           MakeBox();
           break;
         }
+        case Type.Slider: {
+          MakeSlider();
+          break;
+        }
       }
     }
 
@@ -117,6 +122,26 @@ namespace KN_Core {
       Active.box.alignment = alignment_;
       Active.box.font = font_;
       Normal.box.padding = new RectOffset(offset, offset, 0, 0);
+    }
+
+    private void MakeSlider() {
+      normal_.Load(texturePath_);
+      hover_.Load(texturePath_);
+      active_.Load(texturePath_);
+
+      Normal.horizontalSlider.normal.background = normal_.Texture;
+      Normal.horizontalSlider.hover.background = normal_.Texture;
+      Normal.horizontalSlider.active.background = normal_.Texture;
+      Normal.horizontalSlider.fixedHeight = Gui.Height;
+      Normal.horizontalSliderThumb.normal.background = hover_.Texture;
+      Normal.horizontalSliderThumb.hover.background = active_.Texture;
+      Normal.horizontalSliderThumb.active.background = active_.Texture;
+      Normal.horizontalSliderThumb.fixedWidth = Gui.WidthSlider;
+      Normal.horizontalSliderThumb.fixedHeight = Gui.Height;
+
+      Normal.label.normal.textColor = normal_.TextColor;
+      Normal.label.alignment = alignment_;
+      Normal.label.font = font_;
     }
   }
 }

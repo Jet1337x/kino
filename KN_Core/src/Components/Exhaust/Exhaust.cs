@@ -140,7 +140,7 @@ namespace KN_Core {
       }
     }
 
-    public void OnGUI(Gui gui, ref float x, ref float y, float width) {
+    public void OnGui(Gui gui, ref float x, ref float y, float width) {
       bool guiEnabled = GUI.enabled;
       GUI.enabled = activeExhaust_ != null && !core_.IsInGarage;
 

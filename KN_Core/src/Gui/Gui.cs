@@ -8,13 +8,13 @@ namespace KN_Core {
     public const float ModIconSize = 50.0f;
     public const float ModTabHeight = 25.0f;
     public const float Height = 20.0f;
+    public const float WidthSlider = 16.0f;
 
     public const float Offset = 10.0f;
     public const float OffsetSmall = 5.0f;
 
     public const float Width = 160.0f;
     public const float WidthScroll = 140.0f;
-    public const float WidthSlider = 16.0f;
     public const float HeightTimeline = 10.0f;
     public const float SmallSize = Height;
     public const float IconSize = 40.0f;
@@ -46,10 +46,8 @@ namespace KN_Core {
       var old = GUI.skin;
 
       GUI.skin = skin;
-
       bool res = GUI.Button(new Rect(x, y, width, height), text);
       y += height + Offset;
-
       GUI.skin = old;
 
       return res;
@@ -59,10 +57,8 @@ namespace KN_Core {
       var old = GUI.skin;
 
       GUI.skin = skin;
-
       bool res = GUI.Button(new Rect(x, y, width, height), text);
       x += width;
-
       GUI.skin = old;
 
       return res;
@@ -72,9 +68,7 @@ namespace KN_Core {
       var old = GUI.skin;
 
       GUI.skin = skin;
-
       bool res = GUI.Button(new Rect(x, y, width, height), "");
-
       GUI.skin = old;
 
       return res;
@@ -92,29 +86,11 @@ namespace KN_Core {
       return BaseButton(ref x, ref y, width, height, text, skin);
     }
 
-    public void Box1(float x, float y, float width, float height, string text, GUISkin skin) {
-      var old = GUI.skin;
-
-      GUI.skin = skin;
-
-      GUI.Box(new Rect(x, y, width, height), text);
-
-      GUI.skin = old;
-    }
-
-    public void Box1(float x, float y, float width, float height, GUISkin skin) {
-      Box(x, y, width, height, "", skin);
-    }
-
     public void Box(float x, float y, float width, float height, string text, GUISkin skin) {
-      EnsureTabsSize(x, y, width, height);
-
-      var oldColor = GUI.color;
       var old = GUI.skin;
+
       GUI.skin = skin;
-      GUI.color = Skin.ContainerAlpha;
       GUI.Box(new Rect(x, y, width, height), text);
-      GUI.color = oldColor;
       GUI.skin = old;
     }
 
@@ -122,6 +98,45 @@ namespace KN_Core {
       Box(x, y, width, height, "", skin);
     }
 
+    public void Line(float x, float y, float width, float height, Color color) {
+      var old = GUI.color;
+
+      GUI.color = color;
+      GUI.DrawTexture(new Rect(x, y, width, height), Texture2D.whiteTexture, ScaleMode.StretchToFill);
+      GUI.color = old;
+    }
+
+    public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text, GUISkin skin) {
+      var old = GUI.skin;
+      GUI.skin = skin;
+
+      float result = GUI.HorizontalSlider(new Rect(x, y, width, Height), value, low, high);
+
+      x += OffsetSmall;
+      GUI.Label(new Rect(x, y, width, Height), text);
+      x -= OffsetSmall;
+
+      y += Height + Offset;
+
+      GUI.skin = old;
+
+      if (Mathf.Abs(value - result) < 0.0001f) {
+        return false;
+      }
+
+      value = result;
+      return true;
+    }
+
+    public bool SliderH(ref float x, ref float y, ref float value, float low, float high, string text) {
+      return SliderH(ref x, ref y, Width, ref value, low, high, text, Skin.SliderSkin.Normal);
+    }
+
+    public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text) {
+      return SliderH(ref x, ref y, width, ref value, low, high, text, Skin.SliderSkin.Normal);
+    }
+
+    // old ----------------------------
     public void Tabs(ref float x, ref float y, string[] tabs, ref int selected) {
       TabsMaxWidth = MinTabsWidth;
       TabsMaxHeight = 0.0f;
@@ -275,13 +290,6 @@ namespace KN_Core {
       return Button(ref x, ref y, Width, Height, text, skin);
     }
 
-    public void Line(float x, float y, float width, float height, Color color) {
-      Color old = GUI.color;
-      GUI.color = color;
-      GUI.DrawTexture(new Rect(x, y, width, height), Texture2D.whiteTexture, ScaleMode.StretchToFill);
-      GUI.color = old;
-    }
-
     public void Label(ref float x, ref float y, float width, float height, string text) {
       var oldColor = GUI.color;
       var old = GUI.skin;
@@ -327,42 +335,6 @@ namespace KN_Core {
 
     public bool TextField(ref float x, ref float y, ref string text, string caption, int maxLength, string regex) {
       return TextField(ref x, ref y, Width, ref text, caption, maxLength, regex);
-    }
-
-    public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text, GUISkin skin) {
-      EnsureTabsSize(x, y, width, Height);
-
-      var oldColor = GUI.color;
-      var old = GUI.skin;
-      GUI.skin = skin;
-
-      GUI.color = Skin.ElementAlpha;
-      float result = GUI.HorizontalSlider(new Rect(x, y, width, Height), value, low, high);
-
-      x += OffsetSmall;
-      GUI.color = Skin.TextAlpha;
-      GUI.Label(new Rect(x, y, width, Height), text);
-      x -= OffsetSmall;
-
-      y += Height + OffsetY;
-
-      GUI.color = oldColor;
-      GUI.skin = old;
-
-      if (Mathf.Abs(value - result) < 0.0001f) {
-        return false;
-      }
-
-      value = result;
-      return true;
-    }
-
-    public bool SliderH(ref float x, ref float y, ref float value, float low, float high, string text) {
-      return SliderH(ref x, ref y, Width, ref value, low, high, text, Skin.Slider);
-    }
-
-    public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text) {
-      return SliderH(ref x, ref y, width, ref value, low, high, text, Skin.Slider);
     }
 
     private void EnsureTabsSize(float x, float y, float width, float height) {
