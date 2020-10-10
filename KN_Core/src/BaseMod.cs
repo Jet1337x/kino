@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using KN_Loader;
 using SyncMultiplayer;
 
 namespace KN_Core {
@@ -11,11 +14,11 @@ namespace KN_Core {
     public int ClientVersion { get; }
 
     public KnSkin Icon { get; }
+    public KnSkin Icon { get; private set; }
 
-    public BaseMod(Core core, string name, KnSkin icon, int id, int version, int patch, int clientVersion) {
+    public BaseMod(Core core, string name, int id, int version, int patch, int clientVersion) {
       Core = core;
       Name = name;
-      Icon = icon;
       Id = id;
       Version = version;
       Patch = patch;
@@ -51,5 +54,9 @@ namespace KN_Core {
     public virtual void OnUdpData(SmartfoxDataPackage data) { }
 
     public virtual void OnCarLoaded(KnCar car) { }
+
+    protected void SetIcon(KnSkin icon) {
+      Icon = icon;
+    }
   }
 }

@@ -282,11 +282,12 @@ namespace KN_Core {
     public static Font FontTach;
     public static Font FontGear;
 
-    public static KnSkin GearSkin;
     public static KnSkin PlusSkin;
 
     public static KnSkin ModPanelSkin;
     public static KnSkin ModPanelBackSkin;
+    public static KnSkin DummyIconSkin;
+    public static KnSkin GearSkin;
     public static KnSkin DiscordSkin;
 
     private static bool initialized_;
@@ -316,12 +317,6 @@ namespace KN_Core {
       FontTach = Font.CreateDynamicFontFromOSFont("Consolas Bold", 16);
       FontGear = Font.CreateDynamicFontFromOSFont("Consolas Bold", 32);
 
-      GearSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(new Color32(0x5d, 0x0f, 0xc6, 0xff)),
-        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xd6, 0xff)),
-        new KnSkin.SkinState(new Color32(0x31, 0xff, 0xff, 0xff)),
-        "GUI.gear.png", TextAnchor.MiddleCenter, FontLight);
-
       PlusSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
         new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
@@ -339,6 +334,18 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0x50, 0x50, 0x50, 0xff)),
         new KnSkin.SkinState(new Color32(0x65, 0x65, 0x65, 0xff)),
         "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+
+      DummyIconSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
+        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
+        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+
+      GearSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0x5d, 0x0f, 0xc6, 0xff)),
+        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xd6, 0xff)),
+        new KnSkin.SkinState(new Color32(0x31, 0xff, 0xff, 0xff)),
+        "GUI.gear.png", TextAnchor.MiddleCenter, FontLight);
 
       DiscordSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),

@@ -472,7 +472,8 @@ namespace KN_Core {
         }
 
         // actual mod icon
-        gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, selectedMod_ == i ? mods_[i].Icon.Active : mods_[i].Icon.Normal);
+        var icon = mods_[i].Icon ?? Skin.DummyIconSkin;
+        gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, selectedMod_ == i ? icon.Active : icon.Normal);
 
         y += Gui.ModIconSize;
       }
