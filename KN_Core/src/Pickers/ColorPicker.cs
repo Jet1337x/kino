@@ -32,11 +32,11 @@ namespace KN_Core {
 
     public void OnGui(Gui gui, ref float x, ref float y) {
       const float width = Gui.Width * 1.5f;
-      const float boxWidth = width + Gui.OffsetGuiX * 2.0f;
+      const float boxWidth = width + Gui.Offset * 2.0f;
 
-      float boxHeight = Gui.Height * 4.0f + Gui.OffsetY * 5.0f;
+      float boxHeight = Gui.Height * 4.0f + Gui.Offset * 5.0f;
       if (alpha_) {
-        boxHeight += Gui.Height + Gui.OffsetY;
+        boxHeight += Gui.Height + Gui.Offset;
       }
 
       float yBegin = y;
@@ -44,9 +44,9 @@ namespace KN_Core {
       gui.Box(x, y, boxWidth, Gui.Height, Locale.Get("cp_title"), Skin.BoxSkin.Normal);
       y += Gui.Height;
 
-      gui.Box(x, y, boxWidth, boxHeight, Skin.MainContainer);
-      y += Gui.OffsetY;
-      x += Gui.OffsetGuiX;
+      gui.Box(x, y, boxWidth, boxHeight, Skin.BoxSkin.Normal);
+      y += Gui.Offset;
+      x += Gui.Offset;
 
       float r = PickedColor.r;
       if (gui.SliderH(ref x, ref y, width, ref r, 0.0f, 1.0f, $"{Locale.Get("red")}: {r:F}")) {
@@ -75,7 +75,7 @@ namespace KN_Core {
         alpha_ = true;
       }
 
-      x += boxWidth + Gui.OffsetGuiX;
+      x += boxWidth + Gui.Offset;
       y = yBegin;
     }
   }

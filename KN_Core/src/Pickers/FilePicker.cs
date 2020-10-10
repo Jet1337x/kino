@@ -45,12 +45,12 @@ namespace KN_Core {
 
       float yBegin = y;
 
-      gui.Box(x, y, baseWidth + Gui.OffsetGuiX * 2.0f, Gui.Height, Locale.Get("fp_title"), Skin.BoxSkin.Normal);
+      gui.Box(x, y, baseWidth + Gui.Offset * 2.0f, Gui.Height, Locale.Get("fp_title"), Skin.BoxSkin.Normal);
       y += Gui.Height;
 
-      gui.Box(x, y, baseWidth + Gui.OffsetGuiX * 2.0f, filesBoxHeight_, Skin.MainContainer);
-      y += Gui.OffsetY;
-      x += Gui.OffsetGuiX;
+      gui.Box(x, y, baseWidth + Gui.Offset * 2.0f, filesBoxHeight_, Skin.BoxSkin.Normal);
+      y += Gui.Offset;
+      x += Gui.Offset;
 
       if (gui.TextButton(ref x, ref y, baseWidth, Gui.Height, Locale.Get("fp_refresh"), Skin.ButtonSkin.Normal)) {
         RefreshFiles();
@@ -64,17 +64,17 @@ namespace KN_Core {
       float width = scrollVisible ? baseWidthScroll - offset : baseWidthScroll + offset;
       foreach (string f in files_) {
         string file = Path.GetFileName(f);
-        sy += Gui.OffsetY;
+        sy += Gui.Offset;
         if (gui.TextButton(ref sx, ref sy, width, Gui.Height, $"{file}", Skin.ButtonSkin.Normal)) {
           PickedFile = f;
         }
-        sy -= Gui.OffsetY;
+        sy -= Gui.Offset;
       }
-      sy += Gui.OffsetY;
+      sy += Gui.Offset;
       filesListScrollH_ = gui.EndScrollV(ref x, ref y, sy);
 
-      filesBoxHeight_ = listHeight + Gui.Height * 2.0f + Gui.OffsetY * 3.0f;
-      x += baseWidth + Gui.OffsetGuiX;
+      filesBoxHeight_ = listHeight + Gui.Height * 2.0f + Gui.Offset * 3.0f;
+      x += baseWidth + Gui.Offset;
       y = yBegin;
     }
 

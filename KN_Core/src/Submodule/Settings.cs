@@ -147,7 +147,6 @@ namespace KN_Core {
 
       if (gui.TextButton(ref x, ref y, width, height, $"{Locale.Get("language")}: {Locale.CurrentLocale.ToUpper()}", Skin.ButtonSkin.Normal)) {
         Locale.SelectNextLocale();
-        Core.UpdateLanguage();
         Core.KnConfig.Set("locale", Locale.CurrentLocale);
       }
 
@@ -160,7 +159,7 @@ namespace KN_Core {
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
       if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hide_points"), RPoints ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         RPoints = !RPoints;
@@ -173,7 +172,7 @@ namespace KN_Core {
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !Core.IsInGarage;
@@ -195,7 +194,7 @@ namespace KN_Core {
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
       if (gui.TextButton(ref x, ref y, width, height, Locale.Get("white_smoke"), forceWhiteSmoke_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         forceWhiteSmoke_ = !forceWhiteSmoke_;
@@ -207,7 +206,7 @@ namespace KN_Core {
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
       GUI.enabled = !Core.IsCheatsEnabled && !Core.IsExtrasEnabled;
 
@@ -231,9 +230,9 @@ namespace KN_Core {
         x += width;
         y = yBegin;
 
-        x += Gui.OffsetGuiX;
-        gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
-        x += Gui.OffsetGuiX;
+        x += Gui.Offset;
+        gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.Offset * 2.0f, Skin.SeparatorColor);
+        x += Gui.Offset;
 
         Core.Swaps.OnGui(gui, ref x, ref y, width);
 

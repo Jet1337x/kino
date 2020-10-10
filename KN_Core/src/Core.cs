@@ -16,17 +16,14 @@ namespace KN_Core {
     public const int ClientVersion = 273;
     public const string StringVersion = "1.2.9";
 
-    private const float SoundReloadDistance = 70.0f;
+    public const float GuiStartX = 25.0f;
+    public const float GuiStartY = 25.0f;
 
-    private const float GuiXLeft = 25.0f;
-    private const float GuiYTop = 25.0f;
+    private const float SoundReloadDistance = 70.0f;
 
     //todo: calculate
     public readonly float DummyHeight = 400.0f;
     public readonly float DummyWidth = 500.0f;
-
-    public const float DummyGuiX = 800.0f;
-    public const float DummyGuiY = 25.0f;
 
     public static Core CoreInstance { get; private set; }
 
@@ -82,8 +79,6 @@ namespace KN_Core {
     private int prevSelectedMod_;
     private int selectedModId_;
 
-    private readonly List<string> tabs_;
-
     private bool soundReload_;
     private bool soundReloadNext_;
 
@@ -120,7 +115,6 @@ namespace KN_Core {
       gui_ = new Gui();
 
       mods_ = new List<BaseMod>();
-      tabs_ = new List<string>();
 
       CarPicker = new CarPicker();
       ColorPicker = new ColorPicker();
@@ -197,8 +191,6 @@ namespace KN_Core {
       CarPicker.OnCarLoaded += mod.OnCarLoaded;
       mods_.Sort((m0, m1) => m0.Id.CompareTo(m1.Id));
 
-      UpdateLanguage();
-
       Log.Write($"[KN_Core]: Mod {Locale.Get(mod.Name)} was added");
 
       mod.OnStart();
@@ -215,7 +207,6 @@ namespace KN_Core {
       CarPicker.OnCarLoaded -= mod.OnCarLoaded;
 
       mods_.Remove(mod);
-      UpdateLanguage();
 
       selectedMod_ = 0;
       selectedModId_ = mods_[selectedMod_].Id;
@@ -229,24 +220,10 @@ namespace KN_Core {
       }
     }
 
-    public void SwitchTab(int modId) {
-      for (int i = 0; i < mods_.Count; ++i) {
-        if (mods_[i].Id == modId) {
-          prevSelectedMod_ = selectedMod_;
-          selectedMod_ = i;
-          gui_.SelectedTab = i;
-
-          HandleTabSelection();
-          return;
-        }
-      }
-    }
-
     public void OnInit() {
       KnConfig.Read();
 
       Locale.Initialize(KnConfig.Get<string>("locale"));
-      UpdateLanguage();
 
       loader_.SaveUpdateLog = KnConfig.Get<bool>("save_updater_log");
 
@@ -406,38 +383,29 @@ namespace KN_Core {
         GuiUpdateWarn();
       }
 
-      float x = GuiYTop;
-      float y = GuiXLeft;
+      float x = GuiStartX;
+      float y = GuiStartY;
+
+      GuiVersion(ref x, ref y);
+      GuiContentBeginY = y;
 
       prevSelectedMod_ = selectedMod_;
-      gui_.Tabs(ref x, ref y, tabs_.ToArray(), ref selectedMod_);
+      GuiModPanel(ref x, ref y);
 
-      HandleTabSelection();
+      HandleModSelection();
 
-      // GuiContentBeginY = y;
+      GuiModContent(ref x);
 
-      // mods_[selectedMod_].OnGUI(selectedModId_, gui_, ref x, ref y);
+      // GuiTabsHeight = gui_.TabsMaxHeight;
+      // GuiTabsWidth = gui_.TabsMaxWidth;
 
-      gui_.EndTabs(ref x, ref y);
-      GuiTabsHeight = gui_.TabsMaxHeight;
-      GuiTabsWidth = gui_.TabsMaxWidth;
+      GuiInputLocked();
 
       if (badVersion_) {
         return;
       }
 
-
       GuiPickers();
-
-      float xx = DummyGuiX;
-      float yy = DummyGuiY;
-
-      GuiVersion(ref xx, ref yy);
-      GuiContentBeginY = yy;
-
-      GuiModPanel(ref xx, ref yy);
-      GuiModContent(ref xx);
-      GuiInputLocked();
     }
 
     private void GuiVersion(ref float x, ref float y) {
@@ -477,7 +445,7 @@ namespace KN_Core {
 
     private void GuiModContent(ref float x) {
       x += Gui.ModIconSize;
-      float y = GuiYTop;
+      float y = GuiStartY;
 
       gui_.Box(x, y, DummyWidth, DummyHeight + Gui.ModTabHeight, Skin.BackgroundSkin.Normal);
 
@@ -485,7 +453,7 @@ namespace KN_Core {
     }
 
     private void GuiInputLocked() {
-      float x = DummyGuiX;
+      float x = GuiStartX;
       float y = GuiContentBeginY + DummyHeight;
       gui_.TextButton(ref x, ref y, DummyWidth + Gui.ModIconSize, Gui.Height, Locale.Get("input_locked"), Skin.WarningSkin.Normal);
 
@@ -495,8 +463,8 @@ namespace KN_Core {
     }
 
     private void GuiPickers() {
-      float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;
-      float ty = GuiContentBeginY - Gui.OffsetY;
+      float tx = GuiStartX + GuiTabsWidth + Gui.Offset;
+      float ty = GuiContentBeginY - Gui.Offset;
 
       if (CarPicker.IsPicking) {
         CarPicker.OnGui(gui_, ref tx, ref ty);
@@ -525,8 +493,8 @@ namespace KN_Core {
         }
       }
       if (gui_.TextButton(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersionString}!\n" +
-                                                   $"{Locale.Get("outdated1")}\n" +
-                                                   $"{changelog}" + Locale.Get("outdated2"), Skin.ButtonSkin.Normal)) {
+                                                       $"{Locale.Get("outdated1")}\n" +
+                                                       $"{changelog}" + Locale.Get("outdated2"), Skin.ButtonSkin.Normal)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
     }
@@ -548,12 +516,11 @@ namespace KN_Core {
           CarPicker.Reset();
           ColorPicker.Reset();
           FilePicker.Reset();
-          mods_[prevSelectedMod_].ResetPickers();
         }
       }
     }
 
-    private void HandleTabSelection() {
+    private void HandleModSelection() {
       if (selectedMod_ != prevSelectedMod_) {
         CarPicker.Reset();
         ColorPicker.Reset();
@@ -582,13 +549,6 @@ namespace KN_Core {
       }
       if (ActiveCamera == null && MainCamera != null) {
         ActiveCamera = MainCamera.gameObject;
-      }
-    }
-
-    public void UpdateLanguage() {
-      tabs_.Clear();
-      foreach (var m in mods_) {
-        tabs_.Add(Locale.Get(m.Name));
       }
     }
 

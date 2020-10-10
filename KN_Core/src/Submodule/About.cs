@@ -65,13 +65,13 @@ namespace KN_Core {
       }
 
       if (y < Core.DummyHeight) {
-        float h = Core.DummyHeight - y + Gui.ModTabHeight + Core.DummyGuiY;
+        float h = Core.DummyHeight - y + Gui.ModTabHeight + Core.GuiStartY;
         gui.Box(x, y, width, h, Skin.BoxLeftSkin.Normal);
       }
     }
 
     private void GuiBadVersion(Gui gui, ref float x, ref float y, float width, float height) {
-      gui.Box(x, y, width, height, Locale.Get("about0v"), Skin.MainContainerRed);
+      gui.Box(x, y, width, height, Locale.Get("about0v"), Skin.BoxLeftSkin.Normal);
       y += height;
 
       gui.Box(x, y, width, height, Locale.Get("about1v"), Skin.BoxLeftSkin.Normal);
@@ -93,7 +93,7 @@ namespace KN_Core {
       y += height;
 
       if (y < Core.DummyHeight) {
-        float h = Core.DummyHeight - y + Gui.ModTabHeight + Core.DummyGuiY;
+        float h = Core.DummyHeight - y + Gui.ModTabHeight + Core.GuiStartY;
         gui.Box(x, y, width, h, Skin.BoxLeftSkin.Normal);
       }
     }

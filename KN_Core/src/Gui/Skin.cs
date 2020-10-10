@@ -3,14 +3,6 @@ using UnityEngine;
 
 namespace KN_Core {
   public static class Skin {
-    public static GUISkin MainContainer;
-    public static GUISkin MainContainerLeft;
-    public static GUISkin MainContainerRed;
-    private static Texture2D texMain_;
-
-    public static GUISkin OutlineDark;
-    private static Texture2D texOutlineDark_;
-
     private static Texture2D texTachBg_;
     private static Texture2D texTachOutline_;
     public static GUISkin TachBg;
@@ -20,46 +12,7 @@ namespace KN_Core {
     public static GUISkin TachFillRed;
     public static GUISkin TachOutline;
 
-    public static GUISkin ButtonTab;
-    public static GUISkin ButtonActiveTab;
-    private static Texture2D texButtonN_;
-    private static Texture2D texButtonH_;
-    private static Texture2D texButtonA_;
-    private static Texture2D texButtonAT_;
-    private static Texture2D texButtonAD_;
-    private static Texture2D texButtonD_;
-
-    public static GUISkin RedSkin;
-    private static Texture2D texRedButtonN_;
-    private static Texture2D texRedButtonH_;
-    private static Texture2D texRedButtonA_;
-
-    public static GUISkin TextField;
-    public static GUISkin Label;
-
-    public static GUISkin TimelineSliderLow;
-    public static GUISkin TimelineSliderMid;
-    public static GUISkin TimelineSliderHigh;
-    private static Texture2D texTimelineLow_;
-    private static Texture2D texTimelineMid_;
-    private static Texture2D texTimelineHigh_;
-
-    public static Color TextColor;
-    public static Color TextColorRed;
-    public static Color TextColorInv;
     public static Color SeparatorColor;
-
-    public static Color ContainerAlpha;
-    public static Color ContainerAlphaLow;
-    public static Color ElementAlpha;
-    public static Color TextAlpha;
-
-    public static Font FontVersion;
-
-    public static Font FontLight;
-    public static Font FontTabs;
-    public static Font FontTach;
-    public static Font FontGear;
 
     public static KnSkin PlusSkin;
 
@@ -79,6 +32,12 @@ namespace KN_Core {
     public static KnSkin ModTabSkin;
     public static KnSkin WarningSkin;
 
+    private static Font fontVersion_;
+    private static Font fontLight_;
+    private static Font fontTabs_;
+    private static Font fontTach_;
+    private static Font fontGear_;
+
     private static bool initialized_;
 
     public static void LoadAll() {
@@ -89,319 +48,138 @@ namespace KN_Core {
 
       Log.Write("[KN_Core::Skin]: Loading skin ...");
 
-      TextColor = new Color32(0x30, 0x30, 0x30, 0xff);
-      TextColorRed = new Color32(0xff, 0x30, 0x30, 0xff);
-      TextColorInv = new Color32(0xee, 0xee, 0xee, 0xff);
       SeparatorColor = new Color32(0xee, 0xee, 0xee, 0xff);
 
-      ContainerAlpha = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-      ContainerAlphaLow = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-      ElementAlpha = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-      TextAlpha = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+      fontVersion_ = Font.CreateDynamicFontFromOSFont("Consolas", 9);
+      fontTabs_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
+      fontLight_ = Font.CreateDynamicFontFromOSFont("Consolas", 12);
 
-      FontVersion = Font.CreateDynamicFontFromOSFont("Consolas", 9);
-      FontTabs = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
-      FontLight = Font.CreateDynamicFontFromOSFont("Consolas", 12);
-
-      FontTach = Font.CreateDynamicFontFromOSFont("Consolas Bold", 16);
-      FontGear = Font.CreateDynamicFontFromOSFont("Consolas Bold", 32);
+      fontTach_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 16);
+      fontGear_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 32);
 
       PlusSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
         new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.plus.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.plus.png", TextAnchor.MiddleCenter, fontLight_);
 
       ModPanelSkin = new KnSkin(KnSkin.Type.Box,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleLeft, FontVersion);
+        "GUI.base.png", TextAnchor.MiddleLeft, fontVersion_);
 
       ModPanelBackSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x00, 0x00, 0x00, 0x00)),
         new KnSkin.SkinState(new Color32(0x50, 0x50, 0x50, 0xff)),
         new KnSkin.SkinState(new Color32(0x65, 0x65, 0x65, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       DummyIconSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
         new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       GearSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x5d, 0x0f, 0xc6, 0xff)),
         new KnSkin.SkinState(new Color32(0x64, 0xff, 0xd6, 0xff)),
         new KnSkin.SkinState(new Color32(0x31, 0xff, 0xff, 0xff)),
-        "GUI.gear.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.gear.png", TextAnchor.MiddleCenter, fontLight_);
 
       DiscordSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
         new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.discord.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.discord.png", TextAnchor.MiddleCenter, fontLight_);
 
       ButtonSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x80, 0x80, 0x80, 0xff)),
         new KnSkin.SkinState(new Color32(0x43, 0x43, 0x43, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       BackgroundSkin = new KnSkin(KnSkin.Type.Box,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xa3)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xa3)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xa3)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       BoxLeftSkin = new KnSkin(KnSkin.Type.Box,
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleLeft, FontLight);
+        "GUI.base.png", TextAnchor.MiddleLeft, fontLight_);
 
       BoxSkin = new KnSkin(KnSkin.Type.Box,
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       ModTabSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontTabs);
+        "GUI.base.png", TextAnchor.MiddleCenter, fontTabs_);
 
       WarningSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
         new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
         new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       SliderSkin = new KnSkin(KnSkin.Type.Slider,
         new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff)),
         new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       ScrollSkin = new KnSkin(KnSkin.Type.Scroll,
         new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0xde, 0xde, 0xde, 0xff)),
         new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
-      MakeMainContainerStyle();
-      MakeButtonsStyle();
-      MakeTextFieldStyle();
-      MakeTimelineSlider();
       MakeTachStyle();
 
       Log.Write("[KN_Core::Skin]: Skin loaded");
     }
 
-    private static void MakeButtonsStyle() {
-      var color = new Color32(0x30, 0x30, 0x30, 0xff);
-      var colorActive = new Color32(0xee, 0xee, 0xee, 0xff);
-
-      texButtonN_ = Embedded.LoadEmbeddedTexture("ButtonNormal.png");
-      texButtonH_ = Embedded.LoadEmbeddedTexture("ButtonHover.png");
-      texButtonA_ = Embedded.LoadEmbeddedTexture("ButtonActive.png");
-      texButtonAT_ = Embedded.LoadEmbeddedTexture("Main.png");
-      texButtonAD_ = Embedded.LoadEmbeddedTexture("ButtonActiveDark.png");
-      texButtonD_ = Embedded.LoadEmbeddedTexture("ButtonDisabled.png");
-      texRedButtonN_ = Embedded.LoadEmbeddedTexture("RedButtonNormal.png");
-      texRedButtonH_ = Embedded.LoadEmbeddedTexture("RedButtonHover.png");
-      texRedButtonA_ = Embedded.LoadEmbeddedTexture("RedButtonActive.png");
-
-      ButtonTab = ScriptableObject.CreateInstance<GUISkin>();
-      ButtonTab.button.normal.textColor = color;
-      ButtonTab.button.normal.background = texButtonN_;
-      ButtonTab.button.hover.textColor = color;
-      ButtonTab.button.hover.background = texButtonH_;
-      ButtonTab.button.active.textColor = color;
-      ButtonTab.button.active.background = texButtonA_;
-      ButtonTab.button.alignment = TextAnchor.MiddleCenter;
-      ButtonTab.button.font = FontTabs;
-      ButtonTab.button.padding.top = -2;
-
-      ButtonActiveTab = ScriptableObject.CreateInstance<GUISkin>();
-      ButtonActiveTab.button.normal.background = texButtonAT_;
-      ButtonActiveTab.button.normal.textColor = TextColor;
-      ButtonActiveTab.button.hover.background = texButtonAT_;
-      ButtonActiveTab.button.hover.textColor = TextColor;
-      ButtonActiveTab.button.active.background = texButtonAT_;
-      ButtonActiveTab.button.active.textColor = TextColor;
-      ButtonActiveTab.button.alignment = TextAnchor.MiddleCenter;
-      ButtonActiveTab.button.font = FontTabs;
-
-      RedSkin = ScriptableObject.CreateInstance<GUISkin>();
-      RedSkin.button.normal.background = texRedButtonN_;
-      RedSkin.button.normal.textColor = colorActive;
-      RedSkin.button.hover.background = texRedButtonH_;
-      RedSkin.button.hover.textColor = colorActive;
-      RedSkin.button.active.background = texRedButtonA_;
-      RedSkin.button.active.textColor = colorActive;
-      RedSkin.button.alignment = TextAnchor.MiddleCenter;
-      RedSkin.button.font = FontLight;
-      RedSkin.button.padding.top = -1;
-      RedSkin.button.padding.right = -2;
-
-      RedSkin.horizontalSlider.normal.background = texRedButtonN_;
-      RedSkin.horizontalSlider.hover.background = texRedButtonN_;
-      RedSkin.horizontalSlider.active.background = texRedButtonN_;
-      RedSkin.horizontalSlider.fixedHeight = Gui.Height;
-      RedSkin.horizontalSliderThumb.normal.background = texMain_;
-      RedSkin.horizontalSliderThumb.hover.background = texMain_;
-      RedSkin.horizontalSliderThumb.active.background = texMain_;
-      RedSkin.horizontalSliderThumb.fixedWidth = Gui.WidthSlider;
-      RedSkin.horizontalSliderThumb.fixedHeight = Gui.Height;
-
-      RedSkin.label.normal.textColor = TextColor;
-      RedSkin.label.alignment = TextAnchor.MiddleCenter;
-      RedSkin.label.font = FontLight;
-    }
-
-    private static void MakeMainContainerStyle() {
-      texMain_ = Embedded.LoadEmbeddedTexture("Main.png");
-      MainContainer = ScriptableObject.CreateInstance<GUISkin>();
-      MainContainer.box.normal.background = texMain_;
-      MainContainer.box.normal.textColor = TextColor;
-      MainContainer.box.alignment = TextAnchor.MiddleCenter;
-      MainContainer.box.font = FontLight;
-
-      MainContainerLeft = ScriptableObject.CreateInstance<GUISkin>();
-      MainContainerLeft.box.normal.background = texMain_;
-      MainContainerLeft.box.normal.textColor = TextColor;
-      MainContainerLeft.box.alignment = TextAnchor.MiddleLeft;
-      MainContainerLeft.box.font = FontLight;
-      MainContainerLeft.box.padding = new RectOffset(5, 5, 0, 0);
-
-      MainContainerRed = ScriptableObject.CreateInstance<GUISkin>();
-      MainContainerRed.box.normal.background = texMain_;
-      MainContainerRed.box.normal.textColor = TextColorRed;
-      MainContainerRed.box.alignment = TextAnchor.MiddleLeft;
-      MainContainerRed.box.font = FontLight;
-      MainContainerRed.box.padding = new RectOffset(5, 5, 0, 0);
-
-      // texMainDark_ = Embedded.LoadEmbeddedTexture("MainDark.png");
-      // MainContainerDark = ScriptableObject.CreateInstance<GUISkin>();
-      // MainContainerDark.box.normal.background = texMainDark_;
-      // MainContainerDark.box.normal.textColor = TextColor;
-      // MainContainerDark.box.alignment = TextAnchor.MiddleCenter;
-      // MainContainerDark.box.font = FontLight;
-
-      texOutlineDark_ = Embedded.LoadEmbeddedTexture("OutlineDark.png");
-      texOutlineDark_.filterMode = FilterMode.Point;
-      OutlineDark = ScriptableObject.CreateInstance<GUISkin>();
-      OutlineDark.box.normal.background = texOutlineDark_;
-      OutlineDark.box.normal.textColor = TextColor;
-      OutlineDark.box.alignment = TextAnchor.UpperCenter;
-      OutlineDark.box.font = FontLight;
-      OutlineDark.box.border = new RectOffset(1, 1, 1, 1);
-    }
-
-    private static void MakeTextFieldStyle() {
-      TextField = ScriptableObject.CreateInstance<GUISkin>();
-      // TextField.textField.normal.background = texMainDark_; //white
-      TextField.textField.normal.textColor = TextColor;
-      TextField.textField.alignment = TextAnchor.MiddleCenter;
-      TextField.textField.fixedHeight = Gui.Height;
-      TextField.textField.fontSize = 13;
-      TextField.textField.font = FontLight;
-      TextField.textField.stretchHeight = false;
-      TextField.textField.stretchWidth = false;
-      TextField.textField.padding.bottom = 1;
-
-      TextField.label.normal.textColor = TextColor;
-      TextField.label.alignment = TextAnchor.MiddleCenter;
-      TextField.label.font = FontLight;
-
-      Label = ScriptableObject.CreateInstance<GUISkin>();
-      Label.label.normal.textColor = TextColor;
-      Label.label.alignment = TextAnchor.MiddleCenter;
-      Label.label.font = FontLight;
-    }
-
-    private static void MakeTimelineSlider() {
-      texTimelineLow_ = Embedded.LoadEmbeddedTexture("TimelineSliderLow.png");
-      texTimelineMid_ = Embedded.LoadEmbeddedTexture("TimelineSliderMid.png");
-      texTimelineHigh_ = Embedded.LoadEmbeddedTexture("TimelineSliderHigh.png");
-
-      TimelineSliderMid = ScriptableObject.CreateInstance<GUISkin>();
-      // TimelineSliderMid.horizontalSlider.normal.background = texMainDark_; //white
-      // TimelineSliderMid.horizontalSlider.hover.background = texMainDark_; //white
-      // TimelineSliderMid.horizontalSlider.active.background = texMainDark_; //white
-      TimelineSliderMid.horizontalSlider.fixedHeight = Gui.Height;
-      TimelineSliderMid.horizontalSliderThumb.normal.background = texTimelineMid_;
-      TimelineSliderMid.horizontalSliderThumb.hover.background = texTimelineMid_;
-      TimelineSliderMid.horizontalSliderThumb.active.background = texTimelineMid_;
-      TimelineSliderMid.horizontalSliderThumb.fixedWidth = Gui.WidthSlider;
-      TimelineSliderMid.horizontalSliderThumb.fixedHeight = Gui.Height;
-
-      TimelineSliderMid.label.normal.textColor = TextColor;
-      TimelineSliderMid.label.alignment = TextAnchor.MiddleCenter;
-      TimelineSliderMid.label.font = FontLight;
-
-      var bgTex = KnUtils.CreateTexture(Color.clear);
-
-      //low bound
-      TimelineSliderLow = ScriptableObject.CreateInstance<GUISkin>();
-      TimelineSliderLow.horizontalSlider.normal.background = bgTex;
-      TimelineSliderLow.horizontalSlider.hover.background = bgTex;
-      TimelineSliderLow.horizontalSlider.active.background = bgTex;
-      TimelineSliderLow.horizontalSlider.fixedHeight = Gui.HeightTimeline;
-      TimelineSliderLow.horizontalSliderThumb.normal.background = texTimelineLow_;
-      TimelineSliderLow.horizontalSliderThumb.hover.background = texTimelineLow_;
-      TimelineSliderLow.horizontalSliderThumb.active.background = texTimelineLow_;
-      TimelineSliderLow.horizontalSliderThumb.fixedWidth = Gui.WidthSlider;
-      TimelineSliderLow.horizontalSliderThumb.fixedHeight = Gui.Height * 1.5f;
-
-      //high bound
-      TimelineSliderHigh = ScriptableObject.CreateInstance<GUISkin>();
-      TimelineSliderHigh.horizontalSlider.normal.background = bgTex;
-      TimelineSliderHigh.horizontalSlider.hover.background = bgTex;
-      TimelineSliderHigh.horizontalSlider.active.background = bgTex;
-      TimelineSliderHigh.horizontalSlider.fixedHeight = Gui.HeightTimeline;
-      TimelineSliderHigh.horizontalSliderThumb.normal.background = texTimelineHigh_;
-      TimelineSliderHigh.horizontalSliderThumb.hover.background = texTimelineHigh_;
-      TimelineSliderHigh.horizontalSliderThumb.active.background = texTimelineHigh_;
-      TimelineSliderHigh.horizontalSliderThumb.fixedWidth = Gui.WidthSlider;
-      TimelineSliderHigh.horizontalSliderThumb.fixedHeight = Gui.Height * 1.5f;
-    }
 
     private static void MakeTachStyle() {
       texTachBg_ = Embedded.LoadEmbeddedTexture("TachBg.png");
 
       TachBg = ScriptableObject.CreateInstance<GUISkin>();
       TachBg.box.normal.background = texTachBg_;
-      TachBg.box.normal.textColor = TextColorInv;
+      // TachBg.box.normal.textColor = TextColorInv;
       TachBg.box.alignment = TextAnchor.MiddleRight;
-      TachBg.box.font = FontTach;
+      TachBg.box.font = fontTach_;
       TachBg.box.padding = new RectOffset(5, 5, 0, 5);
 
       TachGearBg = ScriptableObject.CreateInstance<GUISkin>();
       TachGearBg.box.normal.background = texTachBg_;
-      TachGearBg.box.normal.textColor = TextColorInv;
+      // TachGearBg.box.normal.textColor = TextColorInv;
       TachGearBg.box.alignment = TextAnchor.MiddleCenter;
-      TachGearBg.box.font = FontGear;
+      TachGearBg.box.font = fontGear_;
       TachGearBg.box.padding = new RectOffset(1, 0, 0, 8);
 
       TachRedBg = ScriptableObject.CreateInstance<GUISkin>();
-      TachRedBg.box.normal.background = texRedButtonA_;
+      // TachRedBg.box.normal.background = texRedButtonA_;
 
       TachFill = ScriptableObject.CreateInstance<GUISkin>();
       // TachFill.box.normal.background = texMainDark_; //white
 
       TachFillRed = ScriptableObject.CreateInstance<GUISkin>();
-      TachFillRed.box.normal.background = texRedButtonH_;
+      // TachFillRed.box.normal.background = texRedButtonH_;
 
       texTachOutline_ = Embedded.LoadEmbeddedTexture("TachoOutline.png");
       texTachOutline_.filterMode = FilterMode.Point;
       TachOutline = ScriptableObject.CreateInstance<GUISkin>();
       TachOutline.box.normal.background = texTachOutline_;
-      TachOutline.box.normal.textColor = TextColor;
+      // TachOutline.box.normal.textColor = TextColor;
       TachOutline.box.alignment = TextAnchor.UpperCenter;
-      TachOutline.box.font = FontLight;
+      TachOutline.box.font = fontLight_;
       TachOutline.box.border = new RectOffset(2, 2, 2, 2);
     }
   }
