@@ -62,6 +62,10 @@
         <Project>{ecb0dab8-34f5-4eb6-bcdc-67c7212a89ec}</Project>
         <Name>KN_Loader</Name>
       </ProjectReference>
+      <ProjectReference Include="..\KN_Visuals\KN_Visuals.csproj">
+        <Project>{5a2e3d60-d1d4-4cce-ab00-ce9c33a83551}</Project>
+        <Name>KN_Visuals</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
