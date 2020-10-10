@@ -5,8 +5,9 @@ namespace KN_Core {
   public class Gui {
     public const float MinTabsWidth = 520.0f;
 
-    public const float ModIconSize = 60.0f;
-    public const float ModTabHeight = 27.0f;
+    public const float ModIconSize = 50.0f;
+    public const float ModTabHeight = 25.0f;
+    public const float ButtonHeight = 20.0f;
 
     public const float Offset = 10.0f;
     public const float OffsetSmall = 5.0f;

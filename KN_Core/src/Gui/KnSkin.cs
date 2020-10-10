@@ -92,6 +92,8 @@ namespace KN_Core {
     }
 
     private void MakeBox() {
+      const int offset = 5;
+
       normal_.Load(texturePath_);
       hover_.Load(texturePath_);
       active_.Load(texturePath_);
@@ -104,7 +106,7 @@ namespace KN_Core {
       Normal.box.active.background = active_.Texture;
       Normal.box.alignment = alignment_;
       Normal.box.font = font_;
-      Normal.box.padding = new RectOffset(5, 5, 0, 0);
+      Normal.box.padding = new RectOffset(offset, offset, 0, 0);
 
       Active.box.normal.textColor = active_.TextColor;
       Active.box.normal.background = active_.Texture;
@@ -114,7 +116,7 @@ namespace KN_Core {
       Active.box.active.background = active_.Texture;
       Active.box.alignment = alignment_;
       Active.box.font = font_;
-      Normal.box.padding = new RectOffset(5, 5, 0, 0);
+      Normal.box.padding = new RectOffset(offset, offset, 0, 0);
     }
   }
 }

@@ -25,6 +25,9 @@ namespace KN_Core {
     public readonly float DummyHeight = 400.0f;
     public readonly float DummyWidth = 500.0f;
 
+    public const float DummyGuiX = 800.0f;
+    public const float DummyGuiY = 25.0f;
+
     public static Core CoreInstance { get; private set; }
 
     public float GuiContentBeginY { get; private set; }
@@ -428,7 +431,7 @@ namespace KN_Core {
 
       HandleTabSelection();
 
-      GuiContentBeginY = y;
+      // GuiContentBeginY = y;
 
       // mods_[selectedMod_].OnGUI(selectedModId_, gui_, ref x, ref y);
 
@@ -440,22 +443,22 @@ namespace KN_Core {
         return;
       }
 
-      float tx = GuiXLeft;
-      float ty = GuiContentBeginY + GuiTabsHeight - Gui.OffsetY;
-      gui_.Button(ref tx, ref ty, GuiTabsWidth, Gui.TabButtonHeight, Locale.Get("input_locked"), Skin.ButtonDummyRed);
 
       GuiPickers();
 
-      float xx = 800.0f;
-      float yy = GuiYTop;
+      float xx = DummyGuiX;
+      float yy = DummyGuiY;
 
       GuiVersion(ref xx, ref yy);
+      GuiContentBeginY = yy;
+
       GuiModPanel(ref xx, ref yy);
       GuiModContent(ref xx, ref yy);
+      GuiInputLocked();
     }
 
     private void GuiVersion(ref float x, ref float y) {
-      string versionText = $"Kino {StringVersion}\nPatch v{Patch}";
+      string versionText = $"Kino\nv{StringVersion}.{Patch}";
       gui_.Box1(x, y, Gui.ModIconSize, Gui.ModTabHeight, versionText, Skin.ModPanelSkin.Normal);
       y += Gui.ModTabHeight;
     }
@@ -494,6 +497,12 @@ namespace KN_Core {
       y = GuiYTop;
 
       mods_[selectedMod_].OnGUI(gui_, ref x, ref y);
+    }
+
+    private void GuiInputLocked() {
+      float x = DummyGuiX;
+      float y = GuiContentBeginY + DummyHeight;
+      gui_.TextButton(ref x, ref y, DummyWidth + Gui.ModIconSize, Gui.ButtonHeight, Locale.Get("input_locked"), Skin.WarningSkin.Normal);
     }
 
     private void GuiPickers() {

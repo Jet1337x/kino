@@ -84,6 +84,7 @@ namespace KN_Core {
     public static KnSkin DiscordSkin;
 
     public static KnSkin ModTabSkin;
+    public static KnSkin WarningSkin;
 
     private static bool initialized_;
 
@@ -107,8 +108,8 @@ namespace KN_Core {
 
       FontVersion = Font.CreateDynamicFontFromOSFont("Consolas", 9);
       FontTabs = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
-
       FontLight = Font.CreateDynamicFontFromOSFont("Consolas", 12);
+
       FontTach = Font.CreateDynamicFontFromOSFont("Consolas Bold", 16);
       FontGear = Font.CreateDynamicFontFromOSFont("Consolas Bold", 32);
 
@@ -151,8 +152,14 @@ namespace KN_Core {
       ModTabSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
-        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
+        new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
         "GUI.base.png", TextAnchor.MiddleCenter, FontTabs);
+
+      WarningSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
+        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
+        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
+        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
 
       MakeMainContainerStyle();
       MakeButtonsStyle();
