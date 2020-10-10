@@ -71,10 +71,11 @@ namespace KN_Core {
     private int carId_ = -1;
 
     private readonly List<BaseMod> mods_;
-    private readonly List<string> tabs_;
-    private int selectedTab_;
-    private int selectedTabPrev_;
+    private int selectedMod_;
+    private int prevSelectedMod_;
     private int selectedModId_;
+
+    private readonly List<string> tabs_;
 
     private bool soundReload_;
     private bool soundReloadNext_;
@@ -98,7 +99,7 @@ namespace KN_Core {
 #endif
 
       Embedded.Initialize();
-      
+
       Skin.LoadAll();
 
       shouldRequestTools_ = true;
@@ -195,7 +196,7 @@ namespace KN_Core {
 
       mod.OnStart();
 
-      selectedModId_ = mods_[selectedTab_].Id;
+      selectedModId_ = mods_[selectedMod_].Id;
     }
 
     public void RemoveMod(BaseMod mod) {
@@ -209,8 +210,8 @@ namespace KN_Core {
       mods_.Remove(mod);
       UpdateLanguage();
 
-      selectedTab_ = 0;
-      selectedModId_ = mods_[selectedTab_].Id;
+      selectedMod_ = 0;
+      selectedModId_ = mods_[selectedMod_].Id;
 
       Log.Write($"[KN_Core]: Mod {mod.Name} was removed");
     }
@@ -224,8 +225,8 @@ namespace KN_Core {
     public void SwitchTab(int modId) {
       for (int i = 0; i < mods_.Count; ++i) {
         if (mods_[i].Id == modId) {
-          selectedTabPrev_ = selectedTab_;
-          selectedTab_ = i;
+          prevSelectedMod_ = selectedMod_;
+          selectedMod_ = i;
           gui_.SelectedTab = i;
 
           HandleTabSelection();
@@ -323,8 +324,8 @@ namespace KN_Core {
         cameraRotation_ = Object.FindObjectOfType<CameraRotation>();
       }
 
-      bool captureInput = mods_[selectedTab_].WantsCaptureInput();
-      bool lockCameraRot = IsInGarage && mods_[selectedTab_].LockCameraRotation();
+      bool captureInput = mods_[selectedMod_].WantsCaptureInput();
+      bool lockCameraRot = IsInGarage && mods_[selectedMod_].LockCameraRotation();
 
       if (IsGuiEnabled && IsInGarage && cameraRotation_ != null && lockCameraRot) {
         cameraRotation_.Stop();
@@ -387,7 +388,7 @@ namespace KN_Core {
 
     public void OnGui() {
       if (!badVersion_) {
-        Settings.Tachometer.OnGui(mods_[selectedTab_].WantsHideUi());
+        Settings.Tachometer.OnGui(mods_[selectedMod_].WantsHideUi());
       }
 
       if (!IsGuiEnabled) {
@@ -412,20 +413,20 @@ namespace KN_Core {
       }
       x = tempX;
 
-      selectedTabPrev_ = selectedTab_;
-      gui_.Tabs(ref x, ref y, tabs_.ToArray(), ref selectedTab_);
+      prevSelectedMod_ = selectedMod_;
+      gui_.Tabs(ref x, ref y, tabs_.ToArray(), ref selectedMod_);
 
       if (forceSwitchTab) {
         gui_.SelectedTab = tabs_.Count - 1;
-        selectedTab_ = tabs_.Count - 1;
-        selectedTabPrev_ = 0;
+        selectedMod_ = tabs_.Count - 1;
+        prevSelectedMod_ = 0;
       }
 
       HandleTabSelection();
 
       GuiContentBeginY = y;
 
-      mods_[selectedTab_].OnGUI(selectedModId_, gui_, ref x, ref y);
+      mods_[selectedMod_].OnGUI(selectedModId_, gui_, ref x, ref y);
 
       gui_.EndTabs(ref x, ref y);
       GuiTabsHeight = gui_.TabsMaxHeight;
@@ -452,12 +453,15 @@ namespace KN_Core {
       float tx = x;
       float ty = y;
 
-      gui_.Box1(x, y, Gui.ModPanelWidth, 400.0f, Skin.ModPanelSkin.Normal);
-      x += Gui.Offset;
-      y += Gui.Offset;
+      gui_.Box1(x, y, Gui.ModIconSize, 400.0f, Skin.ModPanelSkin.Normal);
 
-      foreach (var mod in mods_) {
-        gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, mod.Icon.Normal);
+      for (int i = 0; i < mods_.Count; i++) {
+        if (gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, mods_[i].Icon.Normal)) {
+          prevSelectedMod_ = selectedMod_;
+          selectedMod_ = i;
+          selectedModId_ = mods_[i].Id;
+        }
+        y += Gui.ModIconSize;
       }
 
       // float xx = 1000.0f;
@@ -525,18 +529,18 @@ namespace KN_Core {
           CarPicker.Reset();
           ColorPicker.Reset();
           FilePicker.Reset();
-          mods_[selectedTabPrev_].ResetPickers();
+          mods_[prevSelectedMod_].ResetPickers();
         }
       }
     }
 
     private void HandleTabSelection() {
-      if (selectedTab_ != selectedTabPrev_) {
+      if (selectedMod_ != prevSelectedMod_) {
         CarPicker.Reset();
         ColorPicker.Reset();
         FilePicker.Reset();
-        mods_[selectedTabPrev_].ResetState();
-        selectedModId_ = mods_[selectedTab_].Id;
+        mods_[prevSelectedMod_].ResetState();
+        selectedModId_ = mods_[selectedMod_].Id;
       }
     }
 

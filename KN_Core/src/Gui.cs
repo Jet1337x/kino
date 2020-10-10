@@ -5,8 +5,7 @@ namespace KN_Core {
   public class Gui {
     public const float MinTabsWidth = 520.0f;
 
-    public const float ModPanelWidth = 60.0f;
-    public const float ModIconSize = 40.0f;
+    public const float ModIconSize = 60.0f;
 
     public const float Offset = 10.0f;
     public const float OffsetSmall = 5.0f;
@@ -55,12 +54,20 @@ namespace KN_Core {
       return res;
     }
 
-    public bool ImageButton(ref float x, ref float y, GUISkin skin) {
-      return ImageButton(ref x, ref y, IconSize, IconSize, skin);
+    public bool ImageButton(ref float x, ref float y, float width, float height, GUISkin skin) {
+      var old = GUI.skin;
+
+      GUI.skin = skin;
+
+      bool res = GUI.Button(new Rect(x, y, width, height), "");
+
+      GUI.skin = old;
+
+      return res;
     }
 
-    public bool ImageButton(ref float x, ref float y, float width, float height, GUISkin skin) {
-      return BaseButton(ref x, ref y, width, height, "", skin);
+    public bool ImageButton(ref float x, ref float y, GUISkin skin) {
+      return ImageButton(ref x, ref y, IconSize, IconSize, skin);
     }
 
     public bool TextButton(ref float x, ref float y, string text, GUISkin skin) {
