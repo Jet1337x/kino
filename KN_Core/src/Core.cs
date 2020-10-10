@@ -445,8 +445,15 @@ namespace KN_Core {
       float xx = 800.0f;
       float yy = GuiYTop;
 
+      GuiVersion(ref xx, ref yy);
       GuiModPanel(ref xx, ref yy);
       GuiModContent(ref xx, ref yy);
+    }
+
+    private void GuiVersion(ref float x, ref float y) {
+      string versionText = $"Kino {StringVersion}\nPatch v{Patch}";
+      gui_.Box1(x, y, Gui.ModIconSize, Gui.ModTabHeight, versionText, Skin.ModPanelSkin.Normal);
+      y += Gui.ModTabHeight;
     }
 
     private void GuiModPanel(ref float x, ref float y) {

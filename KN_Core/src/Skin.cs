@@ -275,6 +275,8 @@ namespace KN_Core {
     public static Color ElementAlpha;
     public static Color TextAlpha;
 
+    public static Font FontVersion;
+
     public static Font FontLight;
     public static Font FontTabs;
     public static Font FontTach;
@@ -305,6 +307,8 @@ namespace KN_Core {
       ElementAlpha = new Color(1.0f, 1.0f, 1.0f, 1.0f);
       TextAlpha = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
+      FontVersion = Font.CreateDynamicFontFromOSFont("Consolas", 9);
+
       FontTabs = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
       FontLight = Font.CreateDynamicFontFromOSFont("Consolas", 12);
       FontTach = Font.CreateDynamicFontFromOSFont("Consolas Bold", 16);
@@ -323,10 +327,10 @@ namespace KN_Core {
         "GUI.plus.png", TextAnchor.MiddleCenter, FontLight);
 
       ModPanelSkin = new KnSkin(KnSkin.Type.Box,
-        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff)),
-        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff)),
-        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
+        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff),new Color32(0x90, 0x90, 0x90, 0xff)),
+        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff),new Color32(0x90, 0x90, 0x90, 0xff)),
+        new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff),new Color32(0x90, 0x90, 0x90, 0xff)),
+        "GUI.base.png", TextAnchor.MiddleLeft, FontVersion);
 
       ModPanelBackSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x00, 0x00, 0x00, 0x00)),

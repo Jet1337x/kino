@@ -6,6 +6,7 @@ namespace KN_Core {
     public const float MinTabsWidth = 520.0f;
 
     public const float ModIconSize = 60.0f;
+    public const float ModTabHeight = 30.0f;
 
     public const float Offset = 10.0f;
     public const float OffsetSmall = 5.0f;
