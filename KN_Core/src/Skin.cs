@@ -1,3 +1,4 @@
+using KN_Loader;
 using UnityEngine;
 
 namespace KN_Core {
@@ -55,6 +56,10 @@ namespace KN_Core {
           MakeButton();
           break;
         }
+        case Type.Box: {
+          MakeBox();
+          break;
+        }
       }
     }
 
@@ -80,6 +85,32 @@ namespace KN_Core {
       Active.button.active.background = active_.Texture;
       Active.button.alignment = alignment_;
       Active.button.font = font_;
+    }
+
+    private void MakeBox() {
+      normal_.Load(texturePath_);
+      hover_.Load(texturePath_);
+      active_.Load(texturePath_);
+
+      Normal.box.normal.textColor = normal_.TextColor;
+      Normal.box.normal.background = normal_.Texture;
+      Normal.box.hover.textColor = hover_.TextColor;
+      Normal.box.hover.background = hover_.Texture;
+      Normal.box.active.textColor = active_.TextColor;
+      Normal.box.active.background = active_.Texture;
+      Normal.box.alignment = alignment_;
+      Normal.box.font = font_;
+      Normal.box.padding = new RectOffset(5, 5, 0, 0);
+
+      Active.box.normal.textColor = active_.TextColor;
+      Active.box.normal.background = active_.Texture;
+      Active.box.hover.textColor = active_.TextColor;
+      Active.box.hover.background = active_.Texture;
+      Active.box.active.textColor = active_.TextColor;
+      Active.box.active.background = active_.Texture;
+      Active.box.alignment = alignment_;
+      Active.box.font = font_;
+      Normal.box.padding = new RectOffset(5, 5, 0, 0);
     }
   }
 
@@ -244,9 +275,9 @@ namespace KN_Core {
     public static Font FontTach;
     public static Font FontGear;
 
-    public static KnSkin TestSkin;
     public static KnSkin GearSkin;
     public static KnSkin PlusSkin;
+    public static KnSkin ModPanelSkin;
 
     private static bool initialized_;
 
@@ -256,26 +287,22 @@ namespace KN_Core {
       }
       initialized_ = true;
 
+      Log.Write("[KN_Core::Skin]: Loading skin ...");
+
       TextColor = new Color32(0x30, 0x30, 0x30, 0xff);
       TextColorRed = new Color32(0xff, 0x30, 0x30, 0xff);
       TextColorInv = new Color32(0xee, 0xee, 0xee, 0xff);
       SeparatorColor = new Color32(0xee, 0xee, 0xee, 0xff);
 
-      ContainerAlpha = new Color(1.0f, 1.0f, 1.0f, 0.7f);
-      ContainerAlphaLow = new Color(1.0f, 1.0f, 1.0f, 0.95f);
-      ElementAlpha = new Color(1.0f, 1.0f, 1.0f, 0.95f);
+      ContainerAlpha = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+      ContainerAlphaLow = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+      ElementAlpha = new Color(1.0f, 1.0f, 1.0f, 1.0f);
       TextAlpha = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
       FontTabs = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
       FontLight = Font.CreateDynamicFontFromOSFont("Consolas", 12);
       FontTach = Font.CreateDynamicFontFromOSFont("Consolas Bold", 16);
       FontGear = Font.CreateDynamicFontFromOSFont("Consolas Bold", 32);
-
-      TestSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(new Color32(0x30, 0x30, 0x30, 0xff), new Color32(0x5d, 0x8f, 0xc6, 0xff)),
-        new KnSkin.SkinState(new Color32(0x30, 0x30, 0x30, 0xff), new Color32(0x64, 0x9a, 0xd6, 0xff)),
-        new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0x31, 0x57, 0x81, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
 
       GearSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x30, 0x30, 0x30, 0xff), new Color32(0x5d, 0x0f, 0xc6, 0xff)),
@@ -288,6 +315,12 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0x30, 0x30, 0x30, 0xff), new Color32(0x64, 0xff, 0xee, 0xff)),
         new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
         "GUI.plus.png", TextAnchor.MiddleCenter, FontLight);
+
+      ModPanelSkin = new KnSkin(KnSkin.Type.Box,
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff), new Color32(0x33, 0x33, 0x33, 0xff)),
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff), new Color32(0x33, 0x33, 0x33, 0xff)),
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff), new Color32(0x33, 0x33, 0x33, 0xff)),
+        "GUI.base.png", TextAnchor.MiddleCenter, FontLight);
 
       LoadButtonTex(out texCamN_, out texCamH_, out texCamA_, out IconCam, out IconCamActive, "Camera");
       LoadButtonTex(out texAnimN_, out texAnimH_, out texAnimA_, out IconAnim, out IconAnimActive, "Animation");
@@ -314,6 +347,8 @@ namespace KN_Core {
       MakeTextFieldStyle();
       MakeTimelineSlider();
       MakeTachStyle();
+
+      Log.Write("[KN_Core::Skin]: Skin loaded");
     }
 
     private static void LoadButtonTex(out Texture2D normal, out Texture2D hover, out Texture2D active, out GUISkin skin, out GUISkin skinActive, string name) {

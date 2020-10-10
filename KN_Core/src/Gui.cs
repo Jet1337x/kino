@@ -5,6 +5,12 @@ namespace KN_Core {
   public class Gui {
     public const float MinTabsWidth = 520.0f;
 
+    public const float ModPanelWidth = 60.0f;
+    public const float ModIconSize = 40.0f;
+
+    public const float Offset = 10.0f;
+    public const float OffsetSmall = 5.0f;
+
     public const float Width = 160.0f;
     public const float WidthScroll = 140.0f;
     public const float WidthSlider = 16.0f;
@@ -19,7 +25,6 @@ namespace KN_Core {
 
     public const float OffsetY = 10.0f;
     public const float OffsetGuiX = 10.0f;
-    public const float OffsetSmall = 5.0f;
     public const float OffsetScrollArea = 8.0f;
 
     public int SelectedTab { get; set; }
@@ -38,16 +43,13 @@ namespace KN_Core {
     public float TabsMaxHeight { get; private set; }
 
     public bool BaseButton(ref float x, ref float y, float width, float height, string text, GUISkin skin) {
-      var oldColor = GUI.color;
       var old = GUI.skin;
 
       GUI.skin = skin;
-      GUI.color = Skin.ElementAlpha;
 
       bool res = GUI.Button(new Rect(x, y, width, height), text);
       y += height + OffsetY;
 
-      GUI.color = oldColor;
       GUI.skin = old;
 
       return res;
@@ -67,6 +69,20 @@ namespace KN_Core {
 
     public bool TextButton(ref float x, ref float y, float width, float height, string text, GUISkin skin) {
       return BaseButton(ref x, ref y, width, height, text, skin);
+    }
+
+    public void Box1(float x, float y, float width, float height, string text, GUISkin skin) {
+      var old = GUI.skin;
+
+      GUI.skin = skin;
+
+      GUI.Box(new Rect(x, y, width, height), text);
+
+      GUI.skin = old;
+    }
+
+    public void Box1(float x, float y, float width, float height, GUISkin skin) {
+      Box(x, y, width, height, "", skin);
     }
 
     public void Box(float x, float y, float width, float height, string text, GUISkin skin) {

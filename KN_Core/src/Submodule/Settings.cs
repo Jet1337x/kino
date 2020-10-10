@@ -55,7 +55,8 @@ namespace KN_Core {
 
     private bool forceWhiteSmoke_;
 
-    public Settings(Core core, int version, int patch, int clientVersion) : base(core, "settings", int.MaxValue - 1, version, patch, clientVersion) {
+    public Settings(Core core, int version, int patch, int clientVersion) :
+      base(core, "settings", Skin.GearSkin, int.MaxValue - 1, version, patch, clientVersion) {
       exhaust_ = new Exhaust(core);
       Tachometer = new Tachometer(core);
       disableConsoles_ = new DisableConsoles(Core);

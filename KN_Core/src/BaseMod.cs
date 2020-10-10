@@ -10,9 +10,12 @@ namespace KN_Core {
     public int Patch { get; }
     public int ClientVersion { get; }
 
-    public BaseMod(Core core, string name, int id, int version, int patch, int clientVersion) {
+    public KnSkin Icon { get; }
+
+    public BaseMod(Core core, string name, KnSkin icon, int id, int version, int patch, int clientVersion) {
       Core = core;
       Name = name;
+      Icon = icon;
       Id = id;
       Version = version;
       Patch = patch;

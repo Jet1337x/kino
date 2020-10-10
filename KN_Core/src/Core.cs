@@ -98,6 +98,8 @@ namespace KN_Core {
 #endif
 
       Embedded.Initialize();
+      
+      Skin.LoadAll();
 
       shouldRequestTools_ = true;
 
@@ -234,7 +236,6 @@ namespace KN_Core {
 
     public void OnInit() {
       KnConfig.Read();
-      Skin.LoadAll();
 
       Locale.Initialize(KnConfig.Get<string>("locale"));
       UpdateLanguage();
@@ -393,13 +394,6 @@ namespace KN_Core {
         return;
       }
 
-      float xx = 1000.0f;
-      float yy = 600.0f;
-
-      gui_.TextButton(ref xx, ref yy, "TEST BUTTON", Skin.TestSkin.Normal);
-      gui_.ImageButton(ref xx, ref yy, 60.0f, 60.0f, Skin.GearSkin.Normal);
-      gui_.ImageButton(ref xx, ref yy, 60.0f, 60.0f, Skin.PlusSkin.Normal);
-
       if (badVersion_ || newPatch_ || loader_.ShowUpdateWarn || loader_.NewPatch) {
         GuiUpdateWarn();
       }
@@ -446,7 +440,36 @@ namespace KN_Core {
       gui_.Button(ref tx, ref ty, GuiTabsWidth, Gui.TabButtonHeight, Locale.Get("input_locked"), Skin.ButtonDummyRed);
 
       GuiPickers();
+
+      float xx = 800.0f;
+      float yy = GuiYTop;
+
+      GuiModPanel(ref xx, ref yy);
+      GuiModContent(ref xx, ref yy);
     }
+
+    private void GuiModPanel(ref float x, ref float y) {
+      float tx = x;
+      float ty = y;
+
+      gui_.Box1(x, y, Gui.ModPanelWidth, 400.0f, Skin.ModPanelSkin.Normal);
+      x += Gui.Offset;
+      y += Gui.Offset;
+
+      foreach (var mod in mods_) {
+        gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, mod.Icon.Normal);
+      }
+
+      // float xx = 1000.0f;
+      // float yy = 600.0f;
+      //
+      // gui_.TextButton(ref xx, ref yy, "TEST BUTTON", Skin.TestSkin.Normal);
+      // gui_.ImageButton(ref xx, ref yy, 60.0f, 60.0f, Skin.GearSkin.Normal);
+      // gui_.ImageButton(ref xx, ref yy, 60.0f, 60.0f, Skin.PlusSkin.Normal);
+
+    }
+
+    private void GuiModContent(ref float x, ref float y) { }
 
     private void GuiPickers() {
       float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;

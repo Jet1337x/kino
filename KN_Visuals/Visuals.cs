@@ -32,7 +32,8 @@ namespace KN_Visuals {
     private Livery livery_;
 #endif
 
-    public Visuals(Core core, int version, int patch, int clientVersion) : base(core, "visuals", 3, version, patch, clientVersion) { }
+    public Visuals(Core core, int version, int patch, int clientVersion) :
+      base(core, "visuals", Skin.PlusSkin, 3, version, patch, clientVersion) { }
 
     public override void ResetState() {
       liveryCamEnabled_ = false;

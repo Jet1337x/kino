@@ -7,7 +7,8 @@ namespace KN_Maps {
     private readonly SafeFlyMod fly_;
     private readonly MapList mapList_;
 
-    public Maps(Core core, int version, int patch, int clientVersion) : base(core, "maps", 4, version, patch, clientVersion) {
+    public Maps(Core core, int version, int patch, int clientVersion) :
+      base(core, "maps", Skin.PlusSkin, 4, version, patch, clientVersion) {
       fly_ = new SafeFlyMod(core);
 
       mapList_ = new MapList();
