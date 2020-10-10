@@ -105,7 +105,9 @@
         <Compile Include="src\Components\Tachometer.cs" />
         <Compile Include="src\Controls.cs" />
         <Compile Include="src\Embedded.cs" />
-        <Compile Include="src\Gui.cs" />
+        <Compile Include="src\Gui\Gui.cs" />
+        <Compile Include="src\Gui\KnSkin.cs" />
+        <Compile Include="src\Gui\Skin.cs" />
         <Compile Include="src\ISerializable.cs" />
         <Compile Include="src\KnConfig.cs" />
         <Compile Include="src\Loader.cs" />
@@ -113,7 +115,6 @@
         <Compile Include="src\Pickers\CarPicker.cs" />
         <Compile Include="src\Pickers\ColorPicker.cs" />
         <Compile Include="src\Pickers\FilePicker.cs" />
-        <Compile Include="src\Skin.cs" />
         <Compile Include="src\Timer.cs" />
         <Compile Include="src\Udp.cs" />
         <Compile Include="src\Core.cs" />

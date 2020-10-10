@@ -2,123 +2,6 @@ using KN_Loader;
 using UnityEngine;
 
 namespace KN_Core {
-  public class KnSkin {
-    public enum Type {
-      Button,
-      Box
-    }
-
-    public class SkinState {
-      public Color32 TextColor { get; }
-      public Texture2D Texture { get; private set; }
-
-      private readonly Color32 elementColor_;
-
-      public SkinState(Color32 elementColor) {
-        TextColor = new Color32(0xff, 0xff, 0xff, 0xff);
-        elementColor_ = elementColor;
-      }
-
-      public SkinState(Color32 elementColor, Color32 textColor) {
-        TextColor = textColor;
-        elementColor_ = elementColor;
-      }
-
-      public void Load(string texturePath) {
-        Texture = Embedded.LoadEmbeddedTexture(texturePath, elementColor_);
-      }
-    }
-
-    public GUISkin Normal { get; }
-    public GUISkin Active { get; }
-
-    private readonly SkinState normal_;
-    private readonly SkinState hover_;
-    private readonly SkinState active_;
-
-    private readonly string texturePath_;
-
-    private readonly Type type_;
-    private readonly TextAnchor alignment_;
-    private readonly Font font_;
-
-    public KnSkin(Type type, SkinState normal, SkinState hover, SkinState active, string texturePath, TextAnchor alignment, Font font) {
-      Normal = ScriptableObject.CreateInstance<GUISkin>();
-      Active = ScriptableObject.CreateInstance<GUISkin>();
-
-      type_ = type;
-
-      normal_ = normal;
-      hover_ = hover;
-      active_ = active;
-
-      texturePath_ = texturePath;
-      alignment_ = alignment;
-      font_ = font;
-
-      switch (type_) {
-        case Type.Button: {
-          MakeButton();
-          break;
-        }
-        case Type.Box: {
-          MakeBox();
-          break;
-        }
-      }
-    }
-
-    private void MakeButton() {
-      normal_.Load(texturePath_);
-      hover_.Load(texturePath_);
-      active_.Load(texturePath_);
-
-      Normal.button.normal.textColor = normal_.TextColor;
-      Normal.button.normal.background = normal_.Texture;
-      Normal.button.hover.textColor = hover_.TextColor;
-      Normal.button.hover.background = hover_.Texture;
-      Normal.button.active.textColor = active_.TextColor;
-      Normal.button.active.background = active_.Texture;
-      Normal.button.alignment = alignment_;
-      Normal.button.font = font_;
-
-      Active.button.normal.textColor = active_.TextColor;
-      Active.button.normal.background = active_.Texture;
-      Active.button.hover.textColor = active_.TextColor;
-      Active.button.hover.background = active_.Texture;
-      Active.button.active.textColor = active_.TextColor;
-      Active.button.active.background = active_.Texture;
-      Active.button.alignment = alignment_;
-      Active.button.font = font_;
-    }
-
-    private void MakeBox() {
-      normal_.Load(texturePath_);
-      hover_.Load(texturePath_);
-      active_.Load(texturePath_);
-
-      Normal.box.normal.textColor = normal_.TextColor;
-      Normal.box.normal.background = normal_.Texture;
-      Normal.box.hover.textColor = hover_.TextColor;
-      Normal.box.hover.background = hover_.Texture;
-      Normal.box.active.textColor = active_.TextColor;
-      Normal.box.active.background = active_.Texture;
-      Normal.box.alignment = alignment_;
-      Normal.box.font = font_;
-      Normal.box.padding = new RectOffset(5, 5, 0, 0);
-
-      Active.box.normal.textColor = active_.TextColor;
-      Active.box.normal.background = active_.Texture;
-      Active.box.hover.textColor = active_.TextColor;
-      Active.box.hover.background = active_.Texture;
-      Active.box.active.textColor = active_.TextColor;
-      Active.box.active.background = active_.Texture;
-      Active.box.alignment = alignment_;
-      Active.box.font = font_;
-      Normal.box.padding = new RectOffset(5, 5, 0, 0);
-    }
-  }
-
   public static class Skin {
     public static GUISkin MainContainer;
     public static GUISkin MainContainerLeft;
@@ -139,96 +22,6 @@ namespace KN_Core {
     public static GUISkin TachFill;
     public static GUISkin TachFillRed;
     public static GUISkin TachOutline;
-
-    public static GUISkin IconCam;
-    public static GUISkin IconCamActive;
-    private static Texture2D texCamN_;
-    private static Texture2D texCamH_;
-    private static Texture2D texCamA_;
-
-    public static GUISkin IconAnim;
-    public static GUISkin IconAnimActive;
-    private static Texture2D texAnimN_;
-    private static Texture2D texAnimH_;
-    private static Texture2D texAnimA_;
-
-    public static GUISkin IconReplay;
-    public static GUISkin IconReplayActive;
-    private static Texture2D texReplayN_;
-    private static Texture2D texReplayH_;
-    private static Texture2D texReplayA_;
-
-    public static GUISkin IconPlayPause;
-    public static GUISkin IconPlayPauseActive;
-    private static Texture2D texPPN_;
-    private static Texture2D texPPH_;
-    private static Texture2D texPPA_;
-
-    public static GUISkin IconStop;
-    public static GUISkin IconStopActive;
-    private static Texture2D texStopN_;
-    private static Texture2D texStopH_;
-    private static Texture2D texStopA_;
-
-    public static GUISkin IconSpeedLeft;
-    public static GUISkin IconSpeedLeftActive;
-    private static Texture2D texSpdLN_;
-    private static Texture2D texSpdLH_;
-    private static Texture2D texSpdLA_;
-
-    public static GUISkin IconSpeedRight;
-    public static GUISkin IconSpeedRightActive;
-    private static Texture2D texSpdRN_;
-    private static Texture2D texSpdRH_;
-    private static Texture2D texSpdRA_;
-
-    public static GUISkin IconKeyframe;
-    public static GUISkin IconKeyframeActive;
-    private static Texture2D texKeyframeN_;
-    private static Texture2D texKeyframeH_;
-    private static Texture2D texKeyframeA_;
-
-    public static GUISkin IconGear;
-    public static GUISkin IconGearActive;
-    private static Texture2D texGearN_;
-    private static Texture2D texGearH_;
-    private static Texture2D texGearA_;
-
-    public static GUISkin IconLoop;
-    public static GUISkin IconLoopActive;
-    private static Texture2D texLoopN_;
-    private static Texture2D texLoopH_;
-    private static Texture2D texLoopA_;
-
-    public static GUISkin IconMinus;
-    public static GUISkin IconMinusActive;
-    private static Texture2D texMinusN_;
-    private static Texture2D texMinusH_;
-    private static Texture2D texMinusA_;
-
-    public static GUISkin IconPlus;
-    public static GUISkin IconPlusActive;
-    private static Texture2D texPlusN_;
-    private static Texture2D texPlusH_;
-    private static Texture2D texPlusA_;
-
-    public static GUISkin IconSun;
-    public static GUISkin IconSunActive;
-    private static Texture2D texSunN_;
-    private static Texture2D texSunH_;
-    private static Texture2D texSunA_;
-
-    public static GUISkin IconHeadlights;
-    public static GUISkin IconHeadlightsActive;
-    private static Texture2D texHeadlightsN_;
-    private static Texture2D texHeadlightsH_;
-    private static Texture2D texHeadlightsA_;
-
-    public static GUISkin IconProjector;
-    public static GUISkin IconProjectorActive;
-    private static Texture2D texProjectorN_;
-    private static Texture2D texProjectorH_;
-    private static Texture2D texProjectorA_;
 
     public static GUISkin Button;
     public static GUISkin ButtonActive;
@@ -353,23 +146,6 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
         "GUI.discord.png", TextAnchor.MiddleCenter, FontLight);
 
-      LoadButtonTex(out texCamN_, out texCamH_, out texCamA_, out IconCam, out IconCamActive, "Camera");
-      LoadButtonTex(out texAnimN_, out texAnimH_, out texAnimA_, out IconAnim, out IconAnimActive, "Animation");
-      LoadButtonTex(out texReplayN_, out texReplayH_, out texReplayA_, out IconReplay, out IconReplayActive, "Replay");
-
-      LoadButtonTex(out texPPN_, out texPPH_, out texPPA_, out IconPlayPause, out IconPlayPauseActive, "PlayPause");
-      LoadButtonTex(out texStopN_, out texStopH_, out texStopA_, out IconStop, out IconStopActive, "Stop");
-      LoadButtonTex(out texSpdLN_, out texSpdLH_, out texSpdLA_, out IconSpeedLeft, out IconSpeedLeftActive, "SpeedLeft");
-      LoadButtonTex(out texSpdRN_, out texSpdRH_, out texSpdRA_, out IconSpeedRight, out IconSpeedRightActive, "SpeedRight");
-      LoadButtonTex(out texKeyframeN_, out texKeyframeH_, out texKeyframeA_, out IconKeyframe, out IconKeyframeActive, "Keyframe");
-      LoadButtonTex(out texGearN_, out texGearH_, out texGearA_, out IconGear, out IconGearActive, "Gear");
-      LoadButtonTex(out texLoopN_, out texLoopH_, out texLoopA_, out IconLoop, out IconLoopActive, "Loop");
-      LoadButtonTex(out texMinusN_, out texMinusH_, out texMinusA_, out IconMinus, out IconMinusActive, "Minus");
-      LoadButtonTex(out texPlusN_, out texPlusH_, out texPlusA_, out IconPlus, out IconPlusActive, "Plus");
-
-      LoadButtonTex(out texSunN_, out texSunH_, out texSunA_, out IconSun, out IconSunActive, "Sunlight");
-      LoadButtonTex(out texHeadlightsN_, out texHeadlightsH_, out texHeadlightsA_, out IconHeadlights, out IconHeadlightsActive, "Headlights");
-      LoadButtonTex(out texProjectorN_, out texProjectorH_, out texProjectorA_, out IconProjector, out IconProjectorActive, "Projector");
 
       MakeMainContainerStyle();
       MakeButtonsStyle();
@@ -380,22 +156,6 @@ namespace KN_Core {
       MakeTachStyle();
 
       Log.Write("[KN_Core::Skin]: Skin loaded");
-    }
-
-    private static void LoadButtonTex(out Texture2D normal, out Texture2D hover, out Texture2D active, out GUISkin skin, out GUISkin skinActive, string name) {
-      normal = Embedded.LoadEmbeddedTexture(name + "Normal.png");
-      hover = Embedded.LoadEmbeddedTexture(name + "Hover.png");
-      active = Embedded.LoadEmbeddedTexture(name + "Active.png");
-
-      skin = ScriptableObject.CreateInstance<GUISkin>();
-      skin.button.normal.background = normal;
-      skin.button.hover.background = hover;
-      skin.button.active.background = active;
-
-      skinActive = ScriptableObject.CreateInstance<GUISkin>();
-      skinActive.button.normal.background = active;
-      skinActive.button.hover.background = active;
-      skinActive.button.active.background = active;
     }
 
     private static void MakeButtonsStyle() {
