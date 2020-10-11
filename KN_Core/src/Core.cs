@@ -501,14 +501,18 @@ namespace KN_Core {
       }
     }
 
+    public void ResetPickers() {
+      CarPicker.Reset();
+      ColorPicker.Reset();
+      FilePicker.Reset();
+    }
+
     private void GuiRenderCheck() {
       if (Controls.KeyDown("gui")) {
         IsGuiEnabled = !IsGuiEnabled;
 
         if (!badVersion_) {
-          CarPicker.Reset();
-          ColorPicker.Reset();
-          FilePicker.Reset();
+          ResetPickers();
         }
       }
     }
@@ -517,9 +521,7 @@ namespace KN_Core {
       if (selectedMod_ != prevSelectedMod_) {
         gui_.ResetSize();
 
-        CarPicker.Reset();
-        ColorPicker.Reset();
-        FilePicker.Reset();
+        ResetPickers();
         mods_[prevSelectedMod_].ResetState();
         selectedModId_ = mods_[selectedMod_].Id;
       }

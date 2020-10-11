@@ -38,8 +38,11 @@ namespace KN_Core {
     }
 
     public void ResetSize() {
-      MaxContentWidth = MinModWidth + ModIconSize;
-      MaxContentHeight = MinModHeight + ModTabHeight;
+      width_ = MinModWidth + ModIconSize;
+      height_ = MinModHeight + ModTabHeight;
+
+      MaxContentWidth = width_;
+      MaxContentHeight = height_;
     }
 
     public void Begin(float x, float y) {
