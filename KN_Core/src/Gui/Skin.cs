@@ -37,7 +37,6 @@ namespace KN_Core {
     public static KnSkin BackgroundSkin;
     public static KnSkin BoxLeftSkin;
     public static KnSkin BoxSkin;
-    public static KnSkin OutlineSkin;
 
     public static KnSkin ModTabSkin;
     public static KnSkin WarningSkin;
@@ -123,12 +122,6 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         "base.png", TextAnchor.MiddleCenter, fontLight_);
-
-      OutlineSkin = new KnSkin(KnSkin.Type.Box,
-        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
-        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
-        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
-        "outline.png", TextAnchor.MiddleCenter, fontLight_);
 
       ModTabSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
