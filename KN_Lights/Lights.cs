@@ -50,6 +50,7 @@ namespace KN_Lights {
       SetIcon(Skin.LightsSkin);
       AddTab("car_lights", OnGui);
       AddTab("world_lights", worldLights_.OnGui);
+      SetInfoLink("https://github.com/trbflxr/kino");
 
       settings_ = core.Settings;
 

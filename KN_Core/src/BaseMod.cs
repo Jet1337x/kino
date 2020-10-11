@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using KN_Loader;
 using SyncMultiplayer;
 
@@ -25,8 +26,12 @@ namespace KN_Core {
 
     public KnSkin Icon { get; private set; }
 
+    public string InfoLink { get; private set; }
+
     public int SelectedTab { get; protected set; }
     public int PrevSelectedTab { get; protected set; }
+
+    private bool hasInfoLink_;
 
     private readonly List<ModTab> tabs_;
 
@@ -37,6 +42,8 @@ namespace KN_Core {
       Version = version;
       Patch = patch;
       ClientVersion = clientVersion;
+      InfoLink = string.Empty;
+      hasInfoLink_ = false;
 
       tabs_ = new List<ModTab>(1);
       SelectedTab = 0;
@@ -52,9 +59,16 @@ namespace KN_Core {
         return;
       }
 
+      const float infoSize = Gui.ModTabHeight;
+
+      float contentWidth = gui.MaxContentWidth;
+      if (hasInfoLink_) {
+        contentWidth -= infoSize;
+      }
+
       // tabs bar
       float tx = x;
-      float tabWidth = gui.MaxContentWidth / tabs_.Count;
+      float tabWidth = contentWidth / tabs_.Count;
       for (int i = 0; i < tabs_.Count; ++i) {
         if (gui.TabButton(ref x, ref y, tabWidth, Gui.ModTabHeight, Locale.Get(tabs_[i].Name), i == SelectedTab ? Skin.ModTabSkin.Active : Skin.ModTabSkin.Normal)) {
           Core.ResetPickers();
@@ -63,8 +77,23 @@ namespace KN_Core {
 
           PrevSelectedTab = SelectedTab;
           SelectedTab = i;
-          break;
+          return;
         }
+      }
+
+      // info
+      if (hasInfoLink_) {
+        float width = infoSize;
+        if (tabs_.Count % 2 == 0) {
+          width += 1.0f;
+          x -= 1.0f;
+        }
+
+        if (gui.TabButton(ref x, ref y, width, infoSize, "", Skin.HelpBackSkin.Normal)) {
+          Process.Start(InfoLink);
+        }
+        x -= width;
+        gui.ImageButton(ref x, ref y, width, infoSize, Skin.HelpSkin.Normal);
       }
       x = tx + Gui.Offset;
       y += Gui.ModTabHeight + Gui.Offset;
@@ -106,6 +135,11 @@ namespace KN_Core {
 
     protected void AddTab(string name, Func<Gui, float, float, bool> onGui) {
       tabs_.Add(new ModTab(name, onGui));
+    }
+
+    protected void SetInfoLink(string link) {
+      hasInfoLink_ = link != string.Empty;
+      InfoLink = link;
     }
   }
 }

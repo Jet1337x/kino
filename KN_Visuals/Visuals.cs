@@ -36,6 +36,7 @@ namespace KN_Visuals {
     public Visuals(Core core, int version, int patch, int clientVersion) : base(core, "visuals", 3, version, patch, clientVersion) {
       SetIcon(Skin.VisualsSkin);
       AddTab("visuals", OnGui);
+      SetInfoLink("https://github.com/trbflxr/kino");
     }
 
     public override void ResetState() {

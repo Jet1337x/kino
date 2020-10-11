@@ -26,6 +26,9 @@ namespace KN_Core {
     public static KnSkin MapsSkin;
     public static KnSkin DiscordSkin;
 
+    public static KnSkin HelpSkin;
+    public static KnSkin HelpBackSkin;
+
     public static KnSkin ButtonSkin;
     public static KnSkin RedButtonSkin;
     public static KnSkin SliderSkin;
@@ -147,6 +150,18 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0xde, 0xde, 0xde, 0xff)),
         new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xff)),
+        "base.png", TextAnchor.MiddleCenter, fontLight_);
+
+      HelpSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xff)),
+        new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff)),
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
+        "help.png", TextAnchor.MiddleCenter, fontLight_);
+
+      HelpBackSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0x33, 0x63, 0xa4, 0xff)),
+        new KnSkin.SkinState(new Color32(0x33, 0x73, 0xa4, 0xff)),
+        new KnSkin.SkinState(new Color32(0x33, 0x93, 0xb4, 0xff)),
         "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       MakeTachStyle();

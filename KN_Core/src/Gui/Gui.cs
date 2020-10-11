@@ -272,7 +272,7 @@ namespace KN_Core {
       }
     }
 
-    private static int TextWidth(string text, Font font) {
+    public static int TextWidth(string text, Font font) {
       int width = 0;
       foreach (char c in text) {
         font.GetCharacterInfo(c, out var characterInfo, font.fontSize);
