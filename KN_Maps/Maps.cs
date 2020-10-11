@@ -7,8 +7,10 @@ namespace KN_Maps {
     private readonly SafeFlyMod fly_;
     private readonly MapList mapList_;
 
-    public Maps(Core core, int version, int patch, int clientVersion) :
-      base(core, "maps", Skin.PlusSkin, 4, version, patch, clientVersion) {
+    public Maps(Core core, int version, int patch, int clientVersion) : base(core, "maps", 4, version, patch, clientVersion) {
+      SetIcon(Skin.PlusSkin);
+      AddTab("maps", OnGui);
+
       fly_ = new SafeFlyMod(core);
 
       mapList_ = new MapList();
@@ -29,9 +31,7 @@ namespace KN_Maps {
 
     public override void ResetState() { }
 
-    public override void ResetPickers() { }
-
-    public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
+    private bool OnGui(Gui gui, float x, float y) {
       const float width = Gui.Width * 1.5f;
 
       float yBegin = y;
@@ -43,11 +43,13 @@ namespace KN_Maps {
       x += width;
       y = yBegin;
 
-      x += Gui.OffsetGuiX;
-      gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
-      x += Gui.OffsetGuiX;
+      x += Gui.Offset;
+      gui.Line(x, y, 1.0f, gui.MaxContentHeight - Gui.Offset * 2.0f, Skin.SeparatorColor);
+      x += Gui.Offset;
 
       mapList_.OnGui(gui, ref x, ref y);
+
+      return false;
     }
 
     public override void Update(int id) {
