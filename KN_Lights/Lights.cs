@@ -32,9 +32,6 @@ namespace KN_Lights {
     private float clListScrollH_;
     private Vector2 clListScroll_;
 
-    private bool hlTabActive_ = true;
-    private bool wlTabActive_;
-
     private float carLightsDiscard_;
 
     private bool autoAddLights_;
