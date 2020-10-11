@@ -252,6 +252,11 @@ namespace KN_Core {
       return ScrollViewButton(ref x, ref y, WidthScroll, Height, text, out delete, skin, deleteSkin);
     }
 
+    public void Dummy(float x, float y, float width, float height) {
+      y += height + Offset;
+      EnsureContentSize(x, y, width);
+    }
+
     private void EnsureContentSize(float x, float y, float width) {
       if (!begin_) {
         return;
