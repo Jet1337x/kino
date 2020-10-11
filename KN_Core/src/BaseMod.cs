@@ -59,6 +59,7 @@ namespace KN_Core {
         if (gui.TabButton(ref x, ref y, tabWidth, Gui.ModTabHeight, Locale.Get(tabs_[i].Name), i == SelectedTab ? Skin.ModTabSkin.Active : Skin.ModTabSkin.Normal)) {
           Core.ResetPickers();
           gui.ResetSize();
+          ResetTab();
 
           PrevSelectedTab = SelectedTab;
           SelectedTab = i;
@@ -79,6 +80,7 @@ namespace KN_Core {
     public virtual void FixedUpdate(int id) { }
 
     public virtual void ResetState() { }
+    public virtual void ResetTab() { }
 
     public virtual bool WantsCaptureInput() {
       return true;
