@@ -11,6 +11,7 @@ namespace KN_Core {
     public static GUISkin TachOutline;
 
     public static Color SeparatorColor;
+    public static Color WarnColor;
 
     public static KnSkin PlusSkin;
 
@@ -56,16 +57,11 @@ namespace KN_Core {
       Log.Write("[KN_Core::Skin]: Loading skin ...");
 
       SeparatorColor = new Color32(0xee, 0xee, 0xee, 0xff);
+      WarnColor = new Color32(0x9f, 0x40, 0x40, 0xff);
 
       fontVersion_ = Font.CreateDynamicFontFromOSFont("Consolas", 9);
       fontTabs_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
       fontLight_ = Font.CreateDynamicFontFromOSFont("Consolas", 12);
-
-      PlusSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
-        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
-        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.plus.png", TextAnchor.MiddleCenter, fontLight_);
 
       ModPanelSkin = new KnSkin(KnSkin.Type.Box,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
@@ -91,6 +87,12 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0x31, 0xff, 0xff, 0xff)),
         "GUI.gear.png", TextAnchor.MiddleCenter, fontLight_);
 
+      PlusSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
+        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
+        "GUI.plus.png", TextAnchor.MiddleCenter, fontLight_);
+
       DiscordSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
         new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
@@ -104,9 +106,9 @@ namespace KN_Core {
         "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       RedButtonSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xde, 0xde, 0xde, 0xed)),
-        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xde, 0xde, 0xde, 0xed)),
-        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
+        new KnSkin.SkinState(WarnColor, new Color32(0xde, 0xde, 0xde, 0xed)),
+        new KnSkin.SkinState(WarnColor, new Color32(0xde, 0xde, 0xde, 0xed)),
+        new KnSkin.SkinState(WarnColor, new Color32(0xff, 0xff, 0xff, 0xff)),
         "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       BackgroundSkin = new KnSkin(KnSkin.Type.Box,
@@ -134,9 +136,9 @@ namespace KN_Core {
         "GUI.base.png", TextAnchor.MiddleCenter, fontTabs_);
 
       WarningSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
-        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
-        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
+        new KnSkin.SkinState(WarnColor, new Color32(0xff, 0xff, 0xff, 0xff)),
+        new KnSkin.SkinState(WarnColor, new Color32(0xff, 0xff, 0xff, 0xff)),
+        new KnSkin.SkinState(WarnColor, new Color32(0xff, 0xff, 0xff, 0xff)),
         "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       SliderSkin = new KnSkin(KnSkin.Type.Slider,
