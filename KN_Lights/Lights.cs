@@ -10,6 +10,8 @@ namespace KN_Lights {
   public class Lights : BaseMod {
     public static Texture2D LightMask;
 
+    private const string HelpLink = "https://github.com/trbflxr/kino";
+
     private const string LightsConfigFile = "kn_lights.knl";
     private const string NwLightsConfigFile = "kn_nwlights.knl";
     private const string LightsConfigDefault = "kn_lights_default.knl";
@@ -50,7 +52,7 @@ namespace KN_Lights {
       SetIcon(Skin.LightsSkin);
       AddTab("car_lights", OnGui);
       AddTab("world_lights", worldLights_.OnGui);
-      SetInfoLink("https://github.com/trbflxr/kino");
+      SetInfoLink(HelpLink);
 
       settings_ = core.Settings;
 

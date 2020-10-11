@@ -3,6 +3,8 @@ using Object = UnityEngine.Object;
 
 namespace KN_Core {
   public class Settings : BaseMod {
+    private const string HelpLink = "https://github.com/trbflxr/kino";
+
     private bool rPoints_;
     public bool RPoints {
       get => rPoints_;
@@ -58,6 +60,7 @@ namespace KN_Core {
     public Settings(Core core, int version, int patch, int clientVersion) : base(core, "settings", int.MaxValue - 1, version, patch, clientVersion) {
       SetIcon(Skin.SettingsSkin);
       AddTab("settings", OnGui);
+      SetInfoLink(HelpLink);
 
       exhaust_ = new Exhaust(core);
       Tachometer = new Tachometer(core);

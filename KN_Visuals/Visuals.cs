@@ -11,6 +11,8 @@ using Object = UnityEngine.Object;
 
 namespace KN_Visuals {
   public class Visuals : BaseMod {
+    private const string HelpLink = "https://github.com/trbflxr/kino";
+
     private GamePrefs prefs_;
     private UIGarageContext garage_;
 
@@ -36,7 +38,7 @@ namespace KN_Visuals {
     public Visuals(Core core, int version, int patch, int clientVersion) : base(core, "visuals", 3, version, patch, clientVersion) {
       SetIcon(Skin.VisualsSkin);
       AddTab("visuals", OnGui);
-      SetInfoLink("https://github.com/trbflxr/kino");
+      SetInfoLink(HelpLink);
     }
 
     public override void ResetState() {
