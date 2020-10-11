@@ -5,6 +5,8 @@ namespace KN_Core {
     private const float MinModWidth = 520.0f;
     private const float MinModHeight = 340.0f;
 
+    public const float MinModTabWidth = 140.0f;
+
     public const float ModIconSize = 50.0f;
     public const float ModTabHeight = 25.0f;
     public const float Height = 20.0f;

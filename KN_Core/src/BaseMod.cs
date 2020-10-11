@@ -69,6 +69,7 @@ namespace KN_Core {
       // tabs bar
       float tx = x;
       float tabWidth = contentWidth / tabs_.Count;
+      tabWidth = tabWidth < Gui.MinModTabWidth ? Gui.MinModTabWidth : tabWidth;
       for (int i = 0; i < tabs_.Count; ++i) {
         if (gui.TabButton(ref x, ref y, tabWidth, Gui.ModTabHeight, Locale.Get(tabs_[i].Name), i == SelectedTab ? Skin.ModTabSkin.Active : Skin.ModTabSkin.Normal)) {
           Core.ResetPickers();
