@@ -3,8 +3,6 @@ using UnityEngine;
 
 namespace KN_Core {
   public static class Skin {
-    private static Texture2D texTachBg_;
-    private static Texture2D texTachOutline_;
     public static GUISkin TachBg;
     public static GUISkin TachRedBg;
     public static GUISkin TachGearBg;
@@ -39,6 +37,14 @@ namespace KN_Core {
     private static Font fontTach_;
     private static Font fontGear_;
 
+    private static Color tachTextColor_;
+    private static Color tachTextColorAlt_;
+    private static Texture2D texTach_;
+    private static Texture2D texTachBg_;
+    private static Texture2D texTachLimiter_;
+    private static Texture2D texTachLimiterBg_;
+    private static Texture2D texTachOutline_;
+
     private static bool initialized_;
 
     public static void LoadAll() {
@@ -54,9 +60,6 @@ namespace KN_Core {
       fontVersion_ = Font.CreateDynamicFontFromOSFont("Consolas", 9);
       fontTabs_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
       fontLight_ = Font.CreateDynamicFontFromOSFont("Consolas", 12);
-
-      fontTach_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 16);
-      fontGear_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 32);
 
       PlusSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
@@ -155,36 +158,45 @@ namespace KN_Core {
 
 
     private static void MakeTachStyle() {
-      texTachBg_ = Embedded.LoadEmbeddedTexture("TachBg.png");
+      tachTextColor_ = new Color32(0xee, 0xee, 0xee, 0xff);
+      tachTextColorAlt_ = new Color32(0x30, 0x30, 0x30, 0xff);
+
+      fontTach_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 16);
+      fontGear_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 32);
+
+      texTach_ = Embedded.LoadEmbeddedTexture("GUI.base.png", new Color32(0xff, 0xff, 0xff, 0xff));
+      texTachBg_ = Embedded.LoadEmbeddedTexture("GUI.base.png", new Color32(0x3b, 0x3b, 0x3b, 0xff));
+      texTachOutline_ = Embedded.LoadEmbeddedTexture("GUI.outline.png", new Color32(0x20, 0x20, 0x20, 0xff));
+      texTachLimiter_ = Embedded.LoadEmbeddedTexture("GUI.base.png", new Color32(0xd1, 0x06, 0x28, 0xff));
+      texTachLimiterBg_ = Embedded.LoadEmbeddedTexture("GUI.base.png", new Color32(0x8d, 0x09, 0x17, 0xff));
 
       TachBg = ScriptableObject.CreateInstance<GUISkin>();
       TachBg.box.normal.background = texTachBg_;
-      // TachBg.box.normal.textColor = TextColorInv;
+      TachBg.box.normal.textColor = tachTextColor_;
       TachBg.box.alignment = TextAnchor.MiddleRight;
       TachBg.box.font = fontTach_;
       TachBg.box.padding = new RectOffset(5, 5, 0, 5);
 
       TachGearBg = ScriptableObject.CreateInstance<GUISkin>();
       TachGearBg.box.normal.background = texTachBg_;
-      // TachGearBg.box.normal.textColor = TextColorInv;
+      TachGearBg.box.normal.textColor = tachTextColor_;
       TachGearBg.box.alignment = TextAnchor.MiddleCenter;
       TachGearBg.box.font = fontGear_;
       TachGearBg.box.padding = new RectOffset(1, 0, 0, 8);
 
       TachRedBg = ScriptableObject.CreateInstance<GUISkin>();
-      // TachRedBg.box.normal.background = texRedButtonA_;
+      TachRedBg.box.normal.background = texTachLimiterBg_;
 
       TachFill = ScriptableObject.CreateInstance<GUISkin>();
-      // TachFill.box.normal.background = texMainDark_; //white
+      TachFill.box.normal.background = texTach_;
 
       TachFillRed = ScriptableObject.CreateInstance<GUISkin>();
-      // TachFillRed.box.normal.background = texRedButtonH_;
+      TachFillRed.box.normal.background = texTachLimiter_;
 
-      texTachOutline_ = Embedded.LoadEmbeddedTexture("TachoOutline.png");
       texTachOutline_.filterMode = FilterMode.Point;
       TachOutline = ScriptableObject.CreateInstance<GUISkin>();
       TachOutline.box.normal.background = texTachOutline_;
-      // TachOutline.box.normal.textColor = TextColor;
+      TachOutline.box.normal.textColor = tachTextColorAlt_;
       TachOutline.box.alignment = TextAnchor.UpperCenter;
       TachOutline.box.font = fontLight_;
       TachOutline.box.border = new RectOffset(2, 2, 2, 2);
