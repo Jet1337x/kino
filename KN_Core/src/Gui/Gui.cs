@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace KN_Core {
   public class Gui {
-    public const float MinModWidth = 470.0f;
-    public const float MinModHeight = 300.0f;
+    private const float MinModWidth = 470.0f;
+    private const float MinModHeight = 340.0f;
 
     public const float ModIconSize = 50.0f;
     public const float ModTabHeight = 25.0f;
@@ -21,6 +21,8 @@ namespace KN_Core {
     public float MaxContentWidth { get; private set; }
     public float MaxContentHeight { get; private set; }
 
+    private float minModHeight_;
+
     private float scrollX_;
     private float scrollY_;
     private float scrollVisibleHeight_;
@@ -34,12 +36,23 @@ namespace KN_Core {
     private float height_;
 
     public Gui() {
+      minModHeight_ = MinModHeight;
+
       ResetSize();
+    }
+
+    public void UpdateMinModHeight(int modsCount) {
+      const int maxMods = (int) (MinModHeight / ModIconSize) - 1;
+
+      if (modsCount >= maxMods) {
+        int c = modsCount - maxMods + 1;
+        minModHeight_ = MinModHeight + ModIconSize * c;
+      }
     }
 
     public void ResetSize() {
       width_ = MinModWidth + ModIconSize;
-      height_ = MinModHeight + ModTabHeight;
+      height_ = minModHeight_ + ModTabHeight;
 
       MaxContentWidth = width_;
       MaxContentHeight = height_;
@@ -52,7 +65,7 @@ namespace KN_Core {
       y_ = y;
 
       width_ = MinModWidth + ModIconSize;
-      height_ = MinModHeight + ModTabHeight;
+      height_ = minModHeight_ + ModTabHeight;
     }
 
     public void End() {

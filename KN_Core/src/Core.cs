@@ -185,6 +185,8 @@ namespace KN_Core {
       CarPicker.OnCarLoaded += mod.OnCarLoaded;
       mods_.Sort((m0, m1) => m0.Id.CompareTo(m1.Id));
 
+      gui_.UpdateMinModHeight(mods_.Count);
+
       Log.Write($"[KN_Core]: Mod {Locale.Get(mod.Name)} was added");
 
       mod.OnStart();
