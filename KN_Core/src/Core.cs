@@ -418,7 +418,7 @@ namespace KN_Core {
 
       for (int i = 0; i < mods_.Count; i++) {
         // mod icon background
-        if (gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, selectedMod_ == i ? Skin.ModPanelBackSkin.Active : Skin.ModPanelBackSkin.Normal)) {
+        if (gui_.ImageButton(ref x, ref y, selectedMod_ == i ? Skin.ModPanelBackSkin.Active : Skin.ModPanelBackSkin.Normal)) {
           prevSelectedMod_ = selectedMod_;
           selectedMod_ = i;
           selectedModId_ = mods_[i].Id;
@@ -427,17 +427,17 @@ namespace KN_Core {
 
         // actual mod icon
         var icon = mods_[i].Icon ?? Skin.DummyIconSkin;
-        gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, selectedMod_ == i ? icon.Active : icon.Normal);
+        gui_.ImageButton(ref x, ref y, selectedMod_ == i ? icon.Active : icon.Normal);
 
         y += Gui.ModIconSize;
       }
 
       // bottom-most discord button
       y = gui_.MaxContentHeight - Gui.ModIconSize + ty;
-      if (gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, Skin.ModPanelBackSkin.Normal)) {
+      if (gui_.ImageButton(ref x, ref y, Skin.ModPanelBackSkin.Normal)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
-      gui_.ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, Skin.DiscordSkin.Normal);
+      gui_.ImageButton(ref x, ref y, Skin.DiscordSkin.Normal);
     }
 
     private void GuiModContent(ref float x) {

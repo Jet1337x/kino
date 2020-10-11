@@ -8,20 +8,18 @@ namespace KN_Core {
     public const float ModIconSize = 50.0f;
     public const float ModTabHeight = 25.0f;
     public const float Height = 20.0f;
+    public const float Width = 160.0f;
+    public const float WidthScroll = 140.0f;
     public const float ScrollBarWidth = 8.0f;
     public const float WidthSlider = 16.0f;
 
     public const float Offset = 10.0f;
     public const float OffsetSmall = 5.0f;
 
-    public const float Width = 160.0f;
-    public const float WidthScroll = 140.0f;
-    public const float IconSize = 40.0f;
+    public float ModHeight { get; private set; }
 
     public float MaxContentWidth { get; private set; }
     public float MaxContentHeight { get; private set; }
-
-    private float minModHeight_;
 
     private float scrollX_;
     private float scrollY_;
@@ -36,7 +34,7 @@ namespace KN_Core {
     private float height_;
 
     public Gui() {
-      minModHeight_ = MinModHeight;
+      ModHeight = MinModHeight;
 
       ResetSize();
     }
@@ -46,13 +44,13 @@ namespace KN_Core {
 
       if (modsCount >= maxMods) {
         int c = modsCount - maxMods + 1;
-        minModHeight_ = MinModHeight + ModIconSize * c;
+        ModHeight = MinModHeight + ModIconSize * c;
       }
     }
 
     public void ResetSize() {
       width_ = MinModWidth + ModIconSize;
-      height_ = minModHeight_ + ModTabHeight;
+      height_ = ModHeight + ModTabHeight;
 
       MaxContentWidth = width_;
       MaxContentHeight = height_;
@@ -65,7 +63,7 @@ namespace KN_Core {
       y_ = y;
 
       width_ = MinModWidth + ModIconSize;
-      height_ = minModHeight_ + ModTabHeight;
+      height_ = ModHeight + ModTabHeight;
     }
 
     public void End() {
@@ -111,7 +109,7 @@ namespace KN_Core {
     }
 
     public bool ImageButton(ref float x, ref float y, GUISkin skin) {
-      return ImageButton(ref x, ref y, IconSize, IconSize, skin);
+      return ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, skin);
     }
 
     public bool TextButton(ref float x, ref float y, string text, GUISkin skin) {
