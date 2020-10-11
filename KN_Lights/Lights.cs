@@ -460,7 +460,8 @@ namespace KN_Lights {
       }
 
       clListScrollH_ = gui.EndScrollV(ref x, ref y, sy);
-      y += Gui.OffsetSmall;
+
+      gui.Dummy(x, y, buttonWidth + Gui.Offset, 0.0f);
     }
 
     private void EnableLightsOn(KnCar car, bool select = true) {
