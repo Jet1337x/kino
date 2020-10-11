@@ -272,6 +272,24 @@ namespace KN_Core {
 
       GuiRenderCheck();
 
+      bool captureInput = mods_[selectedMod_].WantsCaptureInput();
+      bool lockCameraRot = IsInGarage && mods_[selectedMod_].LockCameraRotation();
+
+      if (IsGuiEnabled && IsInGarage && cameraRotation_ != null && lockCameraRot) {
+        cameraRotation_.Stop();
+      }
+
+      if (IsGuiEnabled && captureInput) {
+        if (InputManager.GetLockedInputObject() != loader_) {
+          InputManager.LockInput(loader_);
+        }
+      }
+      else {
+        if (InputManager.GetLockedInputObject() == loader_) {
+          InputManager.LockInput(null);
+        }
+      }
+
       if (badVersion_) {
         return;
       }
@@ -302,24 +320,6 @@ namespace KN_Core {
 
       if (IsInGarage && cameraRotation_ == null) {
         cameraRotation_ = Object.FindObjectOfType<CameraRotation>();
-      }
-
-      bool captureInput = mods_[selectedMod_].WantsCaptureInput();
-      bool lockCameraRot = IsInGarage && mods_[selectedMod_].LockCameraRotation();
-
-      if (IsGuiEnabled && IsInGarage && cameraRotation_ != null && lockCameraRot) {
-        cameraRotation_.Stop();
-      }
-
-      if (IsGuiEnabled && captureInput) {
-        if (InputManager.GetLockedInputObject() != loader_) {
-          InputManager.LockInput(loader_);
-        }
-      }
-      else {
-        if (InputManager.GetLockedInputObject() == loader_) {
-          InputManager.LockInput(null);
-        }
       }
 
       foreach (var mod in mods_) {
