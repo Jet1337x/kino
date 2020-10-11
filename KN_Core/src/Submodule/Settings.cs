@@ -56,7 +56,7 @@ namespace KN_Core {
     private bool forceWhiteSmoke_;
 
     public Settings(Core core, int version, int patch, int clientVersion) : base(core, "settings", int.MaxValue - 1, version, patch, clientVersion) {
-      SetIcon(Skin.GearSkin);
+      SetIcon(Skin.SettingsSkin);
       AddTab("settings", OnGui);
 
       exhaust_ = new Exhaust(core);

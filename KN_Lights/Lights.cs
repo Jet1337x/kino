@@ -47,7 +47,7 @@ namespace KN_Lights {
     public Lights(Core core, int version, int patch, int clientVersion) : base(core, "lights", 1, version, patch, clientVersion) {
       worldLights_ = new WorldLights(core);
 
-      SetIcon(Skin.PlusSkin);
+      SetIcon(Skin.LightsSkin);
       AddTab("car_lights", OnGui);
       AddTab("world_lights", worldLights_.OnGui);
 

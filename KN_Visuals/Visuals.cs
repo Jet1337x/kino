@@ -34,7 +34,7 @@ namespace KN_Visuals {
 #endif
 
     public Visuals(Core core, int version, int patch, int clientVersion) : base(core, "visuals", 3, version, patch, clientVersion) {
-      SetIcon(Skin.PlusSkin);
+      SetIcon(Skin.VisualsSkin);
       AddTab("visuals", OnGui);
     }
 

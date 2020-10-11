@@ -16,12 +16,14 @@ namespace KN_Core {
     public static Color SeparatorColor;
     public static Color WarnColor;
 
-    public static KnSkin PlusSkin;
-
     public static KnSkin ModPanelSkin;
     public static KnSkin ModPanelBackSkin;
-    public static KnSkin DummyIconSkin;
-    public static KnSkin GearSkin;
+    public static KnSkin PuzzleSkin;
+    public static KnSkin SettingsSkin;
+    public static KnSkin AboutSkin;
+    public static KnSkin VisualsSkin;
+    public static KnSkin LightsSkin;
+    public static KnSkin MapsSkin;
     public static KnSkin DiscordSkin;
 
     public static KnSkin ButtonSkin;
@@ -67,9 +69,12 @@ namespace KN_Core {
       fontTabs_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
       fontLight_ = Font.CreateDynamicFontFromOSFont("Consolas", 12);
 
-      DummyIconSkin = MakeModButton("base.png");
-      GearSkin = MakeModButton("gear.png");
-      PlusSkin = MakeModButton("plus.png");
+      PuzzleSkin = MakeModButton("puzzle.png");
+      SettingsSkin = MakeModButton("gear.png");
+      AboutSkin = MakeModButton("puzzle.png");
+      VisualsSkin = MakeModButton("puzzle.png");
+      LightsSkin = MakeModButton("puzzle.png");
+      MapsSkin = MakeModButton("puzzle.png");
       DiscordSkin = MakeModButton("discord.png");
 
       ModPanelSkin = new KnSkin(KnSkin.Type.Box,

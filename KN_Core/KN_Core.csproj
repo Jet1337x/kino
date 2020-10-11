@@ -210,9 +210,9 @@
     <ItemGroup>
         <EmbeddedResource Include="Resources\GUI\base.png" />
         <EmbeddedResource Include="Resources\GUI\outline.png" />
+        <EmbeddedResource Include="Resources\GUI\puzzle.png" />
         <EmbeddedResource Include="Resources\GUI\discord.png" />
         <EmbeddedResource Include="Resources\GUI\gear.png" />
-        <EmbeddedResource Include="Resources\GUI\plus.png" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\Locale\en.xml" />
