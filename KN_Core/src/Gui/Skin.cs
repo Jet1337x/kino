@@ -23,6 +23,7 @@ namespace KN_Core {
     public static KnSkin DiscordSkin;
 
     public static KnSkin ButtonSkin;
+    public static KnSkin RedButtonSkin;
     public static KnSkin SliderSkin;
     public static KnSkin ScrollSkin;
     public static KnSkin BackgroundSkin;
@@ -97,6 +98,12 @@ namespace KN_Core {
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x80, 0x80, 0x80, 0xff)),
         new KnSkin.SkinState(new Color32(0x43, 0x43, 0x43, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
+        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
+
+      RedButtonSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xde, 0xde, 0xde, 0xed)),
+        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xde, 0xde, 0xde, 0xed)),
+        new KnSkin.SkinState(new Color32(0x9f, 0x40, 0x40, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
         "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
 
       BackgroundSkin = new KnSkin(KnSkin.Type.Box,

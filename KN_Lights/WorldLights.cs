@@ -83,7 +83,7 @@ namespace KN_Lights {
       }
     }
 
-    public void OnGUI(Gui gui, ref float x, ref float y) {
+    public bool OnGui(Gui gui,  float x,  float y) {
       const float width = Gui.Width * 2.0f;
       const float height = Gui.Height;
 
@@ -95,12 +95,12 @@ namespace KN_Lights {
       bool staticSkyOk = staticSky_ != null;
       bool hdLightOk = sunLightHd_ != null;
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get(enabled_ ? "disable" : "enable"), enabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get(enabled_ ? "disable" : "enable"), enabled_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         ToggleLights();
       }
 
       GUI.enabled = fogOk && enabled_;
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("fog"), fogEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("fog"), fogEnabled_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         fogEnabled_ = !fogEnabled_;
         fog_.meanFreePath.Override(fogEnabled_ ? data_.FogDistance : fogDistanceDefault_);
         fog_.depthExtent.Override(fogEnabled_ ? data_.FogVolume : fogVolumeDefault_);
@@ -156,7 +156,7 @@ namespace KN_Lights {
       }
 
       GUI.enabled = enabled_;
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("reset_all"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("reset_all"), Skin.ButtonSkin.Normal)) {
         data_.FogDistance = fogDistanceDefault_;
         data_.FogVolume = fogVolumeDefault_;
         data_.SunBrightness = sunBrightnessDefault_;
@@ -169,6 +169,8 @@ namespace KN_Lights {
         enabled_ = false;
       }
       GUI.enabled = guiEnabled;
+
+      return false;
     }
 
     private void UpdateMap() {
