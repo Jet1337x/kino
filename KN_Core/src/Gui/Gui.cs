@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace KN_Core {
   public class Gui {
-    private const float MinModWidth = 470.0f;
+    private const float MinModWidth = 520.0f;
     private const float MinModHeight = 340.0f;
 
     public const float ModIconSize = 50.0f;
@@ -49,10 +49,10 @@ namespace KN_Core {
     }
 
     public void ResetSize() {
-      width_ = MinModWidth + ModIconSize;
+      width_ = MinModWidth + ModIconSize + Core.GuiStartX;
       height_ = ModHeight + ModTabHeight;
 
-      MaxContentWidth = width_;
+      MaxContentWidth = MinModWidth;
       MaxContentHeight = height_;
     }
 
@@ -62,7 +62,7 @@ namespace KN_Core {
       x_ = x;
       y_ = y;
 
-      width_ = MinModWidth + ModIconSize;
+      width_ = MinModWidth + ModIconSize + Core.GuiStartX;
       height_ = ModHeight + ModTabHeight;
     }
 

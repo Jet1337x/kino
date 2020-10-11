@@ -416,13 +416,15 @@ namespace KN_Core {
 
       gui_.Box(x, y, Gui.ModIconSize, gui_.MaxContentHeight, Skin.ModPanelSkin.Normal);
 
-      for (int i = 0; i < mods_.Count; i++) {
+      for (int i = 0; i < mods_.Count; ++i) {
         // mod icon background
         if (gui_.ImageButton(ref x, ref y, selectedMod_ == i ? Skin.ModPanelBackSkin.Active : Skin.ModPanelBackSkin.Normal)) {
+          gui_.ResetSize();
+
           prevSelectedMod_ = selectedMod_;
           selectedMod_ = i;
           selectedModId_ = mods_[i].Id;
-          break;
+          return;
         }
 
         // actual mod icon
