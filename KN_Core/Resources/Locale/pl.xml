@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="pl" author="Sleepy">
   <!--MODS (TABS)-->
+  <key id="lights" value="ŚWIATŁA"/>
   <key id="visuals" value="WIZUALNE"/>
   <key id="settings" value="USTAWIENIA"/>
   <key id="maps" value="MAPY"/>

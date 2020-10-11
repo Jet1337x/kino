@@ -3,6 +3,7 @@
   <!--MODS (TABS)-->
   <key id="car_lights" value="PHARES"/>
   <key id="world_lights" value="ÉCLAIRAGE"/>
+  <key id="lights" value="PHARES"/>
   <key id="visuals" value="KIT DÉCO"/>
   <key id="settings" value="RÉGLAGES"/>
   <key id="maps" value="MAPS"/>

@@ -3,6 +3,7 @@
   <!--MODS (TABS)-->
   <key id="car_lights" value="ФАРЫ"/>
   <key id="world_lights" value="ОСВЕЩЕНИЕ"/>
+  <key id="car_lights" value="ФАРЫ"/>
   <key id="visuals" value="ВИЗУАЛ"/>
   <key id="settings" value="НАСТРОЙКИ"/>
   <key id="maps" value="КАРТЫ"/>

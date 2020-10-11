@@ -3,6 +3,7 @@
   <!--MODS (TABS)-->
   <key id="car_lights" value="FARI DELL'AUTO"/>
   <key id="world_lights" value="LUCI DEL MONDO"/>
+  <key id="lights" value="LUCI"/>
   <key id="visuals" value="VISUALE"/>
   <key id="settings" value="OPZIONI"/>
   <key id="maps" value="MAPPE"/>

@@ -3,6 +3,7 @@
   <!--MODS (TABS)-->
   <key id="car_lights" value="CAR LIGHTS"/>
   <key id="world_lights" value="WORLD LIGHTING"/>
+  <key id="lights" value="LIGHTS"/>
   <key id="visuals" value="VISUALS"/>
   <key id="settings" value="SETTINGS"/>
   <key id="maps" value="MAPS"/>
