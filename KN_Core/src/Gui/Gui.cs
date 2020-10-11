@@ -202,10 +202,12 @@ namespace KN_Core {
     }
 
     public float EndScrollV(ref float x, ref float y, float contentY) {
-      y += scrollVisibleHeight_ + OffsetSmall;
+      y += scrollVisibleHeight_ + Offset;
       GUI.EndScrollView();
 
       x -= Offset;
+
+      EnsureContentSize(x, y, 0.0f);
 
       //content height
       return contentY - scrollY_;
