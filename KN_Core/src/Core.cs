@@ -489,7 +489,7 @@ namespace KN_Core {
       }
       if (gui_.TextButton(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersionString}!\n" +
                                                        $"{Locale.Get("outdated1")}\n" +
-                                                       $"{changelog}" + Locale.Get("outdated2"), Skin.ButtonSkin.Normal)) {
+                                                       $"{changelog}" + Locale.Get("outdated2"), Skin.WarningSkin.Normal)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
     }
