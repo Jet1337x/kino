@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="fr" author="Nawax">
   <!--MODS (TABS)-->
-  <key id="lights" value="PHARES"/>
+  <key id="car_lights" value="PHARES"/>
+  <key id="world_lights" value="ÉCLAIRAGE"/>
   <key id="visuals" value="KIT DÉCO"/>
   <key id="settings" value="RÉGLAGES"/>
   <key id="maps" value="MAPS"/>

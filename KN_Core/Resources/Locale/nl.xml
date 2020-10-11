@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="nl" author="Gingy Bread">
   <!--MODS (TABS)-->
-  <key id="lights" value="LICHTEN"/>
   <key id="visuals" value="VISUALS"/>
   <key id="settings" value="OPTIES"/>
   <key id="maps" value="MAPS"/>

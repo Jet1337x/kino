@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="jp" author="Allicy">
   <!--MODS (TABS)-->
-  <key id="lights" value="ライト"/>
   <key id="visuals" value="ビジュアル"/>
   <key id="settings" value="セッティング"/>
   <key id="maps" value="マップ"/>

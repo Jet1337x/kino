@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="ita" author="Ybubu">
   <!--MODS (TABS)-->
-  <key id="lights" value="LUCI"/>
+  <key id="car_lights" value="FARI DELL'AUTO"/>
+  <key id="world_lights" value="LUCI DEL MONDO"/>
   <key id="visuals" value="VISUALE"/>
   <key id="settings" value="OPZIONI"/>
   <key id="maps" value="MAPPE"/>

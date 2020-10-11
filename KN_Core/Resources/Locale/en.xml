@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="en" author="">
   <!--MODS (TABS)-->
-  <key id="lights" value="LIGHTS"/>
+  <key id="car_lights" value="CAR LIGHTS"/>
+  <key id="world_lights" value="WORLD LIGHTING"/>
   <key id="visuals" value="VISUALS"/>
   <key id="settings" value="SETTINGS"/>
   <key id="maps" value="MAPS"/>
