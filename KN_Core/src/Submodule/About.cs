@@ -64,13 +64,11 @@ namespace KN_Core {
         y += height;
       }
 
-      if (y < gui.MaxContentHeight) {
-        float h = gui.MaxContentHeight - y + Gui.ModTabHeight + Core.GuiStartY;
+      float mh = gui.MaxContentHeight > gui.ModHeight ? gui.MaxContentHeight : gui.ModHeight;
+      if (y < mh) {
+        float h = mh - y + Gui.ModTabHeight;
         gui.Box(x, y, width, h, Skin.BoxLeftSkin.Normal);
       }
-
-      // dummy
-      gui.Box(x, y, width, Gui.Offset, Skin.BoxLeftSkin.Normal);
     }
 
     private void GuiBadVersion(Gui gui, ref float x, ref float y, float width, float height) {
@@ -95,13 +93,11 @@ namespace KN_Core {
       gui.BoxAutoWidth(x, y, width, height, $"{Locale.Get("about6v")}: {ModLoader.ClientVersion}", Skin.BoxLeftSkin.Normal);
       y += height;
 
-      if (y < gui.MaxContentHeight) {
-        float h = gui.MaxContentHeight - y + Gui.ModTabHeight + Core.GuiStartY;
+      float mh = gui.MaxContentHeight > gui.ModHeight ? gui.MaxContentHeight : gui.ModHeight;
+      if (y < mh) {
+        float h = mh - y + Gui.ModTabHeight;
         gui.Box(x, y, width, h, Skin.BoxLeftSkin.Normal);
       }
-
-      // dummy
-      gui.Box(x, y, width, Gui.Offset, Skin.BoxLeftSkin.Normal);
     }
   }
 }
