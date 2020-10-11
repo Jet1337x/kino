@@ -1,8 +1,11 @@
+using System.Reflection;
 using KN_Loader;
 using UnityEngine;
 
 namespace KN_Core {
   public static class Skin {
+    public const string CoreGuiPath = "KN_Core.Resources.GUI";
+
     public static GUISkin TachBg;
     public static GUISkin TachRedBg;
     public static GUISkin TachGearBg;
@@ -63,101 +66,95 @@ namespace KN_Core {
       fontTabs_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
       fontLight_ = Font.CreateDynamicFontFromOSFont("Consolas", 12);
 
+      DummyIconSkin = MakeModButton("base.png");
+      GearSkin = MakeModButton("gear.png");
+      PlusSkin = MakeModButton("plus.png");
+      DiscordSkin = MakeModButton("discord.png");
+
       ModPanelSkin = new KnSkin(KnSkin.Type.Box,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleLeft, fontVersion_);
+        "base.png", TextAnchor.MiddleLeft, fontVersion_);
 
       ModPanelBackSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x00, 0x00, 0x00, 0x00)),
         new KnSkin.SkinState(new Color32(0x50, 0x50, 0x50, 0xff)),
         new KnSkin.SkinState(new Color32(0x65, 0x65, 0x65, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
-
-      DummyIconSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
-        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
-        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
-
-      GearSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(new Color32(0x5d, 0x0f, 0xc6, 0xff)),
-        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xd6, 0xff)),
-        new KnSkin.SkinState(new Color32(0x31, 0xff, 0xff, 0xff)),
-        "GUI.gear.png", TextAnchor.MiddleCenter, fontLight_);
-
-      PlusSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
-        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
-        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.plus.png", TextAnchor.MiddleCenter, fontLight_);
-
-      DiscordSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
-        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
-        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.discord.png", TextAnchor.MiddleCenter, fontLight_);
+        "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       ButtonSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x80, 0x80, 0x80, 0xff)),
         new KnSkin.SkinState(new Color32(0x43, 0x43, 0x43, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
+        "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       RedButtonSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(WarnColor, new Color32(0xde, 0xde, 0xde, 0xed)),
         new KnSkin.SkinState(WarnColor, new Color32(0xde, 0xde, 0xde, 0xed)),
         new KnSkin.SkinState(WarnColor, new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
+        "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       BackgroundSkin = new KnSkin(KnSkin.Type.Box,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xa3)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xa3)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xa3)),
-        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
+        "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       BoxLeftSkin = new KnSkin(KnSkin.Type.Box,
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleLeft, fontLight_);
+        "base.png", TextAnchor.MiddleLeft, fontLight_);
 
       BoxSkin = new KnSkin(KnSkin.Type.Box,
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xed), new Color32(0x15, 0x15, 0x15, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
+        "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       ModTabSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff), new Color32(0x90, 0x90, 0x90, 0xff)),
         new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff), new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, fontTabs_);
+        "base.png", TextAnchor.MiddleCenter, fontTabs_);
 
       WarningSkin = new KnSkin(KnSkin.Type.Button,
         new KnSkin.SkinState(WarnColor, new Color32(0xff, 0xff, 0xff, 0xff)),
         new KnSkin.SkinState(WarnColor, new Color32(0xff, 0xff, 0xff, 0xff)),
         new KnSkin.SkinState(WarnColor, new Color32(0xff, 0xff, 0xff, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
+        "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       SliderSkin = new KnSkin(KnSkin.Type.Slider,
         new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0x15, 0x15, 0x15, 0xff)),
         new KnSkin.SkinState(new Color32(0x33, 0x33, 0x33, 0xff)),
         new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
+        "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       ScrollSkin = new KnSkin(KnSkin.Type.Scroll,
         new KnSkin.SkinState(new Color32(0xee, 0xee, 0xee, 0xff), new Color32(0xde, 0xde, 0xde, 0xff)),
         new KnSkin.SkinState(new Color32(0x53, 0x53, 0x53, 0xff)),
         new KnSkin.SkinState(new Color32(0xde, 0xde, 0xde, 0xff)),
-        "GUI.base.png", TextAnchor.MiddleCenter, fontLight_);
+        "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       MakeTachStyle();
 
       Log.Write("[KN_Core::Skin]: Skin loaded");
     }
 
+    private static KnSkin MakeModButton(string texture) {
+      return MakeModButton(Assembly.GetExecutingAssembly(), $"{CoreGuiPath}.{texture}");
+    }
+
+    public static KnSkin MakeModButton(Assembly assembly, string texture) {
+      var button = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xc6, 0xff)),
+        new KnSkin.SkinState(new Color32(0x64, 0xff, 0xee, 0xff)),
+        new KnSkin.SkinState(new Color32(0xff, 0xff, 0xff, 0xff)),
+        assembly, texture, TextAnchor.MiddleCenter, fontLight_);
+
+      return button;
+    }
 
     private static void MakeTachStyle() {
       tachTextColor_ = new Color32(0xee, 0xee, 0xee, 0xff);

@@ -1,3 +1,4 @@
+using System.Reflection;
 using UnityEngine;
 
 namespace KN_Core {
@@ -25,8 +26,8 @@ namespace KN_Core {
         elementColor_ = elementColor;
       }
 
-      public void Load(string texturePath) {
-        Texture = Embedded.LoadEmbeddedTexture(texturePath, elementColor_);
+      public void Load(Assembly assembly, string texturePath) {
+        Texture = Embedded.LoadEmbeddedTexture(assembly, texturePath, elementColor_);
       }
     }
 
@@ -39,15 +40,27 @@ namespace KN_Core {
 
     private readonly string texturePath_;
 
-    private readonly Type type_;
     private readonly TextAnchor alignment_;
     private readonly Font font_;
 
-    public KnSkin(Type type, SkinState normal, SkinState hover, SkinState active, string texturePath, TextAnchor alignment, Font font) {
+    public KnSkin(Type type, SkinState normal, SkinState hover, SkinState active, string texture, TextAnchor alignment, Font font) {
       Normal = ScriptableObject.CreateInstance<GUISkin>();
       Active = ScriptableObject.CreateInstance<GUISkin>();
 
-      type_ = type;
+      normal_ = normal;
+      hover_ = hover;
+      active_ = active;
+
+      texturePath_ = $"{Skin.CoreGuiPath}.{texture}";
+      alignment_ = alignment;
+      font_ = font;
+
+      Initialize(type, Assembly.GetExecutingAssembly());
+    }
+
+    public KnSkin(Type type, SkinState normal, SkinState hover, SkinState active, Assembly assembly, string texturePath, TextAnchor alignment, Font font) {
+      Normal = ScriptableObject.CreateInstance<GUISkin>();
+      Active = ScriptableObject.CreateInstance<GUISkin>();
 
       normal_ = normal;
       hover_ = hover;
@@ -57,30 +70,34 @@ namespace KN_Core {
       alignment_ = alignment;
       font_ = font;
 
-      switch (type_) {
-        case Type.Button: {
-          MakeButton();
-          break;
-        }
+      Initialize(type, assembly);
+    }
+
+    private void Initialize(Type type, Assembly assembly) {
+      switch (type) {
         case Type.Box: {
-          MakeBox();
+          MakeBox(assembly);
           break;
         }
         case Type.Slider: {
-          MakeSlider();
+          MakeSlider(assembly);
           break;
         }
         case Type.Scroll: {
-          MakeScroll();
+          MakeScroll(assembly);
+          break;
+        }
+        case Type.Button: {
+          MakeButton(assembly);
           break;
         }
       }
     }
 
-    private void MakeButton() {
-      normal_.Load(texturePath_);
-      hover_.Load(texturePath_);
-      active_.Load(texturePath_);
+    private void MakeButton(Assembly assembly) {
+      normal_.Load(assembly, texturePath_);
+      hover_.Load(assembly, texturePath_);
+      active_.Load(assembly, texturePath_);
 
       Normal.button.normal.textColor = normal_.TextColor;
       Normal.button.normal.background = normal_.Texture;
@@ -101,12 +118,12 @@ namespace KN_Core {
       Active.button.font = font_;
     }
 
-    private void MakeBox() {
+    private void MakeBox(Assembly assembly) {
       const int offset = 5;
 
-      normal_.Load(texturePath_);
-      hover_.Load(texturePath_);
-      active_.Load(texturePath_);
+      normal_.Load(assembly, texturePath_);
+      hover_.Load(assembly, texturePath_);
+      active_.Load(assembly, texturePath_);
 
       Normal.box.normal.textColor = normal_.TextColor;
       Normal.box.normal.background = normal_.Texture;
@@ -129,10 +146,10 @@ namespace KN_Core {
       Normal.box.padding = new RectOffset(offset, offset, 0, 0);
     }
 
-    private void MakeSlider() {
-      normal_.Load(texturePath_);
-      hover_.Load(texturePath_);
-      active_.Load(texturePath_);
+    private void MakeSlider(Assembly assembly) {
+      normal_.Load(assembly, texturePath_);
+      hover_.Load(assembly, texturePath_);
+      active_.Load(assembly, texturePath_);
 
       Normal.horizontalSlider.normal.background = normal_.Texture;
       Normal.horizontalSlider.hover.background = normal_.Texture;
@@ -149,10 +166,10 @@ namespace KN_Core {
       Normal.label.font = font_;
     }
 
-    private void MakeScroll() {
-      normal_.Load(texturePath_);
-      hover_.Load(texturePath_);
-      active_.Load(texturePath_);
+    private void MakeScroll(Assembly assembly) {
+      normal_.Load(assembly, texturePath_);
+      hover_.Load(assembly, texturePath_);
+      active_.Load(assembly, texturePath_);
 
       Normal.scrollView.normal.background = normal_.Texture;
 
