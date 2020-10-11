@@ -70,7 +70,7 @@ namespace KN_Core {
       fontLight_ = Font.CreateDynamicFontFromOSFont("Consolas", 12);
 
       PuzzleSkin = MakeModButton("puzzle.png");
-      SettingsSkin = MakeModButton("gear.png");
+      SettingsSkin = MakeModButton("puzzle.png");
       AboutSkin = MakeModButton("puzzle.png");
       VisualsSkin = MakeModButton("puzzle.png");
       LightsSkin = MakeModButton("puzzle.png");
