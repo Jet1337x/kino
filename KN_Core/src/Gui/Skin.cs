@@ -22,7 +22,8 @@ namespace KN_Core {
     public static KnSkin SettingsSkin;
     public static KnSkin AboutSkin;
     public static KnSkin VisualsSkin;
-    public static KnSkin LightsSkin;
+    public static KnSkin CarLightsSkin;
+    public static KnSkin WorldLightsSkin;
     public static KnSkin MapsSkin;
     public static KnSkin DiscordSkin;
 
@@ -76,7 +77,8 @@ namespace KN_Core {
       SettingsSkin = MakeModButton("puzzle.png");
       AboutSkin = MakeModButton("puzzle.png");
       VisualsSkin = MakeModButton("puzzle.png");
-      LightsSkin = MakeModButton("puzzle.png");
+      CarLightsSkin = MakeModButton("puzzle.png");
+      WorldLightsSkin = MakeModButton("puzzle.png");
       MapsSkin = MakeModButton("puzzle.png");
       DiscordSkin = MakeModButton("discord.png");
 

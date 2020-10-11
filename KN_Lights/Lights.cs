@@ -42,16 +42,11 @@ namespace KN_Lights {
     private readonly Timer syncTimer_;
     private readonly Timer joinTimer_;
 
-    private readonly WorldLights worldLights_;
-
     private readonly Settings settings_;
 
-    public Lights(Core core, int version, int patch, int clientVersion) : base(core, "lights", 1, version, patch, clientVersion) {
-      worldLights_ = new WorldLights(core);
-
-      SetIcon(Skin.LightsSkin);
+    public Lights(Core core, int version, int patch, int clientVersion) : base(core, "lights", 0, version, patch, clientVersion) {
+      SetIcon(Skin.CarLightsSkin);
       AddTab("car_lights", OnGui);
-      AddTab("world_lights", worldLights_.OnGui);
       SetInfoLink(HelpLink);
 
       settings_ = core.Settings;
@@ -73,33 +68,29 @@ namespace KN_Lights {
 
       LoadDefaultLights(assembly);
 #if KN_DEV_TOOLS
-      carLightsDev_ = DataSerializer.Deserialize<CarLights>("KN_Lights", KnConfig.BaseDir + LightsDevConfigFile, out var devLights)
+      carLightsDev_ = DataSerializer.Deserialize<CarLights>("KN_CarLights", KnConfig.BaseDir + LightsDevConfigFile, out var devLights)
         ? new LightsConfig(devLights.ConvertAll(l => (CarLights) l))
         : new LightsConfig();
 #endif
 
       carLightsDiscard_ = Core.KnConfig.Get<float>("cl_discard_distance");
 
-      nwLightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_Lights", KnConfig.BaseDir + NwLightsConfigFile, out var nwLights)
+      nwLightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_CarLights", KnConfig.BaseDir + NwLightsConfigFile, out var nwLights)
         ? new NwLightsConfig(nwLights.ConvertAll(l => (CarLights) l))
         : new NwLightsConfig();
 
-      lightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_Lights", KnConfig.BaseDir + LightsConfigFile, out var lights)
+      lightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_CarLights", KnConfig.BaseDir + LightsConfigFile, out var lights)
         ? new LightsConfig(lights.ConvertAll(l => (CarLights) l))
         : new LightsConfig();
-
-      worldLights_.OnStart();
     }
 
     public override void OnStop() {
-      if (!DataSerializer.Serialize("KN_Lights", lightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsConfigFile, Loader.Version)) { }
-      if (!DataSerializer.Serialize("KN_Lights", nwLightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + NwLightsConfigFile, Loader.Version)) { }
+      if (!DataSerializer.Serialize("KN_CarLights", lightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsConfigFile, Loader.Version)) { }
+      if (!DataSerializer.Serialize("KN_CarLights", nwLightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + NwLightsConfigFile, Loader.Version)) { }
 
 #if KN_DEV_TOOLS
-      if (!DataSerializer.Serialize("KN_Lights", carLightsDev_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsDevConfigFile, Loader.Version)) { }
+      if (!DataSerializer.Serialize("KN_CarLights", carLightsDev_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsDevConfigFile, Loader.Version)) { }
 #endif
-
-      worldLights_.OnStop();
     }
 
     public override void OnCarLoaded(KnCar car) {
@@ -150,8 +141,6 @@ namespace KN_Lights {
       OptimizeLights();
 
       ToggleOwnLights();
-
-      worldLights_.Update();
 
       if (Core.IsInGarageChanged) {
         joinTimer_.Reset();
@@ -210,7 +199,7 @@ namespace KN_Lights {
 #if KN_DEV_TOOLS
       if (gui.TextButton(ref x, ref y, width, height, "DEV SAVE", Skin.ButtonSkin.Normal)) {
         carLightsDev_.AddLights(activeLights_);
-        Log.Write($"[KN_Lights]: Dev save / saved for '{activeLights_?.CarId ?? 0}'");
+        Log.Write($"[KN_CarLights]: Dev save / saved for '{activeLights_?.CarId ?? 0}'");
       }
 #endif
 
@@ -518,13 +507,13 @@ namespace KN_Lights {
           IsTailLightRightEnabled = true,
           TailLightOffset = new Vector3(0.6f, 0.6f, -1.6f)
         };
-        Log.Write($"[KN_Lights]: Lights for car '{car.Id}' not found. Creating default.");
+        Log.Write($"[KN_CarLights]: Lights for car '{car.Id}' not found. Creating default.");
       }
 
       var light = l.Copy();
       light.Attach(car);
       config.AddLights(light);
-      Log.Write($"[KN_Lights]: Car lights attached to '{car.Id}'");
+      Log.Write($"[KN_CarLights]: Car lights attached to '{car.Id}'");
 
       return light;
     }
@@ -621,7 +610,7 @@ namespace KN_Lights {
       var stream = Embedded.LoadEmbeddedFile(assembly, $"KN_Lights.Resources.{LightsConfigDefault}");
       if (stream != null) {
         using (stream) {
-          if (DataSerializer.Deserialize<CarLights>("KN_Lights", stream, out var lights)) {
+          if (DataSerializer.Deserialize<CarLights>("KN_CarLights", stream, out var lights)) {
             lightsConfigDefault_ = new LightsConfig(lights.ConvertAll(l => (CarLights) l));
 #if false
           foreach (var l in lightsConfigDefault_.Lights) { }
