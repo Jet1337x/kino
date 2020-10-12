@@ -181,7 +181,6 @@ namespace KN_Core {
       Normal.verticalScrollbarThumb.normal.background = active_.Texture;
       Normal.verticalScrollbarThumb.stretchHeight = false;
       Normal.verticalScrollbarThumb.stretchWidth = false;
-      Normal.verticalScrollbarThumb.stretchWidth = false;
 
       Normal.box.normal.textColor = normal_.TextColor;
       Normal.box.alignment = alignment_;

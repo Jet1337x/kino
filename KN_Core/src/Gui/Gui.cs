@@ -151,10 +151,13 @@ namespace KN_Core {
 
     public void Line(float x, float y, float width, float height, Color color) {
       var old = GUI.color;
+      bool enabled = GUI.enabled;
 
+      GUI.enabled = true;
       GUI.color = color;
       GUI.DrawTexture(new Rect(x, y, width, height), Texture2D.whiteTexture, ScaleMode.StretchToFill);
       GUI.color = old;
+      GUI.enabled = enabled;
     }
 
     public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text, GUISkin skin) {
