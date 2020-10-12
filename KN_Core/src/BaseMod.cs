@@ -68,20 +68,25 @@ namespace KN_Core {
 
       // tabs bar
       float tx = x;
-      float tabWidth = contentWidth / tabs_.Count;
-      tabWidth = tabWidth < Gui.MinModTabWidth ? Gui.MinModTabWidth : tabWidth;
-      for (int i = 0; i < tabs_.Count; ++i) {
-        if (gui.TabButton(ref x, ref y, tabWidth, Gui.ModTabHeight, Locale.Get(tabs_[i].Name),
-          i == SelectedTab && tabs_.Count != 1 ? Skin.ModTabSkin.Active : Skin.ModTabSkin.Normal)) {
 
-          Core.ResetPickers();
-          gui.ResetSize();
-          ResetTab();
+      if (tabs_.Count > 1) {
+        float tabWidth = contentWidth / tabs_.Count;
+        tabWidth = tabWidth < Gui.MinModTabWidth ? Gui.MinModTabWidth : tabWidth;
+        for (int i = 0; i < tabs_.Count; ++i) {
+          if (gui.TabButton(ref x, ref y, tabWidth, Gui.ModTabHeight, Locale.Get(tabs_[i].Name), i == SelectedTab ? Skin.ModTabSkin.Active : Skin.ModTabSkin.Normal)) {
 
-          PrevSelectedTab = SelectedTab;
-          SelectedTab = i;
-          return;
+            Core.ResetPickers();
+            gui.ResetSize();
+            ResetTab();
+
+            PrevSelectedTab = SelectedTab;
+            SelectedTab = i;
+            return;
+          }
         }
+      }
+      else if (tabs_.Count > 0) {
+        gui.TabButton(ref x, ref y, contentWidth, Gui.ModTabHeight, Locale.Get(tabs_[0].Name), Skin.ModTabSingleSkin.Normal);
       }
 
       // info

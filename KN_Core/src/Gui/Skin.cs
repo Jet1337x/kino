@@ -70,6 +70,7 @@ namespace KN_Core {
     public static KnSkin BoxMildSkin;
 
     public static KnSkin ModTabSkin;
+    public static KnSkin ModTabSingleSkin;
     public static KnSkin WarningSkin;
 
     private static Font fontVersion_;
@@ -210,9 +211,15 @@ namespace KN_Core {
         "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       ModTabSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(TabButtonNormalColor, TextColorLight0),
-        new KnSkin.SkinState(TabButtonHoverColor, TextColorLight0),
-        new KnSkin.SkinState(TabButtonActiveColor, TextColorLight1),
+        new KnSkin.SkinState(BgTabBarColor, TextColorLight2),
+        new KnSkin.SkinState(BgTabHoverColor, TextColorLight0),
+        new KnSkin.SkinState(BgTabActiveColor, TextColorLight1),
+        "base.png", TextAnchor.MiddleCenter, fontTabs_);
+
+      ModTabSingleSkin = new KnSkin(KnSkin.Type.Button,
+        new KnSkin.SkinState(BgTabBarColor, TextColorLight2),
+        new KnSkin.SkinState(BgTabBarColor, TextColorLight2),
+        new KnSkin.SkinState(BgTabBarColor, TextColorLight2),
         "base.png", TextAnchor.MiddleCenter, fontTabs_);
 
       WarningSkin = new KnSkin(KnSkin.Type.Button,
