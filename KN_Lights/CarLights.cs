@@ -499,13 +499,13 @@ namespace KN_Lights {
     private void MakeIllumination(ref Light l, ref Light r) {
       l.type = LightType.Point;
       l.color = hlColor_;
-      l.range = 1.5f;
-      l.intensity = 5.0f;
+      l.range = 0.3f;
+      l.intensity = 15.0f;
 
       r.type = LightType.Point;
       r.color = hlColor_;
-      r.range = 1.5f;
-      r.intensity = 5.0f;
+      r.range = 0.3f;
+      r.intensity = 15.0f;
     }
 
     private void MakeHeadLight(ref Light light) {
