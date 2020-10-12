@@ -401,7 +401,7 @@ namespace KN_Lights {
       const float buttonWidth = Gui.Width * widthScale;
 
       bool guiEnabled = GUI.enabled;
-      GUI.enabled = !Core.IsInGarage;
+      GUI.enabled = !Core.IsInGarage && !KnCar.IsNull(Core.PlayerCar);
 
       if (gui.TextButton(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("add_lights_all"), autoAddLights_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         autoAddLights_ = !autoAddLights_;
