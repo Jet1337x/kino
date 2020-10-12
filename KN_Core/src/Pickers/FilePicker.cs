@@ -65,7 +65,7 @@ namespace KN_Core {
       foreach (string f in files_) {
         string file = Path.GetFileName(f);
         sy += Gui.Offset;
-        if (gui.TextButton(ref sx, ref sy, width, Gui.Height, $"{file}", Skin.ButtonSkin.Normal)) {
+        if (gui.TextButton(ref sx, ref sy, width, Gui.Height, $"{file}", Skin.ListButtonSkin.Normal)) {
           PickedFile = f;
         }
         sy -= Gui.Offset;

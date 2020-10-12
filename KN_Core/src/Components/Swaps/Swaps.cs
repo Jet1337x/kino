@@ -200,7 +200,7 @@ namespace KN_Core {
 
       var currentEngine = currentSwap_?.GetCurrentEngine();
       int engineId = currentEngine?.EngineId ?? 0;
-      if (gui.TextButton(ref sx, ref sy, w, height, "STOCK", engineId == 0 ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+      if (gui.TextButton(ref sx, ref sy, w, height, "STOCK", engineId == 0 ? Skin.ListButtonSkin.Active : Skin.ListButtonSkin.Normal)) {
         if (engineId != 0) {
           SwapEngineTo(null);
         }
@@ -213,7 +213,7 @@ namespace KN_Core {
           continue;
         }
 
-        if (gui.TextButton(ref sx, ref sy, w, height, engine.Name, engineId == engine.Id ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+        if (gui.TextButton(ref sx, ref sy, w, height, engine.Name, engineId == engine.Id ? Skin.ListButtonSkin.Active : Skin.ListButtonSkin.Normal)) {
           if (engineId != engine.Id) {
             SwapEngineTo(engine);
           }

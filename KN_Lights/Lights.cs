@@ -430,7 +430,7 @@ namespace KN_Lights {
         if (cl != null) {
           bool active = activeLights_ == cl;
           if (gui.ScrollViewButton(ref sx, ref sy, width, Gui.Height, $"{cl.UserName}", out bool delPressed,
-            active ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal, Skin.RedButtonSkin.Normal)) {
+            active ? Skin.ListButtonSkin.Active : Skin.ListButtonSkin.Normal, Skin.RedButtonSkin.Normal)) {
 
             if (delPressed) {
               if (cl == activeLights_) {
