@@ -41,10 +41,10 @@ namespace KN_Core {
 
       float yBegin = y;
 
-      gui.Box(x, y, boxWidth, Gui.Height, Locale.Get("cp_title"), Skin.BoxSkin.Normal);
+      gui.Box(x, y, boxWidth, Gui.Height, Locale.Get("cp_title"), Skin.BackgroundSkin.Normal);
       y += Gui.Height;
 
-      gui.Box(x, y, boxWidth, boxHeight, Skin.BoxSkin.Normal);
+      gui.Box(x, y, boxWidth, boxHeight, Skin.BackgroundSkin.Normal);
       y += Gui.Offset;
       x += Gui.Offset;
 

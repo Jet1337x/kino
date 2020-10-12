@@ -58,10 +58,10 @@ namespace KN_Core {
     }
 
     private void GuiCars(Gui gui, ref float x, ref float y, float boxWidth, float width, float height) {
-      gui.Box(x, y, boxWidth, Gui.Height, $"{Locale.Get("cp_cars")} / {loadingCars_.Count}", Skin.BoxSkin.Normal);
+      gui.Box(x, y, boxWidth, Gui.Height, $"{Locale.Get("cp_cars")} / {loadingCars_.Count}", Skin.BackgroundSkin.Normal);
       y += Gui.Height;
 
-      gui.Box(x, y, boxWidth, carsListHeight_, Skin.BoxSkin.Normal);
+      gui.Box(x, y, boxWidth, carsListHeight_, Skin.BackgroundSkin.Normal);
       y += Gui.Offset;
       x += Gui.Offset;
 
