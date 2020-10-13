@@ -101,6 +101,7 @@
   <key id="tl_pitch" value="TAILLIGHT PITCH"/>
   <key id="add_lights_all" value="ADD LIGHTS TO EVERYONE"/>
   <key id="add_lights_to" value="ADD LIGHTS TO"/>
+  <key id="remove_all_lights" value="REMOVE ALL LIGHTS"/>
 
   <!--WORLD LIGHTS-->
   <key id="fog" value="FOG"/>
