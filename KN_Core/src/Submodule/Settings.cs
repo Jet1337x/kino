@@ -3,7 +3,7 @@ using Object = UnityEngine.Object;
 
 namespace KN_Core {
   public class Settings : BaseMod {
-    private const string HelpLink = "https://github.com/trbflxr/kino";
+    private const string HelpLink = "https://github.com/trbflxr/kino/blob/master/Help/Settings.md";
 
     private bool rPoints_;
     public bool RPoints {

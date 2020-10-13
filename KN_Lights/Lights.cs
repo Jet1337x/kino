@@ -10,7 +10,7 @@ namespace KN_Lights {
   public class Lights : BaseMod {
     public static Texture2D LightMask;
 
-    private const string HelpLink = "https://github.com/trbflxr/kino";
+    private const string HelpLink = "https://github.com/trbflxr/kino/blob/master/Help/Lights.md";
 
     private const string LightsConfigFile = "kn_lights.knl";
     private const string NwLightsConfigFile = "kn_nwlights.knl";

@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace KN_Visuals {
   public class Visuals : BaseMod {
-    private const string HelpLink = "https://github.com/trbflxr/kino";
+    private const string HelpLink = "https://github.com/trbflxr/kino/blob/master/Help/Visuals.md";
 
     private GamePrefs prefs_;
     private UIGarageContext garage_;
