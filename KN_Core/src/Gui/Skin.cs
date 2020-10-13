@@ -31,7 +31,6 @@ namespace KN_Core {
     public static Color BgTabActiveColor;
     public static Color BgColor;
     public static Color BgWarnColor;
-    public static Color WarnColor;
     public static Color RedNormalColor;
     public static Color RedHoverColor;
     public static Color RedActiveColor;
@@ -118,7 +117,6 @@ namespace KN_Core {
 
       BgColor = new Color32(0xcf, 0xd1, 0xd8, 0xf2);
       BgWarnColor = new Color32(0xb0, 0x4f, 0x4f, 0xf2);
-      WarnColor = new Color32(0xb0, 0x4f, 0x4f, 0xff);
 
       ButtonNormalColor = new Color32(0x4c, 0x5a, 0x6f, 0xff);
       ButtonHoverColor = new Color32(0x65, 0x77, 0x92, 0xff);
