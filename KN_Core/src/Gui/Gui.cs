@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace KN_Core {
   public class Gui {
-    private const float MinModWidth = 520.0f;
+    private const float MinModWidth = 475.0f;
     private const float MinModHeight = 340.0f;
 
     public const float MinModTabWidth = 140.0f;
