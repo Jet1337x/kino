@@ -16,6 +16,7 @@ namespace KN_Core {
     public static Color TextColorLight0;
     public static Color TextColorLight1;
     public static Color TextColorLight2;
+    public static Color TextColorLight3;
     public static Color TextColorDark0;
     public static Color TextColorDark1;
     public static Color SeparatorColor;
@@ -25,9 +26,9 @@ namespace KN_Core {
     public static Color LightColor;
     public static Color DarkColor;
     public static Color MildColor;
+    public static Color BgTabBarColor;
     public static Color BgTabHoverColor;
     public static Color BgTabActiveColor;
-    public static Color BgTabBarColor;
     public static Color BgColor;
     public static Color BgWarnColor;
     public static Color WarnColor;
@@ -37,9 +38,6 @@ namespace KN_Core {
     public static Color ButtonNormalColor;
     public static Color ButtonHoverColor;
     public static Color ButtonActiveColor;
-    public static Color TabButtonNormalColor;
-    public static Color TabButtonHoverColor;
-    public static Color TabButtonActiveColor;
     public static Color ListButtonNormalColor;
     public static Color ListButtonHoverColor;
     public static Color ListButtonActiveColor;
@@ -97,49 +95,46 @@ namespace KN_Core {
 
       Log.Write("[KN_Core::Skin]: Loading skin ...");
 
-      TextColorLight0 = new Color32(0xde, 0xdf, 0xe3, 0xff);
-      TextColorLight1 = new Color32(0xea, 0xeb, 0xf0, 0xff);
-      TextColorLight2 = new Color32(0xcc, 0xcd, 0xd3, 0xff);
-      TextColorDark0 = new Color32(0x4f, 0x53, 0x59, 0xff);
+      TextColorLight0 = new Color32(0xe5, 0xea, 0xf2, 0xff);
+      TextColorLight1 = new Color32(0xf1, 0xf7, 0xff, 0xff);
+      TextColorLight2 = new Color32(0xbf, 0xc2, 0xcc, 0xff);
+      TextColorLight3 = new Color32(0xdf, 0xe4, 0xec, 0xff);
+      TextColorDark0 = new Color32(0x76, 0x7a, 0x80, 0xff);
       TextColorDark1 = new Color32(0x29, 0x2a, 0x2f, 0xff);
 
-      SeparatorColor = new Color32(0x29, 0x2a, 0x2f, 0xff);
+      SeparatorColor = new Color32(0xad, 0xaf, 0xb6, 0xff);
 
       ContrastColor = new Color32(0x33, 0x99, 0xcc, 0xff);
       ContrastHoverColor = new Color32(0x4b, 0xa8, 0xd7, 0xff);
       ContrastActiveColor = new Color32(0x31, 0x85, 0xaf, 0xff);
 
       LightColor = new Color32(0xf7, 0xf9, 0xff, 0xff);
-      DarkColor = new Color32(0x3d, 0x3e, 0x45, 0xff);
-      MildColor = new Color32(0xcd, 0xcf, 0xd5, 0xff);
+      MildColor = new Color32(0xc3, 0xc5, 0xce, 0xff);
+      DarkColor = new Color32(0xb0, 0xb2, 0xbb, 0xff);
 
-      BgTabHoverColor = new Color32(0x2a, 0x2d, 0x31, 0xff);
-      BgTabActiveColor = new Color32(0x33, 0x36, 0x3b, 0xff);
+      BgTabBarColor = new Color32(0x20, 0x21, 0x27, 0xf2);
+      BgTabHoverColor = new Color32(0x30, 0x34, 0x39, 0xf2);
+      BgTabActiveColor = new Color32(0x3a, 0x3d, 0x42, 0xf2);
 
-      BgTabBarColor = new Color32(0x20, 0x22, 0x25, 0xf2);
-      BgColor = new Color32(0x47, 0x49, 0x51, 0xf2);
+      BgColor = new Color32(0xcf, 0xd1, 0xd8, 0xf2);
       BgWarnColor = new Color32(0xb0, 0x4f, 0x4f, 0xf2);
       WarnColor = new Color32(0xb0, 0x4f, 0x4f, 0xff);
 
-      ButtonNormalColor = new Color32(0x29, 0x2a, 0x2f, 0xff);
-      ButtonHoverColor = new Color32(0x30, 0x32, 0x37, 0xff);
-      ButtonActiveColor = new Color32(0x1a, 0x1b, 0x1e, 0xff);
+      ButtonNormalColor = new Color32(0x4c, 0x5a, 0x6f, 0xff);
+      ButtonHoverColor = new Color32(0x65, 0x77, 0x92, 0xff);
+      ButtonActiveColor = new Color32(0x38, 0x42, 0x51, 0xff);
+
+      ListButtonNormalColor = new Color32(0x65, 0x73, 0x8a, 0xff);
+      ListButtonHoverColor = new Color32(0x73, 0x8d, 0xa4, 0xff);
+      ListButtonActiveColor = new Color32(0x30, 0x48, 0x60, 0xff);
 
       RedNormalColor = new Color32(0xcf, 0x3f, 0x44, 0xff);
       RedHoverColor = new Color32(0xdd, 0x43, 0x49, 0xff);
       RedActiveColor = new Color32(0xbd, 0x39, 0x3e, 0xff);
 
-      TabButtonNormalColor = new Color32(0x20, 0x22, 0x25, 0xff);
-      TabButtonHoverColor = new Color32(0x1d, 0x1e, 0x21, 0xff);
-      TabButtonActiveColor = new Color32(0x18, 0x1a, 0x1c, 0xff);
-
-      ListButtonNormalColor = new Color32(0x5f, 0x61, 0x67, 0xff);
-      ListButtonHoverColor = new Color32(0x73, 0x75, 0x7c, 0xff);
-      ListButtonActiveColor = new Color32(0x45, 0x47, 0x4c, 0xff);
-
-      fontVersion_ = Font.CreateDynamicFontFromOSFont("Consolas", 9);
-      fontTabs_ = Font.CreateDynamicFontFromOSFont("Consolas Bold", 12);
-      fontLight_ = Font.CreateDynamicFontFromOSFont("Consolas", 12);
+      fontVersion_ = Font.CreateDynamicFontFromOSFont("Carlito", 9);
+      fontTabs_ = Font.CreateDynamicFontFromOSFont("Carlito Bold", 12);
+      fontLight_ = Font.CreateDynamicFontFromOSFont("Carlito", 12);
 
       PuzzleSkin = MakeModButton("puzzle.png");
       SettingsSkin = MakeModButton("puzzle.png");
@@ -169,8 +164,8 @@ namespace KN_Core {
         "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       ButtonSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(ButtonNormalColor, TextColorLight0),
-        new KnSkin.SkinState(ButtonHoverColor, TextColorLight2),
+        new KnSkin.SkinState(ButtonNormalColor, TextColorLight3),
+        new KnSkin.SkinState(ButtonHoverColor, TextColorLight3),
         new KnSkin.SkinState(ButtonActiveColor, TextColorLight1),
         "base.png", TextAnchor.MiddleCenter, fontLight_);
 
@@ -181,8 +176,8 @@ namespace KN_Core {
         "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       ListButtonSkin = new KnSkin(KnSkin.Type.Button,
-        new KnSkin.SkinState(ListButtonNormalColor, TextColorLight0),
-        new KnSkin.SkinState(ListButtonHoverColor, TextColorLight2),
+        new KnSkin.SkinState(ListButtonNormalColor, TextColorLight3),
+        new KnSkin.SkinState(ListButtonHoverColor, TextColorLight0),
         new KnSkin.SkinState(ListButtonActiveColor, TextColorLight1),
         "base.png", TextAnchor.MiddleCenter, fontLight_);
 
@@ -199,9 +194,9 @@ namespace KN_Core {
         "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       BoxDarkSkin = new KnSkin(KnSkin.Type.Box,
-        new KnSkin.SkinState(DarkColor, TextColorLight1),
-        new KnSkin.SkinState(DarkColor, TextColorLight1),
-        new KnSkin.SkinState(DarkColor, TextColorLight1),
+        new KnSkin.SkinState(DarkColor, TextColorDark1),
+        new KnSkin.SkinState(DarkColor, TextColorDark1),
+        new KnSkin.SkinState(DarkColor, TextColorDark1),
         "base.png", TextAnchor.MiddleCenter, fontLight_);
 
       BoxMildSkin = new KnSkin(KnSkin.Type.Box,
