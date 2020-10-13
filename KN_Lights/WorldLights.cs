@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 namespace KN_Lights {
   public class WorldLights : BaseMod {
-    private const string HelpLink = "https://github.com/trbflxr/kino";
+    private const string HelpLink = "https://github.com/trbflxr/kino/blob/master/Help/WorldLighting.md";
 
     private readonly Core core_;
 
