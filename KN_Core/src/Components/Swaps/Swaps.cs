@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CarX;
@@ -301,7 +302,12 @@ namespace KN_Core {
       nwData.Add("tb", turbo);
       nwData.Add("fd", finalDrive);
 
-      core_.Udp.Send(nwData);
+      try {
+        core_.Udp.Send(nwData);
+      }
+      catch (Exception e) {
+        Log.Write($"[KN_Core::Swaps]: An error occured while sending udp data, {e.Message}");
+      }
     }
 
     private void FindEngineAndSwap() {

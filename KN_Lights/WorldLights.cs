@@ -237,6 +237,10 @@ namespace KN_Lights {
 
         if (map_.Count > 0) {
           foreach (var m in map_) {
+            if (m == null) {
+              continue;
+            }
+
             volume_ = m.GetComponent<Volume>();
             if (volume_ != null) {
               volume_.profile.TryGet(out sky_);
@@ -263,6 +267,10 @@ namespace KN_Lights {
 
       if (staticSky_ == null && map_.Count > 0) {
         foreach (var m in map_) {
+          if (m == null) {
+            continue;
+          }
+
           var components = m.GetComponents<MonoBehaviour>();
           if (components != null) {
             foreach (var c in components) {
