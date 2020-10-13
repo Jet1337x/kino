@@ -166,7 +166,7 @@ namespace KN_Core {
 
       if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hide_points"), RPoints ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         RPoints = !RPoints;
-        Core.KnConfig.Set("r_points", RPoints);
+        Core.KnConfig.Set("r_points", !RPoints);
       }
 
       if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hide_names"), HideNames ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
