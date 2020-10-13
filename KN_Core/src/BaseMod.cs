@@ -137,6 +137,8 @@ namespace KN_Core {
 
     public virtual void OnCarLoaded(KnCar car) { }
 
+    public virtual void OnGuiToggle() { }
+
     protected void SetIcon(KnSkin icon) {
       Icon = icon;
     }

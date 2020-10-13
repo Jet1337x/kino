@@ -516,6 +516,7 @@ namespace KN_Core {
         IsGuiEnabled = !IsGuiEnabled;
 
         if (!badVersion_) {
+          mods_[selectedMod_].OnGuiToggle();
           ResetPickers();
         }
       }

@@ -104,6 +104,12 @@ namespace KN_Lights {
       shouldSync_ = true;
     }
 
+    public override void OnGuiToggle() {
+      if (Core.ColorPicker.IsPicking) {
+        shouldSync_ = activeLights_ == ownLights_;
+      }
+    }
+
     public override void OnUdpData(SmartfoxDataPackage data) {
       int type = data.Data.GetInt("type");
       if (type != Udp.TypeLights) {
