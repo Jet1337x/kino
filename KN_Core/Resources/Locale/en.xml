@@ -24,7 +24,7 @@
   <key id="reload" value="RELOAD"/>
 
   <!--CORE-->
-  <key id="input_locked" value="CARX INPUT IS LOCKED. CLOSE MOD MENU TO UNLOCK IT."/>
+  <key id="input_locked" value="GAME CONTROLLS ARE LOCKED WHILE THE MOD MENU IS UP"/>
   <key id="changes" value="CHANGELOG"/>
   <key id="outdated0" value="YOUR MOD IS OUTDATED, LATEST VERSION"/>
   <key id="outdated1" value="RESTART THE GAME FOR THE MOD TO UPDATE AUTOMATICALLY."/>
