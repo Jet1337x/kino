@@ -141,6 +141,11 @@
         <EmbeddedResource Include="Resources\GUI\base.png" />
         <EmbeddedResource Include="Resources\GUI\outline.png" />
         <EmbeddedResource Include="Resources\GUI\help.png" />
+        <EmbeddedResource Include="Resources\GUI\gear.png" />
+        <EmbeddedResource Include="Resources\GUI\about.png" />
+        <EmbeddedResource Include="Resources\GUI\lights.png" />
+        <EmbeddedResource Include="Resources\GUI\weather.png" />
+        <EmbeddedResource Include="Resources\GUI\visuals.png" />
         <EmbeddedResource Include="Resources\GUI\puzzle.png" />
         <EmbeddedResource Include="Resources\GUI\discord.png" />
     </ItemGroup>

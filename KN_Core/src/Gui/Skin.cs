@@ -135,11 +135,11 @@ namespace KN_Core {
       fontLight_ = Font.CreateDynamicFontFromOSFont("Carlito", 12);
 
       PuzzleSkin = MakeModButton("puzzle.png");
-      SettingsSkin = MakeModButton("puzzle.png");
-      AboutSkin = MakeModButton("puzzle.png");
-      VisualsSkin = MakeModButton("puzzle.png");
-      CarLightsSkin = MakeModButton("puzzle.png");
-      WorldLightsSkin = MakeModButton("puzzle.png");
+      SettingsSkin = MakeModButton("gear.png");
+      AboutSkin = MakeModButton("about.png");
+      VisualsSkin = MakeModButton("visuals.png");
+      CarLightsSkin = MakeModButton("lights.png");
+      WorldLightsSkin = MakeModButton("weather.png");
       MapsSkin = MakeModButton("puzzle.png");
       DiscordSkin = MakeModButton("discord.png");
 
