@@ -23,6 +23,8 @@ namespace KN_Core {
     public float MaxContentWidth { get; private set; }
     public float MaxContentHeight { get; private set; }
 
+    public bool RenderWhiteBg { get; set; }
+
     private float scrollX_;
     private float scrollY_;
     private float scrollVisibleHeight_;
@@ -56,6 +58,12 @@ namespace KN_Core {
 
       MaxContentWidth = MinModWidth;
       MaxContentHeight = height_;
+    }
+
+    public void PreRender() {
+      if (RenderWhiteBg) {
+        Box(0.0f, 0.0f, Screen.width, Screen.height, Skin.BoxSkin.Normal);
+      }
     }
 
     public void Begin(float x, float y) {

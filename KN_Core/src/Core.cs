@@ -375,6 +375,8 @@ namespace KN_Core {
         return;
       }
 
+      gui_.PreRender();
+
       if (badVersion_ || newPatch_ || loader_.ShowUpdateWarn || loader_.NewPatch) {
         GuiUpdateWarn();
       }
