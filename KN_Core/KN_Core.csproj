@@ -138,6 +138,7 @@
         <EmbeddedResource Include="Resources\supporters.xml" />
     </ItemGroup>
     <ItemGroup>
+        <EmbeddedResource Include="Resources\GUI\tooltip.png" />
         <EmbeddedResource Include="Resources\GUI\base.png" />
         <EmbeddedResource Include="Resources\GUI\outline.png" />
         <EmbeddedResource Include="Resources\GUI\help.png" />

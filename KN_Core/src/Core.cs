@@ -85,6 +85,8 @@ namespace KN_Core {
     private CameraRotation cameraRotation_;
 
     private readonly Gui gui_;
+    private int hoveredMod_;
+    private float hoveredModY_;
 
     public Core(ModLoader loader) {
       loader_ = loader;
@@ -405,6 +407,8 @@ namespace KN_Core {
       }
 
       GuiPickers();
+
+      GuiTooltips();
     }
 
     private void GuiVersion(ref float x, ref float y) {
@@ -418,6 +422,11 @@ namespace KN_Core {
 
       gui_.Box(x, y, Gui.ModIconSize, gui_.MaxContentHeight, Skin.ModPanelSkin.Normal);
 
+      // tooltip stuff
+      hoveredMod_ = -1;
+      var mousePos = Input.mousePosition;
+      mousePos.y = Screen.height - mousePos.y;
+
       for (int i = 0; i < mods_.Count; ++i) {
         // mod icon background
         if (gui_.ImageButton(ref x, ref y, selectedMod_ == i ? Skin.ModPanelBackSkin.Active : Skin.ModPanelBackSkin.Normal)) {
@@ -427,6 +436,12 @@ namespace KN_Core {
           selectedMod_ = i;
           selectedModId_ = mods_[i].Id;
           return;
+        }
+
+        // tooltip render check
+        if (mousePos.x >= x && mousePos.x <= x + Gui.ModIconSize && mousePos.y >= y && mousePos.y <= y + Gui.ModIconSize) {
+          hoveredMod_ = i;
+          hoveredModY_ = y + Gui.ModIconSize / 2.0f;
         }
 
         // actual mod icon
@@ -442,6 +457,12 @@ namespace KN_Core {
         Process.Start("https://discord.gg/FkYYAKb");
       }
       gui_.ImageButton(ref x, ref y, Skin.DiscordSkin.Normal);
+
+      // discord tooltip render check
+      if (hoveredMod_ == -1 && mousePos.x >= x && mousePos.x <= x + Gui.ModIconSize && mousePos.y >= y && mousePos.y <= y + Gui.ModIconSize) {
+        hoveredMod_ = int.MaxValue;
+        hoveredModY_ = y + Gui.ModIconSize / 2.0f;
+      }
     }
 
     private void GuiModContent(ref float x) {
@@ -473,6 +494,17 @@ namespace KN_Core {
       }
       if (FilePicker.IsPicking) {
         FilePicker.OnGui(gui_, ref x, ref y);
+      }
+    }
+
+    private void GuiTooltips() {
+      const float tooltipX = GuiStartX + Gui.ModIconSize + Gui.OffsetSmall;
+      const float tooltipWidth = 150.0f;
+      const float tooltipHeight = 30.0f;
+
+      if (hoveredMod_ != -1) {
+        string text = hoveredMod_ == int.MaxValue ? " DISCORD" : $" {Locale.Get(mods_[hoveredMod_].Name)}";
+        gui_.Box(tooltipX, hoveredModY_ - tooltipHeight / 2.0f, tooltipWidth, tooltipHeight, text, Skin.TooltipSkin.Normal);
       }
     }
 
