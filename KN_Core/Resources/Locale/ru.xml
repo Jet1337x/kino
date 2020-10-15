@@ -86,7 +86,6 @@
   <!--LIGHTS-->
   <key id="lights_enable_own" value="ВКЛЮЧИТЬ СОБСТВЕННЫЕ ФАРЫ"/>
   <key id="debug_obj" value="ДЕБАГ ОБЪЕКТЫ"/>
-  <key id="hl_illumination" value="ПОДСВЕТКА ФАР"/>
   <key id="hide_lights_after" value="ПРЯТАТЬ ФАРЫ ЧЕРЕЗ"/>
   <key id="hl_left" value="ЛЕВАЯ ФАРА"/>
   <key id="hl_right" value="ПРАВАЯ ФАРА"/>

@@ -84,7 +84,6 @@
   <!--LIGHTS-->
   <key id="lights_enable_own" value="ライトを点灯"/>
   <key id="debug_obj" value="デバッグオブジェクト"/>
-  <key id="hl_illumination" value="ヘッドライトイルミネーション"/>
   <key id="hide_lights_after" value="他プレイヤーのライトが隠れる距離"/>
   <key id="hl_left" value="左ヘッドライト"/>
   <key id="hl_right" value="右ヘッドライト"/>

@@ -86,7 +86,6 @@
   <!--LIGHTS-->
   <key id="lights_enable_own" value="ACTIVER MES PHARES"/>
   <key id="debug_obj" value="REPLACER AMPOULES"/>
-  <key id="hl_illumination" value="ILLUMINATION PHARES"/>
   <key id="hide_lights_after" value="CACHER PHARES APRÈS"/>
   <key id="hl_left" value="PHARE AVANT GAUCHE"/>
   <key id="hl_right" value="PHARE AVANT DROIT"/>

@@ -86,7 +86,6 @@
   <!--LIGHTS-->
   <key id="lights_enable_own" value="ATTIVA I PROPRI FARI"/>
   <key id="debug_obj" value="DEBUG OGGETTI"/>
-  <key id="hl_illumination" value="ILLUMINAZIONE FARI ANTERIORI"/>
   <key id="hide_lights_after" value="NON RENDERIZZARE I FARI OLTRE"/>
   <key id="hl_left" value="FARO ANT. SINISTRO"/>
   <key id="hl_right" value="FARO ANT. DESTRO"/>

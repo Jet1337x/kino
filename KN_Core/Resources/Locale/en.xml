@@ -87,7 +87,6 @@
   <!--LIGHTS-->
   <key id="lights_enable_own" value="ENABLE OWN LIGHTS"/>
   <key id="debug_obj" value="DEBUG OBJECTS"/>
-  <key id="hl_illumination" value="HEADLIGHTS ILLUMINATION"/>
   <key id="hide_lights_after" value="HIDE LIGHTS AFTER"/>
   <key id="hl_left" value="LEFT HEADLIGHT"/>
   <key id="hl_right" value="RIGHT HEADLIGHT"/>
