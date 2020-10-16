@@ -142,6 +142,7 @@ namespace KN_Lights {
     private float hazardTimer_;
 
     public HazardLights(Color color, float brightness, float range, Vector3 offsetFront, Vector3 offsetRear) {
+      enabled_ = false;
       color_ = color;
       brightness_ = brightness;
       range_ = range;
@@ -151,6 +152,7 @@ namespace KN_Lights {
 
     public HazardLights(BinaryReader reader) {
       Deserialize(reader);
+      enabled_ = false;
     }
 
     public HazardLights Copy() {
@@ -223,6 +225,8 @@ namespace KN_Lights {
       DebugRr.transform.localScale = capsuleScale;
 
       MakeLights();
+
+      Enabled = false;
     }
 
     private void Initialize() {
