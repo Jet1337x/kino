@@ -474,7 +474,7 @@ namespace KN_Lights {
     }
 
     private void GuiLightsList(Gui gui, ref float x, ref float y) {
-      const float listHeight = 435.0f;
+      const float listHeight = 440.0f;
       const float widthScale = 1.2f;
       const float buttonWidth = Gui.Width * widthScale;
 
