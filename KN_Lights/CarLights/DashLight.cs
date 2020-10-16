@@ -5,7 +5,7 @@ using UnityEngine;
 namespace KN_Lights {
   public class DashLight {
     public const float DefaultBrightness = 2.0f;
-    public const float DefaultRange = 0.5f;
+    public const float DefaultRange = 0.49f;
 
     private static readonly int BaseColorMap = Shader.PropertyToID("_BaseColorMap");
 
@@ -164,6 +164,7 @@ namespace KN_Lights {
     public void Serialize(BinaryWriter writer) {
       writer.Write(Enabled);
       writer.Write(KnUtils.EncodeColor(Color));
+      writer.Write(Range);
       writer.Write(Brightness);
       KnUtils.WriteVec3(writer, Offset);
     }
@@ -171,6 +172,7 @@ namespace KN_Lights {
     public void Deserialize(BinaryReader reader) {
       enabled_ = reader.ReadBoolean();
       color_ = KnUtils.DecodeColor(reader.ReadInt32());
+      range_ = reader.ReadSingle();
       brightness_ = reader.ReadSingle();
       Offset = KnUtils.ReadVec3(reader);
     }
