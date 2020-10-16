@@ -97,11 +97,9 @@ namespace KN_Lights {
       var stream = Embedded.LoadEmbeddedFile(assembly, $"KN_Lights.Resources.{LightsConfigDefault}");
       if (stream != null) {
         using (stream) {
-          // lightsConfigDefault_ = DataSerializer.Deserialize<CarLights>("KN_CarLights", stream, out var lights)
-          //   ? new LightsConfig(lights.ConvertAll(l => (CarLights) l))
-          //   : new LightsConfig();
-
-          lightsConfigDefault_ = new LightsConfig();
+          lightsConfigDefault_ = DataSerializer.Deserialize<CarLights>("KN_CarLights", stream, out var lights)
+            ? new LightsConfig(lights.ConvertAll(l => (CarLights) l))
+            : new LightsConfig();
 
 #if false
           foreach (var l in lightsConfigDefault_.Lights) { }
@@ -849,7 +847,7 @@ namespace KN_Lights {
 
       shouldSync_ = false;
       ownLights_.Send(id, Core.Udp);
-      
+
       SendHazardData();
     }
 
