@@ -101,6 +101,8 @@
   <key id="add_lights_all" value="ADD LIGHTS TO EVERYONE"/>
   <key id="add_lights_to" value="ADD LIGHTS TO"/>
   <key id="remove_all_lights" value="REMOVE ALL LIGHTS"/>
+  <key id="dash_enabled" value="DASH LIGHT ENABLED"/>
+  <key id="dash_color" value="DASH LIGHT COLOR"/>
 
   <!--WORLD LIGHTS-->
   <key id="fog" value="FOG"/>
