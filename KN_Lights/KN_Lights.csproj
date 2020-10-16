@@ -77,10 +77,10 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="CarLights.cs" />
-        <Compile Include="DashLight.cs" />
-        <Compile Include="LightsConfig.cs" />
-        <Compile Include="LightsSet.cs" />
+        <Compile Include="CarLights\CarLights.cs" />
+        <Compile Include="CarLights\DashLight.cs" />
+        <Compile Include="CarLights\LightsConfig.cs" />
+        <Compile Include="CarLights\LightsSet.cs" />
         <Compile Include="Loader.cs" />
         <Compile Include="Lights.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
