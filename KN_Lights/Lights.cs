@@ -270,12 +270,10 @@ namespace KN_Lights {
 
       GuiTailLights(gui, ref x, ref y, width, height);
 
-#if KN_DEV_TOOLS
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.Offset;
 
       GuiDashLight(gui, ref x, ref y, width, height);
-#endif
 
       y = yBegin;
       x += width;
@@ -527,19 +525,18 @@ namespace KN_Lights {
       gui.Dummy(x, y, buttonWidth + Gui.Offset, 0.0f);
     }
 
-#if KN_DEV_TOOLS
     private void GuiDashLight(Gui gui, ref float x, ref float y, float width, float height) {
       float widthPos = width / 3.0f - Gui.OffsetSmall / 2.0f - 1.0f;
 
       bool enabled = activeLights_?.DashLight.Enabled ?? false;
-      if (gui.TextButton(ref x, ref y, width, height, "DASH LIGHT ENABLED", enabled ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("dash_enabled"), enabled ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
           activeLights_.DashLight.Enabled = !activeLights_.DashLight.Enabled;
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
-      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("color"), Skin.ButtonSkin.Normal)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("dash_color"), Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
           Core.CarPicker.IsPicking = false;
           Core.ColorPicker.Toggle(activeLights_.DashLight.Color, false);
@@ -548,6 +545,7 @@ namespace KN_Lights {
         }
       }
 
+#if KN_DEV_TOOLS
       float brightness = activeLights_?.DashLight.Brightness ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref brightness, 0.1f, 10.0f, $"DASH LIGHT BRIGHTNESS: {brightness:F1}")) {
         if (activeLights_ != null) {
@@ -593,8 +591,9 @@ namespace KN_Lights {
         }
       }
       x = tx;
-    }
 #endif
+    }
+
 
     private void EnableLightsOn(KnCar car, bool select = true) {
       bool player = car == Core.PlayerCar;

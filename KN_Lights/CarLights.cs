@@ -156,6 +156,7 @@ namespace KN_Lights {
       data.Add("ty", TailLights.Offset.y);
       data.Add("tz", TailLights.Offset.z);
 
+      data.Add("de", DashLight.Enabled);
       data.Add("dc", KnUtils.EncodeColor(DashLight.Color));
 
       udp.Send(data);
@@ -187,6 +188,7 @@ namespace KN_Lights {
       z = data.Data.GetFloat("tz");
       var tlOffset = new Vector3(x, y, z);
 
+      bool dashEnabled = data.Data.GetBool("de");
       var dashColor = KnUtils.DecodeColor(data.Data.GetInt("dc"));
 
       HeadLights.Color = color;
@@ -204,6 +206,7 @@ namespace KN_Lights {
       TailLights.EnabledLeft = tlEnabledL;
       TailLights.EnabledRight = tlEnabledR;
 
+      DashLight.Enabled = dashEnabled;
       DashLight.Color = dashColor;
     }
 
