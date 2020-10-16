@@ -117,7 +117,6 @@ namespace KN_Lights {
           il.color = color_;
           ir.color = color_;
         }
-
       }
     }
 
@@ -129,19 +128,21 @@ namespace KN_Lights {
         if (KnCar.IsNull(Car)) {
           return;
         }
+        float pitch = inverted_ ? 180.0f - pitch_ : pitch_;
+
         var rot = Car.Transform.rotation;
         if (Left != null) {
-          Left.transform.rotation = rot * Quaternion.AngleAxis(pitch_, Vector3.right);
+          Left.transform.rotation = rot * Quaternion.AngleAxis(pitch, Vector3.right);
         }
         if (Right != null) {
-          Right.transform.rotation = rot * Quaternion.AngleAxis(pitch_, Vector3.right);
+          Right.transform.rotation = rot * Quaternion.AngleAxis(pitch, Vector3.right);
         }
 
         if (DebugLeft != null) {
-          DebugLeft.transform.rotation = rot * Quaternion.AngleAxis(90.0f + pitch_, Vector3.right);
+          DebugLeft.transform.rotation = rot * Quaternion.AngleAxis(pitch, Vector3.right);
         }
         if (DebugRight != null) {
-          DebugRight.transform.rotation = rot * Quaternion.AngleAxis(90.0f + pitch_, Vector3.right);
+          DebugRight.transform.rotation = rot * Quaternion.AngleAxis(pitch, Vector3.right);
         }
       }
     }
@@ -193,7 +194,10 @@ namespace KN_Lights {
       }
     }
 
-    public LightsSet(Color color, float pitch, float brightness, float angle, Vector3 offset, bool enabledLeft, bool enabledRight) {
+    private readonly bool inverted_;
+
+    public LightsSet(Color color, float pitch, float brightness, float angle, Vector3 offset, bool enabledLeft, bool enabledRight, bool inverted) {
+      inverted_ = inverted;
       illumination_ = true;
       enabledLeft_ = enabledLeft;
       enabledRight_ = enabledRight;
@@ -205,7 +209,8 @@ namespace KN_Lights {
       Offset = offset;
     }
 
-    public LightsSet(BinaryReader reader) {
+    public LightsSet(BinaryReader reader, bool inverted) {
+      inverted_ = inverted;
       Deserialize(reader);
 
       illumination_ = true;
@@ -235,7 +240,7 @@ namespace KN_Lights {
     }
 
     public LightsSet Copy() {
-      var set = new LightsSet(color_, pitch_, brightness_, angle_, Offset, enabledLeft_, enabledRight_);
+      var set = new LightsSet(color_, pitch_, brightness_, angle_, Offset, enabledLeft_, enabledRight_, inverted_);
       return set;
     }
 
