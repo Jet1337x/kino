@@ -275,6 +275,13 @@ namespace KN_Lights {
 
       GuiDashLight(gui, ref x, ref y, width, height);
 
+#if KN_DEV_TOOLS
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.Offset;
+
+      GuiHazardLight(gui, ref x, ref y, width, height);
+#endif
+
       y = yBegin;
       x += width;
 
@@ -448,7 +455,7 @@ namespace KN_Lights {
 
       // it's because the width is odd
       widthPos += 1.0f;
-      if (gui.SliderH(ref x, ref y, widthPos, ref offset.z, MinPosBoundZ, -MaxPosBoundZ, $"Z: {offset.z:F}")) {
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.z, -MinPosBoundZ, -MaxPosBoundZ, $"Z: {offset.z:F}")) {
         if (activeLights_ != null) {
           activeLights_.TailLights.Offset = offset;
           shouldSync_ = activeLights_ == ownLights_;
@@ -594,6 +601,77 @@ namespace KN_Lights {
 #endif
     }
 
+#if KN_DEV_TOOLS
+    private void GuiHazardLight(Gui gui, ref float x, ref float y, float width, float height) {
+      bool rh = activeLights_?.HazardLights.Enabled ?? false;
+      if (gui.TextButton(ref x, ref y, width, height, "HAZARD LIGHTS ENABLED", rh ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+        if (activeLights_ != null) {
+          activeLights_.HazardLights.Enabled = !activeLights_.HazardLights.Enabled;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      float brightness = activeLights_?.HazardLights.Brightness ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref brightness, 1.0f, 20.0f, $"HAZARD LIGHT BRIGHTNESS: {brightness:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.HazardLights.Brightness = brightness;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      float range = activeLights_?.HazardLights.Range ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref range, 0.05f, 1.0f, $"HAZARD LIGHT RANGE: {range:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HazardLights.Range = range;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      var offset = activeLights_?.HazardLights.OffsetFront ?? Vector3.zero;
+      if (gui.SliderH(ref x, ref y, width, ref offset.x, MinPosBound, MaxPosBound, $"FRONT X: {offset.x:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HazardLights.OffsetFront = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref offset.y, MinPosBound, MaxPosBound, $"FRONT Y: {offset.y:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HazardLights.OffsetFront = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref offset.z, MinPosBoundZ, MaxPosBoundZ, $"FRONT Z: {offset.z:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HazardLights.OffsetFront = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      offset = activeLights_?.HazardLights.OffsetRear ?? Vector3.zero;
+      if (gui.SliderH(ref x, ref y, width, ref offset.x, MinPosBound, MaxPosBound, $"REAR X: {offset.x:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HazardLights.OffsetRear = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref offset.y, MinPosBound, MaxPosBound, $"REAR Y: {offset.y:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HazardLights.OffsetRear = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      if (gui.SliderH(ref x, ref y, width, ref offset.z, -MinPosBoundZ, -MaxPosBoundZ, $"REAR Z: {offset.z:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HazardLights.OffsetRear = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+    }
+#endif
 
     private void EnableLightsOn(KnCar car, bool select = true) {
       bool player = car == Core.PlayerCar;
