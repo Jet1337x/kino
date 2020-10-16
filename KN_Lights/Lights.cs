@@ -474,7 +474,7 @@ namespace KN_Lights {
     }
 
     private void GuiLightsList(Gui gui, ref float x, ref float y) {
-      const float listHeight = 385.0f;
+      const float listHeight = 435.0f;
       const float widthScale = 1.2f;
       const float buttonWidth = Gui.Width * widthScale;
 
@@ -563,6 +563,9 @@ namespace KN_Lights {
       }
 
 #if KN_DEV_TOOLS
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.Offset;
+
       float brightness = activeLights_?.DashLight.Brightness ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref brightness, 0.1f, 10.0f, $"DASH LIGHT BRIGHTNESS: {brightness:F1}")) {
         if (activeLights_ != null) {
@@ -618,6 +621,9 @@ namespace KN_Lights {
       }
 
 #if KN_DEV_TOOLS
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.Offset;
+
       bool rh = activeLights_?.HazardLights.Enabled ?? false;
       if (gui.TextButton(ref x, ref y, width, height, "HAZARD LIGHTS ENABLED", rh ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
