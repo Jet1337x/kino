@@ -135,11 +135,22 @@ namespace KN_Lights {
 
     public override void OnUdpData(SmartfoxDataPackage data) {
       int type = data.Data.GetInt("type");
-      if (type != Udp.TypeLights) {
+
+      if (type != Udp.TypeLights && type != Udp.TypeHazard) {
         return;
       }
 
       int id = data.Data.GetInt("id");
+
+      if (type == Udp.TypeHazard) {
+        foreach (var cl in nwLightsConfig_.Lights) {
+          if (!KnCar.IsNull(cl.Car) && cl.Car.IsNetworkCar && cl.Car.Base.networkPlayer.NetworkID == id) {
+            cl.HandleHazard(data);
+            break;
+          }
+        }
+        return;
+      }
 
       foreach (var car in Core.Cars) {
         if (car.IsNetworkCar && car.Base.networkPlayer.NetworkID == id) {
@@ -275,12 +286,12 @@ namespace KN_Lights {
 
       GuiDashLight(gui, ref x, ref y, width, height);
 
-#if KN_DEV_TOOLS
-      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.Offset;
+      if (activeLights_ == ownLights_) {
+        gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+        y += Gui.Offset;
 
-      GuiHazardLight(gui, ref x, ref y, width, height);
-#endif
+        GuiHazardLight(gui, ref x, ref y, width, height);
+      }
 
       y = yBegin;
       x += width;
@@ -601,8 +612,16 @@ namespace KN_Lights {
 #endif
     }
 
-#if KN_DEV_TOOLS
     private void GuiHazardLight(Gui gui, ref float x, ref float y, float width, float height) {
+      bool hazard = activeLights_?.Hazard ?? false;
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hazard_lights"), hazard ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+        if (activeLights_ != null) {
+          activeLights_.Hazard = !activeLights_.Hazard;
+          SendHazardData();
+        }
+      }
+
+#if KN_DEV_TOOLS
       bool rh = activeLights_?.HazardLights.Enabled ?? false;
       if (gui.TextButton(ref x, ref y, width, height, "HAZARD LIGHTS ENABLED", rh ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
@@ -670,8 +689,8 @@ namespace KN_Lights {
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
-    }
 #endif
+    }
 
     private void EnableLightsOn(KnCar car, bool select = true) {
       bool player = car == Core.PlayerCar;
@@ -830,6 +849,17 @@ namespace KN_Lights {
 
       shouldSync_ = false;
       ownLights_.Send(id, Core.Udp);
+      
+      SendHazardData();
+    }
+
+    private void SendHazardData() {
+      int id = NetworkController.InstanceGame?.LocalPlayer?.NetworkID ?? -1;
+      if (id == -1 || ownLights_ == null) {
+        return;
+      }
+
+      ownLights_.SendHazard(id, Core.Udp);
     }
   }
 }

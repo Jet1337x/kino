@@ -103,6 +103,7 @@
   <key id="remove_all_lights" value="REMOVE ALL LIGHTS"/>
   <key id="dash_enabled" value="DASH LIGHT ENABLED"/>
   <key id="dash_color" value="DASH LIGHT COLOR"/>
+  <key id="hazard_lights" value="HAZARD LIGHTS"/>
 
   <!--WORLD LIGHTS-->
   <key id="fog" value="FOG"/>

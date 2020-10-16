@@ -6,6 +6,7 @@ namespace KN_Lights {
   public class HazardLights {
     public const float DefaultBrightness = 10.0f;
     public const float DefaultRange = 1.0f;
+    private const float HazardToggleTime = 0.85f;
 
     private static readonly int BaseColorMap = Shader.PropertyToID("_BaseColorMap");
 
@@ -136,6 +137,9 @@ namespace KN_Lights {
         }
       }
     }
+
+    private bool hazardMode_;
+    private float hazardTimer_;
 
     public HazardLights(Color color, float brightness, float range, Vector3 offsetFront, Vector3 offsetRear) {
       color_ = color;
@@ -274,6 +278,24 @@ namespace KN_Lights {
       MakeLight(ref fr, color_, brightness_, range_);
       MakeLight(ref rl, color_, brightness_, range_);
       MakeLight(ref rr, color_, brightness_, range_);
+    }
+
+    public void Reset(bool enabled) {
+      hazardMode_ = enabled;
+      Enabled = enabled;
+      hazardTimer_ = 0.0f;
+    }
+
+    public void LateUpdate() {
+      if (!hazardMode_) {
+        return;
+      }
+
+      hazardTimer_ += Time.deltaTime;
+      if (hazardTimer_ >= HazardToggleTime) {
+        hazardTimer_ = 0.0f;
+        Enabled = !Enabled;
+      }
     }
 
     public static void MakeLight(ref Light light, Color color, float power, float range) {

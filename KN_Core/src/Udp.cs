@@ -6,6 +6,7 @@ namespace KN_Core {
     public const int TypeSuspension = 0xE4;
     public const int TypeSwaps = 0xE6;
     public const int TypeLights = 0xE7;
+    public const int TypeHazard = 0xE8;
 
     public SmartfoxRoomClient Room { get; private set; }
     public SmartfoxClient Client { get; private set; }

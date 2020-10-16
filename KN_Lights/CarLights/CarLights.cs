@@ -22,7 +22,7 @@ namespace KN_Lights {
         HeadLights.Enabled = !discarded_;
         TailLights.Enabled = !discarded_;
         DashLight.Enabled = !discarded_;
-        HazardLights.Enabled = !discarded_;
+        HazardLights.Enabled = false;
       }
     }
 
@@ -40,6 +40,15 @@ namespace KN_Lights {
         TailLights.Debug = debug_;
         DashLight.Debug = debug_;
         HazardLights.Debug = debug_;
+      }
+    }
+
+    private bool hazard_;
+    public bool Hazard {
+      get => hazard_;
+      set {
+        hazard_ = value;
+        HazardLights?.Reset(hazard_);
       }
     }
 
@@ -62,7 +71,8 @@ namespace KN_Lights {
       HeadLights = new LightsSet(Color.white, 0.0f, 1500.0f, 100.0f, new Vector3(0.6f, 0.6f, 1.9f), true, true, false);
       TailLights = new LightsSet(Color.red, 0.0f, 30.0f, 170.0f, new Vector3(0.6f, 0.6f, -1.6f), true, true, true);
       DashLight = new DashLight(Color.white, DashLight.DefaultBrightness, DashLight.DefaultRange, new Vector3(0.0f, 0.6f, 1.0f), true);
-      HazardLights = new HazardLights(Color.yellow, HazardLights.DefaultBrightness, HazardLights.DefaultRange, new Vector3(0.6f, 0.6f, 2.2f), new Vector3(0.6f, 0.6f, -2.2f));
+      HazardLights = new HazardLights(new Color32(0xd7, 0x90, 0x00, 0xff), HazardLights.DefaultBrightness, HazardLights.DefaultRange,
+        new Vector3(0.6f, 0.6f, 2.2f), new Vector3(0.6f, 0.6f, -2.2f));
     }
 
     private CarLights(int carId, bool nwCar, string name) {
@@ -117,6 +127,10 @@ namespace KN_Lights {
 
     public void LateUpdate() {
       if (!KnCar.IsNull(Car) && cxCar_ != null && !Discarded) {
+        if (hazard_) {
+          HazardLights.LateUpdate();
+        }
+
         float brakePower = TailLights.Brightness;
         if (cxCar_.brake > 0.2f) {
           brakePower = TailLights.Brightness * BrakePower;
@@ -215,6 +229,22 @@ namespace KN_Lights {
 
       DashLight.Enabled = dashEnabled;
       DashLight.Color = dashColor;
+    }
+
+    public void SendHazard(int id, Udp udp) {
+      var data = new SmartfoxDataPackage(PacketId.Subroom);
+      data.Add("1", (byte) 25);
+      data.Add("type", Udp.TypeHazard);
+
+      data.Add("id", id);
+      data.Add("v", Hazard);
+
+      udp.Send(data);
+    }
+
+    public void HandleHazard(SmartfoxDataPackage data) {
+      IsNwCar = true;
+      Hazard = data.Data.GetBool("v");
     }
 
     public void Serialize(BinaryWriter writer) {
