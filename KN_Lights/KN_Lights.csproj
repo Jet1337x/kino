@@ -79,6 +79,7 @@
     <ItemGroup>
         <Compile Include="CarLights.cs" />
         <Compile Include="LightsConfig.cs" />
+        <Compile Include="LightsSet.cs" />
         <Compile Include="Loader.cs" />
         <Compile Include="Lights.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

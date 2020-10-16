@@ -10,7 +10,7 @@ namespace KN_Lights {
     }
 
     public void AddLights(CarLights lights) {
-      int id = Lights.FindIndex(cl => cl.Car == lights.Car);
+      int id = Lights.FindIndex(cl => cl.Car == lights.Car && cl.Sid == (lights.Car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue));
       if (id != -1) {
         Lights[id] = lights;
         return;
@@ -36,8 +36,8 @@ namespace KN_Lights {
     public NwLightsConfig(List<CarLights> lights) {
       Lights = lights;
     }
-    public CarLights GetLights(int carId, string user) {
-      return Lights.FirstOrDefault(cl => cl.CarId == carId && cl.UserName == user);
+    public CarLights GetLights(int carId, ulong sid) {
+      return Lights.FirstOrDefault(cl => cl.CarId == carId && cl.Sid == sid);
     }
   }
 }

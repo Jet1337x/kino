@@ -1,3 +1,4 @@
+using System.IO;
 using System.Reflection;
 using BepInEx.Bootstrap;
 using KN_Loader;
@@ -88,6 +89,16 @@ namespace KN_Core {
           flyMod.Instance.enabled = false;
         }
       }
+    }
+
+    public static void WriteVec3(BinaryWriter writer, Vector3 vec) {
+      writer.Write(vec.x);
+      writer.Write(vec.y);
+      writer.Write(vec.z);
+    }
+
+    public static Vector3 ReadVec3(BinaryReader reader) {
+      return new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
     }
   }
 }
