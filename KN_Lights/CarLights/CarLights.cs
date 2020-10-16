@@ -237,14 +237,14 @@ namespace KN_Lights {
       data.Add("type", Udp.TypeHazard);
 
       data.Add("id", id);
-      data.Add("v", Hazard);
+      data.Add("hz", Hazard);
 
       udp.Send(data);
     }
 
     public void HandleHazard(SmartfoxDataPackage data) {
       IsNwCar = true;
-      Hazard = data.Data.GetBool("v");
+      Hazard = data.Data.GetBool("hz");
     }
 
     public void Serialize(BinaryWriter writer) {
