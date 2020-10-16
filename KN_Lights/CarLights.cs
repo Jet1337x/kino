@@ -21,11 +21,13 @@ namespace KN_Lights {
         discarded_ = value;
         HeadLights.Enabled = !discarded_;
         TailLights.Enabled = !discarded_;
+        DashLight.Enabled = !discarded_;
       }
     }
 
     public LightsSet HeadLights { get; private set; }
     public LightsSet TailLights { get; private set; }
+    public DashLight DashLight { get; private set; }
 
     private bool debug_;
     public bool Debug {
@@ -34,6 +36,7 @@ namespace KN_Lights {
         debug_ = value;
         HeadLights.Debug = debug_;
         TailLights.Debug = debug_;
+        DashLight.Debug = debug_;
       }
     }
 
@@ -53,41 +56,9 @@ namespace KN_Lights {
       Sid = ulong.MaxValue;
       Name = string.Empty;
 
-      HeadLights = new LightsSet(Color.white, 0.0f, 1500.0f, 100.0f, new Vector3(0.6f, 0.6f, 1.9f), true, true);
-      TailLights = new LightsSet(Color.red, 0.0f, 30.0f, 170.0f, new Vector3(0.6f, 0.6f, -1.6f), true, true);
-    }
-
-    public CarLights(SmartfoxDataPackage data, KnCar car) {
-      IsNwCar = true;
-      CarId = car.Id;
-      IsNetworkCar = true;
-      Sid = car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue;
-
-      var color = KnUtils.DecodeColor(data.Data.GetInt("c"));
-      float hlPitch = data.Data.GetFloat("p");
-      float hlBrightness = data.Data.GetFloat("hlb");
-      float hlAngle = data.Data.GetFloat("hla");
-      float tlPitch = data.Data.GetFloat("pt");
-      float tlBrightness = data.Data.GetFloat("tlb");
-      float tlAngle = data.Data.GetFloat("tla");
-
-      bool hlEnabledL = data.Data.GetBool("hle");
-      bool hlEnabledR = data.Data.GetBool("lre");
-
-      float x = data.Data.GetFloat("hx");
-      float y = data.Data.GetFloat("hy");
-      float z = data.Data.GetFloat("hz");
-      var hlOffset = new Vector3(x, y, z);
-
-      bool tlEnabledL = data.Data.GetBool("tle");
-      bool tlEnabledR = data.Data.GetBool("tre");
-      x = data.Data.GetFloat("tx");
-      y = data.Data.GetFloat("ty");
-      z = data.Data.GetFloat("tz");
-      var tlOffset = new Vector3(x, y, z);
-
-      HeadLights = new LightsSet(color, hlPitch, hlBrightness, hlAngle, hlOffset, hlEnabledL, hlEnabledR);
-      TailLights = new LightsSet(Color.red, tlPitch, tlBrightness, tlAngle, tlOffset, tlEnabledL, tlEnabledR);
+      HeadLights = new LightsSet(Color.white, 0.0f, 1500.0f, 100.0f, new Vector3(0.6f, 0.6f, 1.9f), true, true, false);
+      TailLights = new LightsSet(Color.red, 0.0f, 30.0f, 170.0f, new Vector3(0.6f, 0.6f, -1.6f), true, true, true);
+      DashLight = new DashLight(Color.white, DashLight.DefaultBrightness, DashLight.DefaultRange, new Vector3(0.0f, 0.6f, 1.0f), true);
     }
 
     private CarLights(int carId, bool nwCar, string name) {
@@ -100,6 +71,7 @@ namespace KN_Lights {
     public void Dispose() {
       HeadLights.Dispose();
       TailLights.Dispose();
+      DashLight.Dispose();
 
       if (!KnCar.IsNull(Car)) {
         if (Singletone<Simulator>.instance) {
@@ -111,7 +83,8 @@ namespace KN_Lights {
     public CarLights Copy() {
       var lights = new CarLights(CarId, IsNetworkCar, Name) {
         HeadLights = HeadLights.Copy(),
-        TailLights = TailLights.Copy()
+        TailLights = TailLights.Copy(),
+        DashLight = DashLight.Copy()
       };
 
       return lights;
@@ -127,6 +100,7 @@ namespace KN_Lights {
 
       HeadLights.Attach(car, false, Color.white);
       TailLights.Attach(car, true, Color.red);
+      DashLight.Attach(car);
 
       cxCar_ = Car.Base.GetComponent<CARXCar>();
       if (Singletone<Simulator>.instance) {
@@ -182,6 +156,8 @@ namespace KN_Lights {
       data.Add("ty", TailLights.Offset.y);
       data.Add("tz", TailLights.Offset.z);
 
+      data.Add("dc", KnUtils.EncodeColor(DashLight.Color));
+
       udp.Send(data);
     }
 
@@ -211,6 +187,8 @@ namespace KN_Lights {
       z = data.Data.GetFloat("tz");
       var tlOffset = new Vector3(x, y, z);
 
+      var dashColor = KnUtils.DecodeColor(data.Data.GetInt("dc"));
+
       HeadLights.Color = color;
       HeadLights.Pitch = hlPitch;
       HeadLights.Brightness = hlBrightness;
@@ -225,6 +203,8 @@ namespace KN_Lights {
       TailLights.Offset = tlOffset;
       TailLights.EnabledLeft = tlEnabledL;
       TailLights.EnabledRight = tlEnabledR;
+
+      DashLight.Color = dashColor;
     }
 
     public void Serialize(BinaryWriter writer) {
@@ -234,6 +214,7 @@ namespace KN_Lights {
 
       HeadLights.Serialize(writer);
       TailLights.Serialize(writer);
+      DashLight.Serialize(writer);
     }
 
     public bool Deserialize(BinaryReader reader, int version) {
@@ -245,8 +226,9 @@ namespace KN_Lights {
       IsNetworkCar = reader.ReadBoolean();
       Sid = reader.ReadUInt64();
 
-      HeadLights = new LightsSet(reader);
-      TailLights = new LightsSet(reader);
+      HeadLights = new LightsSet(reader, false);
+      TailLights = new LightsSet(reader, true);
+      DashLight = new DashLight(reader);
 
       return true;
     }

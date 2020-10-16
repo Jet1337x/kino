@@ -22,7 +22,7 @@ namespace KN_Lights {
     private const string NwLightsConfigFile = "kn_nwlights.knl";
     private const string LightsConfigDefault = "kn_lights_default.knl";
 #if KN_DEV_TOOLS
-    private const string LightsDevConfigFile = "kn_lights_dev.knl";
+    private const string LightsDevConfigFile = "dev/kn_lights_dev.knl";
 #endif
 
     private LightsConfig lightsConfig_;
@@ -48,6 +48,8 @@ namespace KN_Lights {
     private readonly Timer syncTimer_;
     private readonly Timer joinTimer_;
 
+    private bool pickHeadLightsColor_;
+
     private readonly Settings settings_;
 
     public Lights(Core core, int version, int patch, int clientVersion) : base(core, "lights", 0, version, patch, clientVersion) {
@@ -65,6 +67,8 @@ namespace KN_Lights {
 
       joinTimer_ = new Timer(5.0f, true);
       joinTimer_.Callback += SendLightsData;
+
+      pickHeadLightsColor_ = true;
     }
 
     public override void OnStart() {
@@ -152,11 +156,11 @@ namespace KN_Lights {
           }
 
           if (!found) {
-            var lights = new CarLights(data, car);
+            var lights = CreateLights(car, nwLightsConfig_, false);
+            lights.ModifyFrom(data);
             if (autoAddLights_) {
               EnableLightsOn(car, false);
             }
-            nwLightsConfig_.AddLights(lights);
           }
           break;
         }
@@ -192,9 +196,19 @@ namespace KN_Lights {
       }
 
       if (Core.ColorPicker.IsPicking) {
-        if (activeLights_ != null && Core.ColorPicker.PickedColor != activeLights_.HeadLights.Color) {
-          activeLights_.HeadLights.Color = Core.ColorPicker.PickedColor;
-          shouldSync_ = activeLights_ == ownLights_;
+        if (activeLights_ != null) {
+          if (pickHeadLightsColor_) {
+            if (Core.ColorPicker.PickedColor != activeLights_.HeadLights.Color) {
+              activeLights_.HeadLights.Color = Core.ColorPicker.PickedColor;
+              shouldSync_ = activeLights_ == ownLights_;
+            }
+          }
+          else {
+            if (Core.ColorPicker.PickedColor != activeLights_.DashLight.Color) {
+              activeLights_.DashLight.Color = Core.ColorPicker.PickedColor;
+              shouldSync_ = activeLights_ == ownLights_;
+            }
+          }
         }
       }
     }
@@ -218,6 +232,7 @@ namespace KN_Lights {
 
       if (gui.TextButton(ref x, ref y, width, height, Locale.Get("lights_enable_own"), Skin.ButtonSkin.Normal)) {
         Core.ColorPicker.Reset();
+        pickHeadLightsColor_ = true;
         EnableLightsOn(Core.PlayerCar);
       }
 
@@ -254,6 +269,13 @@ namespace KN_Lights {
       y += Gui.Offset;
 
       GuiTailLights(gui, ref x, ref y, width, height);
+
+#if KN_DEV_TOOLS
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.Offset;
+
+      GuiDashLight(gui, ref x, ref y, width, height);
+#endif
 
       y = yBegin;
       x += width;
@@ -297,6 +319,7 @@ namespace KN_Lights {
         if (activeLights_ != null) {
           Core.CarPicker.IsPicking = false;
           Core.ColorPicker.Toggle(activeLights_.HeadLights.Color, false);
+          pickHeadLightsColor_ = true;
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
@@ -457,6 +480,7 @@ namespace KN_Lights {
       if (gui.TextButton(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("add_lights_to"), Skin.ButtonSkin.Normal)) {
         Core.CarPicker.Toggle();
         Core.ColorPicker.Reset();
+        pickHeadLightsColor_ = true;
       }
 
       GUI.enabled = carLights_.Count > 0;
@@ -503,6 +527,75 @@ namespace KN_Lights {
       gui.Dummy(x, y, buttonWidth + Gui.Offset, 0.0f);
     }
 
+#if KN_DEV_TOOLS
+    private void GuiDashLight(Gui gui, ref float x, ref float y, float width, float height) {
+      float widthPos = width / 3.0f - Gui.OffsetSmall / 2.0f - 1.0f;
+
+      bool enabled = activeLights_?.DashLight.Enabled ?? false;
+      if (gui.TextButton(ref x, ref y, width, height, "DASH LIGHT ENABLED", enabled ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+        if (activeLights_ != null) {
+          activeLights_.DashLight.Enabled = !activeLights_.DashLight.Enabled;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("color"), Skin.ButtonSkin.Normal)) {
+        if (activeLights_ != null) {
+          Core.CarPicker.IsPicking = false;
+          Core.ColorPicker.Toggle(activeLights_.DashLight.Color, false);
+          pickHeadLightsColor_ = false;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      float brightness = activeLights_?.DashLight.Brightness ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref brightness, 0.1f, 10.0f, $"DASH LIGHT BRIGHTNESS: {brightness:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.DashLight.Brightness = brightness;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      float range = activeLights_?.DashLight.Range ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref range, 0.1f, 0.5f, $"DASH LIGHT RANGE: {range:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.DashLight.Range = range;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      float tx = x;
+      var offset = activeLights_?.DashLight.Offset ?? Vector3.zero;
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.x, -0.8f, 0.8f, $"X: {offset.x:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.DashLight.Offset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+      x += widthPos + Gui.OffsetSmall;
+      y -= Gui.Height + Gui.Offset;
+
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.y, 0.4f, 1.5f, $"Y: {offset.y:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.DashLight.Offset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+      x += widthPos + Gui.OffsetSmall;
+      y -= Gui.Height + Gui.Offset;
+
+      // it's because the width is odd
+      widthPos += 1.0f;
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.z, 1.5f, -0.5f, $"Z: {offset.z:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.DashLight.Offset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+      x = tx;
+    }
+#endif
+
     private void EnableLightsOn(KnCar car, bool select = true) {
       bool player = car == Core.PlayerCar;
 
@@ -542,7 +635,7 @@ namespace KN_Lights {
       }
     }
 
-    private CarLights CreateLights(KnCar car, LightsConfigBase config) {
+    private CarLights CreateLights(KnCar car, LightsConfigBase config, bool attach = true) {
       var l = lightsConfigDefault_.GetLights(car.Id);
       if (l == null) {
         l = new CarLights();
@@ -550,7 +643,9 @@ namespace KN_Lights {
       }
 
       var light = l.Copy();
-      light.Attach(car);
+      if (attach) {
+        light.Attach(car);
+      }
       config.AddLights(light);
       Log.Write($"[KN_CarLights]: Car lights attached to '{car.Id}'");
 
@@ -561,6 +656,7 @@ namespace KN_Lights {
       if (Controls.KeyDown("toggle_lights")) {
         if (ownLights_ == null) {
           Core.ColorPicker.Reset();
+          pickHeadLightsColor_ = true;
           EnableLightsOn(Core.PlayerCar);
         }
         else {

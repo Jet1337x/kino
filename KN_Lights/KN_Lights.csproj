@@ -78,6 +78,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="CarLights.cs" />
+        <Compile Include="DashLight.cs" />
         <Compile Include="LightsConfig.cs" />
         <Compile Include="LightsSet.cs" />
         <Compile Include="Loader.cs" />
