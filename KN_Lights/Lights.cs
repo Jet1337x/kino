@@ -521,6 +521,7 @@ namespace KN_Lights {
                 activeLights_ = null;
               }
               if (cl == ownLights_) {
+                ToggleHazards();
                 ownLights_ = null;
               }
               cl.Dispose();
@@ -613,10 +614,7 @@ namespace KN_Lights {
     private void GuiHazardLight(Gui gui, ref float x, ref float y, float width, float height) {
       bool hazard = activeLights_?.Hazard ?? false;
       if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hazard_lights"), hazard ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
-        if (activeLights_ != null) {
-          activeLights_.Hazard = !activeLights_.Hazard;
-          SendHazardData();
-        }
+        ToggleHazards();
       }
 
 #if KN_DEV_TOOLS
@@ -759,8 +757,13 @@ namespace KN_Lights {
           }
           ownLights_.Dispose();
           carLights_.Remove(ownLights_);
+          ToggleHazards();
           ownLights_ = null;
         }
+      }
+
+      if (Controls.KeyDown("toggle_hazards")) {
+        ToggleHazards();
       }
     }
 
@@ -809,6 +812,7 @@ namespace KN_Lights {
           activeLights_ = null;
         }
         if (l == ownLights_) {
+          ToggleHazards();
           ownLights_ = null;
         }
         l.Dispose();
@@ -830,12 +834,20 @@ namespace KN_Lights {
             activeLights_ = null;
           }
           if (ownLights_ == cl) {
+            ToggleHazards();
             ownLights_ = null;
           }
           cl.Dispose();
           carLights_.Remove(cl);
         }
         carLightsToRemove_.Clear();
+      }
+    }
+
+    private void ToggleHazards() {
+      if (ownLights_ != null) {
+        ownLights_.Hazard = !ownLights_.Hazard;
+        SendHazardData();
       }
     }
 

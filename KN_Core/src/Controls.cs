@@ -128,6 +128,7 @@ namespace KN_Core {
       defaultButtons_["fast"] = new object[] {KeyCode.LeftShift};
       defaultButtons_["slow"] = new object[] {KeyCode.LeftControl};
 
+      defaultButtons_["toggle_hazards"] = new object[] {KeyCode.PageUp};
       defaultButtons_["toggle_lights"] = new object[] {KeyCode.PageDown};
 
       // air
