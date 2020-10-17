@@ -24,6 +24,10 @@ namespace KN_Core {
 
     public const string FloatRegex = @"^[0-9]*(?:\.[0-9]*)?$";
 
+    public const float Low = 0.0f;
+    public const float Medium = 1.0f;
+    public const float High = 2.0f;
+
     public static string BaseDir { get; private set; }
     public static string ReplaysDir { get; private set; }
     public static string VisualsDir { get; private set; }
@@ -212,6 +216,7 @@ namespace KN_Core {
       defaultParams_["custom_tach"] = false;
 
       defaultParams_["cl_discard_distance"] = 90.0f;
+      defaultParams_["lights_quality"] = Medium;
 
       defaultParams_["sync_lights"] = true;
 
@@ -243,16 +248,19 @@ namespace KN_Core {
           params_[p.Key] = p.Value;
         }
         if (p.Key == "air_step_max") {
-          params_[p.Key] = Mathf.Clamp((float) p.Value, 0.01f, 3.0f);
+          params_[p.Key] = Mathf.Clamp((float) params_[p.Key], 0.01f, 3.0f);
         }
         else if (p.Key == "air_height_max") {
-          params_[p.Key] = Mathf.Clamp((float) p.Value, 0.25f, 0.5f);
+          params_[p.Key] = Mathf.Clamp((float) params_[p.Key], 0.25f, 0.5f);
         }
         else if (p.Key == "air_height_min") {
-          params_[p.Key] = Mathf.Clamp((float) p.Value, 0.01f, 0.1f);
+          params_[p.Key] = Mathf.Clamp((float) params_[p.Key], 0.01f, 0.1f);
         }
         else if (p.Key == "cl_discard_distance") {
-          params_[p.Key] = Mathf.Clamp((float) p.Value, 50.0f, 200.0f);
+          params_[p.Key] = Mathf.Clamp((float) params_[p.Key], 50.0f, 200.0f);
+        }
+        else if (p.Key == "lights_quality") {
+          params_[p.Key] = Mathf.Clamp((float) params_[p.Key], Low, High);
         }
       }
 
@@ -265,6 +273,32 @@ namespace KN_Core {
       }).ToDictionary(p => p.Key, p => p.Value);
 
       Controls.Validate();
+    }
+
+    public static string GetQuality(float val) {
+      if (val >= Low - 0.5f && val <= Low + 0.5f) {
+        return "low";
+      }
+      if (val >= Medium - 0.5f && val <= Medium + 0.5f) {
+        return "medium";
+      }
+      if (val >= High - 0.5f && val <= High + 0.5f) {
+        return "high";
+      }
+      return "low";
+    }
+
+    public static float RoundQuality(float val) {
+      if (val >= Low - 0.5f && val <= Low + 0.5f) {
+        return Low;
+      }
+      if (val >= Medium - 0.5f && val <= Medium + 0.5f) {
+        return Medium;
+      }
+      if (val >= High - 0.5f && val <= High + 0.5f) {
+        return High;
+      }
+      return Low;
     }
   }
 }

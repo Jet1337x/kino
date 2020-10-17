@@ -24,6 +24,9 @@
   <key id="reload" value="RELOAD"/>
   <key id="front" value="FRONT"/>
   <key id="rear" value="REAR"/>
+  <key id="low" value="LOW"/>
+  <key id="medium" value="MEDIUM"/>
+  <key id="high" value="HIGH"/>
 
   <!--CORE-->
   <key id="input_locked" value="GAME CONTROLLS ARE LOCKED WHILE THE MOD MENU IS UP"/>
@@ -106,6 +109,7 @@
   <key id="dash_enabled" value="DASH LIGHT ENABLED"/>
   <key id="dash_color" value="DASH LIGHT COLOR"/>
   <key id="hazard_lights" value="HAZARD LIGHTS"/>
+  <key id="lights_quality" value="LIGHTS QUALITY"/>
 
   <!--WORLD LIGHTS-->
   <key id="fog" value="FOG"/>
