@@ -90,7 +90,7 @@ namespace KN_Core {
 
       foreach (var e in exhausts_) {
 #if KN_DEV_TOOLS
-        if (Input.GetKey(KeyCode.PageUp)) {
+        if (Input.GetKey(KeyCode.Delete)) {
           if (!e.Enabled) {
             e.Initialize();
           }
