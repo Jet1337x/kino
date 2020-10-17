@@ -62,6 +62,7 @@ namespace KN_Lights {
       carLights_ = new List<CarLights>();
 
       hazards_ = new Hazards(Core);
+      AddTab("hazard_lights", hazards_.OnGui);
 
       syncTimer_ = new Timer(0.5f);
       syncTimer_.Callback += SendLightsData;
@@ -250,7 +251,7 @@ namespace KN_Lights {
         EnableLightsOn(Core.PlayerCar);
       }
 
-      hazards_.OnGui(gui, ref x, ref y, width, height);
+      hazards_.GuiButton(gui, ref x, ref y, width, height);
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.Offset;

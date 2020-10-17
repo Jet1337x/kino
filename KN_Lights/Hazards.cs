@@ -112,29 +112,84 @@ namespace KN_Lights {
       }
     }
 
-    public void OnGui(Gui gui, ref float x, ref float y, float width, float height) {
+    public void GuiButton(Gui gui, ref float x, ref float y, float width, float height) {
       bool hazard = ownHazards_?.Hazard ?? false;
       if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hazard_lights"), hazard ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         ToggleHazards(false);
       }
+    }
 
-#if KN_DEV_TOOLS
-      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.Offset;
+    public bool OnGui(Gui gui, float x, float y) {
+      const float width = Gui.Width * 2.0f;
+      const float height = Gui.Height;
+      float widthPos = width / 3.0f - Gui.OffsetSmall / 2.0f - 1.0f;
 
-      bool hzEnabled = ownHazards_?.Enabled ?? false;
-      if (gui.TextButton(ref x, ref y, width, height, "HAZARD LIGHTS ENABLED", hzEnabled ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
-        if (ownHazards_ != null) {
-          ownHazards_.Enabled = !ownHazards_.Enabled;
-        }
-      }
+
+      GuiButton(gui, ref x, ref y, width, height);
 
       bool debugObjects = ownHazards_?.Debug ?? false;
-      if (gui.TextButton(ref x, ref y, width, height, "DEBUG OBJECTS", debugObjects ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("debug_obj"), debugObjects ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (ownHazards_ != null) {
           ownHazards_.Debug = !ownHazards_.Debug;
         }
       }
+
+      float tx = x;
+      var offset = ownHazards_?.OffsetFront ?? Vector3.zero;
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.x, Lights.MinPosBound, Lights.MaxPosBound, $"{Locale.Get("front")} X: {offset.x:F}")) {
+        if (ownHazards_ != null) {
+          ownHazards_.OffsetFront = offset;
+        }
+      }
+      x += widthPos + Gui.OffsetSmall;
+      y -= Gui.Height + Gui.Offset;
+
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.y, Lights.MinPosBound, Lights.MaxPosBound, $"{Locale.Get("front")} Y: {offset.y:F}")) {
+        if (ownHazards_ != null) {
+          ownHazards_.OffsetFront = offset;
+        }
+      }
+      x += widthPos + Gui.OffsetSmall;
+      y -= Gui.Height + Gui.Offset;
+
+      // it's because the width is odd
+      widthPos += 1.0f;
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.z, Lights.MinPosBoundZ, Lights.MaxPosBoundZ, $"{Locale.Get("front")} Z: {offset.z:F}")) {
+        if (ownHazards_ != null) {
+          ownHazards_.OffsetFront = offset;
+        }
+      }
+
+      widthPos -= 1.0f;
+      x = tx;
+      offset = ownHazards_?.OffsetRear ?? Vector3.zero;
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.x, Lights.MinPosBound, Lights.MaxPosBound, $"{Locale.Get("rear")} X: {offset.x:F}")) {
+        if (ownHazards_ != null) {
+          ownHazards_.OffsetRear = offset;
+        }
+      }
+      x += widthPos + Gui.OffsetSmall;
+      y -= Gui.Height + Gui.Offset;
+
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.y, Lights.MinPosBound, Lights.MaxPosBound, $"{Locale.Get("rear")} Y: {offset.y:F}")) {
+        if (ownHazards_ != null) {
+          ownHazards_.OffsetRear = offset;
+        }
+      }
+      x += widthPos + Gui.OffsetSmall;
+      y -= Gui.Height + Gui.Offset;
+
+      widthPos += 1.0f;
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.z, -Lights.MinPosBoundZ, -Lights.MaxPosBoundZ, $"{Locale.Get("rear")} Z: {offset.z:F}")) {
+        if (ownHazards_ != null) {
+          ownHazards_.OffsetRear = offset;
+        }
+      }
+      x = tx;
+
+#if KN_DEV_TOOLS
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.Offset;
 
       float brightness = ownHazards_?.Brightness ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref brightness, 1.0f, 20.0f, $"HAZARD LIGHT BRIGHTNESS: {brightness:F1}")) {
@@ -149,45 +204,9 @@ namespace KN_Lights {
           ownHazards_.Range = range;
         }
       }
-
-      var offset = ownHazards_?.OffsetFront ?? Vector3.zero;
-      if (gui.SliderH(ref x, ref y, width, ref offset.x, Lights.MinPosBound, Lights.MaxPosBound, $"FRONT X: {offset.x:F}")) {
-        if (ownHazards_ != null) {
-          ownHazards_.OffsetFront = offset;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offset.y, Lights.MinPosBound, Lights.MaxPosBound, $"FRONT Y: {offset.y:F}")) {
-        if (ownHazards_ != null) {
-          ownHazards_.OffsetFront = offset;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offset.z, Lights.MinPosBoundZ, Lights.MaxPosBoundZ, $"FRONT Z: {offset.z:F}")) {
-        if (ownHazards_ != null) {
-          ownHazards_.OffsetFront = offset;
-        }
-      }
-
-      offset = ownHazards_?.OffsetRear ?? Vector3.zero;
-      if (gui.SliderH(ref x, ref y, width, ref offset.x, Lights.MinPosBound, Lights.MaxPosBound, $"REAR X: {offset.x:F}")) {
-        if (ownHazards_ != null) {
-          ownHazards_.OffsetRear = offset;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offset.y, Lights.MinPosBound, Lights.MaxPosBound, $"REAR Y: {offset.y:F}")) {
-        if (ownHazards_ != null) {
-          ownHazards_.OffsetRear = offset;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offset.z, -Lights.MinPosBoundZ, -Lights.MaxPosBoundZ, $"REAR Z: {offset.z:F}")) {
-        if (ownHazards_ != null) {
-          ownHazards_.OffsetRear = offset;
-        }
-      }
 #endif
+
+      return false;
     }
 
     private HazardLights GetOrCreateHazards(int id) {

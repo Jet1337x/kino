@@ -22,6 +22,8 @@
   <key id="alpha" value="ALPHA"/>
   <key id="close" value="CLOSE"/>
   <key id="reload" value="RELOAD"/>
+  <key id="front" value="FRONT"/>
+  <key id="rear" value="REAR"/>
 
   <!--CORE-->
   <key id="input_locked" value="GAME CONTROLLS ARE LOCKED WHILE THE MOD MENU IS UP"/>
