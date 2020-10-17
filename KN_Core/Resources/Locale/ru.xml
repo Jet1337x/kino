@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="ru" author="John Sawyer">
   <!--MODS (TABS)-->
-  <key id="car_lights" value="ФАРЫ"/>
   <key id="world_lights" value="ОСВЕЩЕНИЕ"/>
   <key id="car_lights" value="ФАРЫ"/>
   <key id="visuals" value="ВИЗУАЛ"/>

@@ -33,6 +33,7 @@ namespace KN_Core {
 
     private bool swapsEnabled_;
     private bool shouldRequestSwaps_;
+    private bool reloadSwap_;
 
     private readonly bool dataLoaded_;
 
@@ -102,13 +103,18 @@ namespace KN_Core {
         }
       }
 
+      if (core_.IsCarChanged && !KnCar.IsNull(core_.PlayerCar)) {
+        reloadSwap_ = true;
+      }
+
       if (!Active) {
         return;
       }
 
       networkSwaps_.RemoveAll(s => s == null || s.Car == null);
 
-      if (core_.IsCarChanged && !KnCar.IsNull(core_.PlayerCar)) {
+      if (reloadSwap_ && !KnCar.IsNull(core_.PlayerCar)) {
+        reloadSwap_ = false;
         defaultSoundId_ = core_.PlayerCar.Base.metaInfo.name;
         defaultFinalDrive_ = core_.PlayerCar.CarX.finaldrive;
         defaultClutch_ = core_.PlayerCar.CarX.clutchMaxTorque;
@@ -254,27 +260,32 @@ namespace KN_Core {
         return;
       }
 
-      int id = data.Data.GetInt("id");
-      int engineId = data.Data.GetInt("ei");
-      float turbo = data.Data.GetFloat("tb");
-      float finalDrive = data.Data.GetFloat("fd");
+      try {
+        int id = data.Data.GetInt("id");
+        int engineId = data.Data.GetInt("ei");
+        float turbo = data.Data.GetFloat("tb");
+        float finalDrive = data.Data.GetFloat("fd");
 
-      foreach (var player in NetworkController.InstanceGame.Players) {
-        if (player.NetworkID == id) {
-          var engine = GetEngine(engineId);
+        foreach (var player in NetworkController.InstanceGame.Players) {
+          if (player.NetworkID == id) {
+            var engine = GetEngine(engineId);
 
-          var swap = new SwapData.Engine {
-            EngineId = engineId,
-            FinalDrive = finalDrive,
-            Turbo = turbo
-          };
+            var swap = new SwapData.Engine {
+              EngineId = engineId,
+              FinalDrive = finalDrive,
+              Turbo = turbo
+            };
 
-          var nwSwap = networkSwaps_.Find(s => s.NwId == id);
-          nwSwap?.SetData(swap, engine);
+            var nwSwap = networkSwaps_.Find(s => s.NwId == id);
+            nwSwap?.SetData(swap, engine);
 
-          SetEngine(player.userCar, swap, engine, id, false, core_.Settings.LogEngines);
-          break;
+            SetEngine(player.userCar, swap, engine, id, false, core_.Settings.LogEngines);
+            break;
+          }
         }
+      }
+      catch (Exception e) {
+        Log.Write($"[KN_Core::Swaps]: An error occured while receiving udp data, {e.Message}");
       }
     }
 
@@ -317,9 +328,9 @@ namespace KN_Core {
           Log.Write($"[KN_Core::Swaps]: Found SwapData for car '{swap.CarId}'");
 
           var toSwap = swap.GetCurrentEngine();
+          currentSwap_ = swap;
           if (toSwap != null) {
             var engine = GetEngine(toSwap.EngineId);
-            currentSwap_ = swap;
             if (!SetEngine(core_.PlayerCar.Base, toSwap, engine, -1, true, true)) {
               swap.RemoveEngine(toSwap);
             }

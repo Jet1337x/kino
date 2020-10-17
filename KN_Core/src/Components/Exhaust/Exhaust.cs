@@ -19,14 +19,10 @@ namespace KN_Core {
 
     private ExhaustData activeExhaust_;
     private readonly List<ExhaustData> exhausts_;
-    private readonly List<ExhaustData> exhaustsToRemove_;
     private readonly Core core_;
 
-    private readonly List<ExhaustFifeData> exhaustConfig_;
-    public List<ExhaustFifeData> ExhaustConfig => exhaustConfig_;
-
-    private readonly List<ExhaustFifeData> exhaustConfigDefault_;
-    public List<ExhaustFifeData> ExhaustConfigDefault => exhaustConfigDefault_;
+    public List<ExhaustFifeData> ExhaustConfig { get; }
+    public List<ExhaustFifeData> ExhaustConfigDefault { get; }
 
 #if KN_DEV_TOOLS
     private readonly List<ExhaustFifeData> exhaustConfigsDev_;
@@ -35,9 +31,8 @@ namespace KN_Core {
     public Exhaust(Core core) {
       core_ = core;
       exhausts_ = new List<ExhaustData>();
-      exhaustsToRemove_ = new List<ExhaustData>();
-      exhaustConfig_ = new List<ExhaustFifeData>();
-      exhaustConfigDefault_ = new List<ExhaustFifeData>();
+      ExhaustConfig = new List<ExhaustFifeData>();
+      ExhaustConfigDefault = new List<ExhaustFifeData>();
 #if KN_DEV_TOOLS
       exhaustConfigsDev_ = new List<ExhaustFifeData>();
 #endif
@@ -47,12 +42,12 @@ namespace KN_Core {
       var assembly = Assembly.GetExecutingAssembly();
       using (var stream = assembly.GetManifestResourceStream("KN_Core.Resources." + ExhaustConfigDefaultFile)) {
         if (DataSerializer.Deserialize<ExhaustFifeData>("KN_Exhaust", stream, out var defaultData)) {
-          exhaustConfigDefault_.AddRange(defaultData.ConvertAll(d => (ExhaustFifeData) d));
+          ExhaustConfigDefault.AddRange(defaultData.ConvertAll(d => (ExhaustFifeData) d));
         }
       }
 
       if (DataSerializer.Deserialize<ExhaustFifeData>("KN_Exhaust", KnConfig.BaseDir + ExhaustConfigFile, out var data)) {
-        exhaustConfig_.AddRange(data.ConvertAll(d => (ExhaustFifeData) d));
+        ExhaustConfig.AddRange(data.ConvertAll(d => (ExhaustFifeData) d));
       }
 
 #if KN_DEV_TOOLS
@@ -63,10 +58,10 @@ namespace KN_Core {
     }
 
     public void OnStop() {
-      DataSerializer.Serialize("KN_Exhaust", exhaustConfig_.ToList<ISerializable>(), KnConfig.BaseDir + ExhaustConfigFile, Core.Version);
+      DataSerializer.Serialize("KN_Exhaust", ExhaustConfig.ToList<ISerializable>(), KnConfig.BaseDir + ExhaustConfigFile, Core.Version);
 
 #if KN_DEV_TOOLS
-      DataSerializer.Serialize("KN_Exhaust", exhaustConfigsDev_.ToList<ISerializable>(), KnConfig.BaseDir + ExhaustConfigDefaultFile, Core.Version);
+      DataSerializer.Serialize("KN_Exhaust", exhaustConfigsDev_.ToList<ISerializable>(), KnConfig.BaseDir + "dev/" + ExhaustConfigDefaultFile, Core.Version);
 #endif
     }
 
@@ -74,49 +69,24 @@ namespace KN_Core {
       foreach (var e in exhausts_) {
         e.ToggleLights(false);
       }
-      foreach (var e in exhaustsToRemove_) {
-        e.ToggleLights(false);
-        exhausts_.Remove(e);
-      }
       activeExhaust_ = null;
     }
 
     public void Update() {
-#if !KN_DEV_TOOLS
+      exhausts_.RemoveAll(e => {
+        if (KnCar.IsNull(e.Car)) {
+          e.RemoveLights();
+          Log.Write($"[KN_Core::Exhaust]: Removed exhaust for car '{e.Car.Name}'");
+          return true;
+        }
+        return false;
+      });
+
       if (core_.IsInGarage) {
         return;
       }
-#endif
 
       foreach (var e in exhausts_) {
-#if KN_DEV_TOOLS
-        if (Input.GetKey(KeyCode.PageUp)) {
-          if (!e.Enabled) {
-            e.Initialize();
-          }
-          e.Enabled = true;
-          e.Update();
-        }
-        else {
-          e.Enabled = false;
-          e.ToggleLights(false);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Insert)) {
-          int id = exhaustConfigsDev_.FindIndex(ed => ed.CarId == e.Car.Id);
-          if (id != -1) {
-            exhaustConfigsDev_[id] = new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume);
-            Log.Write($"[KN_Core::Exhaust]: Exhaust dev tools | Override config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
-            return;
-          }
-          exhaustConfigsDev_.Add(new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume));
-          Log.Write($"[KN_Core::Exhaust]: Exhaust dev tools | Added config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
-        }
-#else
-        if (KnCar.IsNull(e.Car)) {
-          exhaustsToRemove_.Add(e);
-          continue;
-        }
         if (Vector3.Distance(core_.ActiveCamera.transform.position, e.Car.Transform.position) > MaxDistance) {
           e.Enabled = false;
           e.ToggleLights(false);
@@ -128,15 +98,19 @@ namespace KN_Core {
           }
           e.Update();
         }
-#endif
-      }
 
-      if (exhaustsToRemove_.Count > 0) {
-        foreach (var e in exhaustsToRemove_) {
-          Log.Write($"[KN_Core::Exhaust]: Removed exhaust for car '{e.Car.Name}'");
-          exhausts_.Remove(e);
+#if KN_DEV_TOOLS
+        if (Input.GetKeyDown(KeyCode.Insert)) {
+          int id = exhaustConfigsDev_.FindIndex(ed => ed.CarId == e.Car.Id);
+          if (id != -1) {
+            exhaustConfigsDev_[id] = new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume);
+            Log.Write($"[KN_Core::Exhaust]: Exhaust dev tools | Override config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
+            return;
+          }
+          exhaustConfigsDev_.Add(new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume));
+          Log.Write($"[KN_Core::Exhaust]: Exhaust dev tools | Added config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
         }
-        exhaustsToRemove_.Clear();
+#endif
       }
     }
 
@@ -176,12 +150,7 @@ namespace KN_Core {
       foreach (var e in exhausts_) {
         e.RemoveLights();
       }
-      foreach (var e in exhaustsToRemove_) {
-        e.RemoveLights();
-      }
-
       exhausts_.Clear();
-      exhaustsToRemove_.Clear();
 
       var scripts = Object.FindObjectsOfType<CarPopExhaust>();
       if (scripts != null && scripts.Length > 0) {
@@ -199,14 +168,14 @@ namespace KN_Core {
     }
 
     private void UpdateConfig(ExhaustData data) {
-      Log.Write($"[KN_Core::Exhaust]: Conf size: {exhaustConfig_.Count} / Car data id: {data.Car.Id}");
-      int id = exhaustConfig_.FindIndex(ed => ed.CarId == data.Car.Id);
+      Log.Write($"[KN_Core::Exhaust]: Conf size: {ExhaustConfig.Count} / Car data id: {data.Car.Id}");
+      int id = ExhaustConfig.FindIndex(ed => ed.CarId == data.Car.Id);
       if (id != -1) {
         Log.Write($"[KN_Core::Exhaust]: Override exhaust for car '{data.Car.Name}'");
-        exhaustConfig_[id] = new ExhaustFifeData(data.Car.Id, data.MaxTime, data.FlamesTrigger, data.Volume);
+        ExhaustConfig[id] = new ExhaustFifeData(data.Car.Id, data.MaxTime, data.FlamesTrigger, data.Volume);
       }
       else {
-        exhaustConfig_.Add(new ExhaustFifeData(data.Car.Id, data.MaxTime, data.FlamesTrigger, data.Volume));
+        ExhaustConfig.Add(new ExhaustFifeData(data.Car.Id, data.MaxTime, data.FlamesTrigger, data.Volume));
       }
     }
   }

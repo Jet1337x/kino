@@ -55,14 +55,14 @@ namespace KN_Lights {
     }
 
     public override void OnStart() {
-      if (DataSerializer.Deserialize<WorldLightsData>("KN_WorldLights", KnConfig.BaseDir + WorldLightsData.ConfigFile, out var data)) {
-        Log.Write($"[KN_WorldLights]: World lights loaded {data.Count} items");
+      if (DataSerializer.Deserialize<WorldLightsData>("KN_Lights::World", KnConfig.BaseDir + WorldLightsData.ConfigFile, out var data)) {
+        Log.Write($"[KN_Lights::World]: World lights loaded {data.Count} items");
         allData_.AddRange(data.ConvertAll(d => (WorldLightsData) d));
       }
     }
 
     public override void OnStop() {
-      DataSerializer.Serialize("KN_WorldLights", allData_.ToList<ISerializable>(), KnConfig.BaseDir + WorldLightsData.ConfigFile, Loader.Version);
+      DataSerializer.Serialize("KN_Lights::World", allData_.ToList<ISerializable>(), KnConfig.BaseDir + WorldLightsData.ConfigFile, Loader.Version);
     }
 
     public override void Update(int id) {
@@ -231,7 +231,7 @@ namespace KN_Lights {
           case "Empty":
             break;
           default:
-            Log.Write($"[KN_WorldLights]: Error. Unable to load lights data for '{SceneManager.GetActiveScene().name}'");
+            Log.Write($"[KN_Lights::World]: Error. Unable to load lights data for '{SceneManager.GetActiveScene().name}'");
             break;
         }
 
@@ -370,7 +370,7 @@ namespace KN_Lights {
       int index = allData_.FindIndex(wd => wd.Map == map);
       if (index != -1) {
         data_ = allData_[index];
-        Log.Write($"[KN_WorldLights]: World lights loaded for map '{map}'");
+        Log.Write($"[KN_Lights::World]: World lights loaded for map '{map}'");
       }
       else {
         allData_.Add(new WorldLightsData(map));
@@ -382,7 +382,7 @@ namespace KN_Lights {
         data_.SkyExposure = sky_ != null ? sky_.exposure.value : 0.0f;
         data_.AmbientLight = staticSky_ != null ? staticSky_.exposure.value : 0.0f;
 
-        Log.Write($"[KN_WorldLights]: World lights created for map '{map}'");
+        Log.Write($"[KN_Lights::World]: World lights created for map '{map}'");
       }
 
       enabled_ = false;
