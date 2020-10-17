@@ -254,6 +254,7 @@ namespace KN_Lights {
             hazardsDump_.Add(ownHazards_.Copy());
           }
         }
+        Log.Write($"[KN_Lights::Hazards]: Dev save / saved for '{ownHazards_?.Id ?? 0}'");
         DevFlushConfig();
       }
 #endif
