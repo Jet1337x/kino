@@ -33,7 +33,7 @@ namespace KN_Lights {
       var stream = Embedded.LoadEmbeddedFile(assembly, $"KN_Lights.Resources.{DefaultConfigFile}");
       if (stream != null) {
         using (stream) {
-          if (DataSerializer.Deserialize<HazardLights>("KN_CarLights", stream, out var defaultData)) {
+          if (DataSerializer.Deserialize<HazardLights>("KN_CarHazards", stream, out var defaultData)) {
             defaultHazards_.AddRange(defaultData.ConvertAll(d => (HazardLights) d));
           }
         }
@@ -42,7 +42,7 @@ namespace KN_Lights {
 
     public void OnStop() {
 #if KN_DEV_TOOLS
-      DataSerializer.Serialize("KN_CarLights", hazards_.ToList<ISerializable>(), KnConfig.BaseDir + "dev/" + DefaultConfigFile, Loader.Version);
+      DataSerializer.Serialize("KN_CarHazards", hazards_.ToList<ISerializable>(), KnConfig.BaseDir + "dev/" + DefaultConfigFile, Loader.Version);
 #endif
     }
 
@@ -228,12 +228,12 @@ namespace KN_Lights {
 
     private HazardLights GetOrCreateHazards(int id) {
       foreach (var hz in defaultHazards_) {
-        if (hz.Car.Id == id) {
+        if (hz.Id == id) {
           return hz.Copy();
         }
       }
       Log.Write($"[KN_Lights::Hazards]: Unable to found config for '{id}', creating default");
-      return new HazardLights();
+      return new HazardLights(id);
     }
 
     private void Optimize(float distance) {

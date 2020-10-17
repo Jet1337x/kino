@@ -13,6 +13,8 @@ namespace KN_Lights {
 
     public KnCar Car { get; private set; }
 
+    public int Id { get; private set; }
+
     public GameObject Fl { get; private set; }
     public GameObject Fr { get; private set; }
     public GameObject Rl { get; private set; }
@@ -166,16 +168,16 @@ namespace KN_Lights {
     private float hazardTimer_;
 
     public HazardLights() {
-      enabled_ = false;
-      hazardMode_ = false;
-      color_ = new Color32(0xd7, 0x90, 0x00, 0xff);
-      brightness_ = DefaultBrightness;
-      range_ = DefaultRange;
-      OffsetFront = new Vector3(0.6f, 0.6f, 2.2f);
-      OffsetRear = new Vector3(0.6f, 0.6f, -2.2f);
+      InitDefault();
     }
 
-    private HazardLights(Color color, float brightness, float range, Vector3 offsetFront, Vector3 offsetRear) {
+    public HazardLights(int id) {
+      Id = id;
+      InitDefault();
+    }
+
+    private HazardLights(int id, Color color, float brightness, float range, Vector3 offsetFront, Vector3 offsetRear) {
+      Id = id;
       enabled_ = false;
       hazardMode_ = false;
       color_ = color;
@@ -185,8 +187,18 @@ namespace KN_Lights {
       OffsetRear = offsetRear;
     }
 
+    private void InitDefault() {
+      enabled_ = false;
+      hazardMode_ = false;
+      color_ = new Color32(0xd7, 0x90, 0x00, 0xff);
+      brightness_ = DefaultBrightness;
+      range_ = DefaultRange;
+      OffsetFront = new Vector3(0.6f, 0.6f, 2.2f);
+      OffsetRear = new Vector3(0.6f, 0.6f, -2.2f);
+    }
+
     public HazardLights Copy() {
-      var light = new HazardLights(color_, brightness_, range_, OffsetFront, OffsetRear);
+      var light = new HazardLights(Id, color_, brightness_, range_, OffsetFront, OffsetRear);
       return light;
     }
 
@@ -349,6 +361,7 @@ namespace KN_Lights {
     }
 
     public void Serialize(BinaryWriter writer) {
+      writer.Write(Id);
       writer.Write(KnUtils.EncodeColor(Color));
       writer.Write(Range);
       writer.Write(Brightness);
@@ -356,6 +369,7 @@ namespace KN_Lights {
       KnUtils.WriteVec3(writer, OffsetRear);
     }
     public bool Deserialize(BinaryReader reader, int version) {
+      Id = reader.ReadInt32();
       color_ = KnUtils.DecodeColor(reader.ReadInt32());
       range_ = reader.ReadSingle();
       brightness_ = reader.ReadSingle();
