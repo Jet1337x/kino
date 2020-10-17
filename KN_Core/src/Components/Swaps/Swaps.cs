@@ -33,6 +33,7 @@ namespace KN_Core {
 
     private bool swapsEnabled_;
     private bool shouldRequestSwaps_;
+    private bool reloadSwap_;
 
     private readonly bool dataLoaded_;
 
@@ -102,13 +103,18 @@ namespace KN_Core {
         }
       }
 
+      if (core_.IsCarChanged && !KnCar.IsNull(core_.PlayerCar)) {
+        reloadSwap_ = true;
+      }
+
       if (!Active) {
         return;
       }
 
       networkSwaps_.RemoveAll(s => s == null || s.Car == null);
 
-      if (core_.IsCarChanged && !KnCar.IsNull(core_.PlayerCar)) {
+      if (reloadSwap_ && !KnCar.IsNull(core_.PlayerCar)) {
+        reloadSwap_ = false;
         defaultSoundId_ = core_.PlayerCar.Base.metaInfo.name;
         defaultFinalDrive_ = core_.PlayerCar.CarX.finaldrive;
         defaultClutch_ = core_.PlayerCar.CarX.clutchMaxTorque;
@@ -317,9 +323,9 @@ namespace KN_Core {
           Log.Write($"[KN_Core::Swaps]: Found SwapData for car '{swap.CarId}'");
 
           var toSwap = swap.GetCurrentEngine();
+          currentSwap_ = swap;
           if (toSwap != null) {
             var engine = GetEngine(toSwap.EngineId);
-            currentSwap_ = swap;
             if (!SetEngine(core_.PlayerCar.Base, toSwap, engine, -1, true, true)) {
               swap.RemoveEngine(toSwap);
             }
