@@ -260,27 +260,32 @@ namespace KN_Core {
         return;
       }
 
-      int id = data.Data.GetInt("id");
-      int engineId = data.Data.GetInt("ei");
-      float turbo = data.Data.GetFloat("tb");
-      float finalDrive = data.Data.GetFloat("fd");
+      try {
+        int id = data.Data.GetInt("id");
+        int engineId = data.Data.GetInt("ei");
+        float turbo = data.Data.GetFloat("tb");
+        float finalDrive = data.Data.GetFloat("fd");
 
-      foreach (var player in NetworkController.InstanceGame.Players) {
-        if (player.NetworkID == id) {
-          var engine = GetEngine(engineId);
+        foreach (var player in NetworkController.InstanceGame.Players) {
+          if (player.NetworkID == id) {
+            var engine = GetEngine(engineId);
 
-          var swap = new SwapData.Engine {
-            EngineId = engineId,
-            FinalDrive = finalDrive,
-            Turbo = turbo
-          };
+            var swap = new SwapData.Engine {
+              EngineId = engineId,
+              FinalDrive = finalDrive,
+              Turbo = turbo
+            };
 
-          var nwSwap = networkSwaps_.Find(s => s.NwId == id);
-          nwSwap?.SetData(swap, engine);
+            var nwSwap = networkSwaps_.Find(s => s.NwId == id);
+            nwSwap?.SetData(swap, engine);
 
-          SetEngine(player.userCar, swap, engine, id, false, core_.Settings.LogEngines);
-          break;
+            SetEngine(player.userCar, swap, engine, id, false, core_.Settings.LogEngines);
+            break;
+          }
         }
+      }
+      catch (Exception e) {
+        Log.Write($"[KN_Core::Swaps]: An error occured while receiving udp data, {e.Message}");
       }
     }
 
