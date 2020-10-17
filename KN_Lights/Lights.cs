@@ -706,9 +706,9 @@ namespace KN_Lights {
 
     private CarLights CreateLights(KnCar car, LightsConfigBase config, bool attach = true) {
 #if KN_DEV_TOOLS
-      var l = lightsConfigDefault_.GetLights(car.Id);
-#else
       var l = defaultLightsDump_.GetLights(car.Id);
+#else
+      var l = lightsConfigDefault_.GetLights(car.Id);
 #endif
       if (l == null) {
         l = new CarLights();
