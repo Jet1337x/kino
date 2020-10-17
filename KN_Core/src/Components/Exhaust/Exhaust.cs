@@ -82,37 +82,11 @@ namespace KN_Core {
         return false;
       });
 
-#if !KN_DEV_TOOLS
       if (core_.IsInGarage) {
         return;
       }
-#endif
 
       foreach (var e in exhausts_) {
-#if KN_DEV_TOOLS
-        if (Input.GetKey(KeyCode.Delete)) {
-          if (!e.Enabled) {
-            e.Initialize();
-          }
-          e.Enabled = true;
-          e.Update();
-        }
-        else {
-          e.Enabled = false;
-          e.ToggleLights(false);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Insert)) {
-          int id = exhaustConfigsDev_.FindIndex(ed => ed.CarId == e.Car.Id);
-          if (id != -1) {
-            exhaustConfigsDev_[id] = new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume);
-            Log.Write($"[KN_Core::Exhaust]: Exhaust dev tools | Override config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
-            return;
-          }
-          exhaustConfigsDev_.Add(new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume));
-          Log.Write($"[KN_Core::Exhaust]: Exhaust dev tools | Added config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
-        }
-#else
         if (Vector3.Distance(core_.ActiveCamera.transform.position, e.Car.Transform.position) > MaxDistance) {
           e.Enabled = false;
           e.ToggleLights(false);
@@ -123,6 +97,18 @@ namespace KN_Core {
             e.Initialize();
           }
           e.Update();
+        }
+
+#if KN_DEV_TOOLS
+        if (Input.GetKeyDown(KeyCode.Insert)) {
+          int id = exhaustConfigsDev_.FindIndex(ed => ed.CarId == e.Car.Id);
+          if (id != -1) {
+            exhaustConfigsDev_[id] = new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume);
+            Log.Write($"[KN_Core::Exhaust]: Exhaust dev tools | Override config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
+            return;
+          }
+          exhaustConfigsDev_.Add(new ExhaustFifeData(e.Car.Id, e.MaxTime, e.FlamesTrigger, e.Volume));
+          Log.Write($"[KN_Core::Exhaust]: Exhaust dev tools | Added config for {e.Car.Id} | Total: {exhaustConfigsDev_.Count}");
         }
 #endif
       }
