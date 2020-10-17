@@ -7,13 +7,17 @@ namespace KN_Core {
     private readonly bool badVersion_;
 
     public About(Core core, int version, int patch, int clientVersion, bool badVersion) : base(core, "about", int.MaxValue, version, patch, clientVersion) {
+      SetIcon(Skin.AboutSkin);
+      AddTab("about", OnGui);
+
       badVersion_ = badVersion;
     }
 
-    public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
-      x += Gui.OffsetSmall;
+    private bool OnGui(Gui gui, float x, float y) {
+      float width = gui.MaxContentWidth;
 
-      float width = Core.GuiTabsWidth - Gui.OffsetGuiX * 2.0f;
+      x -= Gui.Offset;
+      y -= Gui.Offset;
 
       if (badVersion_) {
         GuiBadVersion(gui, ref x, ref y, width, Gui.Height);
@@ -21,65 +25,79 @@ namespace KN_Core {
       else {
         GuiAbout(gui, ref x, ref y, width, Gui.Height);
       }
+
+      return false;
     }
 
     private void GuiAbout(Gui gui, ref float x, ref float y, float width, float height) {
-      gui.Box(x, y, width, height, Locale.Get("about0"), Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about0"), Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, Locale.Get("about1"), Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about1"), Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, Locale.Get("about2"), Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about2"), Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, Locale.Get("about3"), Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about3"), Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, Locale.Get("about4"), Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about4"), Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, Locale.Get("about5"), Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about5"), Skin.BoxLeftSkin.Normal);
       y += height;
 
       string supporters = Locale.Supporters.Aggregate("", (current, s) => current + $"{s}, ");
       if (!string.IsNullOrEmpty(supporters)) {
         supporters = supporters.Substring(0, supporters.Length - 2);
 
-        gui.Box(x, y, width, height, $"{Locale.Get("about6")} {supporters} {Locale.Get("about7")}", Skin.MainContainerLeft);
+        gui.BoxAutoWidth(x, y, width, height, $"{Locale.Get("about6")} {supporters} {Locale.Get("about7")}", Skin.BoxLeftSkin.Normal);
         y += height;
       }
 
-      gui.Box(x, y, width, height, Locale.Get("about8"), Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about8"), Skin.BoxLeftSkin.Normal);
       y += height;
 
       foreach (string author in Locale.Authors) {
-        gui.Box(x, y, width, height, $"  - {author}", Skin.MainContainerLeft);
+        gui.BoxAutoWidth(x, y, width, height, $"  - {author}", Skin.BoxLeftSkin.Normal);
         y += height;
+      }
+
+      float mh = gui.MaxContentHeight > gui.ModHeight ? gui.MaxContentHeight : gui.ModHeight;
+      if (y < mh) {
+        float h = mh - y + Gui.ModTabHeight;
+        gui.Box(x, y, width, h, Skin.BoxLeftSkin.Normal);
       }
     }
 
     private void GuiBadVersion(Gui gui, ref float x, ref float y, float width, float height) {
-      gui.Box(x, y, width, height, Locale.Get("about0v"), Skin.MainContainerRed);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about0v"), Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, Locale.Get("about1v"), Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about1v"), Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, Locale.Get("about2v"), Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about2v"), Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, Locale.Get("about3v"), Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about3v"), Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, $"{Locale.Get("about4v")}", Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, $"{Locale.Get("about4v")}", Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, $"{Locale.Get("about5v")}: {GameVersion.version}", Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, $"{Locale.Get("about5v")}: {GameVersion.version}", Skin.BoxLeftSkin.Normal);
       y += height;
 
-      gui.Box(x, y, width, height, $"{Locale.Get("about6v")}: {ModLoader.ClientVersion}", Skin.MainContainerLeft);
+      gui.BoxAutoWidth(x, y, width, height, $"{Locale.Get("about6v")}: {ModLoader.ClientVersion}", Skin.BoxLeftSkin.Normal);
       y += height;
+
+      float mh = gui.MaxContentHeight > gui.ModHeight ? gui.MaxContentHeight : gui.ModHeight;
+      if (y < mh) {
+        float h = mh - y + Gui.ModTabHeight;
+        gui.Box(x, y, width, h, Skin.BoxLeftSkin.Normal);
+      }
     }
   }
 }

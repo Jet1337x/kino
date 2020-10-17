@@ -3,13 +3,15 @@ using Object = UnityEngine.Object;
 
 namespace KN_Core {
   public class Settings : BaseMod {
+    private const string HelpLink = "https://github.com/trbflxr/kino/blob/master/Help/Settings.md";
+
     private bool rPoints_;
     public bool RPoints {
       get => rPoints_;
       set {
         rPoints_ = value;
         Core.KnConfig.Set("r_points", value);
-        GameConsole.Bool["r_points"] = value;
+        GameConsole.Bool["r_points"] = !value;
         GameConsole.UpdatePoints();
       }
     }
@@ -56,6 +58,10 @@ namespace KN_Core {
     private bool forceWhiteSmoke_;
 
     public Settings(Core core, int version, int patch, int clientVersion) : base(core, "settings", int.MaxValue - 1, version, patch, clientVersion) {
+      SetIcon(Skin.SettingsSkin);
+      AddTab("settings", OnGui);
+      SetInfoLink(HelpLink);
+
       exhaust_ = new Exhaust(core);
       Tachometer = new Tachometer(core);
       disableConsoles_ = new DisableConsoles(Core);
@@ -136,21 +142,18 @@ namespace KN_Core {
       Tachometer.Update();
     }
 
-    public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
+    private bool OnGui(Gui gui, float x, float y) {
       const float width = Gui.Width * 2.0f;
       const float height = Gui.Height;
 
       float yBegin = y;
 
-      x += Gui.OffsetSmall;
-
-      if (gui.Button(ref x, ref y, width, height, $"{Locale.Get("language")}: {Locale.CurrentLocale.ToUpper()}", Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, $"{Locale.Get("language")}: {Locale.CurrentLocale.ToUpper()}", Skin.ButtonSkin.Normal)) {
         Locale.SelectNextLocale();
-        Core.UpdateLanguage();
         Core.KnConfig.Set("locale", Locale.CurrentLocale);
       }
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("tach"), tachEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("tach"), tachEnabled_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         tachEnabled_ = !tachEnabled_;
         Core.KnConfig.Set("custom_tach", tachEnabled_);
         if (!tachEnabled_) {
@@ -159,24 +162,23 @@ namespace KN_Core {
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("hide_points"), RPoints ? Skin.Button : Skin.ButtonActive)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hide_points"), RPoints ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         RPoints = !RPoints;
-        Core.KnConfig.Set("r_points", RPoints);
       }
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("hide_names"), HideNames ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hide_names"), HideNames ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         HideNames = !HideNames;
         Core.KnConfig.Set("hide_names", HideNames);
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !Core.IsInGarage;
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("backfire"), BackFireEnabled ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("backfire"), BackFireEnabled ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         BackFireEnabled = !BackFireEnabled;
         Core.KnConfig.Set("custom_backfire", BackFireEnabled);
         if (!BackFireEnabled) {
@@ -190,32 +192,32 @@ namespace KN_Core {
       GUI.enabled = guiEnabled;
 
       if (BackFireEnabled) {
-        exhaust_.OnGUI(gui, ref x, ref y, width);
+        exhaust_.OnGui(gui, ref x, ref y, width);
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("white_smoke"), forceWhiteSmoke_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("white_smoke"), forceWhiteSmoke_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         forceWhiteSmoke_ = !forceWhiteSmoke_;
         Core.KnConfig.Set("force_white_smoke", forceWhiteSmoke_);
       }
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("sync_lights"), SyncLights ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("sync_lights"), SyncLights ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         SyncLights = !SyncLights;
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
       GUI.enabled = !Core.IsCheatsEnabled && !Core.IsExtrasEnabled;
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("disable_consoles"), disableConsoles_.Disabled ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("disable_consoles"), disableConsoles_.Disabled ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         disableConsoles_.Disabled = !disableConsoles_.Disabled;
         Core.KnConfig.Set("trash_autodisable", disableConsoles_.Disabled);
       }
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("hide_consoles"), disableConsoles_.Hidden ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hide_consoles"), disableConsoles_.Hidden ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         disableConsoles_.Hidden = !disableConsoles_.Hidden;
         Core.KnConfig.Set("trash_autohide", disableConsoles_.Hidden);
       }
@@ -230,9 +232,9 @@ namespace KN_Core {
         x += width;
         y = yBegin;
 
-        x += Gui.OffsetGuiX;
-        gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
-        x += Gui.OffsetGuiX;
+        x += Gui.Offset;
+        gui.Line(x, y, 1.0f, gui.MaxContentHeight - Gui.Offset * 2.0f, Skin.SeparatorColor);
+        x += Gui.Offset;
 
         Core.Swaps.OnGui(gui, ref x, ref y, width);
 
@@ -241,6 +243,8 @@ namespace KN_Core {
       }
 
       GUI.enabled = guiEnabled;
+
+      return false;
     }
 
     public void ReloadSound() {

@@ -9,10 +9,12 @@ using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.SceneManagement;
 
 namespace KN_Lights {
-  public class WorldLights {
+  public class WorldLights : BaseMod {
+    private const string HelpLink = "https://github.com/trbflxr/kino/blob/master/Help/WorldLighting.md";
+
     private readonly Core core_;
 
-    private List<GameObject> map_;
+    private readonly List<GameObject> map_;
     private Volume volume_;
     private HDRISky sky_;
 
@@ -40,7 +42,11 @@ namespace KN_Lights {
     private readonly WorldLightsData defaultData_;
     private readonly List<WorldLightsData> allData_;
 
-    public WorldLights(Core core) {
+    public WorldLights(Core core, int version, int patch, int clientVersion) : base(core, "world_lights", 1, version, patch, clientVersion) {
+      SetIcon(Skin.WorldLightsSkin);
+      AddTab("world_lights", OnGui);
+      SetInfoLink(HelpLink);
+
       core_ = core;
       allData_ = new List<WorldLightsData>();
       data_ = new WorldLightsData();
@@ -48,18 +54,18 @@ namespace KN_Lights {
       map_ = new List<GameObject>();
     }
 
-    public void OnStart() {
-      if (DataSerializer.Deserialize<WorldLightsData>("KN_Lights", KnConfig.BaseDir + WorldLightsData.ConfigFile, out var data)) {
-        Log.Write($"[KN_Lights]: World lights loaded {data.Count} items");
+    public override void OnStart() {
+      if (DataSerializer.Deserialize<WorldLightsData>("KN_WorldLights", KnConfig.BaseDir + WorldLightsData.ConfigFile, out var data)) {
+        Log.Write($"[KN_WorldLights]: World lights loaded {data.Count} items");
         allData_.AddRange(data.ConvertAll(d => (WorldLightsData) d));
       }
     }
 
-    public void OnStop() {
-      DataSerializer.Serialize("KN_Lights", allData_.ToList<ISerializable>(), KnConfig.BaseDir + WorldLightsData.ConfigFile, Loader.Version);
+    public override void OnStop() {
+      DataSerializer.Serialize("KN_WorldLights", allData_.ToList<ISerializable>(), KnConfig.BaseDir + WorldLightsData.ConfigFile, Loader.Version);
     }
 
-    public void Update() {
+    public override void Update(int id) {
       if (!core_.IsInGarage) {
         UpdateMap();
       }
@@ -83,7 +89,7 @@ namespace KN_Lights {
       }
     }
 
-    public void OnGUI(Gui gui, ref float x, ref float y) {
+    public bool OnGui(Gui gui, float x, float y) {
       const float width = Gui.Width * 2.0f;
       const float height = Gui.Height;
 
@@ -95,12 +101,12 @@ namespace KN_Lights {
       bool staticSkyOk = staticSky_ != null;
       bool hdLightOk = sunLightHd_ != null;
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get(enabled_ ? "disable" : "enable"), enabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get(enabled_ ? "disable" : "enable"), enabled_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         ToggleLights();
       }
 
       GUI.enabled = fogOk && enabled_;
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("fog"), fogEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("fog"), fogEnabled_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         fogEnabled_ = !fogEnabled_;
         fog_.meanFreePath.Override(fogEnabled_ ? data_.FogDistance : fogDistanceDefault_);
         fog_.depthExtent.Override(fogEnabled_ ? data_.FogVolume : fogVolumeDefault_);
@@ -156,7 +162,7 @@ namespace KN_Lights {
       }
 
       GUI.enabled = enabled_;
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("reset_all"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("reset_all"), Skin.ButtonSkin.Normal)) {
         data_.FogDistance = fogDistanceDefault_;
         data_.FogVolume = fogVolumeDefault_;
         data_.SunBrightness = sunBrightnessDefault_;
@@ -169,6 +175,8 @@ namespace KN_Lights {
         enabled_ = false;
       }
       GUI.enabled = guiEnabled;
+
+      return false;
     }
 
     private void UpdateMap() {
@@ -223,12 +231,16 @@ namespace KN_Lights {
           case "Empty":
             break;
           default:
-            Log.Write($"[KN_Lights]: Error. Unable to load lights data for '{SceneManager.GetActiveScene().name}'");
+            Log.Write($"[KN_WorldLights]: Error. Unable to load lights data for '{SceneManager.GetActiveScene().name}'");
             break;
         }
 
         if (map_.Count > 0) {
           foreach (var m in map_) {
+            if (m == null) {
+              continue;
+            }
+
             volume_ = m.GetComponent<Volume>();
             if (volume_ != null) {
               volume_.profile.TryGet(out sky_);
@@ -255,6 +267,10 @@ namespace KN_Lights {
 
       if (staticSky_ == null && map_.Count > 0) {
         foreach (var m in map_) {
+          if (m == null) {
+            continue;
+          }
+
           var components = m.GetComponents<MonoBehaviour>();
           if (components != null) {
             foreach (var c in components) {
@@ -354,7 +370,7 @@ namespace KN_Lights {
       int index = allData_.FindIndex(wd => wd.Map == map);
       if (index != -1) {
         data_ = allData_[index];
-        Log.Write($"[KN_Lights]: World lights loaded for map '{map}'");
+        Log.Write($"[KN_WorldLights]: World lights loaded for map '{map}'");
       }
       else {
         allData_.Add(new WorldLightsData(map));
@@ -366,7 +382,7 @@ namespace KN_Lights {
         data_.SkyExposure = sky_ != null ? sky_.exposure.value : 0.0f;
         data_.AmbientLight = staticSky_ != null ? staticSky_.exposure.value : 0.0f;
 
-        Log.Write($"[KN_Lights]: World lights created for map '{map}'");
+        Log.Write($"[KN_WorldLights]: World lights created for map '{map}'");
       }
 
       enabled_ = false;

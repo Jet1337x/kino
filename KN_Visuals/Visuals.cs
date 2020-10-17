@@ -11,6 +11,8 @@ using Object = UnityEngine.Object;
 
 namespace KN_Visuals {
   public class Visuals : BaseMod {
+    private const string HelpLink = "https://github.com/trbflxr/kino/blob/master/Help/Visuals.md";
+
     private GamePrefs prefs_;
     private UIGarageContext garage_;
 
@@ -28,11 +30,16 @@ namespace KN_Visuals {
     private float shiftZ_;
     private float shiftY_;
 
+
 #if TEST_MOVE
     private Livery livery_;
 #endif
 
-    public Visuals(Core core, int version, int patch, int clientVersion) : base(core, "visuals", 3, version, patch, clientVersion) { }
+    public Visuals(Core core, int version, int patch, int clientVersion) : base(core, "visuals", 3, version, patch, clientVersion) {
+      SetIcon(Skin.VisualsSkin);
+      AddTab("visuals", OnGui);
+      SetInfoLink(HelpLink);
+    }
 
     public override void ResetState() {
       liveryCamEnabled_ = false;
@@ -48,31 +55,27 @@ namespace KN_Visuals {
       shiftZ_ = Core.KnConfig.Get<float>("vinylcam_shift_z");
     }
 
-    public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
-      if (id != Id) {
-        return;
-      }
-
+    private bool OnGui(Gui gui, float x, float y) {
       const float width = 90.0f * 3.0f + Gui.OffsetSmall * 4.0f;
       const float height = Gui.Height;
-
-      x += Gui.OffsetSmall;
 
       bool guiEnabled = GUI.enabled;
       GUI.enabled = Core.IsInGarage;
 
       GuiLivery(gui, ref x, ref y, width, height);
 
-      gui.Line(x, y, Core.GuiTabsWidth - Gui.OffsetSmall * 2.0f, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
+      y += Gui.Offset;
 
       GuiVisuals(gui, ref x, ref y, width, height);
 
       GUI.enabled = guiEnabled;
+
+      return false;
     }
 
     private void GuiLivery(Gui gui, ref float x, ref float y, float width, float height) {
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("zoom"), liveryCamEnabled_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("zoom"), liveryCamEnabled_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         liveryCamEnabled_ = !liveryCamEnabled_;
       }
 
@@ -89,7 +92,7 @@ namespace KN_Visuals {
       }
 
 #if TEST_MOVE
-      if (gui.Button(ref x, ref y, width, height, "HOOK", livery_ != null ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, "HOOK", livery_ != null ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (livery_ == null) {
           if (!KnCar.IsNull(Core.PlayerCar)) {
             livery_ = Core.PlayerCar.Base.carModel.livery;
@@ -100,44 +103,44 @@ namespace KN_Visuals {
         }
       }
 
-      if (gui.Button(ref x, ref y, width, height, "Move Z+", Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, "Move Z+", Skin.ButtonSkin.Normal)) {
         MoveLivery(new Vector3(100.0f, 0.0f, 0.0f));
       }
 
-      if (gui.Button(ref x, ref y, width, height, "Move Z-", Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, "Move Z-", Skin.ButtonSkin.Normal)) {
         MoveLivery(new Vector3(-100.0f, 0.0f, 0.0f));
       }
 
-      if (gui.Button(ref x, ref y, width, height, "Move Y+", Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, "Move Y+", Skin.ButtonSkin.Normal)) {
         MoveLivery(new Vector3(0.0f, 100.0f, 0.0f));
       }
 
-      if (gui.Button(ref x, ref y, width, height, "Move Y-", Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, "Move Y-", Skin.ButtonSkin.Normal)) {
         MoveLivery(new Vector3(0.0f, -100.0f, 0.0f));
       }
 #endif
     }
 
     private void GuiVisuals(Gui gui, ref float x, ref float y, float width, float height) {
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("save_current"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("save_current"), Skin.ButtonSkin.Normal)) {
         SaveCurrentVisuals();
       }
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("load_design"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("load_design"), Skin.ButtonSkin.Normal)) {
         Core.FilePicker.Toggle(KnConfig.VisualsDir);
       }
 
       bool enabled = GUI.enabled;
       GUI.enabled = carId_ != -1 && carVisuals_ != null && Core.IsInGarage;
 
-      if (gui.Button(ref x, ref y, width, height, $"{Locale.Get("apply_design")} {carName_}", Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, $"{Locale.Get("apply_design")} {carName_}", Skin.ButtonSkin.Normal)) {
         selectedCarId_ = carId_;
         ApplyVisuals(selectedCarId_, true);
 
         RefreshCar();
       }
 
-      if (gui.Button(ref x, ref y, width, height, $"{Locale.Get("add_livery")} {carName_}", Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, $"{Locale.Get("add_livery")} {carName_}", Skin.ButtonSkin.Normal)) {
         selectedCarId_ = carId_;
         ApplyVisuals(selectedCarId_, false);
 
@@ -146,7 +149,7 @@ namespace KN_Visuals {
 
       GUI.enabled = selectedCarId_ != -1 && backupVisuals_ != null && Core.IsInGarage;
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("restore_design"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("restore_design"), Skin.ButtonSkin.Normal)) {
         if (prefs_ == null || backupVisuals_ == null || selectedCarId_ == -1) {
           return;
         }

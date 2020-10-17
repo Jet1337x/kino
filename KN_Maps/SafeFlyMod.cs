@@ -58,7 +58,7 @@ namespace KN_Maps {
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
       GUI.enabled = guiEnabled;
     }

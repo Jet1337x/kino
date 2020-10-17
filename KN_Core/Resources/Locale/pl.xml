@@ -40,7 +40,7 @@
   <key id="about2" value="Jeśli masz jakieś pytania lub sugestie"/>
   <key id="about3" value="proszę, skontaktuj się z nami"/>
   <key id="about4" value="trbflxr#8814 lub John Sawyer#6915"/>
-  <key id="about5" value="lub na discordzie modyfikacji (przycisk na górze)"/>
+  <key id="about5" value="lub na discordzie modyfikacji"/>
   <key id="about6" value="Poza tym, wielkie podziękowania dla"/>
   <key id="about7" value="za ich wsparcie!"/>
   <key id="about8" value="Modyfikacja przetłumaczona przez:"/>
@@ -48,7 +48,7 @@
   <key id="about1v" value="Zrestartuj grę żeby automatycznie zaaktualizować modyfikacje."/>
   <key id="about2v" value="Jeśli nadal widzisz tę wiadomość to"/>
   <key id="about3v" value="Pobierz i manualnie zainstaluj najnowszą wersję modyfikacji"/>
-  <key id="about4v" value="z naszego discorda (przycisk na górze)"/>
+  <key id="about4v" value="z naszego discorda"/>
   <key id="about5v" value="Obecna wersja"/>
   <key id="about6v" value="Docelowa wersja"/>
 
@@ -84,7 +84,6 @@
   <!--LIGHTS-->
   <key id="lights_enable_own" value="WŁĄCZ WŁASNE ŚWIATŁA"/>
   <key id="debug_obj" value="DEBUGUJ OBIEKTY"/>
-  <key id="hl_illumination" value="OŚWIETLENIE PRZEDNICH REFLEKTORÓW"/>
   <key id="hide_lights_after" value="SCHOWAJ ŚWIATŁA PO"/>
   <key id="hl_left" value="LEWY PRZEDNI REFLEKTOR"/>
   <key id="hl_right" value="PRAWY PRZEDNI REKFLEKTOR"/>

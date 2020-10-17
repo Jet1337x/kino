@@ -16,16 +16,14 @@ namespace KN_Core {
     public const int ClientVersion = 273;
     public const string StringVersion = "1.2.9";
 
-    private const float SoundReloadDistance = 70.0f;
+    public const float GuiStartX = 25.0f;
+    public const float GuiStartY = 25.0f;
 
-    private const float GuiXLeft = 25.0f;
-    private const float GuiYTop = 25.0f;
+    private const float SoundReloadDistance = 70.0f;
 
     public static Core CoreInstance { get; private set; }
 
     public float GuiContentBeginY { get; private set; }
-    public float GuiTabsHeight { get; private set; }
-    public float GuiTabsWidth { get; private set; }
 
     public GameObject MainCamera { get; private set; }
     public GameObject ActiveCamera { get; set; }
@@ -71,9 +69,8 @@ namespace KN_Core {
     private int carId_ = -1;
 
     private readonly List<BaseMod> mods_;
-    private readonly List<string> tabs_;
-    private int selectedTab_;
-    private int selectedTabPrev_;
+    private int selectedMod_;
+    private int prevSelectedMod_;
     private int selectedModId_;
 
     private bool soundReload_;
@@ -88,6 +85,8 @@ namespace KN_Core {
     private CameraRotation cameraRotation_;
 
     private readonly Gui gui_;
+    private int hoveredMod_;
+    private float hoveredModY_;
 
     public Core(ModLoader loader) {
       loader_ = loader;
@@ -98,6 +97,8 @@ namespace KN_Core {
 #endif
 
       Embedded.Initialize();
+
+      Skin.LoadAll();
 
       shouldRequestTools_ = true;
 
@@ -110,7 +111,6 @@ namespace KN_Core {
       gui_ = new Gui();
 
       mods_ = new List<BaseMod>();
-      tabs_ = new List<string>();
 
       CarPicker = new CarPicker();
       ColorPicker = new ColorPicker();
@@ -187,13 +187,13 @@ namespace KN_Core {
       CarPicker.OnCarLoaded += mod.OnCarLoaded;
       mods_.Sort((m0, m1) => m0.Id.CompareTo(m1.Id));
 
-      UpdateLanguage();
+      gui_.UpdateMinModHeight(mods_.Count);
 
       Log.Write($"[KN_Core]: Mod {Locale.Get(mod.Name)} was added");
 
       mod.OnStart();
 
-      selectedModId_ = mods_[selectedTab_].Id;
+      selectedModId_ = mods_[selectedMod_].Id;
     }
 
     public void RemoveMod(BaseMod mod) {
@@ -205,10 +205,9 @@ namespace KN_Core {
       CarPicker.OnCarLoaded -= mod.OnCarLoaded;
 
       mods_.Remove(mod);
-      UpdateLanguage();
 
-      selectedTab_ = 0;
-      selectedModId_ = mods_[selectedTab_].Id;
+      selectedMod_ = 0;
+      selectedModId_ = mods_[selectedMod_].Id;
 
       Log.Write($"[KN_Core]: Mod {mod.Name} was removed");
     }
@@ -219,25 +218,10 @@ namespace KN_Core {
       }
     }
 
-    public void SwitchTab(int modId) {
-      for (int i = 0; i < mods_.Count; ++i) {
-        if (mods_[i].Id == modId) {
-          selectedTabPrev_ = selectedTab_;
-          selectedTab_ = i;
-          gui_.SelectedTab = i;
-
-          HandleTabSelection();
-          return;
-        }
-      }
-    }
-
     public void OnInit() {
       KnConfig.Read();
-      Skin.LoadAll();
 
       Locale.Initialize(KnConfig.Get<string>("locale"));
-      UpdateLanguage();
 
       loader_.SaveUpdateLog = KnConfig.Get<bool>("save_updater_log");
 
@@ -290,6 +274,24 @@ namespace KN_Core {
 
       GuiRenderCheck();
 
+      bool captureInput = mods_[selectedMod_].WantsCaptureInput();
+      bool lockCameraRot = IsInGarage && mods_[selectedMod_].LockCameraRotation();
+
+      if (IsGuiEnabled && IsInGarage && cameraRotation_ != null && lockCameraRot) {
+        cameraRotation_.Stop();
+      }
+
+      if (IsGuiEnabled && captureInput) {
+        if (InputManager.GetLockedInputObject() != loader_) {
+          InputManager.LockInput(loader_);
+        }
+      }
+      else {
+        if (InputManager.GetLockedInputObject() == loader_) {
+          InputManager.LockInput(null);
+        }
+      }
+
       if (badVersion_) {
         return;
       }
@@ -320,24 +322,6 @@ namespace KN_Core {
 
       if (IsInGarage && cameraRotation_ == null) {
         cameraRotation_ = Object.FindObjectOfType<CameraRotation>();
-      }
-
-      bool captureInput = mods_[selectedTab_].WantsCaptureInput();
-      bool lockCameraRot = IsInGarage && mods_[selectedTab_].LockCameraRotation();
-
-      if (IsGuiEnabled && IsInGarage && cameraRotation_ != null && lockCameraRot) {
-        cameraRotation_.Stop();
-      }
-
-      if (IsGuiEnabled && captureInput) {
-        if (InputManager.GetLockedInputObject() != loader_) {
-          InputManager.LockInput(loader_);
-        }
-      }
-      else {
-        if (InputManager.GetLockedInputObject() == loader_) {
-          InputManager.LockInput(null);
-        }
       }
 
       foreach (var mod in mods_) {
@@ -386,73 +370,141 @@ namespace KN_Core {
 
     public void OnGui() {
       if (!badVersion_) {
-        Settings.Tachometer.OnGui(mods_[selectedTab_].WantsHideUi());
+        Settings.Tachometer.OnGui(mods_[selectedMod_].WantsHideUi());
       }
 
       if (!IsGuiEnabled) {
         return;
       }
 
+      gui_.PreRender();
+
       if (badVersion_ || newPatch_ || loader_.ShowUpdateWarn || loader_.NewPatch) {
         GuiUpdateWarn();
       }
 
-      float x = GuiYTop;
-      float y = GuiXLeft;
+      float x = GuiStartX;
+      float y = GuiStartY;
 
-      bool forceSwitchTab = gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight,
-        $"KINO v{StringVersion}.{Patch}", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy);
-      y -= Gui.TabButtonHeight + Gui.OffsetY;
+      HandleModSelection();
 
-      float tempX = x;
-      x += Gui.Width + Gui.OffsetGuiX;
-      if (gui_.Button(ref x, ref y, Gui.Width, Gui.TabButtonHeight, "DISCORD", badVersion_ ? Skin.ButtonDummyRed : Skin.ButtonDummy)) {
-        Process.Start("https://discord.gg/jrMReAB");
-      }
-      x = tempX;
+      gui_.Begin(x, y);
 
-      selectedTabPrev_ = selectedTab_;
-      gui_.Tabs(ref x, ref y, tabs_.ToArray(), ref selectedTab_);
-
-      if (forceSwitchTab) {
-        gui_.SelectedTab = tabs_.Count - 1;
-        selectedTab_ = tabs_.Count - 1;
-        selectedTabPrev_ = 0;
-      }
-
-      HandleTabSelection();
-
+      GuiVersion(ref x, ref y);
       GuiContentBeginY = y;
 
-      mods_[selectedTab_].OnGUI(selectedModId_, gui_, ref x, ref y);
+      prevSelectedMod_ = selectedMod_;
+      GuiModPanel(ref x, ref y);
 
-      gui_.EndTabs(ref x, ref y);
-      GuiTabsHeight = gui_.TabsMaxHeight;
-      GuiTabsWidth = gui_.TabsMaxWidth;
+      GuiModContent(ref x);
+
+      gui_.End();
+
+      GuiInputLocked();
 
       if (badVersion_) {
         return;
       }
 
-      float tx = GuiXLeft;
-      float ty = GuiContentBeginY + GuiTabsHeight - Gui.OffsetY;
-      gui_.Button(ref tx, ref ty, GuiTabsWidth, Gui.TabButtonHeight, Locale.Get("input_locked"), Skin.ButtonDummyRed);
-
       GuiPickers();
+
+      GuiTooltips();
+    }
+
+    private void GuiVersion(ref float x, ref float y) {
+      string versionText = $"Kino\nv{StringVersion}.{Patch}";
+      gui_.Box(x, y, Gui.ModIconSize, Gui.ModTabHeight, versionText, Skin.ModPanelSkin.Normal);
+      y += Gui.ModTabHeight;
+    }
+
+    private void GuiModPanel(ref float x, ref float y) {
+      float ty = y;
+
+      gui_.Box(x, y, Gui.ModIconSize, gui_.MaxContentHeight, Skin.ModPanelSkin.Normal);
+
+      // tooltip stuff
+      hoveredMod_ = -1;
+      var mousePos = Input.mousePosition;
+      mousePos.y = Screen.height - mousePos.y;
+
+      for (int i = 0; i < mods_.Count; ++i) {
+        // mod icon background
+        if (gui_.ImageButton(ref x, ref y, selectedMod_ == i ? Skin.ModPanelBackSkin.Active : Skin.ModPanelBackSkin.Normal)) {
+          gui_.ResetSize();
+
+          prevSelectedMod_ = selectedMod_;
+          selectedMod_ = i;
+          selectedModId_ = mods_[i].Id;
+          return;
+        }
+
+        // tooltip render check
+        if (mousePos.x >= x && mousePos.x <= x + Gui.ModIconSize && mousePos.y >= y && mousePos.y <= y + Gui.ModIconSize) {
+          hoveredMod_ = i;
+          hoveredModY_ = y + Gui.ModIconSize / 2.0f;
+        }
+
+        // actual mod icon
+        var icon = mods_[i].Icon ?? Skin.PuzzleSkin;
+        gui_.ImageButton(ref x, ref y, selectedMod_ == i ? icon.Active : icon.Normal);
+
+        y += Gui.ModIconSize;
+      }
+
+      // bottom-most discord button
+      y = gui_.MaxContentHeight - Gui.ModIconSize + ty;
+      if (gui_.ImageButton(ref x, ref y, Skin.ModPanelBackSkin.Normal)) {
+        Process.Start("https://discord.gg/FkYYAKb");
+      }
+      gui_.ImageButton(ref x, ref y, Skin.DiscordSkin.Normal);
+
+      // discord tooltip render check
+      if (hoveredMod_ == -1 && mousePos.x >= x && mousePos.x <= x + Gui.ModIconSize && mousePos.y >= y && mousePos.y <= y + Gui.ModIconSize) {
+        hoveredMod_ = int.MaxValue;
+        hoveredModY_ = y + Gui.ModIconSize / 2.0f;
+      }
+    }
+
+    private void GuiModContent(ref float x) {
+      x += Gui.ModIconSize;
+      float y = GuiStartY;
+
+      gui_.Box(x, y + Gui.ModTabHeight, gui_.MaxContentWidth, gui_.MaxContentHeight, Skin.BackgroundSkin.Normal);
+
+      mods_[selectedMod_].OnGui(gui_, ref x, ref y);
+    }
+
+    private void GuiInputLocked() {
+      float x = GuiStartX;
+      float y = GuiContentBeginY + gui_.MaxContentHeight;
+      gui_.TextButton(ref x, ref y, gui_.MaxContentWidth + Gui.ModIconSize, Gui.Height, Locale.Get("input_locked"), Skin.WarningSkin.Normal);
     }
 
     private void GuiPickers() {
-      float tx = GuiXLeft + GuiTabsWidth + Gui.OffsetGuiX;
-      float ty = GuiContentBeginY - Gui.OffsetY;
+      float x = GuiStartX + gui_.MaxContentWidth + Gui.ModIconSize + Gui.Offset;
+      float y = GuiStartY;
 
       if (CarPicker.IsPicking) {
-        CarPicker.OnGui(gui_, ref tx, ref ty);
+        CarPicker.OnGui(gui_, ref x, ref y);
+        x += Gui.Offset;
       }
       if (ColorPicker.IsPicking) {
-        ColorPicker.OnGui(gui_, ref tx, ref ty);
+        ColorPicker.OnGui(gui_, ref x, ref y);
+        x += Gui.Offset;
       }
       if (FilePicker.IsPicking) {
-        FilePicker.OnGui(gui_, ref tx, ref ty);
+        FilePicker.OnGui(gui_, ref x, ref y);
+      }
+    }
+
+    private void GuiTooltips() {
+      const float tooltipX = GuiStartX + Gui.ModIconSize + Gui.OffsetSmall;
+      const float tooltipWidth = 150.0f;
+      const float tooltipHeight = 30.0f;
+
+      if (hoveredMod_ != -1) {
+        string text = hoveredMod_ == int.MaxValue ? " DISCORD" : $" {Locale.Get(mods_[hoveredMod_].Name)}";
+        gui_.Box(tooltipX, hoveredModY_ - tooltipHeight / 2.0f, tooltipWidth, tooltipHeight, text, Skin.TooltipSkin.Normal);
       }
     }
 
@@ -471,9 +523,9 @@ namespace KN_Core {
           changelog += $"- {line}\n";
         }
       }
-      if (gui_.Button(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersionString}!\n" +
-                                                   $"{Locale.Get("outdated1")}\n" +
-                                                   $"{changelog}" + Locale.Get("outdated2"), Skin.ButtonDummyRed)) {
+      if (gui_.TextButton(ref x, ref y, width, height, $"{Locale.Get("outdated0")}: {loader_.LatestVersionString}!\n" +
+                                                       $"{Locale.Get("outdated1")}\n" +
+                                                       $"{changelog}" + Locale.Get("outdated2"), Skin.WarningSkin.Normal)) {
         Process.Start("https://discord.gg/FkYYAKb");
       }
     }
@@ -487,26 +539,30 @@ namespace KN_Core {
       }
     }
 
+    public void ResetPickers() {
+      CarPicker.Reset();
+      ColorPicker.Reset();
+      FilePicker.Reset();
+    }
+
     private void GuiRenderCheck() {
       if (Controls.KeyDown("gui")) {
         IsGuiEnabled = !IsGuiEnabled;
 
         if (!badVersion_) {
-          CarPicker.Reset();
-          ColorPicker.Reset();
-          FilePicker.Reset();
-          mods_[selectedTabPrev_].ResetPickers();
+          mods_[selectedMod_].OnGuiToggle();
+          ResetPickers();
         }
       }
     }
 
-    private void HandleTabSelection() {
-      if (selectedTab_ != selectedTabPrev_) {
-        CarPicker.Reset();
-        ColorPicker.Reset();
-        FilePicker.Reset();
-        mods_[selectedTabPrev_].ResetState();
-        selectedModId_ = mods_[selectedTab_].Id;
+    private void HandleModSelection() {
+      if (selectedMod_ != prevSelectedMod_) {
+        gui_.ResetSize();
+
+        ResetPickers();
+        mods_[prevSelectedMod_].ResetState();
+        selectedModId_ = mods_[selectedMod_].Id;
       }
     }
 
@@ -529,13 +585,6 @@ namespace KN_Core {
       }
       if (ActiveCamera == null && MainCamera != null) {
         ActiveCamera = MainCamera.gameObject;
-      }
-    }
-
-    public void UpdateLanguage() {
-      tabs_.Clear();
-      foreach (var m in mods_) {
-        tabs_.Add(Locale.Get(m.Name));
       }
     }
 

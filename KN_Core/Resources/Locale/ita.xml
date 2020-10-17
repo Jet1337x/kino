@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="ita" author="Ybubu">
   <!--MODS (TABS)-->
+  <key id="car_lights" value="FARI DELL'AUTO"/>
+  <key id="world_lights" value="LUCI DEL MONDO"/>
   <key id="lights" value="LUCI"/>
   <key id="visuals" value="VISUALE"/>
   <key id="settings" value="OPZIONI"/>
@@ -40,7 +42,7 @@
   <key id="about2" value="Se hai qualche domanda o suggerimento,"/>
   <key id="about3" value="puoi contattarci a"/>
   <key id="about4" value="trbflxr#8814 o John Sawyer#6915"/>
-  <key id="about5" value="o nel KiNO Discord (Pulsante in alto)"/>
+  <key id="about5" value="o nel KiNO Discord"/>
   <key id="about6" value="Molte grazie anche a"/>
   <key id="about7" value="per il loro supporto!"/>
   <key id="about8" value="Mod tradotta da:"/>
@@ -48,7 +50,7 @@
   <key id="about1v" value="Riavvia il gioco per far aggiornare la mod automaticamente."/>
   <key id="about2v" value="Se questo messaggio è ancora visibile dopo il riavvio allora"/>
   <key id="about3v" value="Scarica e installa manualmente l'ultima versione della mod"/>
-  <key id="about4v" value="Dal nostro discord (Pulsante in alto)"/>
+  <key id="about4v" value="Dal nostro discord"/>
   <key id="about5v" value="Versione Corrente"/>
   <key id="about6v" value="Versione ideale"/>
 
@@ -84,7 +86,6 @@
   <!--LIGHTS-->
   <key id="lights_enable_own" value="ATTIVA I PROPRI FARI"/>
   <key id="debug_obj" value="DEBUG OGGETTI"/>
-  <key id="hl_illumination" value="ILLUMINAZIONE FARI ANTERIORI"/>
   <key id="hide_lights_after" value="NON RENDERIZZARE I FARI OLTRE"/>
   <key id="hl_left" value="FARO ANT. SINISTRO"/>
   <key id="hl_right" value="FARO ANT. DESTRO"/>

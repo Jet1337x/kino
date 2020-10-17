@@ -11,6 +11,7 @@ namespace KN_Lights {
 
     public Loader() {
       Core.CoreInstance.AddMod(new Lights(Core.CoreInstance, Version, Patch, ClientVersion));
+      Core.CoreInstance.AddMod(new WorldLights(Core.CoreInstance, Version, Patch, ClientVersion));
     }
   }
 }

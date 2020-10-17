@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="en" author="">
   <!--MODS (TABS)-->
+  <key id="car_lights" value="CAR LIGHTS"/>
+  <key id="world_lights" value="WORLD LIGHTING"/>
   <key id="lights" value="LIGHTS"/>
   <key id="visuals" value="VISUALS"/>
   <key id="settings" value="SETTINGS"/>
@@ -22,7 +24,7 @@
   <key id="reload" value="RELOAD"/>
 
   <!--CORE-->
-  <key id="input_locked" value="CARX INPUT IS LOCKED. CLOSE MOD MENU TO UNLOCK IT."/>
+  <key id="input_locked" value="GAME CONTROLLS ARE LOCKED WHILE THE MOD MENU IS UP"/>
   <key id="changes" value="CHANGELOG"/>
   <key id="outdated0" value="YOUR MOD IS OUTDATED, LATEST VERSION"/>
   <key id="outdated1" value="RESTART THE GAME FOR THE MOD TO UPDATE AUTOMATICALLY."/>
@@ -41,7 +43,7 @@
   <key id="about2" value="If you have any questions or suggestions"/>
   <key id="about3" value="please, contact us at"/>
   <key id="about4" value="trbflxr#8814 or John Sawyer#6915"/>
-  <key id="about5" value="or in the mod's discord (top button)"/>
+  <key id="about5" value="or in the mod's discord"/>
   <key id="about6" value="Also many thanks to"/>
   <key id="about7" value="for their support!"/>
   <key id="about8" value="Mod translated by:"/>
@@ -49,7 +51,7 @@
   <key id="about1v" value="Restart the game for the mod to update automatically."/>
   <key id="about2v" value="If you still see this message after the restart then"/>
   <key id="about3v" value="download and manually install the latest version of the mod"/>
-  <key id="about4v" value="from our discord (top button)"/>
+  <key id="about4v" value="from our discord"/>
   <key id="about5v" value="Current version"/>
   <key id="about6v" value="Target version"/>
 
@@ -85,7 +87,6 @@
   <!--LIGHTS-->
   <key id="lights_enable_own" value="ENABLE OWN LIGHTS"/>
   <key id="debug_obj" value="DEBUG OBJECTS"/>
-  <key id="hl_illumination" value="HEADLIGHTS ILLUMINATION"/>
   <key id="hide_lights_after" value="HIDE LIGHTS AFTER"/>
   <key id="hl_left" value="LEFT HEADLIGHT"/>
   <key id="hl_right" value="RIGHT HEADLIGHT"/>
@@ -99,6 +100,7 @@
   <key id="tl_pitch" value="TAILLIGHT PITCH"/>
   <key id="add_lights_all" value="ADD LIGHTS TO EVERYONE"/>
   <key id="add_lights_to" value="ADD LIGHTS TO"/>
+  <key id="remove_all_lights" value="REMOVE ALL LIGHTS"/>
 
   <!--WORLD LIGHTS-->
   <key id="fog" value="FOG"/>

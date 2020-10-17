@@ -50,17 +50,17 @@ namespace KN_Maps {
       foreach (string map in maps_) {
         bool currentMap = map == selectedMap_;
         string dir = Path.GetFileName(map);
-        sy += Gui.OffsetY;
-        if (gui.Button(ref sx, ref sy, width, Gui.Height, $"{dir}", currentMap ? Skin.ButtonActive : Skin.Button)) {
+        sy += Gui.Offset;
+        if (gui.TextButton(ref sx, ref sy, width, Gui.Height, $"{dir}", currentMap ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
           if (!currentMap) {
             OnMapSelected?.Invoke(map, dir);
           }
           selectedMap_ = map;
         }
-        sy -= Gui.OffsetY;
+        sy -= Gui.Offset;
       }
-      sy += Gui.OffsetY;
-      filesListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
+      sy += Gui.Offset;
+      filesListScrollH_ = gui.EndScrollV(ref x, ref y, sy);
     }
 
     private void RefreshMaps() {

@@ -10,6 +10,14 @@ namespace KN_Lights {
   public class Lights : BaseMod {
     public static Texture2D LightMask;
 
+    private const string HelpLink = "https://github.com/trbflxr/kino/blob/master/Help/CarLights.md";
+
+    private const float MinPosBound = 0.0f;
+    private const float MaxPosBound = 1.0f;
+
+    private const float MinPosBoundZ = 1.5f;
+    private const float MaxPosBoundZ = 3.0f;
+
     private const string LightsConfigFile = "kn_lights.knl";
     private const string NwLightsConfigFile = "kn_nwlights.knl";
     private const string LightsConfigDefault = "kn_lights_default.knl";
@@ -32,9 +40,6 @@ namespace KN_Lights {
     private float clListScrollH_;
     private Vector2 clListScroll_;
 
-    private bool hlTabActive_ = true;
-    private bool wlTabActive_;
-
     private float carLightsDiscard_;
 
     private bool autoAddLights_;
@@ -43,14 +48,14 @@ namespace KN_Lights {
     private readonly Timer syncTimer_;
     private readonly Timer joinTimer_;
 
-    private readonly WorldLights worldLights_;
-
     private readonly Settings settings_;
 
-    public Lights(Core core, int version, int patch, int clientVersion) : base(core, "lights", 1, version, patch, clientVersion) {
-      settings_ = core.Settings;
+    public Lights(Core core, int version, int patch, int clientVersion) : base(core, "lights", 0, version, patch, clientVersion) {
+      SetIcon(Skin.CarLightsSkin);
+      AddTab("car_lights", OnGui);
+      SetInfoLink(HelpLink);
 
-      worldLights_ = new WorldLights(core);
+      settings_ = core.Settings;
 
       carLights_ = new List<CarLights>();
       carLightsToRemove_ = new List<CarLights>();
@@ -69,38 +74,40 @@ namespace KN_Lights {
 
       LoadDefaultLights(assembly);
 #if KN_DEV_TOOLS
-      carLightsDev_ = DataSerializer.Deserialize<CarLights>("KN_Lights", KnConfig.BaseDir + LightsDevConfigFile, out var devLights)
+      carLightsDev_ = DataSerializer.Deserialize<CarLights>("KN_CarLights", KnConfig.BaseDir + LightsDevConfigFile, out var devLights)
         ? new LightsConfig(devLights.ConvertAll(l => (CarLights) l))
         : new LightsConfig();
 #endif
 
       carLightsDiscard_ = Core.KnConfig.Get<float>("cl_discard_distance");
 
-      nwLightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_Lights", KnConfig.BaseDir + NwLightsConfigFile, out var nwLights)
+      nwLightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_CarLights", KnConfig.BaseDir + NwLightsConfigFile, out var nwLights)
         ? new NwLightsConfig(nwLights.ConvertAll(l => (CarLights) l))
         : new NwLightsConfig();
 
-      lightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_Lights", KnConfig.BaseDir + LightsConfigFile, out var lights)
+      lightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_CarLights", KnConfig.BaseDir + LightsConfigFile, out var lights)
         ? new LightsConfig(lights.ConvertAll(l => (CarLights) l))
         : new LightsConfig();
-
-      worldLights_.OnStart();
     }
 
     public override void OnStop() {
-      if (!DataSerializer.Serialize("KN_Lights", lightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsConfigFile, Loader.Version)) { }
-      if (!DataSerializer.Serialize("KN_Lights", nwLightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + NwLightsConfigFile, Loader.Version)) { }
+      if (!DataSerializer.Serialize("KN_CarLights", lightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsConfigFile, Loader.Version)) { }
+      if (!DataSerializer.Serialize("KN_CarLights", nwLightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + NwLightsConfigFile, Loader.Version)) { }
 
 #if KN_DEV_TOOLS
-      if (!DataSerializer.Serialize("KN_Lights", carLightsDev_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsDevConfigFile, Loader.Version)) { }
+      if (!DataSerializer.Serialize("KN_CarLights", carLightsDev_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsDevConfigFile, Loader.Version)) { }
 #endif
-
-      worldLights_.OnStop();
     }
 
     public override void OnCarLoaded(KnCar car) {
       AutoAddLights(false);
       shouldSync_ = true;
+    }
+
+    public override void OnGuiToggle() {
+      if (Core.ColorPicker.IsPicking) {
+        shouldSync_ = activeLights_ == ownLights_;
+      }
     }
 
     public override void OnUdpData(SmartfoxDataPackage data) {
@@ -147,8 +154,6 @@ namespace KN_Lights {
 
       ToggleOwnLights();
 
-      worldLights_.Update();
-
       if (Core.IsInGarageChanged) {
         joinTimer_.Reset();
       }
@@ -184,48 +189,7 @@ namespace KN_Lights {
       RemoveAllNullLights();
     }
 
-    public override void OnGUI(int id, Gui gui, ref float x, ref float y) {
-      if (id != Id) {
-        return;
-      }
-
-      GuiSideBar(gui, ref x, ref y);
-
-      x += Gui.OffsetGuiX;
-      gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
-      x += Gui.OffsetGuiX;
-
-      if (hlTabActive_) {
-        GuiHeadLightsTab(gui, ref x, ref y);
-      }
-      else if (wlTabActive_) {
-        worldLights_.OnGUI(gui, ref x, ref y);
-      }
-    }
-
-    private void GuiSideBar(Gui gui, ref float x, ref float y) {
-      float yBegin = y;
-
-      x += Gui.OffsetSmall;
-      if (gui.ImageButton(ref x, ref y, hlTabActive_ ? Skin.IconHeadlightsActive : Skin.IconHeadlights)) {
-        hlTabActive_ = true;
-        wlTabActive_ = false;
-        Core.CarPicker.Reset();
-        Core.ColorPicker.Reset();
-      }
-
-      if (gui.ImageButton(ref x, ref y, wlTabActive_ ? Skin.IconSunActive : Skin.IconSun)) {
-        hlTabActive_ = false;
-        wlTabActive_ = true;
-        Core.CarPicker.Reset();
-        Core.ColorPicker.Reset();
-      }
-
-      x += Gui.IconSize;
-      y = yBegin;
-    }
-
-    private void GuiHeadLightsTab(Gui gui, ref float x, ref float y) {
+    private bool OnGui(Gui gui, float x, float y) {
       float yBegin = y;
 
       const float width = Gui.Width * 2.0f;
@@ -234,32 +198,32 @@ namespace KN_Lights {
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !KnCar.IsNull(Core.PlayerCar);
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("lights_enable_own"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("lights_enable_own"), Skin.ButtonSkin.Normal)) {
         Core.ColorPicker.Reset();
         EnableLightsOn(Core.PlayerCar);
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
       GUI.enabled = activeLights_ != null && !activeLights_.IsNwCar;
 
 #if KN_DEV_TOOLS
-      if (gui.Button(ref x, ref y, width, height, "DEV SAVE", Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, "DEV SAVE", Skin.ButtonSkin.Normal)) {
         carLightsDev_.AddLights(activeLights_);
-        Log.Write($"[KN_Lights]: Dev save / saved for '{activeLights_?.CarId ?? 0}'");
+        Log.Write($"[KN_CarLights]: Dev save / saved for '{activeLights_?.CarId ?? 0}'");
       }
 #endif
 
       bool debugObjects = activeLights_?.IsDebugObjectsEnabled ?? false;
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("debug_obj"), debugObjects ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("debug_obj"), debugObjects ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
           activeLights_.IsDebugObjectsEnabled = !activeLights_.IsDebugObjectsEnabled;
         }
       }
 
       bool hlIllumination = activeLights_?.IsLightsEnabledIl ?? false;
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("hl_illumination"), hlIllumination ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hl_illumination"), hlIllumination ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
           activeLights_.IsLightsEnabledIl = !activeLights_.IsLightsEnabledIl;
         }
@@ -272,43 +236,46 @@ namespace KN_Lights {
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
       GuiHeadLights(gui, ref x, ref y, width, height);
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.OffsetY;
+      y += Gui.Offset;
 
       GuiTailLights(gui, ref x, ref y, width, height);
 
       y = yBegin;
       x += width;
 
-      x += Gui.OffsetGuiX;
-      gui.Line(x, y, 1.0f, Core.GuiTabsHeight - Gui.OffsetY * 2.0f, Skin.SeparatorColor);
-      x += Gui.OffsetGuiX;
+      x += Gui.Offset;
+      gui.Line(x, y, 1.0f, gui.MaxContentHeight - Gui.Offset * 2.0f, Skin.SeparatorColor);
+      x += Gui.Offset;
 
       GUI.enabled = guiEnabled;
 
       GuiLightsList(gui, ref x, ref y);
+
+      return false;
     }
 
     private void GuiHeadLights(Gui gui, ref float x, ref float y, float width, float height) {
       float xBegin = x;
       float widthLight = width / 2.0f - Gui.OffsetSmall;
+      float widthPos = width / 3.0f - Gui.OffsetSmall / 2.0f - 1.0f;
 
       bool lh = activeLights_?.IsHeadLightLeftEnabled ?? false;
-      if (gui.Button(ref x, ref y, widthLight, height, Locale.Get("hl_left"), lh ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, widthLight, height, Locale.Get("hl_left"), lh ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
           activeLights_.IsHeadLightLeftEnabled = !activeLights_.IsHeadLightLeftEnabled;
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
-      y -= Gui.OffsetY + height;
+      y -= Gui.Offset + height;
       x += widthLight + Gui.OffsetSmall * 2.0f;
 
       bool rh = activeLights_?.IsHeadLightRightEnabled ?? false;
-      if (gui.Button(ref x, ref y, widthLight, height, Locale.Get("hl_right"), rh ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, widthLight, height, Locale.Get("hl_right"), rh ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
           activeLights_.IsHeadLightRightEnabled = !activeLights_.IsHeadLightRightEnabled;
           shouldSync_ = activeLights_ == ownLights_;
@@ -316,7 +283,7 @@ namespace KN_Lights {
       }
       x = xBegin;
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("color"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("color"), Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
           Core.CarPicker.IsPicking = false;
           Core.ColorPicker.Toggle(activeLights_.HeadLightsColor, false);
@@ -348,45 +315,55 @@ namespace KN_Lights {
         }
       }
 
+      float tx = x;
       var offset = activeLights_?.HeadlightOffset ?? Vector3.zero;
-      if (gui.SliderH(ref x, ref y, width, ref offset.x, 0.0f, 3.0f, $"X: {offset.x:F}")) {
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.x, MinPosBound, MaxPosBound, $"X: {offset.x:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadlightOffset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+      x += widthPos + Gui.OffsetSmall;
+      y -= Gui.Height + Gui.Offset;
+
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.y, MinPosBound, MaxPosBound, $"Y: {offset.y:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadlightOffset = offset;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+      x += widthPos + Gui.OffsetSmall;
+      y -= Gui.Height + Gui.Offset;
+
+      // it's because the width is odd
+      widthPos += 1.0f;
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.z, MinPosBoundZ, MaxPosBoundZ, $"Z: {offset.z:F}")) {
         if (activeLights_ != null) {
           activeLights_.HeadlightOffset = offset;
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
 
-      if (gui.SliderH(ref x, ref y, width, ref offset.y, 0.0f, 3.0f, $"Y: {offset.y:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.HeadlightOffset = offset;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offset.z, 0.0f, 3.0f, $"Z: {offset.z:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.HeadlightOffset = offset;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
+      x = tx;
     }
 
     private void GuiTailLights(Gui gui, ref float x, ref float y, float width, float height) {
       float xBegin = x;
       float widthLight = width / 2.0f - Gui.OffsetSmall;
+      float widthPos = width / 3.0f - Gui.OffsetSmall / 2.0f - 1.0f;
 
       bool lt = activeLights_?.IsTailLightLeftEnabled ?? false;
-      if (gui.Button(ref x, ref y, widthLight, height, Locale.Get("tl_left"), lt ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, widthLight, height, Locale.Get("tl_left"), lt ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
           activeLights_.IsTailLightLeftEnabled = !activeLights_.IsTailLightLeftEnabled;
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
-      y -= Gui.OffsetY + height;
+      y -= Gui.Offset + height;
       x += widthLight + Gui.OffsetSmall * 2.0f;
 
       bool rt = activeLights_?.IsTailLightRightEnabled ?? false;
-      if (gui.Button(ref x, ref y, widthLight, height, Locale.Get("tl_right"), rt ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, widthLight, height, Locale.Get("tl_right"), rt ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {
           activeLights_.IsTailLightRightEnabled = !activeLights_.IsTailLightRightEnabled;
           shouldSync_ = activeLights_ == ownLights_;
@@ -418,38 +395,46 @@ namespace KN_Lights {
         }
       }
 
+      float tx = x;
       var offset = activeLights_?.TailLightOffset ?? Vector3.zero;
-      if (gui.SliderH(ref x, ref y, width, ref offset.x, 0.0f, 3.0f, $"X: {offset.x:F}")) {
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.x, MinPosBound, MaxPosBound, $"X: {offset.x:F}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightOffset = offset;
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
+      x += widthPos + Gui.OffsetSmall;
+      y -= Gui.Height + Gui.Offset;
 
-      if (gui.SliderH(ref x, ref y, width, ref offset.y, 0.0f, 3.0f, $"Y: {offset.y:F}")) {
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.y, MinPosBound, MaxPosBound, $"Y: {offset.y:F}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightOffset = offset;
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
+      x += widthPos + Gui.OffsetSmall;
+      y -= Gui.Height + Gui.Offset;
 
-      if (gui.SliderH(ref x, ref y, width, ref offset.z, 0.0f, -3.0f, $"Z: {offset.z:F}")) {
+      // it's because the width is odd
+      widthPos += 1.0f;
+      if (gui.SliderH(ref x, ref y, widthPos, ref offset.z, MinPosBoundZ, -MaxPosBoundZ, $"Z: {offset.z:F}")) {
         if (activeLights_ != null) {
           activeLights_.TailLightOffset = offset;
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
+      x = tx;
     }
 
     private void GuiLightsList(Gui gui, ref float x, ref float y) {
-      const float listHeight = 490.0f;
+      const float listHeight = 385.0f;
       const float widthScale = 1.2f;
       const float buttonWidth = Gui.Width * widthScale;
 
       bool guiEnabled = GUI.enabled;
-      GUI.enabled = !Core.IsInGarage;
+      GUI.enabled = !Core.IsInGarage && !KnCar.IsNull(Core.PlayerCar);
 
-      if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("add_lights_all"), autoAddLights_ ? Skin.ButtonActive : Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("add_lights_all"), autoAddLights_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         autoAddLights_ = !autoAddLights_;
 
         if (autoAddLights_) {
@@ -459,9 +444,15 @@ namespace KN_Lights {
         }
       }
 
-      if (gui.Button(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("add_lights_to"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("add_lights_to"), Skin.ButtonSkin.Normal)) {
         Core.CarPicker.Toggle();
         Core.ColorPicker.Reset();
+      }
+
+      GUI.enabled = carLights_.Count > 0;
+      if (gui.TextButton(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("remove_all_lights"), Skin.ButtonSkin.Normal)) {
+        autoAddLights_ = false;
+        RemoveAllLights();
       }
       GUI.enabled = guiEnabled;
 
@@ -469,13 +460,14 @@ namespace KN_Lights {
 
       float sx = x;
       float sy = y;
-      const float offset = Gui.ScrollBarWidth;
       bool scrollVisible = clListScrollH_ > listHeight;
-      float width = scrollVisible ? Gui.WidthScroll * widthScale - offset : Gui.WidthScroll * widthScale + offset;
+      float width = scrollVisible ? Gui.WidthScroll * widthScale : Gui.WidthScroll * widthScale + Gui.ScrollBarWidth;
       foreach (var cl in carLights_) {
         if (cl != null) {
           bool active = activeLights_ == cl;
-          if (gui.ScrollViewButton(ref sx, ref sy, width, Gui.Height, $"{cl.UserName}", out bool delPressed, active ? Skin.ButtonActive : Skin.Button, Skin.RedSkin)) {
+          if (gui.ScrollViewButton(ref sx, ref sy, width, Gui.Height, $"{cl.UserName}", out bool delPressed,
+            active ? Skin.ListButtonSkin.Active : Skin.ListButtonSkin.Normal, Skin.RedButtonSkin.Normal)) {
+
             if (delPressed) {
               if (cl == activeLights_) {
                 activeLights_ = null;
@@ -495,8 +487,10 @@ namespace KN_Lights {
         }
       }
 
-      clListScrollH_ = gui.EndScrollV(ref x, ref y, sx, sy);
-      y += Gui.OffsetSmall;
+      clListScrollH_ = gui.EndScrollV(ref x, ref y, sy);
+
+      y -= Gui.Offset;
+      gui.Dummy(x, y, buttonWidth + Gui.Offset, 0.0f);
     }
 
     private void EnableLightsOn(KnCar car, bool select = true) {
@@ -550,13 +544,13 @@ namespace KN_Lights {
           IsTailLightRightEnabled = true,
           TailLightOffset = new Vector3(0.6f, 0.6f, -1.6f)
         };
-        Log.Write($"[KN_Lights]: Lights for car '{car.Id}' not found. Creating default.");
+        Log.Write($"[KN_CarLights]: Lights for car '{car.Id}' not found. Creating default.");
       }
 
       var light = l.Copy();
       light.Attach(car);
       config.AddLights(light);
-      Log.Write($"[KN_Lights]: Car lights attached to '{car.Id}'");
+      Log.Write($"[KN_CarLights]: Car lights attached to '{car.Id}'");
 
       return light;
     }
@@ -626,6 +620,20 @@ namespace KN_Lights {
       }
     }
 
+    private void RemoveAllLights() {
+      foreach (var l in carLights_) {
+        if (l == activeLights_) {
+          activeLights_ = null;
+        }
+        if (l == ownLights_) {
+          ownLights_ = null;
+        }
+        l.Dispose();
+      }
+      carLights_.Clear();
+      carLightsToRemove_.Clear();
+    }
+
     private void RemoveAllNullLights() {
       foreach (var cl in carLights_) {
         if (KnCar.IsNull(cl.Car)) {
@@ -653,7 +661,7 @@ namespace KN_Lights {
       var stream = Embedded.LoadEmbeddedFile(assembly, $"KN_Lights.Resources.{LightsConfigDefault}");
       if (stream != null) {
         using (stream) {
-          if (DataSerializer.Deserialize<CarLights>("KN_Lights", stream, out var lights)) {
+          if (DataSerializer.Deserialize<CarLights>("KN_CarLights", stream, out var lights)) {
             lightsConfigDefault_ = new LightsConfig(lights.ConvertAll(l => (CarLights) l));
 #if false
           foreach (var l in lightsConfigDefault_.Lights) { }

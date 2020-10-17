@@ -105,7 +105,9 @@
         <Compile Include="src\Components\Tachometer.cs" />
         <Compile Include="src\Controls.cs" />
         <Compile Include="src\Embedded.cs" />
-        <Compile Include="src\Gui.cs" />
+        <Compile Include="src\Gui\Gui.cs" />
+        <Compile Include="src\Gui\KnSkin.cs" />
+        <Compile Include="src\Gui\Skin.cs" />
         <Compile Include="src\ISerializable.cs" />
         <Compile Include="src\KnConfig.cs" />
         <Compile Include="src\Loader.cs" />
@@ -113,7 +115,6 @@
         <Compile Include="src\Pickers\CarPicker.cs" />
         <Compile Include="src\Pickers\ColorPicker.cs" />
         <Compile Include="src\Pickers\FilePicker.cs" />
-        <Compile Include="src\Skin.cs" />
         <Compile Include="src\Timer.cs" />
         <Compile Include="src\Udp.cs" />
         <Compile Include="src\Core.cs" />
@@ -122,89 +123,6 @@
         <Compile Include="src\Submodule\Settings.cs" />
         <Compile Include="src\KnCar.cs" />
         <Compile Include="src\KnUtils.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\CameraActive.png" />
-        <EmbeddedResource Include="Resources\CameraHover.png" />
-        <EmbeddedResource Include="Resources\CameraNormal.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\AnimationActive.png" />
-        <EmbeddedResource Include="Resources\AnimationHover.png" />
-        <EmbeddedResource Include="Resources\AnimationNormal.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\ReplayActive.png" />
-        <EmbeddedResource Include="Resources\ReplayHover.png" />
-        <EmbeddedResource Include="Resources\ReplayNormal.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\ButtonDisabled.png" />
-        <EmbeddedResource Include="Resources\ButtonActiveDark.png" />
-        <EmbeddedResource Include="Resources\ButtonActive.png" />
-        <EmbeddedResource Include="Resources\ButtonHover.png" />
-        <EmbeddedResource Include="Resources\ButtonNormal.png" />
-        <EmbeddedResource Include="Resources\RedButtonActive.png" />
-        <EmbeddedResource Include="Resources\RedButtonHover.png" />
-        <EmbeddedResource Include="Resources\RedButtonNormal.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\SliderBG.png" />
-        <EmbeddedResource Include="Resources\TachBg.png" />
-        <EmbeddedResource Include="Resources\SliderThumbHover.png" />
-        <EmbeddedResource Include="Resources\SliderThumbNormal.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\Main.png" />
-        <EmbeddedResource Include="Resources\MainDark.png" />
-        <EmbeddedResource Include="Resources\OutlineDark.png" />
-        <EmbeddedResource Include="Resources\TachoOutline.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\PlayPauseNormal.png" />
-        <EmbeddedResource Include="Resources\PlayPauseHover.png" />
-        <EmbeddedResource Include="Resources\PlayPauseActive.png" />
-        <EmbeddedResource Include="Resources\StopNormal.png" />
-        <EmbeddedResource Include="Resources\StopHover.png" />
-        <EmbeddedResource Include="Resources\StopActive.png" />
-        <EmbeddedResource Include="Resources\SpeedLeftNormal.png" />
-        <EmbeddedResource Include="Resources\SpeedLeftHover.png" />
-        <EmbeddedResource Include="Resources\SpeedLeftActive.png" />
-        <EmbeddedResource Include="Resources\SpeedRightNormal.png" />
-        <EmbeddedResource Include="Resources\SpeedRightHover.png" />
-        <EmbeddedResource Include="Resources\SpeedRightActive.png" />
-        <EmbeddedResource Include="Resources\KeyframeNormal.png" />
-        <EmbeddedResource Include="Resources\KeyframeHover.png" />
-        <EmbeddedResource Include="Resources\KeyframeActive.png" />
-        <EmbeddedResource Include="Resources\GearNormal.png" />
-        <EmbeddedResource Include="Resources\GearHover.png" />
-        <EmbeddedResource Include="Resources\GearActive.png" />
-        <EmbeddedResource Include="Resources\LoopNormal.png" />
-        <EmbeddedResource Include="Resources\LoopHover.png" />
-        <EmbeddedResource Include="Resources\LoopActive.png" />
-        <EmbeddedResource Include="Resources\MinusNormal.png" />
-        <EmbeddedResource Include="Resources\MinusHover.png" />
-        <EmbeddedResource Include="Resources\MinusActive.png" />
-        <EmbeddedResource Include="Resources\PlusNormal.png" />
-        <EmbeddedResource Include="Resources\PlusHover.png" />
-        <EmbeddedResource Include="Resources\PlusActive.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\HeadlightsActive.png" />
-        <EmbeddedResource Include="Resources\HeadlightsHover.png" />
-        <EmbeddedResource Include="Resources\HeadlightsNormal.png" />
-        <EmbeddedResource Include="Resources\SunlightActive.png" />
-        <EmbeddedResource Include="Resources\SunlightHover.png" />
-        <EmbeddedResource Include="Resources\SunlightNormal.png" />
-        <EmbeddedResource Include="Resources\ProjectorActive.png" />
-        <EmbeddedResource Include="Resources\ProjectorHover.png" />
-        <EmbeddedResource Include="Resources\ProjectorNormal.png" />
-        <EmbeddedResource Include="Resources\TimelineSliderLow.png" />
-        <EmbeddedResource Include="Resources\TimelineSliderMid.png" />
-        <EmbeddedResource Include="Resources\TimelineSliderHigh.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\kn_exhaust_default.kne" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\Locale\en.xml" />
@@ -216,7 +134,21 @@
         <EmbeddedResource Include="Resources\Locale\ita.xml" />
     </ItemGroup>
     <ItemGroup>
+        <EmbeddedResource Include="Resources\kn_exhaust_default.kne" />
         <EmbeddedResource Include="Resources\supporters.xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\GUI\tooltip.png" />
+        <EmbeddedResource Include="Resources\GUI\base.png" />
+        <EmbeddedResource Include="Resources\GUI\outline.png" />
+        <EmbeddedResource Include="Resources\GUI\help.png" />
+        <EmbeddedResource Include="Resources\GUI\gear.png" />
+        <EmbeddedResource Include="Resources\GUI\about.png" />
+        <EmbeddedResource Include="Resources\GUI\lights.png" />
+        <EmbeddedResource Include="Resources\GUI\weather.png" />
+        <EmbeddedResource Include="Resources\GUI\visuals.png" />
+        <EmbeddedResource Include="Resources\GUI\puzzle.png" />
+        <EmbeddedResource Include="Resources\GUI\discord.png" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\KN_Loader\KN_Loader.csproj">

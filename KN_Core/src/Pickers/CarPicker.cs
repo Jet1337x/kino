@@ -44,7 +44,7 @@ namespace KN_Core {
         return;
       }
 
-      const float boxWidth = Gui.Width + Gui.OffsetGuiX * 2.0f;
+      const float boxWidth = Gui.Width + Gui.Offset * 2.0f;
       const float width = Gui.Width;
       const float height = Gui.Height;
 
@@ -53,28 +53,28 @@ namespace KN_Core {
       GuiCars(gui, ref x, ref y, boxWidth, width, height);
       carsListHeight_ = y - yBegin - Gui.Height;
 
-      x += Gui.Width + Gui.OffsetGuiX;
+      x += Gui.Width + Gui.Offset;
       y = yBegin;
     }
 
     private void GuiCars(Gui gui, ref float x, ref float y, float boxWidth, float width, float height) {
-      gui.Box(x, y, boxWidth, Gui.Height, $"{Locale.Get("cp_cars")} / {loadingCars_.Count}", Skin.MainContainerDark);
+      gui.Box(x, y, boxWidth, Gui.Height, $"{Locale.Get("cp_cars")} / {loadingCars_.Count}", Skin.BackgroundSkin.Normal);
       y += Gui.Height;
 
-      gui.Box(x, y, boxWidth, carsListHeight_, Skin.MainContainer);
-      y += Gui.OffsetY;
-      x += Gui.OffsetGuiX;
+      gui.Box(x, y, boxWidth, carsListHeight_, Skin.BackgroundSkin.Normal);
+      y += Gui.Offset;
+      x += Gui.Offset;
 
-      if (gui.Button(ref x, ref y, width, height, Locale.Get("cp_player"), Skin.Button)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("cp_player"), Skin.ButtonSkin.Normal)) {
         PickedCar = PlayerCar;
       }
 
       if (Cars.Count > 0) {
         gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-        y += Gui.OffsetY;
+        y += Gui.Offset;
 
         foreach (var c in Cars) {
-          if (gui.Button(ref x, ref y, width, height, c.Name, Skin.Button)) {
+          if (gui.TextButton(ref x, ref y, width, height, c.Name, Skin.ButtonSkin.Normal)) {
             PickedCar = c;
           }
         }
