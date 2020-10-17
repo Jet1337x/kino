@@ -16,6 +16,7 @@ namespace KN_Lights {
 
 #if KN_DEV_TOOLS
     private bool forceEnable_;
+    private readonly List<HazardLights> hazardsDump_;
 #endif
 
     private readonly Core core_;
@@ -25,16 +26,33 @@ namespace KN_Lights {
 
       hazards_ = new List<HazardLights>();
       defaultHazards_ = new List<HazardLights>();
+
+#if KN_DEV_TOOLS
+      hazardsDump_ = new List<HazardLights>();
+#endif
     }
 
     public void OnStart() {
-      var assembly = Assembly.GetExecutingAssembly();
+#if KN_DEV_TOOLS
+      if (DataSerializer.Deserialize<HazardLights>("KN_CarHazards", KnConfig.BaseDir + "dev/" + DefaultConfigFile, out var data)) {
+        hazardsDump_.AddRange(data.ConvertAll(d => (HazardLights) d));
+      }
+#endif
 
-      var stream = Embedded.LoadEmbeddedFile(assembly, $"KN_Lights.Resources.{DefaultConfigFile}");
+      var stream = Embedded.LoadEmbeddedFile(Assembly.GetExecutingAssembly(), $"KN_Lights.Resources.{DefaultConfigFile}");
       if (stream != null) {
         using (stream) {
           if (DataSerializer.Deserialize<HazardLights>("KN_CarHazards", stream, out var defaultData)) {
             defaultHazards_.AddRange(defaultData.ConvertAll(d => (HazardLights) d));
+
+#if KN_DEV_TOOLS
+            foreach (var hz in defaultHazards_) {
+              bool found = hazardsDump_.Any(h => h.Id == hz.Id);
+              if (!found) {
+                hazardsDump_.Add(hz.Copy());
+              }
+            }
+#endif
           }
         }
       }
@@ -42,7 +60,7 @@ namespace KN_Lights {
 
     public void OnStop() {
 #if KN_DEV_TOOLS
-      DataSerializer.Serialize("KN_CarHazards", hazards_.ToList<ISerializable>(), KnConfig.BaseDir + "dev/" + DefaultConfigFile, Loader.Version);
+      DevFlushConfig();
 #endif
     }
 
@@ -221,13 +239,34 @@ namespace KN_Lights {
           ownHazards_.Range = range;
         }
       }
+
+      if (gui.TextButton(ref x, ref y, width, height, "DEV SAVE", Skin.ButtonSkin.Normal)) {
+        if (ownHazards_ != null) {
+          bool found = false;
+          for (int i = 0; i < hazardsDump_.Count; ++i) {
+            if (hazardsDump_[i].Id == ownHazards_.Id) {
+              found = true;
+              hazardsDump_[i] = ownHazards_.Copy();
+              break;
+            }
+          }
+          if (!found) {
+            hazardsDump_.Add(ownHazards_.Copy());
+          }
+        }
+        DevFlushConfig();
+      }
 #endif
 
       return false;
     }
 
     private HazardLights GetOrCreateHazards(int id) {
+#if KN_DEV_TOOLS
+      foreach (var hz in hazardsDump_) {
+#else
       foreach (var hz in defaultHazards_) {
+#endif
         if (hz.Id == id) {
           return hz.Copy();
         }
@@ -267,5 +306,11 @@ namespace KN_Lights {
 
       ownHazards_.Send(id, core_.Udp);
     }
+
+#if KN_DEV_TOOLS
+    private void DevFlushConfig() {
+      DataSerializer.Serialize("KN_CarHazards", hazardsDump_.ToList<ISerializable>(), KnConfig.BaseDir + "dev/" + DefaultConfigFile, Loader.Version);
+    }
+#endif
   }
 }
