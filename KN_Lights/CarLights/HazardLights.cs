@@ -387,11 +387,29 @@ namespace KN_Lights {
       data.Add("id", id);
       data.Add("hz", Hazard);
 
+      data.Add("fx", OffsetFront.x);
+      data.Add("fy", OffsetFront.y);
+      data.Add("fz", OffsetFront.z);
+
+      data.Add("rx", OffsetRear.x);
+      data.Add("ry", OffsetRear.y);
+      data.Add("rz", OffsetRear.z);
+
       udp.Send(data);
     }
 
     public void OnUdpData(SmartfoxDataPackage data) {
       Hazard = data.Data.GetBool("hz");
+
+      float x = data.Data.GetFloat("fx");
+      float y = data.Data.GetFloat("fy");
+      float z = data.Data.GetFloat("fz");
+      OffsetFront = new Vector3(x, y, z);
+
+      x = data.Data.GetFloat("rx");
+      y = data.Data.GetFloat("ry");
+      z = data.Data.GetFloat("rz");
+      OffsetRear = new Vector3(x, y, z);
     }
   }
 }
