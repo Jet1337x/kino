@@ -377,7 +377,7 @@ namespace KN_Lights {
     public static void MakeHeadLight(ref Light light, Color color, float brightness, float angle) {
       light.type = LightType.Spot;
       light.color = color;
-      light.range = 50.0f;
+      light.range = 25.0f;
       light.intensity = brightness;
       light.spotAngle = angle;
       light.innerSpotAngle = 50.0f;

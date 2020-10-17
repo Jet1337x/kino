@@ -211,7 +211,7 @@ namespace KN_Core {
       defaultParams_["grip_autodisable"] = true;
       defaultParams_["custom_tach"] = false;
 
-      defaultParams_["cl_discard_distance"] = 170.0f;
+      defaultParams_["cl_discard_distance"] = 90.0f;
 
       defaultParams_["sync_lights"] = true;
 
@@ -252,7 +252,7 @@ namespace KN_Core {
           params_[p.Key] = Mathf.Clamp((float) p.Value, 0.01f, 0.1f);
         }
         else if (p.Key == "cl_discard_distance") {
-          params_[p.Key] = Mathf.Clamp((float) p.Value, 50.0f, 500.0f);
+          params_[p.Key] = Mathf.Clamp((float) p.Value, 50.0f, 200.0f);
         }
       }
 

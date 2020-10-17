@@ -283,7 +283,7 @@ namespace KN_Lights {
         }
       }
 
-      if (gui.SliderH(ref x, ref y, width, ref carLightsDiscard_, 50.0f, 500.0f, $"{Locale.Get("hide_lights_after")}: {carLightsDiscard_:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref carLightsDiscard_, 50.0f, 200.0f, $"{Locale.Get("hide_lights_after")}: {carLightsDiscard_:F1}")) {
         Core.KnConfig.Set("cl_discard_distance", carLightsDiscard_);
         shouldSync_ = activeLights_ == ownLights_;
       }
@@ -748,7 +748,7 @@ namespace KN_Lights {
       if (cam != null) {
         foreach (var cl in carLights_) {
           if (!KnCar.IsNull(cl.Car)) {
-            cl.Discarded = cl != activeLights_ && Vector3.Distance(cam.transform.position, cl.Car.Transform.position) > carLightsDiscard_;
+            cl.Discarded = Vector3.Distance(cam.transform.position, cl.Car.Transform.position) > carLightsDiscard_;
           }
         }
       }
