@@ -14,6 +14,9 @@ namespace KN_Lights {
     private readonly List<HazardLights> hazards_;
     private readonly List<HazardLights> defaultHazards_;
 
+#if KN_DEV_TOOLS
+    private bool forceEnable_;
+#endif
 
     private readonly Core core_;
 
@@ -94,6 +97,12 @@ namespace KN_Lights {
           hz.Enabled = false;
         }
       }
+
+#if KN_DEV_TOOLS
+      if (forceEnable_ && ownHazards_ != null) {
+        ownHazards_.Enabled = forceEnable_;
+      }
+#endif
 
       if (!core_.IsGuiEnabled && ownHazards_ != null && ownHazards_.Debug) {
         ownHazards_.Debug = false;
@@ -190,6 +199,13 @@ namespace KN_Lights {
 #if KN_DEV_TOOLS
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.Offset;
+
+      if (gui.TextButton(ref x, ref y, width, height, "FORCE ENABLE", forceEnable_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+        forceEnable_ = !forceEnable_;
+        if (ownHazards_ != null) {
+          ownHazards_.Enabled = forceEnable_;
+        }
+      }
 
       float brightness = ownHazards_?.Brightness ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref brightness, 1.0f, 20.0f, $"HAZARD LIGHT BRIGHTNESS: {brightness:F1}")) {
