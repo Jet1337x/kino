@@ -194,9 +194,10 @@ namespace KN_Lights {
           ownHazards_.OffsetRear = offset;
         }
       }
-      x = tx;
 
 #if KN_DEV_TOOLS
+      x = tx;
+
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.Offset;
 
