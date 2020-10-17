@@ -400,6 +400,15 @@ namespace KN_Lights {
       float widthLight = width / 2.0f - Gui.OffsetSmall;
       float widthPos = width / 3.0f - Gui.OffsetSmall / 2.0f - 1.0f;
 
+#if KN_DEV_TOOLS
+      bool il = activeLights_?.ForceIl ?? false;
+      if (gui.TextButton(ref x, ref y, width, height, "FORCE ILLUMINATION", il ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+        if (activeLights_ != null) {
+          activeLights_.ForceIl = !activeLights_.ForceIl;
+        }
+      }
+#endif
+
       bool lt = activeLights_?.TailLights.EnabledLeft ?? false;
       if (gui.TextButton(ref x, ref y, widthLight, height, Locale.Get("tl_left"), lt ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         if (activeLights_ != null) {

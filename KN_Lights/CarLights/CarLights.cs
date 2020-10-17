@@ -40,6 +40,10 @@ namespace KN_Lights {
       }
     }
 
+#if KN_DEV_TOOLS
+    public bool ForceIl { get; set; }
+#endif
+
     public KnCar Car { get; private set; }
     public ulong Sid { get; private set; }
     public string Name { get; private set; }
@@ -120,6 +124,12 @@ namespace KN_Lights {
         }
         TailLights.SetIntensity(brakePower);
       }
+
+#if KN_DEV_TOOLS
+      if (ForceIl) {
+        TailLights.Illumination = true;
+      }
+#endif
     }
 
     private void CarUpdate() {
