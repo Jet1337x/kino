@@ -19,7 +19,7 @@ namespace KN_Lights {
 
     private const string LightsConfigFile = "kn_lights.knl";
     private const string NwLightsConfigFile = "kn_nwlights.knl";
-    private const string LightsConfigDefault = "kn_lights_default.knl";
+    private const string LightsConfigDefault = "default_lights.knl";
 #if KN_DEV_TOOLS
     private const string LightsDevConfigFile = "dev/kn_lights_dev.knl";
 #endif

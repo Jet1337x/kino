@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace KN_Lights {
   public class Hazards {
-    private const string DefaultConfigFile = "kn_default_hazards.knl";
+    private const string DefaultConfigFile = "default_hazards.knl";
 
     private HazardLights ownHazards_;
     private readonly List<HazardLights> hazards_;

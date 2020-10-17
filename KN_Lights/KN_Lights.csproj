@@ -101,8 +101,8 @@
     </ItemGroup>
     <ItemGroup>
       <EmbeddedResource Include="Resources\HeadLightMask.png" />
-      <EmbeddedResource Include="Resources\kn_lights_default.knl" />
-      <EmbeddedResource Include="Resources\kn_default_hazards.knl" />
+      <EmbeddedResource Include="Resources\default_lights.knl" />
+      <EmbeddedResource Include="Resources\default_hazards.knl" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
