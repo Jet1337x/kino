@@ -75,6 +75,7 @@ namespace KN_Core {
 
     private static Font fontVersion_;
     private static Font fontLight_;
+    private static Font fontLightBig_;
     private static Font fontTabs_;
     private static Font fontTach_;
     private static Font fontGear_;
@@ -138,6 +139,7 @@ namespace KN_Core {
       fontVersion_ = Font.CreateDynamicFontFromOSFont("Carlito", 9);
       fontTabs_ = Font.CreateDynamicFontFromOSFont("Carlito Bold", 12);
       fontLight_ = Font.CreateDynamicFontFromOSFont("Carlito", 12);
+      fontLightBig_ = Font.CreateDynamicFontFromOSFont("Carlito", 14);
 
       PuzzleSkin = MakeModButton("puzzle.png");
       SettingsSkin = MakeModButton("gear.png");
@@ -188,7 +190,7 @@ namespace KN_Core {
         new KnSkin.SkinState(LightColor, TextColorDark1),
         new KnSkin.SkinState(LightColor, TextColorDark1),
         new KnSkin.SkinState(LightColor, TextColorDark1),
-        "base.png", TextAnchor.MiddleLeft, fontLight_);
+        "base.png", TextAnchor.MiddleLeft, fontLightBig_);
 
       BoxSkin = new KnSkin(KnSkin.Type.Box,
         new KnSkin.SkinState(LightColor, TextColorDark1),
