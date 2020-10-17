@@ -12,11 +12,10 @@ namespace KN_Lights {
 
     private const string HelpLink = "https://github.com/trbflxr/kino/blob/master/Help/CarLights.md";
 
-    private const float MinPosBound = 0.0f;
-    private const float MaxPosBound = 1.0f;
-
-    private const float MinPosBoundZ = 1.5f;
-    private const float MaxPosBoundZ = 3.0f;
+    public const float MinPosBound = 0.0f;
+    public const float MaxPosBound = 1.0f;
+    public const float MinPosBoundZ = 1.5f;
+    public const float MaxPosBoundZ = 3.0f;
 
     private const string LightsConfigFile = "kn_lights.knl";
     private const string NwLightsConfigFile = "kn_nwlights.knl";
@@ -35,7 +34,8 @@ namespace KN_Lights {
     private CarLights activeLights_;
     private CarLights ownLights_;
     private readonly List<CarLights> carLights_;
-    private readonly List<CarLights> carLightsToRemove_;
+
+    private readonly Hazards hazards_;
 
     private float clListScrollH_;
     private Vector2 clListScroll_;
@@ -60,7 +60,8 @@ namespace KN_Lights {
       settings_ = core.Settings;
 
       carLights_ = new List<CarLights>();
-      carLightsToRemove_ = new List<CarLights>();
+
+      hazards_ = new Hazards(Core);
 
       syncTimer_ = new Timer(0.5f);
       syncTimer_.Callback += SendLightsData;
@@ -91,6 +92,8 @@ namespace KN_Lights {
       lightsConfig_ = DataSerializer.Deserialize<CarLights>("KN_CarLights", KnConfig.BaseDir + LightsConfigFile, out var lights)
         ? new LightsConfig(lights.ConvertAll(l => (CarLights) l))
         : new LightsConfig();
+
+      hazards_.OnStart();
     }
 
     private void LoadDefaultLights(Assembly assembly) {
@@ -118,11 +121,14 @@ namespace KN_Lights {
 #if KN_DEV_TOOLS
       if (!DataSerializer.Serialize("KN_CarLights", carLightsDev_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsDevConfigFile, Loader.Version)) { }
 #endif
+
+      hazards_.OnStop();
     }
 
     public override void OnCarLoaded(KnCar car) {
       AutoAddLights(false);
       shouldSync_ = true;
+      hazards_.OnCarLoaded(car);
     }
 
     public override void OnGuiToggle() {
@@ -134,21 +140,16 @@ namespace KN_Lights {
     public override void OnUdpData(SmartfoxDataPackage data) {
       int type = data.Data.GetInt("type");
 
-      if (type != Udp.TypeLights && type != Udp.TypeHazard) {
+      if (type == Udp.TypeHazard) {
+        hazards_.OnUdpData(data);
+        return;
+      }
+
+      if (type != Udp.TypeLights) {
         return;
       }
 
       int id = data.Data.GetInt("id");
-
-      if (type == Udp.TypeHazard) {
-        foreach (var cl in nwLightsConfig_.Lights) {
-          if (!KnCar.IsNull(cl.Car) && cl.Car.IsNetworkCar && cl.Car.Base.networkPlayer.NetworkID == id) {
-            cl.HandleHazard(data);
-            break;
-          }
-        }
-        return;
-      }
 
       foreach (var car in Core.Cars) {
         if (car.IsNetworkCar && car.Base.networkPlayer.NetworkID == id) {
@@ -184,6 +185,8 @@ namespace KN_Lights {
       OptimizeLights();
 
       ToggleOwnLights();
+
+      hazards_.Update(carLightsDiscard_);
 
       if (Core.IsInGarageChanged) {
         joinTimer_.Reset();
@@ -228,6 +231,8 @@ namespace KN_Lights {
       foreach (var cl in carLights_) {
         cl.LateUpdate();
       }
+
+      hazards_.LateUpdate();
     }
 
     private bool OnGui(Gui gui, float x, float y) {
@@ -244,6 +249,8 @@ namespace KN_Lights {
         pickHeadLightsColor_ = true;
         EnableLightsOn(Core.PlayerCar);
       }
+
+      hazards_.OnGui(gui, ref x, ref y, width, height);
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.Offset;
@@ -283,13 +290,6 @@ namespace KN_Lights {
       y += Gui.Offset;
 
       GuiDashLight(gui, ref x, ref y, width, height);
-
-      if (activeLights_ == ownLights_) {
-        gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-        y += Gui.Offset;
-
-        GuiHazardLight(gui, ref x, ref y, width, height);
-      }
 
       y = yBegin;
       x += width;
@@ -521,7 +521,6 @@ namespace KN_Lights {
                 activeLights_ = null;
               }
               if (cl == ownLights_) {
-                ToggleHazards();
                 ownLights_ = null;
               }
               cl.Dispose();
@@ -614,86 +613,6 @@ namespace KN_Lights {
 #endif
     }
 
-    private void GuiHazardLight(Gui gui, ref float x, ref float y, float width, float height) {
-      bool hazard = activeLights_?.Hazard ?? false;
-      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("hazard_lights"), hazard ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
-        ToggleHazards();
-      }
-
-#if KN_DEV_TOOLS
-      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.Offset;
-
-      bool rh = activeLights_?.HazardLights.Enabled ?? false;
-      if (gui.TextButton(ref x, ref y, width, height, "HAZARD LIGHTS ENABLED", rh ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
-        if (activeLights_ != null) {
-          activeLights_.HazardLights.Enabled = !activeLights_.HazardLights.Enabled;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      float brightness = activeLights_?.HazardLights.Brightness ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref brightness, 1.0f, 20.0f, $"HAZARD LIGHT BRIGHTNESS: {brightness:F1}")) {
-        if (activeLights_ != null) {
-          activeLights_.HazardLights.Brightness = brightness;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      float range = activeLights_?.HazardLights.Range ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref range, 0.05f, 1.0f, $"HAZARD LIGHT RANGE: {range:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.HazardLights.Range = range;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      var offset = activeLights_?.HazardLights.OffsetFront ?? Vector3.zero;
-      if (gui.SliderH(ref x, ref y, width, ref offset.x, MinPosBound, MaxPosBound, $"FRONT X: {offset.x:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.HazardLights.OffsetFront = offset;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offset.y, MinPosBound, MaxPosBound, $"FRONT Y: {offset.y:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.HazardLights.OffsetFront = offset;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offset.z, MinPosBoundZ, MaxPosBoundZ, $"FRONT Z: {offset.z:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.HazardLights.OffsetFront = offset;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      offset = activeLights_?.HazardLights.OffsetRear ?? Vector3.zero;
-      if (gui.SliderH(ref x, ref y, width, ref offset.x, MinPosBound, MaxPosBound, $"REAR X: {offset.x:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.HazardLights.OffsetRear = offset;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offset.y, MinPosBound, MaxPosBound, $"REAR Y: {offset.y:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.HazardLights.OffsetRear = offset;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      if (gui.SliderH(ref x, ref y, width, ref offset.z, -MinPosBoundZ, -MaxPosBoundZ, $"REAR Z: {offset.z:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.HazardLights.OffsetRear = offset;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-#endif
-    }
-
     private void EnableLightsOn(KnCar car, bool select = true) {
       bool player = car == Core.PlayerCar;
 
@@ -763,13 +682,8 @@ namespace KN_Lights {
           }
           ownLights_.Dispose();
           carLights_.Remove(ownLights_);
-          ToggleHazards();
           ownLights_ = null;
         }
-      }
-
-      if (Controls.KeyDown("toggle_hazards")) {
-        ToggleHazards();
       }
     }
 
@@ -818,43 +732,27 @@ namespace KN_Lights {
           activeLights_ = null;
         }
         if (l == ownLights_) {
-          ToggleHazards();
           ownLights_ = null;
         }
         l.Dispose();
       }
       carLights_.Clear();
-      carLightsToRemove_.Clear();
     }
 
     private void RemoveAllNullLights() {
-      foreach (var cl in carLights_) {
+      carLights_.RemoveAll(cl => {
         if (KnCar.IsNull(cl.Car)) {
-          carLightsToRemove_.Add(cl);
-        }
-      }
-
-      if (carLightsToRemove_.Count > 0) {
-        foreach (var cl in carLightsToRemove_) {
           if (activeLights_ == cl) {
             activeLights_ = null;
           }
           if (ownLights_ == cl) {
-            ToggleHazards();
             ownLights_ = null;
           }
           cl.Dispose();
-          carLights_.Remove(cl);
+          return true;
         }
-        carLightsToRemove_.Clear();
-      }
-    }
-
-    private void ToggleHazards() {
-      if (ownLights_ != null) {
-        ownLights_.Hazard = !ownLights_.Hazard;
-        SendHazardData();
-      }
+        return false;
+      });
     }
 
     private void SendLightsData() {
@@ -865,17 +763,6 @@ namespace KN_Lights {
 
       shouldSync_ = false;
       ownLights_.Send(id, Core.Udp);
-
-      SendHazardData();
-    }
-
-    private void SendHazardData() {
-      int id = NetworkController.InstanceGame?.LocalPlayer?.NetworkID ?? -1;
-      if (id == -1 || ownLights_ == null) {
-        return;
-      }
-
-      ownLights_.SendHazard(id, Core.Udp);
     }
   }
 }

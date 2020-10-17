@@ -1,9 +1,10 @@
 using System.IO;
 using KN_Core;
+using SyncMultiplayer;
 using UnityEngine;
 
 namespace KN_Lights {
-  public class HazardLights {
+  public class HazardLights : ISerializable {
     public const float DefaultBrightness = 10.0f;
     public const float DefaultRange = 1.0f;
     private const float HazardToggleTime = 0.85f;
@@ -39,6 +40,29 @@ namespace KN_Lights {
         if (Rr != null) {
           Rr.SetActive(enabled_);
         }
+      }
+    }
+
+    private bool discarded_;
+    public bool Discarded {
+      get => discarded_;
+      set {
+        if (discarded_ == value) {
+          return;
+        }
+        discarded_ = value;
+        if (discarded_) {
+          Enabled = false;
+        }
+      }
+    }
+
+    private bool hazard_;
+    public bool Hazard {
+      get => hazard_;
+      set {
+        hazard_ = value;
+        Reset(hazard_);
       }
     }
 
@@ -141,18 +165,24 @@ namespace KN_Lights {
     private bool hazardMode_;
     private float hazardTimer_;
 
-    public HazardLights(Color color, float brightness, float range, Vector3 offsetFront, Vector3 offsetRear) {
+    public HazardLights() {
       enabled_ = false;
+      hazardMode_ = false;
+      color_ = new Color32(0xd7, 0x90, 0x00, 0xff);
+      brightness_ = DefaultBrightness;
+      range_ = DefaultRange;
+      OffsetFront = new Vector3(0.6f, 0.6f, 2.2f);
+      OffsetRear = new Vector3(0.6f, 0.6f, -2.2f);
+    }
+
+    private HazardLights(Color color, float brightness, float range, Vector3 offsetFront, Vector3 offsetRear) {
+      enabled_ = false;
+      hazardMode_ = false;
       color_ = color;
       brightness_ = brightness;
       range_ = range;
       OffsetFront = offsetFront;
       OffsetRear = offsetRear;
-    }
-
-    public HazardLights(BinaryReader reader) {
-      Deserialize(reader);
-      enabled_ = false;
     }
 
     public HazardLights Copy() {
@@ -188,6 +218,7 @@ namespace KN_Lights {
     }
 
     public void Attach(KnCar car) {
+      enabled_ = false;
       Car = car;
 
       var position = car.Transform.position;
@@ -284,14 +315,14 @@ namespace KN_Lights {
       MakeLight(ref rr, color_, brightness_, range_);
     }
 
-    public void Reset(bool enabled) {
+    private void Reset(bool enabled) {
       hazardMode_ = enabled;
       Enabled = enabled;
       hazardTimer_ = 0.0f;
     }
 
     public void LateUpdate() {
-      if (!hazardMode_) {
+      if (!hazardMode_ || Discarded) {
         return;
       }
 
@@ -324,13 +355,29 @@ namespace KN_Lights {
       KnUtils.WriteVec3(writer, OffsetFront);
       KnUtils.WriteVec3(writer, OffsetRear);
     }
-
-    public void Deserialize(BinaryReader reader) {
+    public bool Deserialize(BinaryReader reader, int version) {
       color_ = KnUtils.DecodeColor(reader.ReadInt32());
       range_ = reader.ReadSingle();
       brightness_ = reader.ReadSingle();
       OffsetFront = KnUtils.ReadVec3(reader);
       OffsetRear = KnUtils.ReadVec3(reader);
+
+      return true;
+    }
+
+    public void Send(int id, Udp udp) {
+      var data = new SmartfoxDataPackage(PacketId.Subroom);
+      data.Add("1", (byte) 25);
+      data.Add("type", Udp.TypeHazard);
+
+      data.Add("id", id);
+      data.Add("hz", Hazard);
+
+      udp.Send(data);
+    }
+
+    public void OnUdpData(SmartfoxDataPackage data) {
+      Hazard = data.Data.GetBool("hz");
     }
   }
 }
