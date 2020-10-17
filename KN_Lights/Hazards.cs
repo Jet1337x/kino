@@ -9,10 +9,12 @@ using UnityEngine;
 namespace KN_Lights {
   public class Hazards {
     private const string DefaultConfigFile = "default_hazards.knl";
+    private const string ConfigFile = "kn_hazards.knl";
 
     private HazardLights ownHazards_;
     private readonly List<HazardLights> hazards_;
     private readonly List<HazardLights> defaultHazards_;
+    private readonly List<HazardLights> playerHazards_;
 
 #if KN_DEV_TOOLS
     private bool forceEnable_;
@@ -26,6 +28,7 @@ namespace KN_Lights {
 
       hazards_ = new List<HazardLights>();
       defaultHazards_ = new List<HazardLights>();
+      playerHazards_ = new List<HazardLights>();
 
 #if KN_DEV_TOOLS
       hazardsDump_ = new List<HazardLights>();
@@ -34,7 +37,7 @@ namespace KN_Lights {
 
     public void OnStart() {
 #if KN_DEV_TOOLS
-      if (DataSerializer.Deserialize<HazardLights>("KN_CarHazards", KnConfig.BaseDir + "dev/" + DefaultConfigFile, out var data)) {
+      if (DataSerializer.Deserialize<HazardLights>("KN_Lights::Hazards", KnConfig.BaseDir + "dev/" + DefaultConfigFile, out var data)) {
         hazardsDump_.AddRange(data.ConvertAll(d => (HazardLights) d));
       }
 #endif
@@ -42,7 +45,7 @@ namespace KN_Lights {
       var stream = Embedded.LoadEmbeddedFile(Assembly.GetExecutingAssembly(), $"KN_Lights.Resources.{DefaultConfigFile}");
       if (stream != null) {
         using (stream) {
-          if (DataSerializer.Deserialize<HazardLights>("KN_CarHazards", stream, out var defaultData)) {
+          if (DataSerializer.Deserialize<HazardLights>("KN_Lights::Hazards", stream, out var defaultData)) {
             defaultHazards_.AddRange(defaultData.ConvertAll(d => (HazardLights) d));
 
 #if KN_DEV_TOOLS
@@ -56,12 +59,18 @@ namespace KN_Lights {
           }
         }
       }
+
+      if (DataSerializer.Deserialize<HazardLights>("KN_Lights::Hazards", KnConfig.BaseDir + ConfigFile, out var playerData)) {
+        playerHazards_.AddRange(playerData.ConvertAll(d => (HazardLights) d));
+      }
     }
 
     public void OnStop() {
 #if KN_DEV_TOOLS
       DevFlushConfig();
 #endif
+
+      DataSerializer.Serialize("KN_Lights::Hazards", playerHazards_.ToList<ISerializable>(), KnConfig.BaseDir + ConfigFile, Loader.Version);
     }
 
     public void OnCarLoaded(KnCar car) {
@@ -166,6 +175,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, widthPos, ref offset.x, Lights.MinPosBound, Lights.MaxPosBound, $"{Locale.Get("front")} X: {offset.x:F}")) {
         if (ownHazards_ != null) {
           ownHazards_.OffsetFront = offset;
+          AddToPlayersConfig();
         }
       }
       x += widthPos + Gui.OffsetSmall;
@@ -174,6 +184,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, widthPos, ref offset.y, Lights.MinPosBound, Lights.MaxPosBound, $"{Locale.Get("front")} Y: {offset.y:F}")) {
         if (ownHazards_ != null) {
           ownHazards_.OffsetFront = offset;
+          AddToPlayersConfig();
         }
       }
       x += widthPos + Gui.OffsetSmall;
@@ -184,6 +195,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, widthPos, ref offset.z, Lights.MinPosBoundZ, Lights.MaxPosBoundZ, $"{Locale.Get("front")} Z: {offset.z:F}")) {
         if (ownHazards_ != null) {
           ownHazards_.OffsetFront = offset;
+          AddToPlayersConfig();
         }
       }
 
@@ -193,6 +205,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, widthPos, ref offset.x, Lights.MinPosBound, Lights.MaxPosBound, $"{Locale.Get("rear")} X: {offset.x:F}")) {
         if (ownHazards_ != null) {
           ownHazards_.OffsetRear = offset;
+          AddToPlayersConfig();
         }
       }
       x += widthPos + Gui.OffsetSmall;
@@ -201,6 +214,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, widthPos, ref offset.y, Lights.MinPosBound, Lights.MaxPosBound, $"{Locale.Get("rear")} Y: {offset.y:F}")) {
         if (ownHazards_ != null) {
           ownHazards_.OffsetRear = offset;
+          AddToPlayersConfig();
         }
       }
       x += widthPos + Gui.OffsetSmall;
@@ -210,6 +224,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, widthPos, ref offset.z, -Lights.MinPosBoundZ, -Lights.MaxPosBoundZ, $"{Locale.Get("rear")} Z: {offset.z:F}")) {
         if (ownHazards_ != null) {
           ownHazards_.OffsetRear = offset;
+          AddToPlayersConfig();
         }
       }
 
@@ -219,7 +234,7 @@ namespace KN_Lights {
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.Offset;
 
-      if (gui.TextButton(ref x, ref y, width, height, "FORCE ENABLE", forceEnable_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+      if (gui.TextButton(ref x, ref y, width, height, $"FORCE ENABLE {hazards_.Count}", forceEnable_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         forceEnable_ = !forceEnable_;
         if (ownHazards_ != null) {
           ownHazards_.Enabled = forceEnable_;
@@ -230,6 +245,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref brightness, 1.0f, 20.0f, $"HAZARD LIGHT BRIGHTNESS: {brightness:F1}")) {
         if (ownHazards_ != null) {
           ownHazards_.Brightness = brightness;
+          AddToPlayersConfig();
         }
       }
 
@@ -237,6 +253,7 @@ namespace KN_Lights {
       if (gui.SliderH(ref x, ref y, width, ref range, 0.05f, 1.0f, $"HAZARD LIGHT RANGE: {range:F}")) {
         if (ownHazards_ != null) {
           ownHazards_.Range = range;
+          AddToPlayersConfig();
         }
       }
 
@@ -263,6 +280,12 @@ namespace KN_Lights {
     }
 
     private HazardLights GetOrCreateHazards(int id) {
+      foreach (var hz in playerHazards_) {
+        if (hz.Id == id) {
+          return hz.Copy();
+        }
+      }
+
 #if KN_DEV_TOOLS
       foreach (var hz in hazardsDump_) {
 #else
@@ -308,9 +331,26 @@ namespace KN_Lights {
       ownHazards_.Send(id, core_.Udp);
     }
 
+    private void AddToPlayersConfig() {
+      if (ownHazards_ == null) {
+        return;
+      }
+      bool found = false;
+      for (int i = 0; i < playerHazards_.Count; ++i) {
+        if (playerHazards_[i].Id == ownHazards_.Id) {
+          found = true;
+          playerHazards_[i] = ownHazards_.Copy();
+          break;
+        }
+      }
+      if (!found) {
+        playerHazards_.Add(ownHazards_.Copy());
+      }
+    }
+
 #if KN_DEV_TOOLS
     private void DevFlushConfig() {
-      DataSerializer.Serialize("KN_CarHazards", hazardsDump_.ToList<ISerializable>(), KnConfig.BaseDir + "dev/" + DefaultConfigFile, Loader.Version);
+      DataSerializer.Serialize("KN_Lights::Hazards", hazardsDump_.ToList<ISerializable>(), KnConfig.BaseDir + "dev/" + DefaultConfigFile, Loader.Version);
     }
 #endif
   }
