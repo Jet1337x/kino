@@ -60,8 +60,8 @@ namespace KN_Lights {
       Sid = ulong.MaxValue;
       Name = string.Empty;
 
-      HeadLights = new LightsSet(Color.white, 0.0f, 1500.0f, 100.0f, new Vector3(0.6f, 0.6f, 1.9f), true, true, false);
-      TailLights = new LightsSet(Color.red, 0.0f, 30.0f, 170.0f, new Vector3(0.6f, 0.6f, -1.6f), true, true, true);
+      HeadLights = new LightsSet(Color.white, LightsSet.DefaultIllumination, LightsSet.DefaultRange, 0.0f, 1500.0f, 100.0f, new Vector3(0.6f, 0.6f, 1.9f), true, true, false);
+      TailLights = new LightsSet(Color.red, LightsSet.DefaultIllumination, LightsSet.DefaultRange, 0.0f, 30.0f, 170.0f, new Vector3(0.6f, 0.6f, -1.6f), true, true, true);
       DashLight = new DashLight(Color.white, DashLight.DefaultBrightness, DashLight.DefaultRange, new Vector3(0.0f, 0.6f, 1.0f), true);
     }
 

@@ -402,8 +402,23 @@ namespace KN_Lights {
           shouldSync_ = activeLights_ == ownLights_;
         }
       }
-
       x = tx;
+
+#if KN_DEV_TOOLS
+      float intensity = activeLights_?.HeadLights.IlIntensity ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref intensity, 1.0f, 10.0f, $"ILLUMINATION INTENSITY: {intensity:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadLights.IlIntensity = intensity;
+        }
+      }
+
+      float range = activeLights_?.HeadLights.Range ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref range, 0.05f, 0.8f, $"ILLUMINATION RANGE: {range:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadLights.Range = range;
+        }
+      }
+#endif
     }
 
     private void GuiTailLights(Gui gui, ref float x, ref float y, float width, float height) {
@@ -492,6 +507,22 @@ namespace KN_Lights {
         }
       }
       x = tx;
+
+#if KN_DEV_TOOLS
+      float intensity = activeLights_?.TailLights.IlIntensity ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref intensity, 1.0f, 10.0f, $"ILLUMINATION INTENSITY: {intensity:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.TailLights.IlIntensity = intensity;
+        }
+      }
+
+      float range = activeLights_?.TailLights.Range ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref range, 0.05f, 0.8f, $"ILLUMINATION RANGE: {range:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.TailLights.Range = range;
+        }
+      }
+#endif
     }
 
     private void GuiLightsList(Gui gui, ref float x, ref float y) {

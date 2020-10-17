@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace KN_Lights {
   public class LightsSet {
-    private const float HeadLightsIllumination = 13.0f;
-    private const float TaliLightsIllumination = 10.0f;
+    public const float DefaultIllumination = 10.0f;
+    public const float DefaultRange = 0.3f;
 
     private static readonly int BaseColorMap = Shader.PropertyToID("_BaseColorMap");
 
@@ -55,6 +55,30 @@ namespace KN_Lights {
         }
         if (RightIl != null) {
           RightIl.SetActive(enabledRight_ && illumination_);
+        }
+      }
+    }
+
+    private float ilIntensity_;
+    public float IlIntensity {
+      get => ilIntensity_;
+      set {
+        ilIntensity_ = value;
+        if (GetIllumination(out var l, out var r)) {
+          l.intensity = ilIntensity_;
+          r.intensity = ilIntensity_;
+        }
+      }
+    }
+
+    private float range_;
+    public float Range {
+      get => range_;
+      set {
+        range_ = value;
+        if (GetIllumination(out var l, out var r)) {
+          l.range = range_;
+          r.range = range_;
         }
       }
     }
@@ -196,9 +220,11 @@ namespace KN_Lights {
 
     private readonly bool inverted_;
 
-    public LightsSet(Color color, float pitch, float brightness, float angle, Vector3 offset, bool enabledLeft, bool enabledRight, bool inverted) {
+    public LightsSet(Color color, float ilIntensity, float range, float pitch, float brightness, float angle, Vector3 offset, bool enabledLeft, bool enabledRight, bool inverted) {
       inverted_ = inverted;
       illumination_ = true;
+      ilIntensity_ = ilIntensity;
+      range_ = range;
       enabledLeft_ = enabledLeft;
       enabledRight_ = enabledRight;
       enabled_ = enabledLeft_ || enabledRight_;
@@ -240,7 +266,7 @@ namespace KN_Lights {
     }
 
     public LightsSet Copy() {
-      var set = new LightsSet(color_, pitch_, brightness_, angle_, Offset, enabledLeft_, enabledRight_, inverted_);
+      var set = new LightsSet(color_, ilIntensity_, range_, pitch_, brightness_, angle_, Offset, enabledLeft_, enabledRight_, inverted_);
       return set;
     }
 
@@ -337,8 +363,8 @@ namespace KN_Lights {
 
       var il = LeftIl.GetComponent<Light>();
       var ir = RightIl.GetComponent<Light>();
-      MakeIllumination(ref il, color_, tailLights ? TaliLightsIllumination : HeadLightsIllumination);
-      MakeIllumination(ref ir, color_, tailLights ? TaliLightsIllumination : HeadLightsIllumination);
+      MakeIllumination(ref il, color_, ilIntensity_, range_);
+      MakeIllumination(ref ir, color_, ilIntensity_, range_);
     }
 
     public void SetIntensity(float val) {
@@ -368,10 +394,10 @@ namespace KN_Lights {
       light.cookie = Lights.LightMask;
     }
 
-    public static void MakeIllumination(ref Light l, Color color, float power) {
+    public static void MakeIllumination(ref Light l, Color color, float power, float range) {
       l.type = LightType.Point;
       l.color = color;
-      l.range = 0.3f;
+      l.range = range;
       l.intensity = power;
     }
 
@@ -394,6 +420,8 @@ namespace KN_Lights {
       writer.Write(Pitch);
       writer.Write(Brightness);
       writer.Write(Angle);
+      writer.Write(IlIntensity);
+      writer.Write(Range);
       KnUtils.WriteVec3(writer, Offset);
     }
 
@@ -404,6 +432,8 @@ namespace KN_Lights {
       pitch_ = reader.ReadSingle();
       brightness_ = reader.ReadSingle();
       angle_ = reader.ReadSingle();
+      ilIntensity_ = reader.ReadSingle();
+      range_ = reader.ReadSingle();
       Offset = KnUtils.ReadVec3(reader);
     }
   }
