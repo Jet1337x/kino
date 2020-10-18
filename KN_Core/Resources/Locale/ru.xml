@@ -119,8 +119,8 @@
   <key id="reset_all" value="ВЕРНУТЬ СТАНДАРТНЫЕ ЗНАЧЕНИЯ"/>
 
   <!--EXTRAS-->
-  <key id="f_tyre_pressure" value="ДАВЛЕНИЕ В ПЕРЕДНИХ ПОКРЫШКАХ"/>
-  <key id="r_tyre_pressure" value="ДАВЛЕНИЕ В ЗАДНИХ ПОКРЫШКАХ"/>
+  <key id="f_tyre_pressure" value="ДАВЛЕНИЕ ПЕРЕДНИХ ШИН"/>
+  <key id="r_tyre_pressure" value="ДАВЛЕНИЕ ЗАДНИХ ШИН"/>
   <key id="reload_tag" value="ПЕРЕЗАГРУЗИТЬ ТАГ"/>
   <key id="use_tag" value="ИСПОЛЬЗОВАТЬ ТАГ"/>
   <key id="tag_front" value="ТАГ В НАЧАЛЕ"/>
