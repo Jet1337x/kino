@@ -509,7 +509,7 @@ namespace KN_Core {
     }
 
     private void GuiUpdateWarn() {
-      const float width = Gui.Width * 3.0f;
+      const float width = Gui.Width * 2.7f;
       float height = Gui.Height * 3.0f;
 
       float x = Screen.width / 2.0f - width / 2.0f;
@@ -519,7 +519,7 @@ namespace KN_Core {
       if (loader_.Changelog != null) {
         changelog += $"{Locale.Get("changes")}:\n";
         foreach (string line in loader_.Changelog) {
-          height += Gui.Height * 0.75f;
+          height += Gui.Height * 0.9f;
           changelog += $"- {line}\n";
         }
       }
