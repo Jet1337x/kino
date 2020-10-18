@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="nl" author="Gingy Bread">
   <!--MODS (TABS)-->
-  <key id="lights" value="LICHTEN"/>
   <key id="visuals" value="VISUALS"/>
   <key id="settings" value="OPTIES"/>
   <key id="maps" value="MAPS"/>
@@ -82,19 +81,16 @@
   <key id="restore_design" value="HERSTEL ONTWERP"/>
 
   <!--LIGHTS-->
+  <key id="lights" value="LICHTEN"/>
   <key id="lights_enable_own" value="ZET EIGEN LICHTEN AAN"/>
   <key id="debug_obj" value="DEBUG OBJECTEN"/>
   <key id="hide_lights_after" value="VERSTOP LICHTEN NA"/>
   <key id="hl_left" value="LINKS KOPLICHT"/>
   <key id="hl_right" value="RECHTS KOPLICHT"/>
   <key id="hl_brightness" value="KOPLICHT HELDERHEID"/>
-  <key id="hl_angle" value="KOPLICHT HOEK"/>
-  <key id="hl_pitch" value="KOPLICHT TILT"/>
   <key id="tl_left" value="LINKS ACHTERLICHT"/>
   <key id="tl_right" value="RECHTS ACHTERLICHT"/>
   <key id="tl_brightness" value="ACHTERLICHT HELDERHEID"/>
-  <key id="tl_angle" value="ACHTERLICHT HOEK"/>
-  <key id="tl_pitch" value="ACHTERLICHT TILT"/>
   <key id="add_lights_all" value="VOEG LICHTEN TOE AAN IEDEREEN"/>
   <key id="add_lights_to" value="VOEG LICHTEN TOE AAN"/>
 

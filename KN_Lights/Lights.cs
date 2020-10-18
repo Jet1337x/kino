@@ -414,7 +414,7 @@ namespace KN_Lights {
 
 #if KN_DEV_TOOLS
       float angle = activeLights_?.HeadLights.Angle ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref angle, 140.0f, 160.0f, $"{Locale.Get("hl_angle")}: {angle:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref angle, 140.0f, 160.0f, $"ANGLE: {angle:F1}")) {
         if (activeLights_ != null) {
           activeLights_.HeadLights.Angle = angle;
           shouldSync_ = activeLights_ == ownLights_;
@@ -422,7 +422,7 @@ namespace KN_Lights {
       }
 
       float hlPitch = activeLights_?.HeadLights.Pitch ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"{Locale.Get("hl_pitch")}: {hlPitch:F}")) {
+      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"PITCH: {hlPitch:F}")) {
         if (activeLights_ != null) {
           activeLights_.HeadLights.Pitch = hlPitch;
           shouldSync_ = activeLights_ == ownLights_;
@@ -518,7 +518,7 @@ namespace KN_Lights {
 
 #if KN_DEV_TOOLS
       float angle = activeLights_?.TailLights.Angle ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref angle, 140.0f, 170.0f, $"{Locale.Get("tl_angle")}: {angle:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref angle, 140.0f, 170.0f, $"ANGLE: {angle:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLights.Angle = angle;
           shouldSync_ = activeLights_ == ownLights_;
@@ -526,7 +526,7 @@ namespace KN_Lights {
       }
 
       float tlPitch = activeLights_?.TailLights.Pitch ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"{Locale.Get("tl_pitch")}: {tlPitch:F1}")) {
+      if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"PITCH: {tlPitch:F1}")) {
         if (activeLights_ != null) {
           activeLights_.TailLights.Pitch = tlPitch;
           shouldSync_ = activeLights_ == ownLights_;

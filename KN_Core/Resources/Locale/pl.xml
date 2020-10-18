@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="pl" author="Sleepy">
   <!--MODS (TABS)-->
-  <key id="lights" value="ŚWIATŁA"/>
   <key id="visuals" value="WIZUALNE"/>
   <key id="settings" value="USTAWIENIA"/>
   <key id="maps" value="MAPY"/>
@@ -82,19 +81,16 @@
   <key id="restore_design" value="PRZYWRÓĆ DESIGN"/>
 
   <!--LIGHTS-->
+  <key id="lights" value="ŚWIATŁA"/>
   <key id="lights_enable_own" value="WŁĄCZ WŁASNE ŚWIATŁA"/>
   <key id="debug_obj" value="DEBUGUJ OBIEKTY"/>
   <key id="hide_lights_after" value="SCHOWAJ ŚWIATŁA PO"/>
   <key id="hl_left" value="LEWY PRZEDNI REFLEKTOR"/>
   <key id="hl_right" value="PRAWY PRZEDNI REKFLEKTOR"/>
   <key id="hl_brightness" value="JASNOŚĆ PRZEDNICH REFLEKTORÓW"/>
-  <key id="hl_angle" value="KĄT PRZEDNICH REFLEKTORÓW"/>
-  <key id="hl_pitch" value="KĄT NACHYLENIA PRZEDNICH REFLEKTORÓW"/>
   <key id="tl_left" value="LEWY TYLNY REFLEKTOR"/>
   <key id="tl_right" value="PRAWY TYLNY REFLEKTOR"/>
   <key id="tl_brightness" value="JASNOŚĆ TYLNEGO REFLEKTORA"/>
-  <key id="tl_angle" value="KĄT TYLNEGO REFLEKTORA"/>
-  <key id="tl_pitch" value="KĄT NACHYLENIA TYLNEGO REFLEKTORA"/>
   <key id="add_lights_all" value="DODAJ ŚWIATŁA DLA WSZYSTKICH"/>
   <key id="add_lights_to" value="DODAJ ŚWIATŁA DLA"/>
 

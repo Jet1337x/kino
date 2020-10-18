@@ -3,7 +3,6 @@
   <!--MODS (TABS)-->
   <key id="car_lights" value="FARI DELL'AUTO"/>
   <key id="world_lights" value="LUCI DEL MONDO"/>
-  <key id="lights" value="LUCI"/>
   <key id="visuals" value="VISUALE"/>
   <key id="settings" value="OPZIONI"/>
   <key id="maps" value="MAPPE"/>
@@ -84,18 +83,15 @@
   <key id="restore_design" value="RIPRISTINA DESIGN"/>
 
   <!--LIGHTS-->
+  <key id="lights" value="LUCI"/>
   <key id="lights_enable_own" value="ATTIVA I PROPRI FARI"/>
   <key id="debug_obj" value="DEBUG OGGETTI"/>
   <key id="hide_lights_after" value="NON RENDERIZZARE I FARI OLTRE"/>
   <key id="hl_left" value="FARO ANT. SINISTRO"/>
   <key id="hl_right" value="FARO ANT. DESTRO"/>
-  <key id="hl_brightness" value="LUMINOSITÀ FARI ANTERIORI"/>
-  <key id="hl_angle" value="ANGOLO DI EMISSIONE FARI ANTERIORI"/>
   <key id="hl_pitch" value="INCLINAZIONE FARI ANTERIORI"/>
   <key id="tl_left" value="FARO POS. SINISTRO"/>
   <key id="tl_right" value="FARO POS. DESTRO"/>
-  <key id="tl_brightness" value="LUMINOSITÀ FARI POSTERIORI"/>
-  <key id="tl_angle" value="ANGOLO DI EMISSIONE FARI POSTERIORI"/>
   <key id="tl_pitch" value="INCLINAZIONE FARI POSTERIORI"/>
   <key id="add_lights_all" value="AGGIUNGI LUCI A TUTTI"/>
   <key id="add_lights_to" value="AGGIUNGI LUCI A"/>

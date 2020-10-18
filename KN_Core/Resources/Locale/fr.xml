@@ -3,7 +3,6 @@
   <!--MODS (TABS)-->
   <key id="car_lights" value="PHARES"/>
   <key id="world_lights" value="ÉCLAIRAGE"/>
-  <key id="lights" value="PHARES"/>
   <key id="visuals" value="KIT DÉCO"/>
   <key id="settings" value="RÉGLAGES"/>
   <key id="maps" value="MAPS"/>
@@ -84,19 +83,16 @@
   <key id="restore_design" value="RESTAURER DESIGN"/>
 
   <!--LIGHTS-->
+  <key id="lights" value="PHARES"/>
   <key id="lights_enable_own" value="ACTIVER MES PHARES"/>
   <key id="debug_obj" value="REPLACER AMPOULES"/>
   <key id="hide_lights_after" value="CACHER PHARES APRÈS"/>
   <key id="hl_left" value="PHARE AVANT GAUCHE"/>
   <key id="hl_right" value="PHARE AVANT DROIT"/>
   <key id="hl_brightness" value="LUMINOSITÉ PHARES"/>
-  <key id="hl_angle" value="ANGLE PHARES"/>
-  <key id="hl_pitch" value="PITCH PHARES"/>
   <key id="tl_left" value="FEU ARRIÈRE GAUCHE"/>
   <key id="tl_right" value="FEU ARRIÈRE DROIT"/>
   <key id="tl_brightness" value="LUMINOSITÉ PHARES ARRIÈRE"/>
-  <key id="tl_angle" value="ANGLE PHARES ARRIÈRE"/>
-  <key id="tl_pitch" value="PITCH PHARES ARRIÈRE"/>
   <key id="add_lights_all" value="PHARES À TOUT LE MONDE"/>
   <key id="add_lights_to" value="AJOUTER PHARES À"/>
 

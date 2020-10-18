@@ -7,6 +7,7 @@
   <key id="settings" value="НАСТРОЙКИ"/>
   <key id="maps" value="КАРТЫ"/>
   <key id="about" value="ИНФО"/>
+  <key id="extras" value="ЭКСТРА"/>
 
   <!--COMMON-->
   <key id="language" value="ЯЗЫК"/>
@@ -20,6 +21,12 @@
   <key id="blue" value="СИНИЙ"/>
   <key id="alpha" value="АЛЬФА"/>
   <key id="close" value="ЗАКРЫТЬ"/>
+  <key id="reload" value="ПЕРЕЗАГРУЗИТЬ"/>
+  <key id="front" value="ПЕРЕД"/>
+  <key id="rear" value="ЗАД"/>
+  <key id="low" value="НИЗКИЙ"/>
+  <key id="medium" value="СРЕДНИЙ"/>
+  <key id="high" value="ВЫСОКИЙ"/>
 
   <!--CORE-->
   <key id="input_locked" value="УПРАВЛЕНИЕ ИГРОЙ ЗАБЛОКИРОВАНО ПОКА ОТКРЫТО МЕНЮ МОДА"/>
@@ -83,21 +90,23 @@
   <key id="restore_design" value="ВОССТАНОВИТЬ ДИЗАЙН"/>
 
   <!--LIGHTS-->
+  <key id="lights" value="СВЕТ"/>
   <key id="lights_enable_own" value="ВКЛЮЧИТЬ СОБСТВЕННЫЕ ФАРЫ"/>
   <key id="debug_obj" value="ДЕБАГ ОБЪЕКТЫ"/>
   <key id="hide_lights_after" value="ПРЯТАТЬ ФАРЫ ЧЕРЕЗ"/>
   <key id="hl_left" value="ЛЕВАЯ ФАРА"/>
   <key id="hl_right" value="ПРАВАЯ ФАРА"/>
   <key id="hl_brightness" value="ЯРКОСТЬ ФАР"/>
-  <key id="hl_angle" value="УГЛ ФАР"/>
-  <key id="hl_pitch" value="НАКЛОН ФАР"/>
   <key id="tl_left" value="ЛЕВЫЙ ФОНАРЬ"/>
   <key id="tl_right" value="ПРАВЫЙ ФОНАРЬ"/>
   <key id="tl_brightness" value="ЯРКОСТЬ ФОНАРЕЙ"/>
-  <key id="tl_angle" value="УГОЛ ФОНАРЕЙ"/>
-  <key id="tl_pitch" value="НАКЛОН ФОНАРЕЙ"/>
   <key id="add_lights_all" value="ВКЛЮЧИТЬ ФАРЫ ВСЕМ"/>
   <key id="add_lights_to" value="ВКЛЮЧИТЬ ФАРЫ ДЛЯ"/>
+  <key id="remove_all_lights" value="УБРАТЬ ВСЕ ФАРЫ"/>
+  <key id="dash_enabled" value="ПОДСВЕТКА ПРИБОРКИ"/>
+  <key id="dash_color" value="ЦВЕТ ПРИБОРКИ"/>
+  <key id="hazard_lights" value="АВАРИЙКИ"/>
+  <key id="lights_quality" value="КАЧЕСТВО СВЕТА"/>
 
   <!--WORLD LIGHTS-->
   <key id="fog" value="ТУМАН"/>
@@ -108,4 +117,12 @@
   <key id="ambient" value="ОКРУЖАЮЩИЙ СВЕТ"/>
   <key id="color_temp" value="ТЕМПЕРАТУРА СВЕТА"/>
   <key id="reset_all" value="ВЕРНУТЬ СТАНДАРТНЫЕ ЗНАЧЕНИЯ"/>
+
+  <!--EXTRAS-->
+  <key id="f_tyre_pressure" value="ДАВЛЕНИЕ В ПЕРЕДНИХ ПОКРЫШКАХ"/>
+  <key id="r_tyre_pressure" value="ДАВЛЕНИЕ В ЗАДНИХ ПОКРЫШКАХ"/>
+  <key id="reload_tag" value="ПЕРЕЗАГРУЗИТЬ ТАГ"/>
+  <key id="use_tag" value="ИСПОЛЬЗОВАТЬ ТАГ"/>
+  <key id="tag_front" value="ТАГ В НАЧАЛЕ"/>
+  <key id="tag_back" value="ТАГ В КОНЦЕ"/>
 </locale>

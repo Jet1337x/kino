@@ -8,6 +8,7 @@
   <key id="settings" value="SETTINGS"/>
   <key id="maps" value="MAPS"/>
   <key id="about" value="ABOUT"/>
+  <key id="extras" value="EXTRAS"/>
 
   <!--COMMON-->
   <key id="language" value="LANGUAGE"/>
@@ -96,13 +97,9 @@
   <key id="hl_left" value="LEFT HEADLIGHT"/>
   <key id="hl_right" value="RIGHT HEADLIGHT"/>
   <key id="hl_brightness" value="HEADLIGHTS BRIGHTNESS"/>
-  <key id="hl_angle" value="HEADLIGHTS ANGLE"/>
-  <key id="hl_pitch" value="HEADLIGHTS PITCH"/>
   <key id="tl_left" value="LEFT TAILLIGHT"/>
   <key id="tl_right" value="RIGHT TAILLIGHT"/>
   <key id="tl_brightness" value="TAILLIGHT BRIGHTNESS"/>
-  <key id="tl_angle" value="TAILLIGHT ANGLE"/>
-  <key id="tl_pitch" value="TAILLIGHT PITCH"/>
   <key id="add_lights_all" value="ADD LIGHTS TO EVERYONE"/>
   <key id="add_lights_to" value="ADD LIGHTS TO"/>
   <key id="remove_all_lights" value="REMOVE ALL LIGHTS"/>
@@ -120,4 +117,12 @@
   <key id="ambient" value="AMBIENT LIGHT"/>
   <key id="color_temp" value="COLOR TEMPERATURE"/>
   <key id="reset_all" value="RESET ALL"/>
+
+  <!--EXTRAS-->
+  <key id="f_tyre_pressure" value="FRONT TYRE PRESSURE"/>
+  <key id="r_tyre_pressure" value="REAR TYRE PRESSURE"/>
+  <key id="reload_tag" value="RELOAD NAME TAG"/>
+  <key id="use_tag" value="USE NAME TAG"/>
+  <key id="tag_front" value="TAG BEFORE THE NAME"/>
+  <key id="tag_back" value="TAG AFTER THE NAME"/>
 </locale>
