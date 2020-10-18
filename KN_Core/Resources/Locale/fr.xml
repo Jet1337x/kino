@@ -29,7 +29,7 @@
   <key id="high" value="HAUT"/>
 
   <!--CORE-->
-  <key id="input_locked" value="TOUCHES CARX VERROUILLÉE. FERMER MENU POUR DÉVERROUILLER."/>
+  <key id="input_locked" value="LES TOUCHES DE JEU SONT VERROUILLÉS PENDANT QUE LE MENU MOD EST OUVERT"/>
   <key id="changes" value="CHANGELOG"/>
   <key id="outdated0" value="VOTRE MOD N'EST PAS A JOUR, DERNIERE VERSION"/>
   <key id="outdated1" value="REDÉMARREZ LE JEU POUR QUE LE MOD SE METTE À JOUR AUTOMATIQUEMENT."/>

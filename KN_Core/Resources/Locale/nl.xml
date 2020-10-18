@@ -29,7 +29,7 @@
   <key id="high" value="HOOG"/>
 
   <!--CORE-->
-  <key id="input_locked" value="CARX BESTURING IS VERGRENDELD. SLUIT MOD MENU OM VERDER TE GAAN"/>
+  <key id="input_locked" value="SPEL BESTURING IS VERGRENDELD WANNEER HET MOD MENU OPEN IS"/>
   <key id="changes" value="CHANGELOG"/>
   <key id="outdated0" value="UW MOD IS OUTDATED, UPDATE NAAR DE LAATSTE VERSIE"/>
   <key id="outdated1" value="HERSTART HET SPEL ZODAT DE MOD ZICH AUTOMATISCH KAN UPDATEN."/>
