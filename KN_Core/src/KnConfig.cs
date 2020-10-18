@@ -17,12 +17,10 @@ namespace KN_Core {
 
   public enum Quality {
     Low,
-    Medium,
-    High
+    Medium
   }
 
   public class KnConfig {
-    //cx stuff
     public const string CxUiCanvasName = "Root";
     public const string CxMainCameraTag = "MainCamera";
 
@@ -32,7 +30,6 @@ namespace KN_Core {
 
     public const float Low = 0.0f;
     public const float Medium = 1.0f;
-    public const float High = 2.0f;
 
     public static string BaseDir { get; private set; }
     public static string ReplaysDir { get; private set; }
@@ -266,7 +263,7 @@ namespace KN_Core {
           params_[p.Key] = Mathf.Clamp((float) params_[p.Key], 50.0f, 200.0f);
         }
         else if (p.Key == "lights_quality") {
-          params_[p.Key] = Mathf.Clamp((float) params_[p.Key], Low, High);
+          params_[p.Key] = Mathf.Clamp((float) params_[p.Key], Low, Medium);
         }
       }
 
@@ -288,9 +285,6 @@ namespace KN_Core {
       if (val >= Medium - 0.5f && val <= Medium + 0.5f) {
         return "medium";
       }
-      if (val >= High - 0.5f && val <= High + 0.5f) {
-        return "high";
-      }
       return "low";
     }
 
@@ -301,9 +295,6 @@ namespace KN_Core {
       if (val >= Medium - 0.5f && val <= Medium + 0.5f) {
         return Quality.Medium;
       }
-      if (val >= High - 0.5f && val <= High + 0.5f) {
-        return Quality.High;
-      }
       return Quality.Low;
     }
 
@@ -313,9 +304,6 @@ namespace KN_Core {
       }
       if (val >= Medium - 0.5f && val <= Medium + 0.5f) {
         return Medium;
-      }
-      if (val >= High - 0.5f && val <= High + 0.5f) {
-        return High;
       }
       return Low;
     }

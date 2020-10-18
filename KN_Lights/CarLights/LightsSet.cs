@@ -17,9 +17,6 @@ namespace KN_Lights {
     public GameObject Left { get; private set; }
     public GameObject Right { get; private set; }
 
-    public GameObject LeftInner { get; private set; }
-    public GameObject RightInner { get; private set; }
-
     public GameObject LeftIl { get; private set; }
     public GameObject RightIl { get; private set; }
 
@@ -49,18 +46,6 @@ namespace KN_Lights {
             }
             if (RightIl != null) {
               RightIl.SetActive(enabled_);
-            }
-          }
-
-          if (!inverted_) {
-            bool innerEnabled = quality_ >= Quality.Medium && own_ || quality_ >= Quality.High;
-            if (innerEnabled) {
-              if (LeftInner != null) {
-                LeftInner.SetActive(enabled_);
-              }
-              if (RightInner != null) {
-                RightInner.SetActive(enabled_);
-              }
             }
           }
         }
@@ -123,12 +108,6 @@ namespace KN_Lights {
         if (ilEnabled && LeftIl != null) {
           LeftIl.SetActive(enabledLeft_ && illumination_);
         }
-        if (!inverted_) {
-          bool innerEnabled = quality_ >= Quality.Medium && own_ || quality_ >= Quality.High;
-          if (innerEnabled && LeftInner != null) {
-            LeftInner.SetActive(enabledLeft_);
-          }
-        }
       }
     }
 
@@ -143,12 +122,6 @@ namespace KN_Lights {
         bool ilEnabled = quality_ >= Quality.Medium || own_;
         if (ilEnabled && RightIl != null) {
           RightIl.SetActive(enabledRight_ && illumination_);
-        }
-        if (!inverted_) {
-          bool innerEnabled = quality_ >= Quality.Medium && own_ || quality_ >= Quality.High;
-          if (innerEnabled && RightInner != null) {
-            RightInner.SetActive(enabledRight_);
-          }
         }
       }
     }
@@ -185,13 +158,6 @@ namespace KN_Lights {
           il.color = color_;
           ir.color = color_;
         }
-        if (!inverted_) {
-          bool innerEnabled = quality_ >= Quality.Medium && own_ || quality_ >= Quality.High;
-          if (innerEnabled && GetInners(out var li, out var ri)) {
-            li.color = color_;
-            ri.color = color_;
-          }
-        }
       }
     }
 
@@ -213,18 +179,6 @@ namespace KN_Lights {
           Right.transform.rotation = rot * Quaternion.AngleAxis(pitch, Vector3.right);
         }
 
-        if (!inverted_) {
-          bool innerEnabled = quality_ >= Quality.Medium && own_ || quality_ >= Quality.High;
-          if (innerEnabled) {
-            if (LeftInner != null) {
-              LeftInner.transform.rotation = rot * Quaternion.AngleAxis(pitch, Vector3.right);
-            }
-            if (RightInner != null) {
-              RightInner.transform.rotation = rot * Quaternion.AngleAxis(pitch, Vector3.right);
-            }
-          }
-        }
-
         float angle = inverted_ ? 90.0f - pitch_ : 90.0f + pitch_;
         if (DebugLeft != null) {
           DebugLeft.transform.rotation = rot * Quaternion.AngleAxis(angle, Vector3.right);
@@ -244,14 +198,6 @@ namespace KN_Lights {
           l.intensity = brightness_;
           r.intensity = brightness_;
         }
-
-        if (!inverted_) {
-          bool innerEnabled = quality_ >= Quality.Medium && own_ || quality_ >= Quality.High;
-          if (innerEnabled && GetInners(out var li, out var ri)) {
-            li.intensity = brightness_ * InnerBrightnessScale;
-            ri.intensity = brightness_ * InnerBrightnessScale;
-          }
-        }
       }
     }
 
@@ -263,14 +209,6 @@ namespace KN_Lights {
         if (GetLights(out var l, out var r)) {
           l.spotAngle = angle_;
           r.spotAngle = angle_;
-        }
-
-        if (!inverted_) {
-          bool innerEnabled = quality_ >= Quality.Medium && own_ || quality_ >= Quality.High;
-          if (innerEnabled && GetInners(out var li, out var ri)) {
-            li.spotAngle = angle_ * InnerAngleScale;
-            ri.spotAngle = angle_ * InnerAngleScale;
-          }
         }
       }
     }
@@ -297,18 +235,6 @@ namespace KN_Lights {
           }
           if (RightIl != null) {
             RightIl.transform.localPosition = offsetRight_;
-          }
-        }
-
-        if (!inverted_) {
-          bool innerEnabled = quality_ >= Quality.Medium && own_ || quality_ >= Quality.High;
-          if (innerEnabled) {
-            if (LeftInner != null) {
-              LeftInner.transform.localPosition = offsetLeft_;
-            }
-            if (RightInner != null) {
-              RightInner.transform.localPosition = offsetRight_;
-            }
           }
         }
       }
@@ -351,9 +277,6 @@ namespace KN_Lights {
       if (Left != null) {
         Object.Destroy(Left);
       }
-      if (LeftInner != null) {
-        Object.Destroy(LeftInner);
-      }
       if (LeftIl != null) {
         Object.Destroy(LeftIl);
       }
@@ -363,9 +286,6 @@ namespace KN_Lights {
 
       if (Right != null) {
         Object.Destroy(Right);
-      }
-      if (RightInner != null) {
-        Object.Destroy(RightInner);
       }
       if (RightIl != null) {
         Object.Destroy(RightIl);
@@ -388,7 +308,6 @@ namespace KN_Lights {
       debugColor_ = debug;
 
       bool ilEnabled = quality_ >= Quality.Medium || own_;
-      bool innerEnabled = !inverted_ && (quality_ >= Quality.Medium && own_ || quality_ >= Quality.High);
 
       var position = car.Transform.position;
       var rotation = car.Transform.rotation;
@@ -406,18 +325,12 @@ namespace KN_Lights {
         debugRotation = rotation * Quaternion.AngleAxis(180.0f, Vector3.up) * Quaternion.AngleAxis(90.0f + Pitch, -Vector3.right);
       }
 
-      Initialize(debug, ilEnabled, innerEnabled);
+      Initialize(debug, ilEnabled);
 
       Left.transform.parent = car.Transform;
       Left.transform.position = position;
       Left.transform.rotation = lightsRotation;
       Left.transform.localPosition += offsetLeft_;
-      if (innerEnabled) {
-        LeftInner.transform.parent = car.Transform;
-        LeftInner.transform.position = position;
-        LeftInner.transform.rotation = lightsRotation;
-        LeftInner.transform.localPosition += offsetLeft_;
-      }
       if (ilEnabled) {
         LeftIl.transform.parent = car.Transform;
         LeftIl.transform.position = Left.transform.position;
@@ -432,12 +345,6 @@ namespace KN_Lights {
       Right.transform.position = position;
       Right.transform.rotation = lightsRotation;
       Right.transform.localPosition += offsetRight_;
-      if (innerEnabled) {
-        RightInner.transform.parent = car.Transform;
-        RightInner.transform.position = position;
-        RightInner.transform.rotation = lightsRotation;
-        RightInner.transform.localPosition += offsetRight_;
-      }
       if (ilEnabled) {
         RightIl.transform.parent = car.Transform;
         RightIl.transform.position = Right.transform.position;
@@ -448,22 +355,17 @@ namespace KN_Lights {
       DebugRight.transform.rotation = debugRotation;
       DebugRight.transform.localScale = capsuleScale;
 
-      MakeLights(tailLights, ilEnabled, innerEnabled);
+      MakeLights(tailLights, ilEnabled);
 
       Enabled = true;
     }
 
-    private void Initialize(Color debug, bool il, bool inner) {
+    private void Initialize(Color debug, bool il) {
       Dispose();
 
       Left = new GameObject();
       Left.AddComponent<Light>();
       Left.SetActive(enabledLeft_);
-      if (inner) {
-        LeftInner = new GameObject();
-        LeftInner.AddComponent<Light>();
-        LeftInner.SetActive(enabledLeft_);
-      }
       if (il) {
         LeftIl = new GameObject();
         LeftIl.AddComponent<Light>();
@@ -473,11 +375,6 @@ namespace KN_Lights {
       Right = new GameObject();
       Right.AddComponent<Light>();
       Right.SetActive(enabledRight_);
-      if (inner) {
-        RightInner = new GameObject();
-        RightInner.AddComponent<Light>();
-        RightInner.SetActive(enabledRight_);
-      }
       if (il) {
         RightIl = new GameObject();
         RightIl.AddComponent<Light>();
@@ -500,7 +397,7 @@ namespace KN_Lights {
       DebugRight.SetActive(Debug);
     }
 
-    private void MakeLights(bool tailLights, bool illumination, bool inner) {
+    private void MakeLights(bool tailLights, bool illumination) {
       const float range = 25.0f;
 
       var ll = Left.GetComponent<Light>();
@@ -508,12 +405,6 @@ namespace KN_Lights {
       if (!tailLights) {
         MakeHeadLight(ref ll, color_, brightness_, angle_, range);
         MakeHeadLight(ref lr, color_, brightness_, angle_, range);
-        if (inner) {
-          var li = LeftInner.GetComponent<Light>();
-          var ri = RightInner.GetComponent<Light>();
-          MakeHeadLight(ref li, color_, brightness_ * InnerBrightnessScale, angle_ * InnerAngleScale, range * InnerRangeScale);
-          MakeHeadLight(ref ri, color_, brightness_ * InnerBrightnessScale, angle_ * InnerAngleScale, range * InnerRangeScale);
-        }
       }
       else {
         MakeTailLight(ref ll, brightness_, angle_);
@@ -559,7 +450,7 @@ namespace KN_Lights {
       light.range = 6.0f;
       light.intensity = brightness;
       light.spotAngle = angle;
-      light.innerSpotAngle = 10.0f;
+      light.innerSpotAngle = 90.0f;
       light.cookie = Lights.LightMask;
     }
 
@@ -579,12 +470,6 @@ namespace KN_Lights {
     private bool GetIllumination(out Light left, out Light right) {
       left = LeftIl.GetComponent<Light>();
       right = RightIl.GetComponent<Light>();
-      return left != null && right != null;
-    }
-
-    private bool GetInners(out Light left, out Light right) {
-      left = LeftInner.GetComponent<Light>();
-      right = RightInner.GetComponent<Light>();
       return left != null && right != null;
     }
 
