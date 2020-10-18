@@ -388,7 +388,7 @@ namespace KN_Lights {
       debugColor_ = debug;
 
       bool ilEnabled = quality_ >= Quality.Medium || own_;
-      bool innerEnabled = !inverted_ && quality_ >= Quality.Medium && own_ || quality_ >= Quality.High;
+      bool innerEnabled = !inverted_ && (quality_ >= Quality.Medium && own_ || quality_ >= Quality.High);
 
       var position = car.Transform.position;
       var rotation = car.Transform.rotation;
