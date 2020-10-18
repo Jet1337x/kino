@@ -30,6 +30,7 @@ namespace KN_Lights {
 
     private CarLights activeLights_;
     private CarLights ownLights_;
+    private bool enableOwn_;
     private readonly List<CarLights> carLights_;
 
     private readonly Hazards hazards_;
@@ -191,7 +192,9 @@ namespace KN_Lights {
 
       OptimizeLights();
 
-      ToggleOwnLights();
+      if (Controls.KeyDown("toggle_lights")) {
+        ToggleOwnLights();
+      }
 
       hazards_.Update(carLightsDiscard_);
 
@@ -251,10 +254,11 @@ namespace KN_Lights {
       bool guiEnabled = GUI.enabled;
       GUI.enabled = !KnCar.IsNull(Core.PlayerCar);
 
-      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("lights_enable_own"), Skin.ButtonSkin.Normal)) {
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("lights_enable_own"), enableOwn_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         Core.ColorPicker.Reset();
+        enableOwn_ = !enableOwn_;
         pickHeadLightsColor_ = true;
-        EnableLightsOn(Core.PlayerCar);
+        ToggleOwnLights();
       }
 
       hazards_.GuiButton(gui, ref x, ref y, width, height);
@@ -553,6 +557,7 @@ namespace KN_Lights {
 
       if (gui.TextButton(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("add_lights_all"), autoAddLights_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
         autoAddLights_ = !autoAddLights_;
+        enableOwn_ = autoAddLights_;
 
         if (autoAddLights_) {
           AddLightsToEveryone();
@@ -570,6 +575,7 @@ namespace KN_Lights {
       GUI.enabled = carLights_.Count > 0;
       if (gui.TextButton(ref x, ref y, buttonWidth, Gui.Height, Locale.Get("remove_all_lights"), Skin.ButtonSkin.Normal)) {
         autoAddLights_ = false;
+        enableOwn_ = false;
         RemoveAllLights();
       }
       GUI.enabled = guiEnabled;
@@ -592,6 +598,7 @@ namespace KN_Lights {
               }
               if (cl == ownLights_) {
                 ownLights_ = null;
+                enableOwn_ = false;
               }
               cl.Dispose();
               carLights_.Remove(cl);
@@ -744,20 +751,20 @@ namespace KN_Lights {
     }
 
     private void ToggleOwnLights() {
-      if (Controls.KeyDown("toggle_lights")) {
-        if (ownLights_ == null) {
-          Core.ColorPicker.Reset();
-          pickHeadLightsColor_ = true;
-          EnableLightsOn(Core.PlayerCar);
+      if (ownLights_ == null) {
+        Core.ColorPicker.Reset();
+        pickHeadLightsColor_ = true;
+        enableOwn_ = true;
+        EnableLightsOn(Core.PlayerCar);
+      }
+      else {
+        if (ownLights_ == activeLights_) {
+          activeLights_ = null;
         }
-        else {
-          if (ownLights_ == activeLights_) {
-            activeLights_ = null;
-          }
-          ownLights_.Dispose();
-          carLights_.Remove(ownLights_);
-          ownLights_ = null;
-        }
+        ownLights_.Dispose();
+        carLights_.Remove(ownLights_);
+        ownLights_ = null;
+        enableOwn_ = false;
       }
     }
 
@@ -779,7 +786,7 @@ namespace KN_Lights {
       }
 
       if (autoAddLights_) {
-        if (!carLights_.Contains(ownLights_)) {
+        if (enableOwn_ && !carLights_.Contains(ownLights_)) {
           EnableLightsOn(Core.PlayerCar, select);
         }
         AddLightsToEveryone(select);
@@ -807,6 +814,7 @@ namespace KN_Lights {
         }
         if (l == ownLights_) {
           ownLights_ = null;
+          enableOwn_ = false;
         }
         l.Dispose();
       }
@@ -821,6 +829,7 @@ namespace KN_Lights {
           }
           if (ownLights_ == cl) {
             ownLights_ = null;
+            enableOwn_ = false;
           }
           cl.Dispose();
           return true;
