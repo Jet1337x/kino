@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="nl" author="Gingy Bread">
   <!--MODS (TABS)-->
+  <key id="car_lights" value="AUTO LICHTEN"/>
+  <key id="world_lights" value="WERELD LICHTING"/>
   <key id="visuals" value="VISUALS"/>
   <key id="settings" value="OPTIES"/>
   <key id="maps" value="MAPS"/>
   <key id="about" value="INFO"/>
+  <key id="extras" value="EXTRAS"/>
 
   <!--COMMON-->
   <key id="language" value="TAAL"/>
@@ -18,6 +21,12 @@
   <key id="blue" value="BLAUW"/>
   <key id="alpha" value="ALPHA"/>
   <key id="close" value="SLUITEN"/>
+  <key id="reload" value="HERLAAD"/>
+  <key id="front" value="VOOR"/>
+  <key id="rear" value="ACHTER"/>
+  <key id="low" value="LAAG"/>
+  <key id="medium" value="MEDIUM"/>
+  <key id="high" value="HOOG"/>
 
   <!--CORE-->
   <key id="input_locked" value="CARX BESTURING IS VERGRENDELD. SLUIT MOD MENU OM VERDER TE GAAN"/>
@@ -93,6 +102,11 @@
   <key id="tl_brightness" value="ACHTERLICHT HELDERHEID"/>
   <key id="add_lights_all" value="VOEG LICHTEN TOE AAN IEDEREEN"/>
   <key id="add_lights_to" value="VOEG LICHTEN TOE AAN"/>
+  <key id="remove_all_lights" value="VERWIJDER ALLE LICHTEN"/>
+  <key id="dash_enabled" value="DASHBORD LICHT AAN"/>
+  <key id="dash_color" value="DASHBORD LICHT UIT"/>
+  <key id="hazard_lights" value="HAZARD LIGHTS"/>
+  <key id="lights_quality" value="LICHT QUALITEIT"/>
 
   <!--WORLD LIGHTS-->
   <key id="fog" value="MIST"/>
@@ -103,4 +117,12 @@
   <key id="ambient" value="OMGEVINGS BELICHTING"/>
   <key id="color_temp" value="KLEUR TEMPERATUUR"/>
   <key id="reset_all" value="RESET ALLES"/>
+
+  <!--EXTRAS-->
+  <key id="f_tyre_pressure" value="VOORWIEL DRUK"/>
+  <key id="r_tyre_pressure" value="ACHTERWIEL DRUK"/>
+  <key id="reload_tag" value="HERLAAD NAME TAG"/>
+  <key id="use_tag" value="GEBRUIK NAME TAG"/>
+  <key id="tag_front" value="TAG VOOR DE NAAM"/>
+  <key id="tag_back" value="TAG NA DE NAAM"/>
 </locale>

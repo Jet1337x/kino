@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <locale loc="ita" author="Ybubu">
   <!--MODS (TABS)-->
-  <key id="car_lights" value="FARI DELL'AUTO"/>
-  <key id="world_lights" value="LUCI DEL MONDO"/>
+  <key id="car_lights" value="LUCI DELL'AUTO"/>
+  <key id="world_lights" value="ILLUMINAZIONE DEL MONDO"/>
   <key id="visuals" value="VISUALE"/>
   <key id="settings" value="OPZIONI"/>
   <key id="maps" value="MAPPE"/>
   <key id="about" value="RIGUARDO"/>
+  <key id="extras" value="EXTRA"/>
 
   <!--COMMON-->
   <key id="language" value="LINGUA"/>
@@ -20,6 +21,12 @@
   <key id="blue" value="BLU"/>
   <key id="alpha" value="ALPHA"/>
   <key id="close" value="CHIUDI"/>
+  <key id="reload" value="RICARICA"/>
+  <key id="front" value="ANTERIORE"/>
+  <key id="rear" value="POSTERIORE"/>
+  <key id="low" value="BASSO"/>
+  <key id="medium" value="MEDIO"/>
+  <key id="high" value="ALTO"/>
 
   <!--CORE-->
   <key id="input_locked" value="GLI INPUT DI GIOCO SONO BLOCCATI. CHIUDI IL MENU DELLA MOD PER SBLOCCARLO."/>
@@ -89,12 +96,17 @@
   <key id="hide_lights_after" value="NON RENDERIZZARE I FARI OLTRE"/>
   <key id="hl_left" value="FARO ANT. SINISTRO"/>
   <key id="hl_right" value="FARO ANT. DESTRO"/>
-  <key id="hl_pitch" value="INCLINAZIONE FARI ANTERIORI"/>
+  <key id="hl_brightness" value="LUMINOSITÀ FARI ANTERIORI"/>
   <key id="tl_left" value="FARO POS. SINISTRO"/>
   <key id="tl_right" value="FARO POS. DESTRO"/>
-  <key id="tl_pitch" value="INCLINAZIONE FARI POSTERIORI"/>
+  <key id="tl_brightness" value="LUMINOSITÀ FARI POSTERIORI"/>
   <key id="add_lights_all" value="AGGIUNGI LUCI A TUTTI"/>
   <key id="add_lights_to" value="AGGIUNGI LUCI A"/>
+  <key id="remove_all_lights" value="RIMUOVI TUTTE LE LUCI"/>
+  <key id="dash_enabled" value="LUCI DIREZIONALI ATTIVE"/>
+  <key id="dash_color" value="COLORE LUCI DIREZIONALI"/>
+  <key id="hazard_lights" value="QUATTRO FRECCE"/>
+  <key id="lights_quality" value="QUALITÀ DELLE LUCI"/>
 
   <!--WORLD LIGHTS-->
   <key id="fog" value="NEBBIA"/>
@@ -105,4 +117,12 @@
   <key id="ambient" value="LUCE AMBIENTALE"/>
   <key id="color_temp" value="TEMPERATURA DEL COLORE"/>
   <key id="reset_all" value="RIPRISTINA TUTTO"/>
+
+  <!--EXTRAS-->
+  <key id="f_tyre_pressure" value="PRESSIONE GOMME ANT"/>
+  <key id="r_tyre_pressure" value="PRESSIONE GOMME POS"/>
+  <key id="reload_tag" value="RICARICA IL TAG"/>
+  <key id="use_tag" value="USA IL TAG"/>
+  <key id="tag_front" value="TAG PRIMA DEL NOME"/>
+  <key id="tag_back" value="TAG DOPO IL NOME"/>
 </locale>

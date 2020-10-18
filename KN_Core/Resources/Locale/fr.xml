@@ -7,6 +7,7 @@
   <key id="settings" value="RÉGLAGES"/>
   <key id="maps" value="MAPS"/>
   <key id="about" value="INFOS"/>
+  <key id="extras" value="EXTRAS"/>
 
   <!--COMMON-->
   <key id="language" value="LANGUE"/>
@@ -20,6 +21,12 @@
   <key id="blue" value="BLEU"/>
   <key id="alpha" value="OPACITÉ"/>
   <key id="close" value="FERMER"/>
+  <key id="reload" value="RECHARGER"/>
+  <key id="front" value="FACE"/>
+  <key id="rear" value="ARRIÈRE"/>
+  <key id="low" value="FAIBLE"/>
+  <key id="medium" value="MOYEN"/>
+  <key id="high" value="HAUT"/>
 
   <!--CORE-->
   <key id="input_locked" value="TOUCHES CARX VERROUILLÉE. FERMER MENU POUR DÉVERROUILLER."/>
@@ -95,6 +102,11 @@
   <key id="tl_brightness" value="LUMINOSITÉ PHARES ARRIÈRE"/>
   <key id="add_lights_all" value="PHARES À TOUT LE MONDE"/>
   <key id="add_lights_to" value="AJOUTER PHARES À"/>
+  <key id="remove_all_lights" value="ENLEVER TOUS LES PHARES"/>
+  <key id="dash_enabled" value="ÉCLAIRAGE COMPTEUR"/>
+  <key id="dash_color" value="COULEURS COMPTEUR"/>
+  <key id="hazard_lights" value="FEUX DE DÉTRESSE"/>
+  <key id="lights_quality" value="QUALITÉ LUMIÈRES"/>
 
   <!--WORLD LIGHTS-->
   <key id="fog" value="BROUILLARD"/>
@@ -105,4 +117,12 @@
   <key id="ambient" value="LUMIÈRE AMBIANTE"/>
   <key id="color_temp" value="TEMPÉRATURE COULEUR"/>
   <key id="reset_all" value="RÉINITIALISER"/>
+
+  <!--EXTRAS-->
+  <key id="f_tyre_pressure" value="PRESSION PNEUS AVANT"/>
+  <key id="r_tyre_pressure" value="PRESSION PNEUS ARRIÈRE"/>
+  <key id="reload_tag" value="RECHARGER TAG JOUEURS"/>
+  <key id="use_tag" value="UTILISER LE TAG"/>
+  <key id="tag_front" value="TAG AVANT LE PSEUDO"/>
+  <key id="tag_back" value="TAG APRÈS LE PSEUDO"/>
 </locale>

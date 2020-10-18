@@ -3,7 +3,6 @@
   <!--MODS (TABS)-->
   <key id="car_lights" value="CAR LIGHTS"/>
   <key id="world_lights" value="WORLD LIGHTING"/>
-  <key id="lights" value="LIGHTS"/>
   <key id="visuals" value="VISUALS"/>
   <key id="settings" value="SETTINGS"/>
   <key id="maps" value="MAPS"/>
@@ -91,6 +90,7 @@
   <key id="restore_design" value="RESTORE DESIGN"/>
 
   <!--LIGHTS-->
+  <key id="lights" value="LIGHTS"/>
   <key id="lights_enable_own" value="ENABLE OWN LIGHTS"/>
   <key id="debug_obj" value="DEBUG OBJECTS"/>
   <key id="hide_lights_after" value="HIDE LIGHTS AFTER"/>
@@ -119,8 +119,8 @@
   <key id="reset_all" value="RESET ALL"/>
 
   <!--EXTRAS-->
-  <key id="f_tyre_pressure" value="FRONT TYRE PRESSURE"/>
-  <key id="r_tyre_pressure" value="REAR TYRE PRESSURE"/>
+  <key id="f_tyre_pressure" value="FRONT TIRE PRESSURE"/>
+  <key id="r_tyre_pressure" value="REAR TIRE PRESSURE"/>
   <key id="reload_tag" value="RELOAD NAME TAG"/>
   <key id="use_tag" value="USE NAME TAG"/>
   <key id="tag_front" value="TAG BEFORE THE NAME"/>
