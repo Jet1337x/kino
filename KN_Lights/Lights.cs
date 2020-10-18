@@ -176,7 +176,8 @@ namespace KN_Lights {
           }
 
           if (!found) {
-            var lights = CreateLights(car, nwLightsConfig_, false, false);
+            ulong sid = car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue;
+            var lights = CreateLights(car, nwLightsConfig_, sid, false, false);
             lights.ModifyFrom(data);
             if (autoAddLights_) {
               EnableLightsOn(car, false);
@@ -694,10 +695,11 @@ namespace KN_Lights {
 
     private void EnableLightsOn(KnCar car, bool select = true) {
       bool player = car == Core.PlayerCar;
+      ulong sid = player ? ulong.MaxValue : car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue;
 
       CarLights lights = null;
       if (player) {
-        lights = lightsConfig_.GetLights(car.Id);
+        lights = lightsConfig_.GetLights(car.Id, sid);
       }
       else if (car.Base.networkPlayer != null) {
         lights = nwLightsConfig_.GetLights(car.Id, car.Base.networkPlayer.PlayerId.uid);
@@ -705,11 +707,11 @@ namespace KN_Lights {
 
       if (lights == null) {
         if (player) {
-          lights = CreateLights(car, lightsConfig_, true);
+          lights = CreateLights(car, lightsConfig_, sid, true);
           lightsConfig_.AddLights(lights);
         }
         else {
-          lights = CreateLights(car, nwLightsConfig_, false);
+          lights = CreateLights(car, nwLightsConfig_, sid, false);
           nwLightsConfig_.AddLights(lights);
         }
       }
@@ -731,11 +733,11 @@ namespace KN_Lights {
       }
     }
 
-    private CarLights CreateLights(KnCar car, LightsConfigBase config, bool own, bool attach = true) {
+    private CarLights CreateLights(KnCar car, ILightsConfig config, ulong sid, bool own, bool attach = true) {
 #if KN_DEV_TOOLS
-      var l = defaultLightsDump_.GetLights(car.Id);
+      var l = defaultLightsDump_.GetLights(car.Id, sid);
 #else
-      var l = lightsConfigDefault_.GetLights(car.Id);
+      var l = lightsConfigDefault_.GetLights(car.Id, sid);
 #endif
       if (l == null) {
         l = new CarLights();
