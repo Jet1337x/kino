@@ -554,6 +554,12 @@ namespace KN_Core {
           ResetPickers();
         }
       }
+
+#if KN_DEV_TOOLS
+      if (Input.GetKeyDown(KeyCode.H)) {
+        gui_.RenderWhiteBg = !gui_.RenderWhiteBg;
+      }
+#endif
     }
 
     private void HandleModSelection() {
