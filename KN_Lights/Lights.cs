@@ -382,22 +382,6 @@ namespace KN_Lights {
         }
       }
 
-      float angle = activeLights_?.HeadLights.Angle ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref angle, 140.0f, 160.0f, $"{Locale.Get("hl_angle")}: {angle:F1}")) {
-        if (activeLights_ != null) {
-          activeLights_.HeadLights.Angle = angle;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      float hlPitch = activeLights_?.HeadLights.Pitch ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"{Locale.Get("hl_pitch")}: {hlPitch:F}")) {
-        if (activeLights_ != null) {
-          activeLights_.HeadLights.Pitch = hlPitch;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
       float tx = x;
       var offset = activeLights_?.HeadLights.Offset ?? Vector3.zero;
       if (gui.SliderH(ref x, ref y, widthPos, ref offset.x, MinPosBound, MaxPosBound, $"X: {offset.x:F}")) {
@@ -429,6 +413,22 @@ namespace KN_Lights {
       x = tx;
 
 #if KN_DEV_TOOLS
+      float angle = activeLights_?.HeadLights.Angle ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref angle, 140.0f, 160.0f, $"{Locale.Get("hl_angle")}: {angle:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadLights.Angle = angle;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      float hlPitch = activeLights_?.HeadLights.Pitch ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref hlPitch, -20.0f, 20.0f, $"{Locale.Get("hl_pitch")}: {hlPitch:F}")) {
+        if (activeLights_ != null) {
+          activeLights_.HeadLights.Pitch = hlPitch;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
       float intensity = activeLights_?.HeadLights.IlIntensity ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref intensity, 1.0f, 10.0f, $"ILLUMINATION INTENSITY: {intensity:F1}")) {
         if (activeLights_ != null) {
@@ -486,22 +486,6 @@ namespace KN_Lights {
         }
       }
 
-      float angle = activeLights_?.TailLights.Angle ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref angle, 140.0f, 170.0f, $"{Locale.Get("tl_angle")}: {angle:F1}")) {
-        if (activeLights_ != null) {
-          activeLights_.TailLights.Angle = angle;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
-      float tlPitch = activeLights_?.TailLights.Pitch ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"{Locale.Get("tl_pitch")}: {tlPitch:F1}")) {
-        if (activeLights_ != null) {
-          activeLights_.TailLights.Pitch = tlPitch;
-          shouldSync_ = activeLights_ == ownLights_;
-        }
-      }
-
       float tx = x;
       var offset = activeLights_?.TailLights.Offset ?? Vector3.zero;
       if (gui.SliderH(ref x, ref y, widthPos, ref offset.x, MinPosBound, MaxPosBound, $"X: {offset.x:F}")) {
@@ -533,6 +517,22 @@ namespace KN_Lights {
       x = tx;
 
 #if KN_DEV_TOOLS
+      float angle = activeLights_?.TailLights.Angle ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref angle, 140.0f, 170.0f, $"{Locale.Get("tl_angle")}: {angle:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.TailLights.Angle = angle;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
+      float tlPitch = activeLights_?.TailLights.Pitch ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref tlPitch, -20.0f, 20.0f, $"{Locale.Get("tl_pitch")}: {tlPitch:F1}")) {
+        if (activeLights_ != null) {
+          activeLights_.TailLights.Pitch = tlPitch;
+          shouldSync_ = activeLights_ == ownLights_;
+        }
+      }
+
       float intensity = activeLights_?.TailLights.IlIntensity ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref intensity, 1.0f, 10.0f, $"ILLUMINATION INTENSITY: {intensity:F1}")) {
         if (activeLights_ != null) {
@@ -550,7 +550,7 @@ namespace KN_Lights {
     }
 
     private void GuiLightsList(Gui gui, ref float x, ref float y) {
-      const float listHeight = 460.0f;
+      const float listHeight = 340.0f;
       const float widthScale = 1.2f;
       const float buttonWidth = Gui.Width * widthScale;
 
