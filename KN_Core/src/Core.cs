@@ -177,7 +177,7 @@ namespace KN_Core {
           IsCheatsEnabled = true;
           break;
         }
-        case "EXTRAS": {
+        case "extras": {
           IsExtrasEnabled = true;
           break;
         }
