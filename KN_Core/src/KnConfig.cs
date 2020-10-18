@@ -15,6 +15,12 @@ namespace KN_Core {
     Controls
   }
 
+  public enum Quality {
+    Low,
+    Medium,
+    High
+  }
+
   public class KnConfig {
     //cx stuff
     public const string CxUiCanvasName = "Root";
@@ -286,6 +292,19 @@ namespace KN_Core {
         return "high";
       }
       return "low";
+    }
+
+    public static Quality GetQualityEnum(float val) {
+      if (val >= Low - 0.5f && val <= Low + 0.5f) {
+        return Quality.Low;
+      }
+      if (val >= Medium - 0.5f && val <= Medium + 0.5f) {
+        return Quality.Medium;
+      }
+      if (val >= High - 0.5f && val <= High + 0.5f) {
+        return Quality.High;
+      }
+      return Quality.Low;
     }
 
     public static float RoundQuality(float val) {

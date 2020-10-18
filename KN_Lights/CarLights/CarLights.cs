@@ -51,6 +51,9 @@ namespace KN_Lights {
     public int CarId { get; private set; }
     public bool IsNetworkCar { get; private set; }
 
+    private Quality quality_;
+    private bool own_;
+
     public bool IsNwCar;
 
     private CARXCar cxCar_;
@@ -60,12 +63,15 @@ namespace KN_Lights {
       Sid = ulong.MaxValue;
       Name = string.Empty;
 
-      HeadLights = new LightsSet(Color.white, LightsSet.DefaultIllumination, LightsSet.DefaultRange, 0.0f, 1500.0f, 100.0f, new Vector3(0.6f, 0.6f, 1.9f), true, true, false);
-      TailLights = new LightsSet(Color.red, LightsSet.DefaultIllumination, LightsSet.DefaultRange, 0.0f, 30.0f, 170.0f, new Vector3(0.6f, 0.6f, -1.6f), true, true, true);
+      HeadLights = new LightsSet(Quality.Medium, own_, Color.white, LightsSet.DefaultIllumination, LightsSet.DefaultRange,
+        0.0f, 1500.0f, 100.0f, new Vector3(0.6f, 0.6f, 1.9f), true, true, false);
+      TailLights = new LightsSet(Quality.Medium, own_, Color.red, LightsSet.DefaultIllumination, LightsSet.DefaultRange,
+        0.0f, 30.0f, 170.0f, new Vector3(0.6f, 0.6f, -1.6f), true, true, true);
       DashLight = new DashLight(Color.white, DashLight.DefaultBrightness, DashLight.DefaultRange, new Vector3(0.0f, 0.6f, 1.0f), true);
     }
 
-    private CarLights(int carId, bool nwCar, string name) {
+    private CarLights(Quality quality, int carId, bool nwCar, string name) {
+      quality_ = quality;
       IsNwCar = false;
       Name = name;
       CarId = carId;
@@ -85,7 +91,7 @@ namespace KN_Lights {
     }
 
     public CarLights Copy() {
-      var lights = new CarLights(CarId, IsNetworkCar, Name) {
+      var lights = new CarLights(quality_, CarId, IsNetworkCar, Name) {
         HeadLights = HeadLights.Copy(),
         TailLights = TailLights.Copy(),
         DashLight = DashLight.Copy(),
@@ -94,16 +100,18 @@ namespace KN_Lights {
       return lights;
     }
 
-    public void Attach(KnCar car) {
+    public void Attach(Quality quality, KnCar car, bool own) {
+      own_ = own;
       Discarded = false;
+      quality_ = quality;
       Car = car;
       Sid = Car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue;
       Name = car.Name;
       CarId = car.Id;
       IsNetworkCar = car.IsNetworkCar;
 
-      HeadLights.Attach(car, false, Color.white);
-      TailLights.Attach(car, true, Color.red);
+      HeadLights.Attach(quality_, own_, car, false, Color.white);
+      TailLights.Attach(quality_, own_, car, true, Color.red);
       DashLight.Attach(car);
 
       cxCar_ = Car.Base.GetComponent<CARXCar>();
@@ -115,21 +123,26 @@ namespace KN_Lights {
     public void LateUpdate() {
       if (!KnCar.IsNull(Car) && cxCar_ != null && !Discarded) {
         float brakePower = TailLights.Brightness;
+        float brakePowerIl = TailLights.IlIntensity;
         if (cxCar_.brake > 0.2f) {
           brakePower = TailLights.Brightness * BrakePower;
-          TailLights.Illumination = true;
-        }
-        else {
-          TailLights.Illumination = false;
+          brakePowerIl = TailLights.IlIntensity * BrakePower;
         }
         TailLights.SetIntensity(brakePower);
-      }
+        TailLights.SetIlluminationIntensity(brakePowerIl);
 
 #if KN_DEV_TOOLS
-      if (ForceIl) {
-        TailLights.Illumination = true;
-      }
+        if (ForceIl) {
+          TailLights.SetIlluminationIntensity(brakePowerIl);
+        }
 #endif
+      }
+    }
+
+    public void ApplyQuality(Quality quality) {
+      quality_ = quality;
+      HeadLights.ApplyQuality(quality);
+      TailLights.ApplyQuality(quality);
     }
 
     private void CarUpdate() {

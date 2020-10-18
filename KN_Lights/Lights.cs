@@ -38,6 +38,9 @@ namespace KN_Lights {
     private Vector2 clListScroll_;
 
     private float carLightsDiscard_;
+    private float lightsQualityVal_;
+    private Quality lightsQuality_;
+    private Quality lightsQualityPrev_;
 
     private bool autoAddLights_;
 
@@ -72,6 +75,10 @@ namespace KN_Lights {
 
     public override void OnStart() {
       carLightsDiscard_ = Core.KnConfig.Get<float>("cl_discard_distance");
+      lightsQualityVal_ = KnConfig.RoundQuality(Core.KnConfig.Get<float>("lights_quality"));
+
+      lightsQuality_ = KnConfig.GetQualityEnum(lightsQualityVal_);
+      lightsQualityPrev_ = lightsQuality_;
 
       var assembly = Assembly.GetExecutingAssembly();
       LightMask = Embedded.LoadEmbeddedTexture(assembly, "KN_Lights.Resources.HeadLightMask.png");
@@ -113,6 +120,7 @@ namespace KN_Lights {
 
     public override void OnStop() {
       Core.KnConfig.Set("cl_discard_distance", carLightsDiscard_);
+      Core.KnConfig.Set("lights_quality", KnConfig.RoundQuality(lightsQualityVal_));
 
       if (!DataSerializer.Serialize("KN_Lights::Car", lightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + LightsConfigFile, Loader.Version)) { }
       if (!DataSerializer.Serialize("KN_Lights::Car", nwLightsConfig_.Lights.ToList<ISerializable>(), KnConfig.BaseDir + NwLightsConfigFile, Loader.Version)) { }
@@ -165,7 +173,7 @@ namespace KN_Lights {
           }
 
           if (!found) {
-            var lights = CreateLights(car, nwLightsConfig_, false);
+            var lights = CreateLights(car, nwLightsConfig_, false, false);
             lights.ModifyFrom(data);
             if (autoAddLights_) {
               EnableLightsOn(car, false);
@@ -251,6 +259,17 @@ namespace KN_Lights {
 
       hazards_.GuiButton(gui, ref x, ref y, width, height);
 
+      if (gui.SliderH(ref x, ref y, width, ref lightsQualityVal_, KnConfig.Low, KnConfig.High,
+        $"{Locale.Get("lights_quality")}: {Locale.Get(KnConfig.GetQuality(lightsQualityVal_))}")) {
+        Core.KnConfig.Set("lights_quality", KnConfig.RoundQuality(lightsQualityVal_));
+
+        lightsQuality_ = KnConfig.GetQualityEnum(lightsQualityVal_);
+        if (lightsQuality_ != lightsQualityPrev_) {
+          lightsQualityPrev_ = lightsQuality_;
+          SetLightsQuality();
+        }
+      }
+
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.Offset;
 
@@ -285,7 +304,6 @@ namespace KN_Lights {
 
       if (gui.SliderH(ref x, ref y, width, ref carLightsDiscard_, 50.0f, 200.0f, $"{Locale.Get("hide_lights_after")}: {carLightsDiscard_:F1}")) {
         Core.KnConfig.Set("cl_discard_distance", carLightsDiscard_);
-        shouldSync_ = activeLights_ == ownLights_;
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
@@ -678,15 +696,15 @@ namespace KN_Lights {
 
       if (lights == null) {
         if (player) {
-          lights = CreateLights(car, lightsConfig_);
+          lights = CreateLights(car, lightsConfig_, true);
           lightsConfig_.AddLights(lights);
         }
         else {
-          lights = CreateLights(car, nwLightsConfig_);
+          lights = CreateLights(car, nwLightsConfig_, false);
           nwLightsConfig_.AddLights(lights);
         }
       }
-      lights.Attach(car);
+      lights.Attach(lightsQuality_, car, player);
 
       int index = carLights_.FindIndex(cl => cl.Car == car);
       if (index != -1) {
@@ -704,7 +722,7 @@ namespace KN_Lights {
       }
     }
 
-    private CarLights CreateLights(KnCar car, LightsConfigBase config, bool attach = true) {
+    private CarLights CreateLights(KnCar car, LightsConfigBase config, bool own, bool attach = true) {
 #if KN_DEV_TOOLS
       var l = defaultLightsDump_.GetLights(car.Id);
 #else
@@ -717,7 +735,7 @@ namespace KN_Lights {
 
       var light = l.Copy();
       if (attach) {
-        light.Attach(car);
+        light.Attach(lightsQuality_, car, own);
       }
       config.AddLights(light);
       Log.Write($"[KN_Lights::Car]: Car lights attached to '{car.Id}'");
@@ -819,6 +837,15 @@ namespace KN_Lights {
 
       shouldSync_ = false;
       ownLights_.Send(id, Core.Udp);
+    }
+
+    private void SetLightsQuality() {
+      foreach (var cl in carLights_) {
+        if (KnCar.IsNull(cl.Car)) {
+          continue;
+        }
+        cl.ApplyQuality(lightsQuality_);
+      }
     }
 
 #if KN_DEV_TOOLS
