@@ -11,20 +11,6 @@ namespace KN_Lights {
 
     public const float BrakePower = 2.5f;
 
-    private bool discarded_;
-    public bool Discarded {
-      get => discarded_;
-      set {
-        if (discarded_ == value) {
-          return;
-        }
-        discarded_ = value;
-        HeadLights.Enabled = !discarded_;
-        TailLights.Enabled = !discarded_;
-        DashLight.Enabled = !discarded_;
-      }
-    }
-
     public LightsSet HeadLights { get; private set; }
     public LightsSet TailLights { get; private set; }
     public DashLight DashLight { get; private set; }
@@ -57,6 +43,9 @@ namespace KN_Lights {
     public bool IsNwCar;
 
     private CARXCar cxCar_;
+
+    private bool discardedMain_;
+    private bool discardedExtras_;
 
     public CarLights() {
       IsNwCar = false;
@@ -102,7 +91,8 @@ namespace KN_Lights {
 
     public void Attach(Quality quality, KnCar car, bool own) {
       own_ = own;
-      Discarded = false;
+      discardedMain_ = false;
+      discardedExtras_ = false;
       quality_ = quality;
       Car = car;
       Sid = Car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue;
@@ -120,22 +110,44 @@ namespace KN_Lights {
       }
     }
 
+    public void Discard(bool main, bool extras) {
+      if (discardedMain_ != main) {
+        discardedMain_ = main;
+        HeadLights.Enabled = !discardedMain_;
+        HeadLights.Illumination = !extras;
+        TailLights.Enabled = !discardedMain_;
+        TailLights.Illumination = !extras;
+      }
+      if (discardedExtras_ != extras) {
+        discardedExtras_ = extras;
+        HeadLights.Illumination = !discardedExtras_;
+        TailLights.Illumination = !discardedExtras_;
+        DashLight.Enabled = !discardedExtras_;
+      }
+    }
+
     public void LateUpdate() {
-      if (!KnCar.IsNull(Car) && cxCar_ != null && !Discarded) {
-        float brakePower = TailLights.Brightness;
-        float brakePowerIl = TailLights.IlIntensity;
-        if (cxCar_.brake > 0.2f) {
-          brakePower = TailLights.Brightness * BrakePower;
-          brakePowerIl = TailLights.IlIntensity * BrakePower;
+      if (!KnCar.IsNull(Car) && cxCar_ != null) {
+        if (!discardedMain_) {
+          float power = TailLights.Brightness;
+          if (cxCar_.brake > 0.2f) {
+            power = TailLights.Brightness * BrakePower;
+          }
+          TailLights.SetIntensity(power);
         }
-        TailLights.SetIntensity(brakePower);
-        TailLights.SetIlluminationIntensity(brakePowerIl);
+        if (!discardedExtras_) {
+          float power = TailLights.IlIntensity;
+          if (cxCar_.brake > 0.2f) {
+            power = TailLights.IlIntensity * BrakePower;
+          }
+          TailLights.SetIlluminationIntensity(power);
 
 #if KN_DEV_TOOLS
-        if (ForceIl) {
-          TailLights.SetIlluminationIntensity(brakePowerIl);
-        }
+          if (ForceIl) {
+            TailLights.SetIlluminationIntensity(power * BrakePower);
+          }
 #endif
+        }
       }
     }
 
@@ -147,7 +159,7 @@ namespace KN_Lights {
 
     private void CarUpdate() {
       if (!KnCar.IsNull(Car)) {
-        bool enabled = !Discarded && (TailLights.EnabledLeft || TailLights.EnabledRight);
+        bool enabled = !discardedMain_ && (TailLights.EnabledLeft || TailLights.EnabledRight);
         Car.Base.carModel.SetLightsState(enabled, CarLightGroup.Brake);
       }
     }

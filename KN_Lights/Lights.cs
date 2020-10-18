@@ -17,6 +17,8 @@ namespace KN_Lights {
     public const float MinPosBoundZ = 1.5f;
     public const float MaxPosBoundZ = 3.0f;
 
+    private const float ExtrasDiscardRange = 30.0f;
+
     private const string LightsConfigFile = "kn_lights.knl";
     private const string NwLightsConfigFile = "kn_nwlights.knl";
     private const string LightsConfigDefault = "default_lights.knl";
@@ -773,7 +775,9 @@ namespace KN_Lights {
       if (cam != null) {
         foreach (var cl in carLights_) {
           if (!KnCar.IsNull(cl.Car)) {
-            cl.Discarded = Vector3.Distance(cam.transform.position, cl.Car.Transform.position) > carLightsDiscard_;
+            var cp = cam.transform.position;
+            var lp = cl.Car.Transform.position;
+            cl.Discard(Vector3.Distance(cp, lp) > carLightsDiscard_, Vector3.Distance(cp, lp) > ExtrasDiscardRange);
           }
         }
       }
