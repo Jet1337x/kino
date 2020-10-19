@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<locale loc="zn" author="Danny Chen">
+  <!--MODS (TABS)-->
+  <key id="car_lights" value="汽车灯光"/>
+  <key id="world_lights" value="环境光照"/>
+  <key id="visuals" value="视觉"/>
+  <key id="settings" value="设置"/>
+  <key id="maps" value="地图"/>
+  <key id="about" value="关于"/>
+  <key id="extras" value="额外部分"/>
+
+  <!--COMMON-->
+  <key id="language" value="语言"/>
+  <key id="enabled" value="启用"/>
+  <key id="disabled" value="禁用"/>
+  <key id="enable" value="启用"/>
+  <key id="disable" value="禁用"/>
+  <key id="color" value="颜色"/>
+  <key id="red" value="红"/>
+  <key id="green" value="绿"/>
+  <key id="blue" value="蓝"/>
+  <key id="alpha" value="透明度"/>
+  <key id="close" value="关闭"/>
+  <key id="reload" value="重新加载"/>
+  <key id="front" value="前"/>
+  <key id="rear" value="后"/>
+  <key id="low" value="低"/>
+  <key id="medium" value="中"/>
+  <key id="high" value="高"/>
+
+  <!--CORE-->
+  <key id="input_locked" value="当模组菜单启动时，游戏控制被锁定"/>
+  <key id="changes" value="更新日志"/>
+  <key id="outdated0" value="你的模组已经过时，请更新到最新版本"/>
+  <key id="outdated1" value="重启游戏使你的模组自动更新"/>
+  <key id="outdated2" value="更多更新请查看我们的DISCORD（点击）"/>
+
+  <!--PICKERS-->
+  <key id="cp_cars" value="车辆"/>
+  <key id="cp_player" value="玩家车辆"/>
+  <key id="cp_title" value="颜色提取器"/>
+  <key id="fp_title" value="文件选择器"/>
+  <key id="fp_refresh" value="刷新"/>
+
+  <!--ABOUT-->
+  <key id="about0" value="作者 trbflxr"/>
+  <key id="about1" value="测试员 John Sawyer, Dimon, hippan, Sheriff"/>
+  <key id="about2" value="如果你有任何问题或建议"/>
+  <key id="about3" value="请通过DISCORD与我们联系"/>
+  <key id="about4" value="trbflxr#8814 或 John Sawyer#6915"/>
+  <key id="about5" value="或这个模组的DISCORD服务器"/>
+  <key id="about6" value="非常感谢我们的支持者:"/>
+  <key id="about7" value="翻译:"/>
+  <key id="about0v" value="你的客户端或模组版本是不相同的!"/>
+  <key id="about1v" value="重启游戏让模组自动更新"/>
+  <key id="about2v" value="如果您在重启后仍然看到这条消息，那么"/>
+  <key id="about3v" value="下载并手动安装最新版本的模组"/>
+  <key id="about4v" value="从我们的discord"/>
+  <key id="about5v" value="当前版本"/>
+  <key id="about6v" value="目标版本"/>
+
+  <!--SETTINGS-->
+  <key id="tach" value="自定义仪表盘"/>
+  <key id="hide_points" value="隐藏点数"/>
+  <key id="hide_names" value="隐藏名称"/>
+  <key id="backfire" value="自定义回火"/>
+  <key id="white_smoke" value="强制所有玩家胎烟为白色"/>
+  <key id="sync_lights" value="同步汽车灯光"/>
+  <key id="disable_consoles" value="禁用控制台碰撞"/>
+  <key id="hide_consoles" value="隐藏使用控制台的玩家"/>
+  <key id="log_engines" value="引擎日志"/>
+
+  <!--EXHAUST-->
+  <key id="exh_volume" value="体积"/>
+  <key id="exh_max_time" value="持续时间"/>
+
+  <!--ENGINES-->
+  <key id="swaps_engines" value="引擎"/>
+  <key id="swaps_turbo" value="涡轮"/>
+  <key id="swaps_fd" value="最终传动"/>
+
+  <!--VISUALS-->
+  <key id="zoom" value="变焦"/>
+  <key id="shift" value="变速"/>
+  <key id="save_current" value="保存当前设计"/>
+  <key id="load_design" value="加载设计"/>
+  <key id="apply_design" value="应用当前设计到"/>
+  <key id="add_livery" value="添加拉花到"/>
+  <key id="restore_design" value="重置你的设计"/>
+
+  <!--LIGHTS-->
+  <key id="lights" value="灯光"/>
+  <key id="lights_enable_own" value="开启拥有的灯光"/>
+  <key id="debug_obj" value="调试对象"/>
+  <key id="hide_lights_after" value="关灯后"/>
+  <key id="hl_left" value="左大灯"/>
+  <key id="hl_right" value="右大灯"/>
+  <key id="hl_brightness" value="大灯明暗"/>
+  <key id="tl_left" value="左尾灯"/>
+  <key id="tl_right" value="右尾灯"/>
+  <key id="tl_brightness" value="尾灯明暗"/>
+  <key id="add_lights_all" value="给所有玩家添加灯光"/>
+  <key id="add_lights_to" value="加载灯光到"/>
+  <key id="remove_all_lights" value="移除所有灯光"/>
+  <key id="dash_enabled" value="仪表盘灯开启"/>
+  <key id="dash_color" value="仪表盘灯颜色"/>
+  <key id="hazard_lights" value="危险警告灯"/>
+  <key id="lights_quality" value="灯光质量"/>
+
+  <!--WORLD LIGHTS-->
+  <key id="fog" value="雾"/>
+  <key id="fog_distance" value="雾的距离"/>
+  <key id="fog_volume" value="雾的体积"/>
+  <key id="sl_brightness" value="阳光明暗"/>
+  <key id="sky_exposure" value="天空曝光"/>
+  <key id="ambient" value="环境光线"/>
+  <key id="color_temp" value="色温"/>
+  <key id="reset_all" value="重置所有"/>
+
+  <!--EXTRAS-->
+  <key id="f_tire_pressure" value="前轮胎胎压"/>
+  <key id="r_tire_pressure" value="后轮胎胎压"/>
+  <key id="reload_tag" value="重新加载名称标签"/>
+  <key id="use_tag" value="使用名字标签"/>
+  <key id="tag_front" value="名称前的标签"/>
+  <key id="tag_back" value="名称后的标签"/>
+</locale>

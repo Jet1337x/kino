@@ -132,6 +132,7 @@
         <EmbeddedResource Include="Resources\Locale\pl.xml" />
         <EmbeddedResource Include="Resources\Locale\jp.xml" />
         <EmbeddedResource Include="Resources\Locale\ita.xml" />
+        <EmbeddedResource Include="Resources\Locale\zn.xml" />
         <EmbeddedResource Include="Resources\Locale\de.xml" />
     </ItemGroup>
     <ItemGroup>
