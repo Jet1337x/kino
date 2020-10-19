@@ -1,7 +1,9 @@
+using System;
 using System.IO;
 using CarModelSystem;
 using CarX;
 using KN_Core;
+using KN_Loader;
 using SyncMultiplayer;
 using UnityEngine;
 
@@ -168,13 +170,12 @@ namespace KN_Lights {
       var data = new SmartfoxDataPackage(PacketId.Subroom);
       data.Add("1", (byte) 25);
       data.Add("type", Udp.TypeLights);
-
       data.Add("id", id);
+
       data.Add("c", KnUtils.EncodeColor(HeadLights.Color));
       data.Add("p", HeadLights.Pitch);
       data.Add("hlb", HeadLights.Brightness);
       data.Add("hla", HeadLights.Angle);
-
       data.Add("pt", TailLights.Pitch);
       data.Add("tlb", TailLights.Brightness);
       data.Add("tla", TailLights.Angle);
@@ -197,52 +198,56 @@ namespace KN_Lights {
       udp.Send(data);
     }
 
-    public void ModifyFrom(SmartfoxDataPackage data) {
+    public void ModifyFrom(SmartfoxDataPackage data, int id) {
       IsNwCar = true;
 
-      var color = KnUtils.DecodeColor(data.Data.GetInt("c"));
-      float hlPitch = data.Data.GetFloat("p");
-      float hlBrightness = data.Data.GetFloat("hlb");
-      float hlAngle = data.Data.GetFloat("hla");
-      float tlPitch = data.Data.GetFloat("pt");
-      float tlBrightness = data.Data.GetFloat("tlb");
-      float tlAngle = data.Data.GetFloat("tla");
+      try {
+        var color = KnUtils.DecodeColor(data.Data.GetInt("c"));
+        float hlPitch = data.Data.GetFloat("p");
+        float hlBrightness = data.Data.GetFloat("hlb");
+        float hlAngle = data.Data.GetFloat("hla");
+        float tlPitch = data.Data.GetFloat("pt");
+        float tlBrightness = data.Data.GetFloat("tlb");
+        float tlAngle = data.Data.GetFloat("tla");
 
-      bool hlEnabledL = data.Data.GetBool("hle");
-      bool hlEnabledR = data.Data.GetBool("lre");
+        bool hlEnabledL = data.Data.GetBool("hle");
+        bool hlEnabledR = data.Data.GetBool("lre");
+        float x = data.Data.GetFloat("hx");
+        float y = data.Data.GetFloat("hy");
+        float z = data.Data.GetFloat("hz");
+        var hlOffset = new Vector3(x, y, z);
 
-      float x = data.Data.GetFloat("hx");
-      float y = data.Data.GetFloat("hy");
-      float z = data.Data.GetFloat("hz");
-      var hlOffset = new Vector3(x, y, z);
+        bool tlEnabledL = data.Data.GetBool("tle");
+        bool tlEnabledR = data.Data.GetBool("tre");
+        x = data.Data.GetFloat("tx");
+        y = data.Data.GetFloat("ty");
+        z = data.Data.GetFloat("tz");
+        var tlOffset = new Vector3(x, y, z);
 
-      bool tlEnabledL = data.Data.GetBool("tle");
-      bool tlEnabledR = data.Data.GetBool("tre");
-      x = data.Data.GetFloat("tx");
-      y = data.Data.GetFloat("ty");
-      z = data.Data.GetFloat("tz");
-      var tlOffset = new Vector3(x, y, z);
+        bool dashEnabled = data.Data.GetBool("de");
+        var dashColor = KnUtils.DecodeColor(data.Data.GetInt("dc"));
 
-      bool dashEnabled = data.Data.GetBool("de");
-      var dashColor = KnUtils.DecodeColor(data.Data.GetInt("dc"));
+        HeadLights.Color = color;
+        HeadLights.Pitch = hlPitch;
+        HeadLights.Brightness = hlBrightness;
+        HeadLights.Angle = hlAngle;
+        HeadLights.Offset = hlOffset;
+        HeadLights.EnabledLeft = hlEnabledL;
+        HeadLights.EnabledRight = hlEnabledR;
 
-      HeadLights.Color = color;
-      HeadLights.Pitch = hlPitch;
-      HeadLights.Brightness = hlBrightness;
-      HeadLights.Angle = hlAngle;
-      HeadLights.Offset = hlOffset;
-      HeadLights.EnabledLeft = hlEnabledL;
-      HeadLights.EnabledRight = hlEnabledR;
+        TailLights.Pitch = tlPitch;
+        TailLights.Brightness = tlBrightness;
+        TailLights.Angle = tlAngle;
+        TailLights.Offset = tlOffset;
+        TailLights.EnabledLeft = tlEnabledL;
+        TailLights.EnabledRight = tlEnabledR;
 
-      TailLights.Pitch = tlPitch;
-      TailLights.Brightness = tlBrightness;
-      TailLights.Angle = tlAngle;
-      TailLights.Offset = tlOffset;
-      TailLights.EnabledLeft = tlEnabledL;
-      TailLights.EnabledRight = tlEnabledR;
-
-      DashLight.Enabled = dashEnabled;
-      DashLight.Color = dashColor;
+        DashLight.Enabled = dashEnabled;
+        DashLight.Color = dashColor;
+      }
+      catch (Exception e) {
+        Log.Write($"[KN_Lights::Car]: Failed to modify car lights for {id}, {e.Message}");
+      }
     }
 
     public void Serialize(BinaryWriter writer) {
@@ -256,9 +261,9 @@ namespace KN_Lights {
     }
 
     public bool Deserialize(BinaryReader reader, int version) {
-      // if (version < MinVersion) {
-      //   return false;
-      // }
+      if (version < MinVersion) {
+        return false;
+      }
 
       CarId = reader.ReadInt32();
       IsNetworkCar = reader.ReadBoolean();

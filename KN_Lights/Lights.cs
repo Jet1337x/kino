@@ -166,11 +166,11 @@ namespace KN_Lights {
           bool found = false;
           foreach (var cl in nwLightsConfig_.Lights) {
             if (cl.CarId == car.Id && cl.Sid == car.Base.networkPlayer.PlayerId.uid) {
-              if (!car.IsConsole) {
-                cl.ModifyFrom(data);
-              }
               if (autoAddLights_) {
                 EnableLightsOn(car, false);
+                if (!car.IsConsole) {
+                  cl.ModifyFrom(data, id);
+                }
               }
               found = true;
               break;
@@ -180,11 +180,11 @@ namespace KN_Lights {
           if (!found) {
             ulong sid = car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue;
             var lights = CreateLights(car, nwLightsConfig_, sid, false, false);
-            if (!car.IsConsole) {
-              lights.ModifyFrom(data);
-            }
             if (autoAddLights_) {
               EnableLightsOn(car, false);
+              if (!car.IsConsole) {
+                lights.ModifyFrom(data, id);
+              }
             }
           }
           break;
@@ -733,6 +733,7 @@ namespace KN_Lights {
         activeLights_ = lights;
       }
       if (player) {
+        enableOwn_ = true;
         ownLights_ = lights;
       }
     }
