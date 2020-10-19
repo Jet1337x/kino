@@ -118,8 +118,8 @@
   <key id="reset_all" value="RESET ALL"/>
 
   <!--EXTRAS-->
-  <key id="f_tyre_pressure" value="FRONT TIRE PRESSURE"/>
-  <key id="r_tyre_pressure" value="REAR TIRE PRESSURE"/>
+  <key id="f_tire_pressure" value="FRONT TIRE PRESSURE"/>
+  <key id="r_tire_pressure" value="REAR TIRE PRESSURE"/>
   <key id="reload_tag" value="RELOAD NAME TAG"/>
   <key id="use_tag" value="USE NAME TAG"/>
   <key id="tag_front" value="TAG BEFORE THE NAME"/>
