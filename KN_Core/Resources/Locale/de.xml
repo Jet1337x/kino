@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<locale loc="de" author="MC HERCULES">
+  <!--MODS (TABS)-->
+  <key id="car_lights" value="AUTO LICHT"/>
+  <key id="world_lights" value="WELT LICHT"/>
+  <key id="visuals" value="VISUALS"/>
+  <key id="settings" value="EINSTELLUNG"/>
+  <key id="maps" value="KARTE"/>
+  <key id="about" value="CREDITS"/>
+  <key id="extras" value="EXTRAS"/>
+
+  <!--COMMON-->
+  <key id="language" value="SPRACHE"/>
+  <key id="enabled" value="AN"/>
+  <key id="disabled" value="AUS"/>
+  <key id="enable" value="AN"/>
+  <key id="disable" value="AUS"/>
+  <key id="color" value="FARBE"/>
+  <key id="red" value="ROT"/>
+  <key id="green" value="GR܎"/>
+  <key id="blue" value="BLAU"/>
+  <key id="alpha" value="ALPHA"/>
+  <key id="close" value="SCHLIE߅N"/>
+  <key id="reload" value="NEU LADEN"/>
+  <key id="front" value="VORNE"/>
+  <key id="rear" value="HINTEN"/>
+  <key id="low" value="LEICHT"/>
+  <key id="medium" value="MITTEL"/>
+  <key id="high" value="HOCH"/>
+
+  <!--CORE-->
+  <key id="input_locked" value="SPIELKONTROLLEN IST GESPERRT, WĈREND DER MOD-MENܠAN IST"/>
+  <key id="changes" value="ĎDERUNGSPROTOKOLL"/>
+  <key id="outdated0" value="DEIN MOD IST VERALTET, LETZTE VERSION"/>
+  <key id="outdated1" value="STARTE DAS SPIEL NEU DAMIT DER MOD AKTUALISIEREN WERDEN KANN."/>
+  <key id="outdated2" value="Fܒ MEHR INFOS UND UPDATES GEHE AUF UNSEREN DISCORD (CLICK)"/>
+
+  <!--PICKERS-->
+  <key id="cp_cars" value="AUTOS"/>
+  <key id="cp_player" value="SPIELER AUTO"/>
+  <key id="cp_title" value="FARBWĈLER"/>
+  <key id="fp_title" value="DATEIPICKER"/>
+  <key id="fp_refresh" value="AKTUALISIERUNG"/>
+
+  <!--ABOUT-->
+  <key id="about0" value="Developed by trbflxr"/>
+  <key id="about1" value="Tested by John Sawyer, Dimon, hippan, Sheriff"/>
+  <key id="about2" value="If you have any questions or suggestions"/>
+  <key id="about3" value="please, contact us at"/>
+  <key id="about4" value="trbflxr#8814 or John Sawyer#6915"/>
+  <key id="about5" value="or in the mod's discord"/>
+  <key id="about6" value="Thanks a lot to our supporters:"/>
+  <key id="about7" value="Mod translated by:"/>
+  <key id="about0v" value="Your CarX client or mod version is different!"/>
+  <key id="about1v" value="Restart the game for the mod to update automatically."/>
+  <key id="about2v" value="If you still see this message after the restart then"/>
+  <key id="about3v" value="download and manually install the latest version of the mod"/>
+  <key id="about4v" value="from our discord"/>
+  <key id="about5v" value="Current version"/>
+  <key id="about6v" value="Target version"/>
+
+  <!--SETTINGS-->
+  <key id="tach" value="CUSTOM TACHOMETER"/>
+  <key id="hide_points" value="PUNKTE AUSBLENDEN"/>
+  <key id="hide_names" value="NAMEN AUSBLENDEN"/>
+  <key id="backfire" value="CUSTOM BACKFIRE"/>
+  <key id="white_smoke" value="WEI߅R RAUCH Fܒ ALLE"/>
+  <key id="sync_lights" value="SYNC LICHT"/>
+  <key id="disable_consoles" value="KONSOLENKOLLISIONEN DEAKTIVIEREN"/>
+  <key id="hide_consoles" value="KONSOLE-SPIELER VERSTECKEN"/>
+  <key id="log_engines" value="MOTER WECHSELN"/>
+
+  <!--EXHAUST-->
+  <key id="exh_volume" value="LAUT STĒKE"/>
+  <key id="exh_max_time" value="WIE HINTEREINANDER"/>
+
+  <!--ENGINES-->
+  <key id="swaps_engines" value="MOTER"/>
+  <key id="swaps_turbo" value="TURBO"/>
+  <key id="swaps_fd" value="FINAL DRIVE"/>
+
+  <!--VISUALS-->
+  <key id="zoom" value="ZOOM"/>
+  <key id="shift" value="VERSCHIEBUNG"/>
+  <key id="save_current" value="AKTUELLES DESIGN SPEICHERN"/>
+  <key id="load_design" value="LADEDESIGN"/>
+  <key id="apply_design" value="DESIGN ANWENDEN AUF"/>
+  <key id="add_livery" value="DESIGN HINZUF܇EN"/>
+  <key id="restore_design" value="DESIGN WIEDERHERSTELLEN"/>
+
+  <!--LIGHTS-->
+  <key id="lights" value="LICHT"/>
+  <key id="lights_enable_own" value="EIGENE LICHTER AKTIVIEREN"/>
+  <key id="debug_obj" value="DEBUG OBJECTS"/>
+  <key id="hide_lights_after" value="LICHTER NACH AUSBLENDEN"/>
+  <key id="hl_left" value="LINKS SCHEINWERFER"/>
+  <key id="hl_right" value="RECHTS SCHEINWERFERLICHT"/>
+  <key id="hl_brightness" value="SCHEINWERFER HELLIGKEIT"/>
+  <key id="tl_left" value="LINKS R܃KLICHT"/>
+  <key id="tl_right" value="RECHTS R܃KLICHT"/>
+  <key id="tl_brightness" value="R܃KLICHT HELLIGKEIT"/>
+  <key id="add_lights_all" value="JEDEN LICHTER HINZUF܇EN"/>
+  <key id="add_lights_to" value="LICHTER HINZUF܇EN"/>
+  <key id="remove_all_lights" value="ENTFERNEN SIE ALLE LICHTER"/>
+  <key id="dash_enabled" value="ARMATURENBELEUCHTUNG AN"/>
+  <key id="dash_color" value="ARMATURENBELEUCHTUNG FARBE"/>
+  <key id="hazard_lights" value="WARNLICHTER"/>
+  <key id="lights_quality" value="LICHTERQUALITĔ"/>
+
+  <!--WORLD LIGHTS-->
+  <key id="fog" value="NEBEL"/>
+  <key id="fog_distance" value="NEBELABSTAND"/>
+  <key id="fog_volume" value="NEBELVOLUMEN"/>
+  <key id="sl_brightness" value="SONNENLICHT HELLIGKEIT"/>
+  <key id="sky_exposure" value="SKYBOX EXPOSITION"/>
+  <key id="ambient" value="UMGEBUNGSLICHT"/>
+  <key id="color_temp" value="FARBTEMPERATUR"/>
+  <key id="reset_all" value="ALLES ZUR܃KSETZEN"/>
+
+  <!--EXTRAS-->
+  <key id="f_tire_pressure" value="REIFENDRUCK VORNE"/>
+  <key id="r_tire_pressure" value="REIFENDRUCK HINTEN"/>
+  <key id="reload_tag" value="NAME TAG RELOADEN"/>
+  <key id="use_tag" value="NAME TAG VERWENDEN"/>
+  <key id="tag_front" value="TAG VOR DEM NAMEN"/>
+  <key id="tag_back" value="TAG NACH DEM NAMEN"/>
+</locale>
