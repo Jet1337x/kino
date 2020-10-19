@@ -758,8 +758,10 @@ namespace KN_Lights {
       if (ownLights_ == null) {
         Core.ColorPicker.Reset();
         pickHeadLightsColor_ = true;
-        enableOwn_ = true;
-        EnableLightsOn(Core.PlayerCar);
+        if (!KnCar.IsNull(Core.PlayerCar)) {
+          enableOwn_ = true;
+          EnableLightsOn(Core.PlayerCar);
+        }
       }
       else {
         if (ownLights_ == activeLights_) {
