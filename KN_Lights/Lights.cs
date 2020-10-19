@@ -177,7 +177,7 @@ namespace KN_Lights {
 
           if (!found) {
             ulong sid = car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue;
-            var lights = CreateLights(car, nwLightsConfig_, sid, false, false);
+            var lights = CreateLights(car, nwLightsConfig_, sid, false);
             lights.ModifyFrom(data);
             if (autoAddLights_) {
               EnableLightsOn(car, false);
