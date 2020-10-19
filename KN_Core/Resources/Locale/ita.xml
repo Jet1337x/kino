@@ -118,8 +118,8 @@
   <key id="reset_all" value="RIPRISTINA TUTTO"/>
 
   <!--EXTRAS-->
-  <key id="f_tyre_pressure" value="PRESSIONE GOMME ANT"/>
-  <key id="r_tyre_pressure" value="PRESSIONE GOMME POS"/>
+  <key id="f_tire_pressure" value="PRESSIONE GOMME ANT"/>
+  <key id="r_tire_pressure" value="PRESSIONE GOMME POS"/>
   <key id="reload_tag" value="RICARICA IL TAG"/>
   <key id="use_tag" value="USA IL TAG"/>
   <key id="tag_front" value="TAG PRIMA DEL NOME"/>
