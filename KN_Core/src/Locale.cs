@@ -8,7 +8,7 @@ namespace KN_Core {
   public static class Locale {
     private const int NameSize = 11;
 
-    public static readonly string[] ActiveLocales = {"en", "ru", "fr", "nl", "pl", "jp", "ita"};
+    public static readonly string[] ActiveLocales = {"en", "ru", "fr", "nl", "pl", "jp", "ita", "de", "zn"};
 
     public static List<string> Authors { get; private set; }
     public static List<string> Supporters { get; private set; }
