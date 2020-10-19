@@ -205,7 +205,7 @@ namespace KN_Lights {
         joinTimer_.Reset();
       }
 
-      if (settings_.SyncLights && shouldSync_) {
+      if (shouldSync_) {
         syncTimer_.Update();
       }
 

@@ -34,15 +34,6 @@ namespace KN_Core {
       }
     }
 
-    private bool syncLights_;
-    public bool SyncLights {
-      get => syncLights_;
-      set {
-        syncLights_ = value;
-        Core.KnConfig.Set("sync_lights", value);
-      }
-    }
-
     public bool LogEngines { get; set; }
 
     private readonly DisableConsoles disableConsoles_;
@@ -72,7 +63,6 @@ namespace KN_Core {
       HideNames = Core.KnConfig.Get<bool>("hide_names");
       BackFireEnabled = Core.KnConfig.Get<bool>("custom_backfire");
       tachEnabled_ = Core.KnConfig.Get<bool>("custom_tach");
-      syncLights_ = Core.KnConfig.Get<bool>("sync_lights");
       forceWhiteSmoke_ = Core.KnConfig.Get<bool>("force_white_smoke");
 
       disableConsoles_.OnStart();
@@ -84,7 +74,6 @@ namespace KN_Core {
       Core.KnConfig.Set("hide_names", HideNames);
       Core.KnConfig.Set("custom_backfire", BackFireEnabled);
       Core.KnConfig.Set("custom_tach", tachEnabled_);
-      Core.KnConfig.Set("sync_lights", syncLights_);
       Core.KnConfig.Set("force_white_smoke", forceWhiteSmoke_);
 
       disableConsoles_.OnStop();
@@ -173,6 +162,11 @@ namespace KN_Core {
         Core.KnConfig.Set("hide_names", HideNames);
       }
 
+      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("white_smoke"), forceWhiteSmoke_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
+        forceWhiteSmoke_ = !forceWhiteSmoke_;
+        Core.KnConfig.Set("force_white_smoke", forceWhiteSmoke_);
+      }
+
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
       y += Gui.Offset;
 
@@ -193,18 +187,6 @@ namespace KN_Core {
 
       if (BackFireEnabled) {
         exhaust_.OnGui(gui, ref x, ref y, width);
-      }
-
-      gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);
-      y += Gui.Offset;
-
-      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("white_smoke"), forceWhiteSmoke_ ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
-        forceWhiteSmoke_ = !forceWhiteSmoke_;
-        Core.KnConfig.Set("force_white_smoke", forceWhiteSmoke_);
-      }
-
-      if (gui.TextButton(ref x, ref y, width, height, Locale.Get("sync_lights"), SyncLights ? Skin.ButtonSkin.Active : Skin.ButtonSkin.Normal)) {
-        SyncLights = !SyncLights;
       }
 
       gui.Line(x, y, width, 1.0f, Skin.SeparatorColor);

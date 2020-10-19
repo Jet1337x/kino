@@ -221,8 +221,6 @@ namespace KN_Core {
       defaultParams_["cl_discard_distance"] = 90.0f;
       defaultParams_["lights_quality"] = Medium;
 
-      defaultParams_["sync_lights"] = true;
-
       defaultParams_["force_white_smoke"] = false;
       defaultParams_["subscribe"] = true;
 
