@@ -151,13 +151,13 @@ namespace KN_Core {
           mod.Patch != loader_.LatestPatch) {
         Log.Write($"[KN_Core]: Mod {modName} outdated!");
 
-        bool skipPatch = skipPatch_.Any(m => m == modName);
+        bool skipPatch = skipPatch_.Any(m => m == mod.Name);
         if (!skipPatch) {
           loader_.ForceUpdate = true;
           Log.Write("[KN_Core]: Scheduling update.");
           return;
         }
-        Log.Write($"[KN_Core]: Skipping patch check for '{modName}'");
+        Log.Write($"[KN_Core]: Skipping patch check for '{mod.Name}'");
 
         if (mod.Version == loader_.LatestVersion && mod.ClientVersion == GameVersion.version) {
           skipMod = true;
