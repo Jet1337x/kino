@@ -37,25 +37,24 @@ namespace KN_Loader {
         // ignored
       }
 
-      bool shouldDownload;
+      bool shouldDownload = true;
       if (File.Exists(UpdaterPath)) {
-        Log.Write("[KN_Loader::Updater]: Checking updater version ...");
-        var proc = Process.Start(UpdaterPath);
-        if (proc != null) {
-          proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-          proc.WaitForExit();
-          int version = proc.ExitCode;
+        try {
+          Log.Write("[KN_Loader::Updater]: Checking updater version ...");
+          var proc = Process.Start(UpdaterPath);
+          if (proc != null) {
+            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            proc.WaitForExit();
+            int version = proc.ExitCode;
 
-          shouldDownload = version != latestUpdater;
-          Log.Write($"[KN_Loader::Updater]: Updater version: C: {version} / L: {latestUpdater}, download: {shouldDownload}");
+            shouldDownload = version != latestUpdater;
+            Log.Write($"[KN_Loader::Updater]: Updater version: C: {version} / L: {latestUpdater}, download: {shouldDownload}");
+          }
         }
-        else {
-          Log.Write("[KN_Loader::Updater]: Unable to start updater");
+        catch (Exception e) {
           shouldDownload = true;
+          Log.Write($"[KN_Loader::Updater]: Unable to start updater, {e.Message}");
         }
-      }
-      else {
-        shouldDownload = true;
       }
 
       if (shouldDownload) {
