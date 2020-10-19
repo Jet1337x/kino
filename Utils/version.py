@@ -1,4 +1,4 @@
-version = ['1', '2', '9']
+version = ['2', '0', '0']
 patch = '0'
 updater = '02'
 client_version = ['2', '7', '3']
