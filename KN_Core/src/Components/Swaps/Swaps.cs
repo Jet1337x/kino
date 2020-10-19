@@ -242,6 +242,7 @@ namespace KN_Core {
         }
       }
 
+      GUI.enabled = engineId != 0;
       float finalDrive = ce?.FinalDrive ?? 0.0f;
       if (gui.SliderH(ref x, ref y, width, ref finalDrive, 2.5f, 5.0f, $"{Locale.Get("swaps_fd")}: {finalDrive:F2}")) {
         var desc = core_.PlayerCar.Base.GetDesc();

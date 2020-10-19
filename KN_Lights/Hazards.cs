@@ -241,18 +241,34 @@ namespace KN_Lights {
         }
       }
 
-      float brightness = ownHazards_?.Brightness ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref brightness, 1.0f, 20.0f, $"HAZARD LIGHT BRIGHTNESS: {brightness:F1}")) {
+      float brightnessFront = ownHazards_?.BrightnessFront ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref brightnessFront, 1.0f, 20.0f, $"HAZARD LIGHT BRIGHTNESS FRONT: {brightnessFront:F1}")) {
         if (ownHazards_ != null) {
-          ownHazards_.Brightness = brightness;
+          ownHazards_.BrightnessFront = brightnessFront;
           AddToPlayersConfig();
         }
       }
 
-      float range = ownHazards_?.Range ?? 0.0f;
-      if (gui.SliderH(ref x, ref y, width, ref range, 0.05f, 1.0f, $"HAZARD LIGHT RANGE: {range:F}")) {
+      float rangeFront = ownHazards_?.RangeFront ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref rangeFront, 0.05f, 1.0f, $"HAZARD LIGHT RANGE FRONT: {rangeFront:F}")) {
         if (ownHazards_ != null) {
-          ownHazards_.Range = range;
+          ownHazards_.RangeFront = rangeFront;
+          AddToPlayersConfig();
+        }
+      }
+
+      float brightnessRear = ownHazards_?.BrightnessRear ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref brightnessRear, 1.0f, 20.0f, $"HAZARD LIGHT BRIGHTNESS REAR: {brightnessRear:F1}")) {
+        if (ownHazards_ != null) {
+          ownHazards_.BrightnessRear = brightnessRear;
+          AddToPlayersConfig();
+        }
+      }
+
+      float rangeRear = ownHazards_?.RangeRear ?? 0.0f;
+      if (gui.SliderH(ref x, ref y, width, ref rangeRear, 0.05f, 1.0f, $"HAZARD LIGHT RANGE REAR: {rangeRear:F}")) {
+        if (ownHazards_ != null) {
+          ownHazards_.RangeRear = rangeRear;
           AddToPlayersConfig();
         }
       }

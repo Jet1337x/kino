@@ -118,8 +118,8 @@
   <key id="reset_all" value="RÉINITIALISER"/>
 
   <!--EXTRAS-->
-  <key id="f_tyre_pressure" value="PRESSION PNEUS AVANT"/>
-  <key id="r_tyre_pressure" value="PRESSION PNEUS ARRIÈRE"/>
+  <key id="f_tire_pressure" value="PRESSION PNEUS AVANT"/>
+  <key id="r_tire_pressure" value="PRESSION PNEUS ARRIÈRE"/>
   <key id="reload_tag" value="RECHARGER TAG JOUEURS"/>
   <key id="use_tag" value="UTILISER LE TAG"/>
   <key id="tag_front" value="TAG AVANT LE PSEUDO"/>
