@@ -93,39 +93,61 @@ namespace KN_Lights {
       get => color_;
       set {
         color_ = value;
-        if (GetLights(out var fl, out var fr, out var rl, out var rr)) {
+        if (GetLightsFront(out var fl, out var fr)) {
           fl.color = color_;
           fr.color = color_;
+        }
+        if (GetLightsRear(out var rl, out var rr)) {
           rl.color = color_;
           rr.color = color_;
         }
       }
     }
 
-    private float range_;
-    public float Range {
-      get => range_;
+    private float rangeFront_;
+    public float RangeFront {
+      get => rangeFront_;
       set {
-        range_ = value;
-        if (GetLights(out var fl, out var fr, out var rl, out var rr)) {
-          fl.range = range_;
-          fr.range = range_;
-          rl.range = range_;
-          rr.range = range_;
+        rangeFront_ = value;
+        if (GetLightsFront(out var fl, out var fr)) {
+          fl.range = rangeFront_;
+          fr.range = rangeFront_;
         }
       }
     }
 
-    private float brightness_;
-    public float Brightness {
-      get => brightness_;
+    private float rangeRear_;
+    public float RangeRear {
+      get => rangeRear_;
       set {
-        brightness_ = value;
-        if (GetLights(out var fl, out var fr, out var rl, out var rr)) {
-          fl.intensity = brightness_;
-          fr.intensity = brightness_;
-          rl.intensity = brightness_;
-          rr.intensity = brightness_;
+        rangeRear_ = value;
+        if (GetLightsRear(out var rl, out var rr)) {
+          rl.range = rangeRear_;
+          rr.range = rangeRear_;
+        }
+      }
+    }
+
+    private float brightnessFront_;
+    public float BrightnessFront {
+      get => brightnessFront_;
+      set {
+        brightnessFront_ = value;
+        if (GetLightsFront(out var fl, out var fr)) {
+          fl.intensity = brightnessFront_;
+          fr.intensity = brightnessFront_;
+        }
+      }
+    }
+
+    private float brightnessRear_;
+    public float BrightnessRear {
+      get => brightnessRear_;
+      set {
+        brightnessRear_ = value;
+        if (GetLightsRear(out var rl, out var rr)) {
+          rl.intensity = brightnessRear_;
+          rr.intensity = brightnessRear_;
         }
       }
     }
@@ -176,13 +198,15 @@ namespace KN_Lights {
       InitDefault();
     }
 
-    private HazardLights(int id, Color color, float brightness, float range, Vector3 offsetFront, Vector3 offsetRear) {
+    private HazardLights(int id, Color color, float brightnessFront, float rangeFront, float brightnessRear, float rangeRear, Vector3 offsetFront, Vector3 offsetRear) {
       Id = id;
       enabled_ = false;
       hazardMode_ = false;
       color_ = color;
-      brightness_ = brightness;
-      range_ = range;
+      brightnessFront_ = brightnessFront;
+      rangeFront_ = rangeFront;
+      brightnessRear_ = brightnessRear;
+      rangeRear_ = rangeRear;
       OffsetFront = offsetFront;
       OffsetRear = offsetRear;
     }
@@ -191,14 +215,16 @@ namespace KN_Lights {
       enabled_ = false;
       hazardMode_ = false;
       color_ = new Color32(0xd7, 0x90, 0x00, 0xff);
-      brightness_ = DefaultBrightness;
-      range_ = DefaultRange;
+      brightnessFront_ = DefaultBrightness;
+      rangeFront_ = DefaultRange;
+      brightnessRear_ = DefaultBrightness;
+      rangeRear_ = DefaultRange;
       OffsetFront = new Vector3(0.6f, 0.6f, 2.2f);
       OffsetRear = new Vector3(0.6f, 0.6f, -2.2f);
     }
 
     public HazardLights Copy() {
-      var light = new HazardLights(Id, color_, brightness_, range_, OffsetFront, OffsetRear);
+      var light = new HazardLights(Id, color_, brightnessFront_, rangeFront_, brightnessRear_, rangeRear_, OffsetFront, OffsetRear);
       return light;
     }
 
@@ -321,10 +347,10 @@ namespace KN_Lights {
       var rl = Rl.GetComponent<Light>();
       var rr = Rr.GetComponent<Light>();
 
-      MakeLight(ref fl, color_, brightness_, range_);
-      MakeLight(ref fr, color_, brightness_, range_);
-      MakeLight(ref rl, color_, brightness_, range_);
-      MakeLight(ref rr, color_, brightness_, range_);
+      MakeLight(ref fl, color_, brightnessFront_, rangeFront_);
+      MakeLight(ref fr, color_, brightnessFront_, rangeFront_);
+      MakeLight(ref rl, color_, brightnessRear_, rangeRear_);
+      MakeLight(ref rr, color_, brightnessRear_, rangeRear_);
     }
 
     private void Reset(bool enabled) {
@@ -352,27 +378,35 @@ namespace KN_Lights {
       light.intensity = power;
     }
 
-    private bool GetLights(out Light fl, out Light fr, out Light rl, out Light rr) {
+    private bool GetLightsFront(out Light fl, out Light fr) {
       fl = Fl.GetComponent<Light>();
       fr = Fr.GetComponent<Light>();
+      return fl != null && fr != null;
+    }
+
+    private bool GetLightsRear(out Light rl, out Light rr) {
       rl = Rl.GetComponent<Light>();
       rr = Rr.GetComponent<Light>();
-      return fl != null && fr != null && rl != null && rr != null;
+      return rl != null && rr != null;
     }
 
     public void Serialize(BinaryWriter writer) {
       writer.Write(Id);
       writer.Write(KnUtils.EncodeColor(Color));
-      writer.Write(Range);
-      writer.Write(Brightness);
+      writer.Write(RangeFront);
+      writer.Write(BrightnessFront);
+      writer.Write(RangeRear);
+      writer.Write(BrightnessRear);
       KnUtils.WriteVec3(writer, OffsetFront);
       KnUtils.WriteVec3(writer, OffsetRear);
     }
     public bool Deserialize(BinaryReader reader, int version) {
       Id = reader.ReadInt32();
       color_ = KnUtils.DecodeColor(reader.ReadInt32());
-      range_ = reader.ReadSingle();
-      brightness_ = reader.ReadSingle();
+      rangeFront_ = reader.ReadSingle();
+      brightnessFront_ = reader.ReadSingle();
+      rangeRear_ = reader.ReadSingle();
+      brightnessRear_ = reader.ReadSingle();
       OffsetFront = KnUtils.ReadVec3(reader);
       OffsetRear = KnUtils.ReadVec3(reader);
 
