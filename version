@@ -1,6 +1,11 @@
 Version=200
 Patch=0
 Updater=02
-Added framework methods
-Added code obfuscator
+New GUI!
+Improved headlights illumination
+Improoved headlights mask
+Added hazard lights with network sync
+Added lights quality (low, medium)
+Fixed exhaust lights
+Fixed small stutters
 Improved overall stability
