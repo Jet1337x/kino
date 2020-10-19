@@ -509,7 +509,7 @@ namespace KN_Core {
     }
 
     private void GuiUpdateWarn() {
-      const float width = Gui.Width * 2.7f;
+      const float width = Gui.Width * 3.0f;
       float height = Gui.Height * 3.0f;
 
       float x = Screen.width / 2.0f - width / 2.0f;
