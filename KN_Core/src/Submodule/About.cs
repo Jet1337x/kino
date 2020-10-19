@@ -48,15 +48,17 @@ namespace KN_Core {
       gui.BoxAutoWidth(x, y, width, height, Locale.Get("about5"), Skin.BoxLeftSkin.Normal);
       y += height;
 
-      string supporters = Locale.Supporters.Aggregate("", (current, s) => current + $"{s}, ");
-      if (!string.IsNullOrEmpty(supporters)) {
-        supporters = supporters.Substring(0, supporters.Length - 2);
-
-        gui.BoxAutoWidth(x, y, width, height, $"{Locale.Get("about6")} {supporters} {Locale.Get("about7")}", Skin.BoxLeftSkin.Normal);
+      if (Locale.Supporters.Count > 0) {
+        gui.BoxAutoWidth(x, y, width, height, Locale.Get("about6"), Skin.BoxLeftSkin.Normal);
         y += height;
+
+        foreach (string s in Locale.Supporters) {
+          gui.BoxAutoWidth(x, y, width, height, s, Skin.BoxLeftSkin.Normal);
+          y += height;
+        }
       }
 
-      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about8"), Skin.BoxLeftSkin.Normal);
+      gui.BoxAutoWidth(x, y, width, height, Locale.Get("about7"), Skin.BoxLeftSkin.Normal);
       y += height;
 
       foreach (string author in Locale.Authors) {

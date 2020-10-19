@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using KN_Loader;
 
 namespace KN_Core {
   public static class Locale {
+    private const int NameSize = 11;
+
     public static readonly string[] ActiveLocales = {"en", "ru", "fr", "nl", "pl", "jp", "ita"};
 
     public static List<string> Authors { get; private set; }
@@ -58,6 +61,8 @@ namespace KN_Core {
     }
 
     private static void LoadLocale(string locale) {
+      const int locSize = 5;
+
       Log.Write($"[KN_Core::Locale]: Loading locale '{locale}' ...");
       var stream = Embedded.LoadEmbeddedFile($"Locale.{locale}.xml");
       if (stream == null) {
@@ -79,7 +84,8 @@ namespace KN_Core {
 
               string author = reader.GetAttribute("author");
               if (!string.IsNullOrEmpty(author)) {
-                Authors.Add($"{author} ({idAttribute.ToUpper()})");
+                string loc = $"({idAttribute.ToUpper()})";
+                Authors.Add($"{author,-NameSize} {loc,-locSize}");
               }
 
               continue;
@@ -136,6 +142,7 @@ namespace KN_Core {
         return;
       }
 
+      var names = new List<string>();
       using (var reader = XmlReader.Create(stream)) {
         while (reader.Read()) {
           if (reader.NodeType == XmlNodeType.Element) {
@@ -148,9 +155,22 @@ namespace KN_Core {
               continue;
             }
 
-            Supporters.Add(name);
+            names.Add(name);
           }
         }
+      }
+
+      const int columns = 2;
+
+      int toAdd = names.Count % columns;
+      for (int i = 0; i < toAdd; ++i) {
+        names.Add("");
+      }
+
+      for (int i = 0; i < names.Count; i += columns) {
+        string n0 = names[i];
+        string n1 = names[i + 1];
+        Supporters.Add($"  | {n0,-NameSize} | {n1,-NameSize} |");
       }
     }
   }

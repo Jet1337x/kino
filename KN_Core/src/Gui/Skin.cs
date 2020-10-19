@@ -139,7 +139,7 @@ namespace KN_Core {
       fontVersion_ = Font.CreateDynamicFontFromOSFont("Carlito", 9);
       fontTabs_ = Font.CreateDynamicFontFromOSFont("Carlito Bold", 12);
       fontLight_ = Font.CreateDynamicFontFromOSFont("Carlito", 12);
-      fontLightBig_ = Font.CreateDynamicFontFromOSFont("Carlito", 14);
+      fontLightBig_ = Font.CreateDynamicFontFromOSFont("Consolas", 12);
 
       PuzzleSkin = MakeModButton("puzzle.png");
       SettingsSkin = MakeModButton("gear.png");
