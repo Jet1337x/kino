@@ -5,7 +5,7 @@ namespace KN_Lights {
   [BepInPlugin("trbflxr.kn_lights", "KN_Lights", StringVersion)]
   public class Loader : BaseUnityPlugin {
     public const int Version = 200;
-    public const int Patch = 0;
+    public const int Patch = 1;
     public const int ClientVersion = 273;
     public const string StringVersion = "2.0.0";
 
