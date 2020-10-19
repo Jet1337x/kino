@@ -43,21 +43,21 @@
   <key id="fp_refresh" value="AKTUALISIERUNG"/>
 
   <!--ABOUT-->
-  <key id="about0" value="Developed by trbflxr"/>
-  <key id="about1" value="Tested by John Sawyer, Dimon, hippan, Sheriff"/>
-  <key id="about2" value="If you have any questions or suggestions"/>
-  <key id="about3" value="please, contact us at"/>
-  <key id="about4" value="trbflxr#8814 or John Sawyer#6915"/>
-  <key id="about5" value="or in the mod's discord"/>
-  <key id="about6" value="Thanks a lot to our supporters:"/>
-  <key id="about7" value="Mod translated by:"/>
-  <key id="about0v" value="Your CarX client or mod version is different!"/>
-  <key id="about1v" value="Restart the game for the mod to update automatically."/>
-  <key id="about2v" value="If you still see this message after the restart then"/>
-  <key id="about3v" value="download and manually install the latest version of the mod"/>
-  <key id="about4v" value="from our discord"/>
-  <key id="about5v" value="Current version"/>
-  <key id="about6v" value="Target version"/>
+  <key id="about0" value="Entwickelt von trbflxr"/>
+  <key id="about1" value="Getestet von John Sawyer, Dimon, hippan, Sheriff"/>
+  <key id="about2" value="Wenn du Fragen oder Anregungen hast"/>
+  <key id="about3" value="Bitte kontaktiere uns unter"/>
+  <key id="about4" value="trbflxr#8814 oder John Sawyer#6915"/>
+  <key id="about5" value="oder in den Mods discord"/>
+  <key id="about6" value="Vielen Dank an unsere Unterstützer:"/>
+  <key id="about7" value="Mod übersetzt von:"/>
+  <key id="about0v" value="Dein CarX Client oder deine Mod Version ist anders!"/>
+  <key id="about1v" value="Starten das Spiel neu, damit der Mod automatisch aktualisiert wird."/>
+  <key id="about2v" value="Wenn diese Meldung nach dem Neustart immer noch zu sehen ist, dann"/>
+  <key id="about3v" value="Lade die neueste Version des Mods herunter und installiere manuell"/>
+  <key id="about4v" value="aus unserm discord"/>
+  <key id="about5v" value="Aktuelle Version"/>
+  <key id="about6v" value="Zielversion"/>
 
   <!--SETTINGS-->
   <key id="tach" value="CUSTOM TACHOMETER"/>
