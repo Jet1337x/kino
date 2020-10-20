@@ -83,7 +83,7 @@ namespace KN_Core {
       MaxContentHeight = height_ - (y_ + ModTabHeight);
     }
 
-    public bool BaseButton(ref float x, ref float y, float width, float height, string text, GUISkin skin) {
+    public bool BaseButton(ref float x, ref float y, float width, float height, string text, GUISkin skin, bool ensureSize = true) {
       var old = GUI.skin;
 
       GUI.skin = skin;
@@ -91,11 +91,13 @@ namespace KN_Core {
       y += height + Offset;
       GUI.skin = old;
 
-      EnsureContentSize(x, y, width);
+      if (ensureSize) {
+        EnsureContentSize(x, y, width);
+      }
       return res;
     }
 
-    public bool TabButton(ref float x, ref float y, float width, float height, string text, GUISkin skin) {
+    public bool TabButton(ref float x, ref float y, float width, float height, string text, GUISkin skin, bool ensureSize = true) {
       var old = GUI.skin;
 
       GUI.skin = skin;
@@ -103,34 +105,38 @@ namespace KN_Core {
       x += width;
       GUI.skin = old;
 
-      EnsureContentSize(x, y, 0.0f);
+      if (ensureSize) {
+        EnsureContentSize(x, y, 0.0f);
+      }
       return res;
     }
 
-    public bool ImageButton(ref float x, ref float y, float width, float height, GUISkin skin) {
+    public bool ImageButton(ref float x, ref float y, float width, float height, GUISkin skin, bool ensureSize = true) {
       var old = GUI.skin;
 
       GUI.skin = skin;
       bool res = GUI.Button(new Rect(x, y, width, height), "");
       GUI.skin = old;
 
-      EnsureContentSize(x, y, width);
+      if (ensureSize) {
+        EnsureContentSize(x, y, width);
+      }
       return res;
     }
 
-    public bool ImageButton(ref float x, ref float y, GUISkin skin) {
-      return ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, skin);
+    public bool ImageButton(ref float x, ref float y, GUISkin skin, bool ensureSize = true) {
+      return ImageButton(ref x, ref y, Gui.ModIconSize, Gui.ModIconSize, skin, ensureSize);
     }
 
-    public bool TextButton(ref float x, ref float y, string text, GUISkin skin) {
-      return BaseButton(ref x, ref y, Width, Height, text, skin);
+    public bool TextButton(ref float x, ref float y, string text, GUISkin skin, bool ensureSize = true) {
+      return BaseButton(ref x, ref y, Width, Height, text, skin, ensureSize);
     }
 
-    public bool TextButton(ref float x, ref float y, float width, float height, string text, GUISkin skin) {
-      return BaseButton(ref x, ref y, width, height, text, skin);
+    public bool TextButton(ref float x, ref float y, float width, float height, string text, GUISkin skin, bool ensureSize = true) {
+      return BaseButton(ref x, ref y, width, height, text, skin, ensureSize);
     }
 
-    public void BoxAutoWidth(float x, float y, float width, float height, string text, GUISkin skin) {
+    public void BoxAutoWidth(float x, float y, float width, float height, string text, GUISkin skin, bool ensureSize = true) {
       var old = GUI.skin;
 
       float textWidth = TextWidth(text, skin.box.font);
@@ -140,21 +146,25 @@ namespace KN_Core {
       GUI.Box(new Rect(x, y, w, height), text);
       GUI.skin = old;
 
-      EnsureContentSize(x, y, textWidth);
+      if (ensureSize) {
+        EnsureContentSize(x, y, textWidth);
+      }
     }
 
-    public void Box(float x, float y, float width, float height, string text, GUISkin skin) {
+    public void Box(float x, float y, float width, float height, string text, GUISkin skin, bool ensureSize = true) {
       var old = GUI.skin;
 
       GUI.skin = skin;
       GUI.Box(new Rect(x, y, width, height), text);
       GUI.skin = old;
 
-      EnsureContentSize(x, y, width);
+      if (ensureSize) {
+        EnsureContentSize(x, y, width);
+      }
     }
 
-    public void Box(float x, float y, float width, float height, GUISkin skin) {
-      Box(x, y, width, height, "", skin);
+    public void Box(float x, float y, float width, float height, GUISkin skin, bool ensureSize = true) {
+      Box(x, y, width, height, "", skin, ensureSize);
     }
 
     public void Line(float x, float y, float width, float height, Color color) {
@@ -168,7 +178,7 @@ namespace KN_Core {
       GUI.enabled = enabled;
     }
 
-    public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text, GUISkin skin) {
+    public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text, GUISkin skin, bool ensureSize = true) {
       var old = GUI.skin;
       GUI.skin = skin;
 
@@ -182,7 +192,9 @@ namespace KN_Core {
 
       GUI.skin = old;
 
-      EnsureContentSize(x, y, width);
+      if (ensureSize) {
+        EnsureContentSize(x, y, width);
+      }
 
       if (Mathf.Abs(value - result) < 0.0001f) {
         return false;
@@ -192,15 +204,15 @@ namespace KN_Core {
       return true;
     }
 
-    public bool SliderH(ref float x, ref float y, ref float value, float low, float high, string text) {
-      return SliderH(ref x, ref y, Width, ref value, low, high, text, Skin.SliderSkin.Normal);
+    public bool SliderH(ref float x, ref float y, ref float value, float low, float high, string text, bool ensureSize = true) {
+      return SliderH(ref x, ref y, Width, ref value, low, high, text, Skin.SliderSkin.Normal, ensureSize);
     }
 
-    public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text) {
-      return SliderH(ref x, ref y, width, ref value, low, high, text, Skin.SliderSkin.Normal);
+    public bool SliderH(ref float x, ref float y, float width, ref float value, float low, float high, string text, bool ensureSize = true) {
+      return SliderH(ref x, ref y, width, ref value, low, high, text, Skin.SliderSkin.Normal, ensureSize);
     }
 
-    public void BeginScrollV(ref float x, ref float y, float width, float visibleHeight, float contentHeight, ref Vector2 scrollPos, string caption) {
+    public void BeginScrollV(ref float x, ref float y, float width, float visibleHeight, float contentHeight, ref Vector2 scrollPos, string caption, bool ensureSize = true) {
       var old = GUI.skin;
       GUI.skin = Skin.ScrollSkin.Normal;
 
@@ -218,20 +230,24 @@ namespace KN_Core {
 
       x += ScrollBarWidth;
 
-      EnsureContentSize(x, y, width);
+      if (ensureSize) {
+        EnsureContentSize(x, y, width);
+      }
     }
 
-    public void BeginScrollV(ref float x, ref float y, float visibleHeight, float contentHeight, ref Vector2 scrollPos, string caption) {
-      BeginScrollV(ref x, ref y, Width, visibleHeight, contentHeight, ref scrollPos, caption);
+    public void BeginScrollV(ref float x, ref float y, float visibleHeight, float contentHeight, ref Vector2 scrollPos, string caption, bool ensureSize = true) {
+      BeginScrollV(ref x, ref y, Width, visibleHeight, contentHeight, ref scrollPos, caption, ensureSize);
     }
 
-    public float EndScrollV(ref float x, ref float y, float contentY) {
+    public float EndScrollV(ref float x, ref float y, float contentY, bool ensureSize = true) {
       y += scrollVisibleHeight_ + Offset;
       GUI.EndScrollView();
 
       x -= Offset;
 
-      EnsureContentSize(x, y, 0.0f);
+      if (ensureSize) {
+        EnsureContentSize(x, y, 0.0f);
+      }
 
       //content height
       return contentY - scrollY_;
@@ -265,9 +281,11 @@ namespace KN_Core {
       return ScrollViewButton(ref x, ref y, WidthScroll, Height, text, out delete, skin, deleteSkin);
     }
 
-    public void Dummy(float x, float y, float width, float height) {
+    public void Dummy(float x, float y, float width, float height, bool ensureSize = true) {
       y += height + Offset;
-      EnsureContentSize(x, y, width);
+      if (ensureSize) {
+        EnsureContentSize(x, y, width);
+      }
     }
 
     private void EnsureContentSize(float x, float y, float width) {
