@@ -1,10 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using KN_Loader;
 
 namespace KN_Core {
+  internal class NameData {
+    public string Name;
+    public int Size;
+  }
+
   public static class Locale {
     private const int NameSize = 11;
 
@@ -147,7 +153,7 @@ namespace KN_Core {
         return;
       }
 
-      var names = new List<string>();
+      var names = new List<NameData>();
       using (var reader = XmlReader.Create(stream)) {
         while (reader.Read()) {
           if (reader.NodeType == XmlNodeType.Element) {
@@ -160,7 +166,17 @@ namespace KN_Core {
               continue;
             }
 
-            names.Add(name);
+            string nameSizeStr = reader.GetAttribute("size");
+            int size = 0;
+            if (!string.IsNullOrEmpty(nameSizeStr)) {
+              int.TryParse(nameSizeStr, out size);
+            }
+
+            names.Add(new NameData {
+                Name = name,
+                Size = size
+              }
+            );
           }
         }
       }
@@ -169,15 +185,32 @@ namespace KN_Core {
 
       int toAdd = names.Count % columns;
       for (int i = 0; i < toAdd; ++i) {
-        names.Add("");
+        names.Add(new NameData {Name = "", Size = 0});
       }
 
       for (int i = 0; i < names.Count; i += columns) {
-        string n0 = names[i];
-        string n1 = names[i + 1];
-        string n2 = names[i + 2];
-        Supporters.Add($"  | {n0,-NameSize} | {n1,-NameSize} | {n2,-NameSize} |");
+        string n0 = GetFormattedName(names[i]);
+        string n1 = GetFormattedName(names[i + 1]);
+        string n2 = GetFormattedName(names[i + 2]);
+
+        try {
+          string dummy = $"  | {n0} | {n1} | {n2} |";
+          Log.Write(dummy);
+
+          Supporters.Add(dummy);
+        }
+        catch (Exception) {
+          // ignored
+        }
       }
+    }
+
+    private static string GetFormattedName(NameData data) {
+      string s = new string(' ', data.Size == 0 ? NameSize : data.Size);
+      var builder = new StringBuilder(s);
+      builder.Remove(0, data.Name.Length);
+      builder.Insert(0, data.Name);
+      return builder.ToString();
     }
   }
 }
