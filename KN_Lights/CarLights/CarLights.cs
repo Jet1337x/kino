@@ -51,7 +51,7 @@ namespace KN_Lights {
 
     public CarLights() {
       IsNwCar = false;
-      Sid = ulong.MaxValue;
+      Sid = 0;
       Name = string.Empty;
 
       HeadLights = new LightsSet(Quality.Medium, own_, Color.white, LightsSet.DefaultIllumination, LightsSet.DefaultRange,
@@ -97,7 +97,7 @@ namespace KN_Lights {
       discardedExtras_ = false;
       quality_ = quality;
       Car = car;
-      Sid = Car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue;
+      Sid = Car.Base.networkPlayer?.PlayerId.uid ?? 0;
       Name = car.Name;
       CarId = car.Id;
       IsNetworkCar = car.IsNetworkCar;

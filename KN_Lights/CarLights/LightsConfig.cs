@@ -54,6 +54,10 @@ namespace KN_Lights {
     }
 
     public CarLights GetLights(int carId, ulong sid) {
+      if (sid == 0) {
+        return null;
+      }
+
       return Lights.FirstOrDefault(cl => cl.CarId == carId && cl.Sid == sid);
     }
   }

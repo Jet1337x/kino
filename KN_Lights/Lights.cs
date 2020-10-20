@@ -178,10 +178,8 @@ namespace KN_Lights {
           }
 
           if (!found) {
-            ulong sid = car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue;
-            var lights = CreateLights(car, nwLightsConfig_, sid, false, false);
             if (autoAddLights_) {
-              EnableLightsOn(car, false);
+              var lights = EnableLightsOn(car, false);
               if (!car.IsConsole) {
                 lights.ModifyFrom(data, id);
               }
@@ -697,25 +695,25 @@ namespace KN_Lights {
 #endif
     }
 
-    private void EnableLightsOn(KnCar car, bool select = true) {
+    private CarLights EnableLightsOn(KnCar car, bool select = true) {
       bool player = car == Core.PlayerCar;
-      ulong sid = player ? ulong.MaxValue : car.Base.networkPlayer?.PlayerId.uid ?? ulong.MaxValue;
+      ulong sid = player ? 0 : car.Base.networkPlayer?.PlayerId.uid ?? 0;
 
       CarLights lights = null;
       if (player) {
         lights = lightsConfig_.GetLights(car.Id, sid);
       }
       else if (car.Base.networkPlayer != null) {
-        lights = nwLightsConfig_.GetLights(car.Id, car.Base.networkPlayer.PlayerId.uid);
+        lights = nwLightsConfig_.GetLights(car.Id, sid);
       }
 
       if (lights == null) {
         if (player) {
-          lights = CreateLights(car, lightsConfig_, sid, true);
+          lights = CreateLights(car, true, false);
           lightsConfig_.AddLights(lights);
         }
         else {
-          lights = CreateLights(car, nwLightsConfig_, sid, false);
+          lights = CreateLights(car, false, false);
           nwLightsConfig_.AddLights(lights);
         }
       }
@@ -736,14 +734,17 @@ namespace KN_Lights {
         enableOwn_ = true;
         ownLights_ = lights;
       }
+
+      return lights;
     }
 
-    private CarLights CreateLights(KnCar car, ILightsConfig config, ulong sid, bool own, bool attach = true) {
+    private CarLights CreateLights(KnCar car, bool own, bool attach = true) {
 #if KN_DEV_TOOLS
-      var l = defaultLightsDump_.GetLights(car.Id, sid);
+      var l = defaultLightsDump_.GetLights(car.Id, 0);
 #else
-      var l = lightsConfigDefault_.GetLights(car.Id, sid);
+      var l = lightsConfigDefault_.GetLights(car.Id, 0);
 #endif
+
       if (l == null) {
         l = new CarLights();
         Log.Write($"[KN_Lights::Car]: Lights for car '{car.Id}' not found. Creating default.");
@@ -752,9 +753,8 @@ namespace KN_Lights {
       var light = l.Copy();
       if (attach) {
         light.Attach(lightsQuality_, car, own);
+        Log.Write($"[KN_Lights::Car]: Car lights attached to '{car.Id}'");
       }
-      config.AddLights(light);
-      Log.Write($"[KN_Lights::Car]: Car lights attached to '{car.Id}'");
 
       return light;
     }
