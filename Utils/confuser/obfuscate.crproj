@@ -15,4 +15,7 @@
   <module path="KN_Visuals.dll">
     <rule pattern="true" preset="aggressive" inherit="false" />
   </module>
+  <module path="KN_Cinematic.dll">
+    <rule pattern="true" preset="aggressive" inherit="false" />
+  </module>
 </project>

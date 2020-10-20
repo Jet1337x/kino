@@ -54,6 +54,10 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\KN_Cinematic\KN_Cinematic.csproj">
+        <Project>{3434b33f-52d6-427f-90c8-4928b57d683f}</Project>
+        <Name>KN_Cinematic</Name>
+      </ProjectReference>
       <ProjectReference Include="..\KN_Core\KN_Core.csproj">
         <Project>{3e3223ac-c054-4a3d-9233-da24acad7c16}</Project>
         <Name>KN_Core</Name>
