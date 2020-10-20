@@ -573,10 +573,6 @@ namespace KN_Core {
     }
 
     private void HideNames() {
-      if (Controls.KeyDown("player_names")) {
-        Settings.HideNames = !Settings.HideNames;
-      }
-
       foreach (var car in CarPicker.Cars) {
         if (!KnCar.IsNull(car)) {
           car.Base.SetVisibleUIName(!Settings.HideNames);

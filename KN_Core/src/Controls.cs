@@ -109,9 +109,9 @@ namespace KN_Core {
 
     public static void LoadDefault() {
       defaultButtons_["gui"] = new object[] {KeyCode.F4};
+      defaultButtons_["cinematic_mode"] = new object[] {KeyCode.F3};
       defaultButtons_["mode"] = new object[] {KeyCode.F1};
       defaultButtons_["teleport"] = new object[] {KeyCode.F2};
-      defaultButtons_["player_names"] = new object[] {KeyCode.F3};
 
       defaultButtons_["fix_car"] = new object[] {KeyCode.Home};
       defaultButtons_["disable_all"] = new object[] {KeyCode.End};
