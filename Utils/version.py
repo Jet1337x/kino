@@ -1,5 +1,5 @@
 version = ['2', '0', '0']
-patch = '2'
+patch = '3'
 updater = '02'
 client_version = ['2', '7', '3']
 
