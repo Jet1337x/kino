@@ -194,10 +194,7 @@ namespace KN_Core {
         string n2 = GetFormattedName(names[i + 2]);
 
         try {
-          string dummy = $"  | {n0} | {n1} | {n2} |";
-          Log.Write(dummy);
-
-          Supporters.Add(dummy);
+          Supporters.Add($"  | {n0} | {n1} | {n2} |");
         }
         catch (Exception) {
           // ignored
