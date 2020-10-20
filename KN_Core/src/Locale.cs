@@ -182,8 +182,9 @@ namespace KN_Core {
       }
 
       const int columns = 3;
+      const int add = 1;
 
-      int toAdd = names.Count % columns;
+      int toAdd = names.Count % columns + add;
       for (int i = 0; i < toAdd; ++i) {
         names.Add(new NameData {Name = "", Size = 0});
       }
