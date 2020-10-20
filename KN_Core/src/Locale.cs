@@ -34,7 +34,12 @@ namespace KN_Core {
         LoadLocale(l);
       }
 
-      LoadSupporters();
+      try {
+        LoadSupporters();
+      }
+      catch (Exception) {
+        // ignored
+      }
 
       defaultLocale_ = locales_["en"];
 
@@ -160,7 +165,7 @@ namespace KN_Core {
         }
       }
 
-      const int columns = 2;
+      const int columns = 3;
 
       int toAdd = names.Count % columns;
       for (int i = 0; i < toAdd; ++i) {
@@ -170,7 +175,8 @@ namespace KN_Core {
       for (int i = 0; i < names.Count; i += columns) {
         string n0 = names[i];
         string n1 = names[i + 1];
-        Supporters.Add($"  | {n0,-NameSize} | {n1,-NameSize} |");
+        string n2 = names[i + 2];
+        Supporters.Add($"  | {n0,-NameSize} | {n1,-NameSize} | {n2,-NameSize} |");
       }
     }
   }
